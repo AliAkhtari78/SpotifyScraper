@@ -5,19 +5,14 @@ python:
   - "3.8"
   - "3.8-dev"
   - "nightly"
+before_install:
+  - python --version
+  - pip install -U pip
+  - pip3 install virtualenv
+  - virtualenv -p python3 ~/venv
+  - source ~/venv/bin/activate
 install:
   - pip install -r requirements.txt
   - pip install -U tox
-script:tox
-matrix:
-  fast_finish: true
-  include:
-
-    - python: "3.6"
-      env: TOXENV=py36
-
-    - python: "3.7"
-      env: TOXENV=py37
-
-    - python: "3.8"
-      env: TOXENV=py38
+script:
+  -tox
