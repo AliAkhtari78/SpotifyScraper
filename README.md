@@ -23,7 +23,7 @@ do it in the hard way:
 
 ``
 $ git clone https://github.com/AliAkhtari78/SpotifyScraper.git 
-``
+``<br>
  ``
 $sudo python3 setup.py install
 ``
