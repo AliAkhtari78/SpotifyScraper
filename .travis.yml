@@ -9,4 +9,4 @@ install:
   - pip install -r requirements.txt
   - pip install -U tox
 script:
-  - tox
+  - tox -e py36
