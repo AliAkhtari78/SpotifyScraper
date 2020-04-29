@@ -6,8 +6,6 @@ python:
   - "3.8-dev"
   - "nightly"
 install:
-  - pip install -U pip
-  - pip install -U spotifyscraper
   - pip install -r requirements.txt
   - pip install -U tox
 script:
