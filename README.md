@@ -130,3 +130,5 @@ from SpotifyScraper.scraper import Scraper, Request
 
 -   Report bugs, suggest features, or view the source code  [on GitHub](https://github.com/AliAkhtari78/SpotifyScraper).
 - [Read the doc](https://spotifyscraper.readthedocs.io/en/latest/?) to use all provided functions of this library.
+- get in touch with me by my website:
+[ali akhtari](https://aliakhtari.com/)
