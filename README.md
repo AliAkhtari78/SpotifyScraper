@@ -27,7 +27,7 @@ $sudo python3 setup.py install
 ``
 ## Documentation
 
-Check out [Read The Docs]([https://spotifyscraper.readthedocs.io/en/latest/](https://spotifyscraper.readthedocs.io/en/latest/)) for a more in-depth explanation, with examples, troubleshooting issues, and more useful information.
+Check out [Read The Docs](https://spotifyscraper.readthedocs.io/en/latest/) for a more in-depth explanation, with examples, troubleshooting issues, and more useful information.
 ## Extract Spotify track information by URL
 - ``
 from SpotifyScraper.scraper import Scraper, Request
