@@ -235,18 +235,18 @@ class Scraper:
                         try:
                             temp = {'track_name': temp_list[0].text, 'track_singer': temp_list[1].text,
                                     'track_album': temp_list[2].text,
-                                    'duration': duration_list[counter].text}
+                                    'duration': duration_list[counter].text, 'ERROR': None, }
                         except:
                             temp = {'track_name': temp_list[0].text, 'track_singer': temp_list[1].text,
                                     'track_album': temp_list[2].text,
-                                    'duration': None}
+                                    'duration': None, 'ERROR': None, }
                         tracks_list.append(temp)
                         temp_list = []
                         counter += 1
 
                 data = {'album_title': album_title, 'cover_url': cover_url, 'author': author, 'author_url': author_url,
                         'playlist_description': playlist_description,
-                        'tracks_list': tracks_list}
+                        'tracks_list': tracks_list, 'ERROR': None, }
                 return data
             except:
                 return {"ERROR": "The provided url is malformed."}

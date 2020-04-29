@@ -9,14 +9,14 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='spotifyscraper',
-    version='1.0.0',
-    description='A sample Python project',
+    version='1.0.1',
+    description='Spotify Web Player Scraper using python, scrape and download song and cover from Spotify.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/pypa/sampleproject',
-    author='The Python Packaging Authority',
+    url='https://github.com/AliAkhtari78/SpotifyScraper',
+    author='Ali Akhtari',
     packages=["SpotifyScraper"],
-    author_email='pypa-dev@googlegroups.com',
+    author_email='aliakhtari78@hotmail.com',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
 
@@ -27,8 +27,8 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    keywords='spotify spotifydownloader downloader mp3downloader webscraper spotifyscraper music cover setuptools development',
-    python_requires='>=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4',
+    keywords='spotify spotifydownloader downloader mp3downloader webscraper spotifywebscraper spotifyscraper music cover setuptools development',
+    python_requires='>=3.6.*, <4',
     install_requires=['appdirs',
                       'beautifulsoup4',
                       'bs4',
@@ -55,12 +55,14 @@ setup(
                       'urllib3',
                       'w3lib',
                       'websockets',
-                      ],  # Optional
+                      ],
 
-    project_urls={  # Optional
-        'Bug Reports': 'https://github.com/pypa/sampleproject/issues',
-        'Funding': 'https://donate.pypi.org',
-        'Say Thanks!': 'http://saythanks.io/to/example',
-        'Source': 'https://github.com/pypa/sampleproject/',
+    project_urls={
+        'Bug Reports': 'https://github.com/AliAkhtari78/SpotifyScraper/issues',
+        'Source': 'https://github.com/AliAkhtari78/SpotifyScraper',
+        'PyPi': 'https://pypi.org/project/spotifyscraper',
+        'Documentation': 'https://spotifyscraper.readthedocs.io/en/latest',
+        'Full Tutorial Blog': 'https://aliakhtari.com/Blog/SpotifyScraper',
+        'Author WebSite': 'https://aliakhtari.com',
     },
 )

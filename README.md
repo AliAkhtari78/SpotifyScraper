@@ -4,6 +4,8 @@
 
 ##  Overview
 Python **Spotify Web Player Scraper**, a fast high-level Spotify Web Player Scraper, to scrape and extract data from Spotify Web Player with the most efficient and fastest methods.
+instead of using Selenium, I used [requests](https://github.com/psf/requests) library to increase the speed of scraping.
+You can set cookies, headers and proxy and download the cover and preview mp3 song of Spotify songs beside the scraping.
 
 ## Requirements
 - Python 3.6 +
@@ -73,5 +75,58 @@ $ {
  'total_tracks': 12,
   'type_': 'album', 
   'ERROR': None}
-
 ``
+
+## Extract Spotify playlist information by URL
+- ``
+from SpotifyScraper.scraper import Scraper, Request
+``
+
+- ``
+ request = Request().request() ``
+ 
+-  ``playlist_info = Scraper(session=request).get_playlist_url_info(url='https://open.spotify.com/playlist/37i9dQZF1DX74DnfGTwugU')
+ ``
+> Call get_playlist_url_info function from Scraper to extract all the infromation from url.
+> If the given URL is valid, it will return a dict with the below keys:
+> - album_title
+> - cover_url
+> - author
+> - author_url
+> - playlist_description
+> - tracks_list
+> - ERROR
+ 
+## Download Spotify song cover by URL
+- ``
+from SpotifyScraper.scraper import Scraper, Request
+``
+
+- ``
+ request = Request().request() ``
+ 
+-  ``path = Scraper(session=request).download_cover(url='https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV?si=b35Rzak1RgWvBAnbJteHkA')
+ ``
+ > Call download_cover function from Scraper to download the cover of the provided song.
+ 
+ **if the provided URL is valid, it will return the path of downloaded  cover to you.**
+
+
+## Download Spotify preview song by URL
+- ``
+from SpotifyScraper.scraper import Scraper, Request
+``
+
+- ``
+ request = Request().request() ``
+ 
+-  ``path = Scraper(session=request).download_preview_mp3(url='https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV?si=b35Rzak1RgWvBAnbJteHkA')
+ ``
+  > Call download_preview_mp3 function from Scraper to download the preview mp3 song of the provided URL.
+ 
+ **if the provided URL is valid, it will return the path of downloaded mp3 to you.**
+
+ ## Get in touch
+
+-   Report bugs, suggest features, or view the source code  [on GitHub](https://github.com/AliAkhtari78/SpotifyScraper).
+- [Read the doc](https://spotifyscraper.readthedocs.io/en/latest/?) to use all provided functions of this library.
