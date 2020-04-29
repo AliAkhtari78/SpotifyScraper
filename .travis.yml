@@ -8,5 +8,6 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install -U tox
+  - pip install -U pytest
 script:
-  - tox
+  - pytest
