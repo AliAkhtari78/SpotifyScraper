@@ -19,6 +19,15 @@
 import re
 import requests
 
+__author__ = "Ali Akhtari"
+__copyright__ = "Copyright 2020 Ali Akhtari <https://github.com/AliAkhtari78>"
+__credits__ = ["Ali Akhtari"]
+__license__ = "MIT"
+__version__ = "1.0.5"
+__maintainer__ = "Ali Akhtari"
+__email__ = "aliakhtari78@hotmail.com"
+__status__ = "Production"
+
 
 class Request:
     def __init__(self, cookie_file: str = None, headers: dict = None, proxy: dict = None):
@@ -32,13 +41,7 @@ class Request:
                 raise
 
         if headers is None:
-            pass
-            # self.headers = {
-            #     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
-            #     'Accept': '*/*',
-            #     'DNT': '1',
-            #     'app-platform': 'WebPlayer',
-            # }
+            self.headers = None
         else:
             self.headers = headers
 
@@ -63,10 +66,10 @@ class Request:
         """Create session using requests library and set cookie and headers."""
 
         request_session = requests.Session()
-        # request_session.headers.update(self.headers)
+        if self.headers is not None:
+            request_session.headers.update(self.headers)
         if self.cookie is not None:
             request_session.cookies.update(self.cookie)
-
         if self.proxy is not None:
             request_session.proxies.update(self.proxy)
 

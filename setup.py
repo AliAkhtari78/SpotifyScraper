@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='spotifyscraper',
-    version='1.0.1',
+    version='1.0.5',
     description='Spotify Web Player Scraper using python, scrape and download song and cover from Spotify.',
     long_description=long_description,
     long_description_content_type='text/markdown',

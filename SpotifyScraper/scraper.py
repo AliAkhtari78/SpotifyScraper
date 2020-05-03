@@ -16,17 +16,39 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__author__ = "Ali Akhtari"
+__copyright__ = "Copyright 2020 Ali Akhtari <https://github.com/AliAkhtari78>"
+__credits__ = ["Ali Akhtari"]
+__license__ = "MIT"
+__version__ = "1.0.5"
+__maintainer__ = "Ali Akhtari"
+__email__ = "aliakhtari78@hotmail.com"
+__status__ = "Production"
+
 from requests.sessions import Session
 from bs4 import BeautifulSoup
-from .request import Request
 import yaml
 import eyed3
 import os
+import logging
+from .request import Request
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter('%(levelname)s:%(asctime)s:%(module)s:%(lineno)d:%(name)s:%(message)s')
+
+file_handler = logging.FileHandler('logfile_spotify_scraper.log')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class Scraper:
-    def __init__(self, session: Session):
+    def __init__(self, session: Session, log: bool = False):
         self.session = session
+        self.log = log
 
     @staticmethod
     def _str_to_json(string: str) -> dict:
@@ -127,13 +149,17 @@ class Scraper:
                     'type_': type_,
                     'ERROR': None,
                 }
-            except:
+            except Exception as error:
+                if self.log:
+                    logger.error(error)
                 try:
                     bs_instance = BeautifulSoup(page_content, "lxml")
                     error = bs_instance.find('div', {'class': 'content'}).text
                     if "Sorry, couldn't find that." in error:
                         return {"ERROR": "The provided url doesn't belong to any song on Spotify."}
-                except:
+                except Exception as error:
+                    if self.log:
+                        logger.error(error)
                     return {"ERROR": "The provided url is malformed."}
         except:
             raise
@@ -149,7 +175,9 @@ class Scraper:
                     try:
                         return self._image_downloader(url=cover_url, file_name=album_title,
                                                       path=path)
-                    except:
+                    except Exception as error:
+                        if self.log:
+                            logger.error(error)
                         return "Couldn't download the cover."
 
                 except:
@@ -198,8 +226,9 @@ class Scraper:
                 try:
                     return self._preview_mp3_downloader(url=preview_mp3, file_name=title + '-' + album_title, path=path,
                                                         with_cover=with_cover, cover_url=album_cover_url)
-
-                except:
+                except Exception as error:
+                    if self.log:
+                        logger.error(error)
                     return "Couldn't download the cover."
             except:
                 try:
@@ -207,7 +236,9 @@ class Scraper:
                     error = bs_instance.find('div', {'class': 'content'}).text
                     if "Sorry, couldn't find that." in error:
                         return "The provided url doesn't belong to any song on Spotify."
-                except:
+                except Exception as error:
+                    if self.log:
+                        logger.error(error)
                     raise
         except:
             raise
@@ -248,7 +279,9 @@ class Scraper:
                         'playlist_description': playlist_description,
                         'tracks_list': tracks_list, 'ERROR': None, }
                 return data
-            except:
+            except Exception as error:
+                if self.log:
+                    logger.error(error)
                 return {"ERROR": "The provided url is malformed."}
         except:
             raise

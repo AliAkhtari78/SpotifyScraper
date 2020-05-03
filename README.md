@@ -17,7 +17,7 @@ You can set cookies, headers and proxy and download the cover and preview mp3 so
 You can install this package as simple as type a command in your CMD or Terminal.
 The quick way:
 ```sh
-$ pip install spotifyscraper
+$ pip install -U spotifyscraper
 ```
 or
 do it in the hard way:
@@ -26,7 +26,7 @@ do it in the hard way:
 $ git clone https://github.com/AliAkhtari78/SpotifyScraper.git 
 ``<br>
  ``
-$sudo python3 setup.py install
+$sudo python setup.py install
 ``
 ## Documentation
 

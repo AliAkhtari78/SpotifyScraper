@@ -71,7 +71,7 @@ Or you can download Spotify Scraper and install it from GitHub:
  To verify that Spotify Scraper is correctly installed, open a Python shell and import it. If no error shows up you are good to go.
 <br>``>>> import SpotifyScraper`` 
 <br>``>>> SpotifyScraper.__version__``
-``1.0.1``
+``1.0.5``
 
 ## Import Request
 Spotify Scraper uses [requests](https://pypi.org/project/requests/) to retrieve and extract data from Spotify.
@@ -195,6 +195,10 @@ You can use the example code below to download the preview mp3 of Spotify track 
 ``scraper = Scraper(session=request)``<br>
 ``mp3_downloaded_path = scraper.download_preview_mp3(url=url, path=path, with_cover=True)``<br>
 Just replace the URL with Spotify Track URL and replace the path with the path you want to download to, you can remove **path=path** to download covers at the root directory, also you can remove **with_cover=True** to only download the mp3 without cover of the song.
+
+## Save the log file to disk
+If something went wring, in order to find the problem and report the bug to me, you can set log to True to save the log file in your disk:
+``Scraper(session=request, log=True)``
 
 ## Why Spotify Scraper
 To extract data from Spotify, there is two way to do that:
