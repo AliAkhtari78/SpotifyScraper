@@ -165,53 +165,24 @@ class Scraper:
             raise
 
     def download_cover(self, url: str, path: str = '') -> str:
+        track_url_info = self.get_track_url_info(url)
+        print(track_url_info)
+        
+        title=""
+        if 'playlist' not in url:
+            title = track_url_info["title"]+"-"
+
+        title = track_url_info["title"]
+        album_title = track_url_info["album_title"]
+        album_cover_url = track_url_info["album_cover_url"]
         try:
-            if 'playlist' in url:
-                page_content = self.session.get(url=url, stream=True).content
-                try:
-                    bs_instance = BeautifulSoup(page_content, "lxml")
-                    album_title = bs_instance.find('title').text
-                    cover_url = bs_instance.find('meta', property='og:image')['content']
-                    try:
-                        return self._image_downloader(url=cover_url, file_name=album_title,
-                                                      path=path)
-                    except Exception as error:
-                        if self.log:
-                            logger.error(error)
-                        return "Couldn't download the cover."
-
-                except:
-                    return "The provided url doesn't belong to any song on Spotify."
-
-
-
-            else:
-                page_content = self.session.get(url=self._turn_url_to_embed(url=url), stream=True).content
-                try:
-                    bs_instance = BeautifulSoup(page_content, "lxml")
-                    url_information = self._str_to_json(
-                        string=bs_instance.find("script", {"id": "resource"}).contents[0])
-                    title = url_information['name']
-                    album_title = url_information['album']['name']
-                    album_cover_url = url_information['album']['images'][0]['url']
-
-                    try:
-                        return self._image_downloader(url=album_cover_url, file_name=title + '-' + album_title,
-                                                      path=path)
-
-                    except:
-                        return "Couldn't download the cover."
-                except:
-                    try:
-                        bs_instance = BeautifulSoup(page_content, "lxml")
-                        error = bs_instance.find('div', {'class': 'content'}).text
-                        if "Sorry, couldn't find that." in error:
-                            return "The provided url doesn't belong to any song on Spotify."
-                    except:
-                        raise
-        except:
-            raise
-
+            return self._image_downloader(url=album_cover_url, file_name=title + '-' + album_title,
+                                            path=path)
+        except Exception as error:
+            if self.log:
+                logger.error(error)
+            return "Couldn't download the cover."
+            
     def download_preview_mp3(self, url: str, path: str = '', with_cover: bool = False) -> str:
         try:
             page_content = self.session.get(url=self._turn_url_to_embed(url=url), stream=True).content
