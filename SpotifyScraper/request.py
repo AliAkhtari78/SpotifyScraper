@@ -31,24 +31,18 @@ __status__ = "Production"
 
 class Request:
     def __init__(self, cookie_file: str = None, headers: dict = None, proxy: dict = None):
-        if cookie_file is None:
-            self.cookie = None
-        else:
-            self.cookie_file = cookie_file
+        
+        self.cookie = None
+        self.cookie_file = cookie_file
+
+        if cookie_file is not None:
             try:
                 self.cookie = self._parse_cookie_file()
             except:
                 raise
 
-        if headers is None:
-            self.headers = None
-        else:
-            self.headers = headers
-
-        if proxy is None:
-            self.proxy = None
-        else:
-            self.proxy = proxy
+        self.headers = headers
+        self.proxy = proxy
 
     def _parse_cookie_file(self) -> dict:
         """Parse a cookies.txt file and return a dictionary of key value pairs
