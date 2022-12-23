@@ -20,7 +20,7 @@ __author__ = "Ali Akhtari"
 __copyright__ = "Copyright 2020 Ali Akhtari <https://github.com/AliAkhtari78>"
 __credits__ = ["Ali Akhtari"]
 __license__ = "MIT"
-__version__ = "2.0.0"
+__version__ = "1.0.5"
 __maintainer__ = "Ali Akhtari"
 __email__ = "aliakhtari78@hotmail.com"
 __status__ = "Production"
@@ -31,7 +31,7 @@ import yaml
 import eyed3
 import os
 import logging
-
+from .request import Request
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -97,7 +97,7 @@ class Scraper:
         else:
             path = path + '//'
 
-        file_name = "".join(x for x in file_name if x.isalnum())
+        file_name = file_name = "".join(x for x in file_name if x.isalnum())
         saving_directory = path + file_name + '.mp3'
         song = self.session.get(url=url, stream=True)
         with open(saving_directory, 'wb') as f:
@@ -120,6 +120,7 @@ class Scraper:
             page_content = self.session.get(url=self._turn_url_to_embed(url=url), stream=True).content
             try:
                 bs_instance = BeautifulSoup(page_content, "lxml")
+                print(bs_instance)
                 url_information = self._str_to_json(string=bs_instance.find("script", {"id": "resource"}).contents[0])
                 title = url_information['name']
                 preview_mp3 = url_information['preview_url']
