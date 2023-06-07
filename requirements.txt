@@ -9,7 +9,7 @@ eyeD3==0.9.5
 fake-useragent==0.1.11
 filetype==1.0.6
 idna==2.9
-lxml==4.5.0
+lxml==4.9.1
 packaging==20.3
 parse==1.15.0
 pyee==7.0.1
