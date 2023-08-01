@@ -28,7 +28,7 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     keywords='spotify spotifydownloader downloader mp3downloader webscraper spotifywebscraper spotifyscraper music cover setuptools development',
-    python_requires='>=3.6.*, <4',
+    python_requires='>=3.6',
     install_requires=['appdirs',
                       'beautifulsoup4',
                       'bs4',
