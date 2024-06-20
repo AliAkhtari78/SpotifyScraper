@@ -1,3 +1,4 @@
+# This repository has been migrated to the self-hosted ari-web Forgejo instance: <https://git.ari.lt/ari/SpotifyScraper>
 [![Build Status](https://travis-ci.com/AliAkhtari78/SpotifyScraper.svg?branch=master)](https://travis-ci.com/AliAkhtari78/SpotifyScraper)
 [![Documentation Status](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io/en/latest/?badge=latest)
 # Spotify Scraper
