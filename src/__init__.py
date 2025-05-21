@@ -1,0 +1,1 @@
+from spotify_scraper.extractors.track import TrackExtractor
