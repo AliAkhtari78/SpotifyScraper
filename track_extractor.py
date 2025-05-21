@@ -397,6 +397,11 @@ class TrackExtractor:
     
     Attributes:
         browser: Browser instance for web interactions
+    
+    Note:
+        This extractor prioritizes using Spotify embed URLs (/embed/track/...)
+        over regular URLs because embed endpoints do not require authentication
+        and provide the same track metadata including lyrics.
     """
     
     def __init__(self, browser: Browser):
@@ -412,11 +417,12 @@ class TrackExtractor:
         """
         Extract track information from a Spotify track URL.
         
-        This method supports both regular and embed URLs, and will
-        automatically convert regular URLs to embed URLs for extraction.
+        This method takes any Spotify track URL and converts it to an
+        embed URL format for extraction. Embed URLs don't require Spotify
+        login/authentication but still provide full track metadata.
         
         Args:
-            url: Spotify track URL (regular or embed)
+            url: Spotify track URL (will be converted to embed format)
             
         Returns:
             Track data as a dictionary
@@ -437,11 +443,12 @@ class TrackExtractor:
         except URLError:
             track_id = "unknown"
         
-        # Try with embed URL first (more reliable)
+        # Always use embed URL, which doesn't require authentication
         try:
+            # Convert any track URL to embed format
             embed_url = convert_to_embed_url(url)
             
-            # Get page content
+            # Get page content from embed URL
             page_content = self.browser.get(embed_url)
             
             # Parse track information
@@ -451,24 +458,9 @@ class TrackExtractor:
             if track_data and not track_data.get("ERROR"):
                 return track_data
             
-            # If extraction failed but URL was already an embed URL, we're done
-            if url == embed_url:
-                return track_data
-            
-        except Exception as e:
-            # If URL was already an embed URL, we're done
-            if url.startswith("https://open.spotify.com/embed"):
-                return {"ERROR": str(e), "id": track_id, "name": "", "uri": "", "type": "track"}
-        
-        # If embed URL failed or we got here, try with regular URL
-        try:
-            # Get page content
-            page_content = self.browser.get(url)
-            
-            # Parse track information
-            track_data = extract_track_data_from_html(page_content)
-            
+            # If extraction failed, return the error data
             return track_data
+            
         except Exception as e:
             return {"ERROR": str(e), "id": track_id, "name": "", "uri": "", "type": "track"}
     
@@ -476,13 +468,16 @@ class TrackExtractor:
         """
         Extract track information by ID.
         
+        This method constructs an embed URL from the track ID and extracts the data.
+        
         Args:
             track_id: Spotify track ID
             
         Returns:
             Track data as a dictionary
         """
-        url = f"https://open.spotify.com/track/{track_id}"
+        # Directly create an embed URL for best results
+        url = f"https://open.spotify.com/embed/track/{track_id}"
         return self.extract(url)
     
     def extract_preview_url(self, url: str) -> Optional[str]:

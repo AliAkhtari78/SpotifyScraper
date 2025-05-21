@@ -85,10 +85,18 @@ def main():
     # Create a mock browser with the test HTML
     mock_browser = MockBrowser(track_html)
     
+    # Print information about embed URL vs regular URLs
+    print("\nSpotify URL handling:")
+    print("===================")
+    print("✅ Using /embed/ URLs: No authentication required, full access to track data & lyrics")
+    print("❌ Using regular URLs: Requires authentication, may fail with 401 Unauthorized")
+    print("🔄 Regular URL https://open.spotify.com/track/ID → https://open.spotify.com/embed/track/ID")
+    
     # Create the track extractor
     extractor = TrackExtractor(browser=mock_browser)
     
-    # Extract track data using the extractor
+    # Extract track data using the extractor with a regular URL
+    # Note: The extractor will convert this to an embed URL internally
     track_data = extractor.extract(url="https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv")
     
     # Print results for comparison
