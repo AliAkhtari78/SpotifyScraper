@@ -10,12 +10,10 @@ import os
 from pathlib import Path
 import pytest
 
-# This will be the actual import once the module is implemented
-# from spotify_scraper.extractors.track import TrackExtractor
-# from spotify_scraper.browsers.requests_browser import RequestsBrowser
-# from spotify_scraper.core.exceptions import ParsingError
+# Import the needed exceptions only
+from spotify_scraper.core.exceptions import ParsingError, URLError
 
-# For testing purposes
+# Simple mock browser for testing (avoid complex imports)
 class MockBrowser:
     """Mock browser for testing extractors without network requests."""
     
@@ -25,6 +23,16 @@ class MockBrowser:
     def get_page_content(self, url):
         """Return the mock HTML content regardless of URL."""
         return self.html_content
+        
+    def get(self, url):
+        """Alias for get_page_content to match the real Browser interface."""
+        return self.get_page_content(url)
+
+
+# Import the TrackExtractor directly
+import sys
+sys.path.append('/home/runner/work/SpotifyScraper/SpotifyScraper/src/spotify_scraper/extractors/')
+from track import TrackExtractor
 
 
 class TestTrackExtractor:
@@ -49,43 +57,59 @@ class TestTrackExtractor:
     
     def test_extract_track_data(self, track_html, expected_track_data):
         """Test extracting track data from the HTML fixture."""
-        # This test will fail until TrackExtractor is implemented
         mock_browser = MockBrowser(track_html)
         
-        # Example of how the extractor would be used
-        # extractor = TrackExtractor(browser=mock_browser)
-        # track_data = extractor.extract(url="https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv")
+        # Create the extractor and extract track data
+        extractor = TrackExtractor(browser=mock_browser)
+        track_data = extractor.extract(url="https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv")
         
-        # For now, just demonstrate the expected input and output
-        print("Expected Input HTML:")
-        print(track_html[:500] + "...")  # Just show first 500 chars
-        
+        # Print debug information
         print("\nExpected Output JSON:")
         print(json.dumps(expected_track_data, indent=2))
         
-        # This assertion will fail until TrackExtractor is implemented
-        # assert track_data == expected_track_data
+        print("\nActual Output JSON:")
+        print(json.dumps(track_data, indent=2))
         
-        # Placeholder assertion for now
-        assert True
+        # Compare the results
+        assert track_data["id"] == expected_track_data["id"]
+        assert track_data["name"] == expected_track_data["name"]
+        assert track_data["uri"] == expected_track_data["uri"]
+        assert track_data["type"] == expected_track_data["type"]
+        assert track_data["duration_ms"] == expected_track_data["duration_ms"]
+        
+        # Check the album data
+        assert track_data["album"]["name"] == expected_track_data["album"]["name"]
+        assert track_data["album"]["id"] == expected_track_data["album"]["id"]
+        assert track_data["album"]["uri"] == expected_track_data["album"]["uri"]
+        
+        # Check the artists
+        assert len(track_data["artists"]) == len(expected_track_data["artists"])
+        assert track_data["artists"][0]["name"] == expected_track_data["artists"][0]["name"]
+        assert track_data["artists"][0]["id"] == expected_track_data["artists"][0]["id"]
     
     def test_extract_track_with_lyrics(self, track_html, expected_track_data):
         """Test that lyrics are correctly extracted when present."""
-        # This test demonstrates that the extractor should handle lyrics
         mock_browser = MockBrowser(track_html)
         
-        # Example of how the lyrics would be accessed
-        # extractor = TrackExtractor(browser=mock_browser)
-        # track_data = extractor.extract(url="https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv")
-        # lyrics = track_data.get("lyrics")
+        # Extract track data with lyrics
+        extractor = TrackExtractor(browser=mock_browser)
+        track_data = extractor.extract(url="https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv")
+        lyrics = track_data.get("lyrics")
         
         print("\nExample Lyrics Structure:")
         print(json.dumps(expected_track_data["lyrics"], indent=2))
         
-        # This assertion will fail until TrackExtractor is implemented
-        # assert lyrics is not None
-        # assert "lines" in lyrics
-        # assert len(lyrics["lines"]) > 0
+        print("\nActual Lyrics Structure:")
+        print(json.dumps(lyrics, indent=2) if lyrics else "None")
         
-        # Placeholder assertion for now
-        assert True
+        # Verify lyrics extraction
+        assert lyrics is not None
+        assert "lines" in lyrics
+        assert len(lyrics["lines"]) > 0
+        assert "sync_type" in lyrics
+        assert lyrics["sync_type"] == expected_track_data["lyrics"]["sync_type"]
+        
+        # Check a few specific lyrics lines
+        assert lyrics["lines"][0]["start_time_ms"] == expected_track_data["lyrics"]["lines"][0]["start_time_ms"]
+        assert lyrics["lines"][1]["words"] == expected_track_data["lyrics"]["lines"][1]["words"]
+        assert lyrics["lines"][2]["end_time_ms"] == expected_track_data["lyrics"]["lines"][2]["end_time_ms"]
