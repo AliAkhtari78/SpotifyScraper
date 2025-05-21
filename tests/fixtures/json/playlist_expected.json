@@ -1,0 +1,77 @@
+{
+  "id": "37i9dQZF1DXcBWIGoYBM5M",
+  "name": "Top Hits",
+  "uri": "spotify:playlist:37i9dQZF1DXcBWIGoYBM5M",
+  "type": "playlist",
+  "description": "The most popular songs right now - Global",
+  "owner": {
+    "name": "Spotify",
+    "uri": "spotify:user:spotify"
+  },
+  "images": [
+    {
+      "url": "https://i.scdn.co/image/ab67706c0000da84c5f294f7aaa7c5e83b0c13b4",
+      "width": 640,
+      "height": 640
+    }
+  ],
+  "track_count": 50,
+  "tracks": [
+    {
+      "id": "6BwPGnbrypJUEXnrS99f5t",
+      "name": "Paint The Town Red",
+      "uri": "spotify:track:6BwPGnbrypJUEXnrS99f5t",
+      "artists": [
+        {
+          "name": "Doja Cat",
+          "uri": "spotify:artist:6VsTkqxmG6gv25YfPia5Dq"
+        }
+      ],
+      "duration_ms": 196041,
+      "is_playable": true,
+      "is_explicit": true,
+      "album": {
+        "name": "Paint The Town Red",
+        "uri": "spotify:album:4XNaabm8i75N8ehM6Xkq3a",
+        "images": [
+          {
+            "url": "https://i.scdn.co/image/ab67616d0000b273c5663e50deae23dee89d7c95",
+            "width": 640,
+            "height": 640
+          }
+        ]
+      },
+      "preview_url": "https://p.scdn.co/mp3-preview/c62dd0c99a1e2d6f2bee4f1a9ee85eaecc8d3936"
+    },
+    {
+      "id": "7xYiTrbTL3ombQPJEFgq7O",
+      "name": "Seven (feat. Latto) (Explicit Ver.)",
+      "uri": "spotify:track:7xYiTrbTL3ombQPJEFgq7O",
+      "artists": [
+        {
+          "name": "Jung Kook",
+          "uri": "spotify:artist:5vV3bFXnN6D6N3Nj4xRvaV"
+        },
+        {
+          "name": "Latto",
+          "uri": "spotify:artist:1ybINI1qPiFbwDXamRtwxD"
+        }
+      ],
+      "duration_ms": 185310,
+      "is_playable": true,
+      "is_explicit": true,
+      "album": {
+        "name": "Seven (feat. Latto)",
+        "uri": "spotify:album:17WZcKGYCbRCXgVICLtTmS",
+        "images": [
+          {
+            "url": "https://i.scdn.co/image/ab67616d0000b273ae0b8786d6048565215d17af",
+            "width": 640,
+            "height": 640
+          }
+        ]
+      },
+      "preview_url": "https://p.scdn.co/mp3-preview/d5db17a69eef5c048303fc03474321c8fc2b518f"
+    }
+  ]
+}

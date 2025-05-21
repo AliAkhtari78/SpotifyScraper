@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spotifyscraper"
+version = "2.0.0"
+description = "Modern Spotify Web Scraper - Extract data from Spotify's web player"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Ali Akhtari", email = "aliakhtari78@hotmail.com"}
+]
+keywords = ["spotify", "scraper", "music", "web-scraping", "lyrics"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP :: Browsers",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "requests>=2.25.0",
+    "beautifulsoup4>=4.9.0",
+    "lxml>=4.6.0",
+    "fake-useragent>=0.1.11",
+    "typing-extensions>=3.7.4; python_version<'3.8'",
+]
+
+[project.optional-dependencies]
+selenium = ["selenium>=4.0.0"]
+media = ["eyed3>=0.9.0", "Pillow>=8.0.0"]
+dev = [
+    "pytest>=6.0.0",
+    "pytest-cov>=2.10.0",
+    "black>=21.0.0",
+    "flake8>=3.8.0",
+    "mypy>=0.812",
+    "pre-commit>=2.10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/AliAkhtari78/SpotifyScraper"
+Documentation = "https://spotifyscraper.readthedocs.io/"
+Repository = "https://github.com/AliAkhtari78/SpotifyScraper"
+Issues = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
+
+[project.scripts]
+spotify-scraper = "spotify_scraper.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ['py37', 'py38', 'py39', 'py310', 'py311']
+
+[tool.mypy]
+python_version = "3.7"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

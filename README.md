@@ -1,134 +1,186 @@
-[![Build Status](https://travis-ci.com/AliAkhtari78/SpotifyScraper.svg?branch=master)](https://travis-ci.com/AliAkhtari78/SpotifyScraper)
-[![Documentation Status](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io/en/latest/?badge=latest)
-# Spotify Scraper
+# SpotifyScraper 🎵
 
+![Version](https://img.shields.io/badge/version-2.0.0-brightgreen)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-##  Overview
-Python **Spotify Web Player Scraper**, a fast high-level Spotify Web Player Scraper, to scrape and extract data from Spotify Web Player with the most efficient and fastest methods.
-instead of using Selenium, I used [requests](https://github.com/psf/requests) library to increase the speed of scraping.
-You can set cookies, headers and proxy and download the cover and preview mp3 song of Spotify songs beside the scraping.
+A modern Python library for extracting data from Spotify's web interface and downloading related media.
 
-## Requirements
-- Python 3.6 +
-- Works on Linux, Windows, macOS, BSD
+## 🌟 Features
+
+- 💾 **Extract detailed information** from Spotify tracks, albums, artists, and playlists
+- 🎧 **Download preview audio** with metadata and embedded cover art
+- 🖼️ **Download cover images** in various sizes and formats
+- 🔍 **Search for content** and get structured results
+- 🔐 **Authentication support** for accessing additional content
+- 🖥️ **Browser abstraction** with support for both requests and Selenium
+- 🔄 **Graceful fallbacks** when content structure changes
+
+## 📋 Requirements
+
+- Python 3.8 or higher
+- Works on Windows, macOS, Linux, and other platforms
 - Internet connection
 
-## Installing
-You can install this package as simple as type a command in your CMD or Terminal.
-The quick way:
-```sh
-$ pip install -U spotifyscraper
+## 📦 Installation
+
+### Quick Installation
+
+```bash
+pip install -U spotifyscraper
 ```
-or
-do it in the hard way:
 
-``
-$ git clone https://github.com/AliAkhtari78/SpotifyScraper.git 
-``<br>
- ``
-$sudo python setup.py install
-``
-## Documentation
+### Installation with Selenium Support
 
-Check out [Read The Docs](https://spotifyscraper.readthedocs.io/en/latest/) for a more in-depth explanation, with examples, troubleshooting issues, and more useful information.
-## Extract Spotify track information by URL
-- ``
+For advanced features like accessing authenticated content:
+
+```bash
+pip install -U "spotifyscraper[selenium]"
+```
+
+### Development Installation
+
+For contributing to the project:
+
+```bash
+git clone https://github.com/AliAkhtari78/SpotifyScraper.git
+cd SpotifyScraper
+pip install -e ".[dev]"
+```
+
+## 🚀 Quick Start
+
+### Basic Usage
+
+```python
+from spotify_scraper import SpotifyClient
+
+# Create client (unauthenticated for basic usage)
+client = SpotifyClient()
+
+# Get track info
+track = client.get_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+print(f"Track: {track['name']} by {track['artists'][0]['name']}")
+
+# Download preview
+file_path = client.download_preview(track["id"])
+print(f"Downloaded preview to {file_path}")
+
+# Download cover image
+cover_path = client.download_cover(track["id"])
+print(f"Downloaded cover to {cover_path}")
+```
+
+### With Authentication
+
+```python
+from spotify_scraper import SpotifyClient
+
+# Create authenticated client
+client = SpotifyClient(
+    auth_token="your_spotify_auth_token",
+    # or
+    cookie_file="path/to/cookies.txt",
+)
+
+# Get track with lyrics (requires authentication)
+track = client.get_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+lyrics = client.get_lyrics(track["id"])
+print(lyrics["text"])
+```
+
+## 📖 Usage Examples
+
+### Extract Track Information
+
+```python
+from spotify_scraper import client
+
+# From URL
+track = client.get_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+
+# From ID
+track = client.get_track_by_id("6rqhFgbbKwnb9MLmUQDhG6")
+
+# Access track data
+print(f"Title: {track['name']}")
+print(f"Artist: {track['artists'][0]['name']}")
+print(f"Album: {track['album']['name']}")
+print(f"Release date: {track['release_date']}")
+print(f"Preview URL: {track['preview_url']}")
+```
+
+### Download Preview MP3
+
+```python
+from spotify_scraper import client
+
+# Download with default settings
+path = client.download_preview("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+
+# With custom filename and path
+path = client.download_preview(
+    "6rqhFgbbKwnb9MLmUQDhG6",
+    filename="my_song.mp3",
+    path="~/Music",
+    with_cover=True,  # Embed cover art
+)
+```
+
+### Download Cover Image
+
+```python
+from spotify_scraper import client
+
+# Download with default settings
+path = client.download_cover("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+
+# With custom filename, path and size
+path = client.download_cover(
+    "6rqhFgbbKwnb9MLmUQDhG6",
+    filename="album_cover.jpg",
+    path="~/Pictures",
+    size="large",  # 'small', 'medium', or 'large'
+)
+```
+
+## 🔄 Migrating from 1.x
+
+If you're upgrading from version 1.x, here are the key changes:
+
+```python
+# Old way (1.x)
 from SpotifyScraper.scraper import Scraper, Request
-``
-> Import SpotifyScraper to use it
-- ``
- request = Request().request()
-``
-> Create requests using Request which was imported before,
-> You can also pass cookie_file, header	and proxy inside Request().
-> Default is None.
-- ``
-print(Scraper(session=request).get_track_url_info(url='https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV?si=b35Rzak1RgWvBAnbJteHkA'))
-``
-> Call get_track_url_info function from Scraper to extract all the infromation from url.
-> If the given URL is valid, it will return a dict with the below keys:
-> - title
-> - preview_mp3
-> - duration
-> - artist_name
-> - artist_url
-> - album_title
-> - album_cover_url
-> - album_cover_height
-> - album_cover_width
-> - release_date
-> - total_tracks
-> - type_
-> - ERROR
 
-- ``
-$ {
-'title': 'The Future Never Dies',
- 'preview_mp3': 'https://p.scdn.co/mp3-preview/2d706ceae19cfbc778988df6ad5c60828dbd8389?cid=a46f5c5745a14fbf826186da8da5ecc3',
-  'duration': '4:3',
-   'artist_name': 'Scorpions',
- 'artist_url':'https://open.spotify.com/artist/27T030eWyCQRmDyuvr1kxY',
-  'album_title': 'Humanity Hour 1', 
- 'album_cover_url':'https://i.scdn.co/image/ab67616d0000b273e14019d431204ff27785e349', 
- 'album_cover_height': 640, 
- 'album_cover_width': 640, 
- 'release_date': '2007-01-01', 
- 'total_tracks': 12,
-  'type_': 'album', 
-  'ERROR': None}
-``
+request = Request().request()
+track_info = Scraper(session=request).get_track_url_info(url='https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV')
 
-## Extract Spotify playlist information by URL
-- ``
-from SpotifyScraper.scraper import Scraper, Request
-``
+# New way (2.x)
+from spotify_scraper import SpotifyClient
 
-- ``
- request = Request().request() ``
- 
--  ``playlist_info = Scraper(session=request).get_playlist_url_info(url='https://open.spotify.com/playlist/37i9dQZF1DX74DnfGTwugU')
- ``
-> Call get_playlist_url_info function from Scraper to extract all the infromation from url.
-> If the given URL is valid, it will return a dict with the below keys:
-> - album_title
-> - cover_url
-> - author
-> - author_url
-> - playlist_description
-> - tracks_list
-> - ERROR
- 
-## Download Spotify song cover by URL
-- ``
-from SpotifyScraper.scraper import Scraper, Request
-``
+client = SpotifyClient()
+track_info = client.get_track('https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV')
+```
 
-- ``
- request = Request().request() ``
- 
--  ``path = Scraper(session=request).download_cover(url='https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV?si=b35Rzak1RgWvBAnbJteHkA')
- ``
- > Call download_cover function from Scraper to download the cover of the provided song.
- 
- **if the provided URL is valid, it will return the path of downloaded  cover to you.**
+For backward compatibility, the old API is still available:
 
+```python
+# Backward compatibility
+from spotify_scraper import Request
 
-## Download Spotify preview song by URL
-- ``
-from SpotifyScraper.scraper import Scraper, Request
-``
+request = Request().request()
+```
 
-- ``
- request = Request().request() ``
- 
--  ``path = Scraper(session=request).download_preview_mp3(url='https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV?si=b35Rzak1RgWvBAnbJteHkA')
- ``
-  > Call download_preview_mp3 function from Scraper to download the preview mp3 song of the provided URL.
- 
- **if the provided URL is valid, it will return the path of downloaded mp3 to you.**
+## 🤝 Contributing
 
- ## Get in touch
+Contributions are welcome! Please feel free to submit a Pull Request.
 
--   Report bugs, suggest features, or view the source code  [on GitHub](https://github.com/AliAkhtari78/SpotifyScraper).
-- [Read the doc](https://spotifyscraper.readthedocs.io/en/latest/?) to use all provided functions of this library.
-- get in touch with me by my website: [Ali Akhtari](https://aliakhtari.com/)
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Get in touch
+
+- Report bugs, suggest features, or view the source code [on GitHub](https://github.com/AliAkhtari78/SpotifyScraper).
+- Read the [documentation](https://spotifyscraper.readthedocs.io/) for more detailed information.
+- Contact the author through [GitHub](https://github.com/AliAkhtari78) or [website](https://aliakhtari.com/).

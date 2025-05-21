@@ -1,0 +1,68 @@
+{
+  "id": "0ETFjACtuP2ADo6LFhL6HN",
+  "name": "Abbey Road (Remastered)",
+  "uri": "spotify:album:0ETFjACtuP2ADo6LFhL6HN",
+  "type": "album",
+  "artists": [
+    {
+      "name": "The Beatles",
+      "uri": "spotify:artist:3WrFJ7ztbogyGnTHbHJFl2",
+      "id": "3WrFJ7ztbogyGnTHbHJFl2"
+    }
+  ],
+  "images": [
+    {
+      "url": "https://i.scdn.co/image/ab67616d0000b273dc30583ba717007b00cceb25",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "url": "https://i.scdn.co/image/ab67616d00001e02dc30583ba717007b00cceb25",
+      "width": 300,
+      "height": 300
+    },
+    {
+      "url": "https://i.scdn.co/image/ab67616d00004851dc30583ba717007b00cceb25",
+      "width": 64,
+      "height": 64
+    }
+  ],
+  "release_date": "1969-09-26",
+  "total_tracks": 17,
+  "tracks": [
+    {
+      "id": "6dGnYIeXmHdcikdzNNDMm2",
+      "name": "Come Together - Remastered 2009",
+      "uri": "spotify:track:6dGnYIeXmHdcikdzNNDMm2",
+      "track_number": 1,
+      "disc_number": 1,
+      "duration_ms": 259946,
+      "is_playable": true,
+      "is_explicit": false,
+      "artists": [
+        {
+          "name": "The Beatles",
+          "uri": "spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"
+        }
+      ],
+      "preview_url": "https://p.scdn.co/mp3-preview/a7898d2e86f31f9ca3149df2e74d1bf7deadf2ac"
+    },
+    {
+      "id": "2EqlS6tkEnglzr7tkKAAYD",
+      "name": "Something - Remastered 2009",
+      "uri": "spotify:track:2EqlS6tkEnglzr7tkKAAYD",
+      "track_number": 2,
+      "disc_number": 1,
+      "duration_ms": 181733,
+      "is_playable": true,
+      "is_explicit": false,
+      "artists": [
+        {
+          "name": "The Beatles",
+          "uri": "spotify:artist:3WrFJ7ztbogyGnTHbHJFl2"
+        }
+      ],
+      "preview_url": "https://p.scdn.co/mp3-preview/fad8a09d686c7a8e6080051d947541f93848f2ba"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "4u7EnebtmKWzUH433cf5Qv",
+  "name": "Bohemian Rhapsody",
+  "title": "Bohemian Rhapsody",
+  "uri": "spotify:track:4u7EnebtmKWzUH433cf5Qv",
+  "type": "track",
+  "duration_ms": 354320,
+  "artists": [
+    {
+      "name": "Queen",
+      "uri": "spotify:artist:1dfeR4HaWDbWqFHLkxsg1d",
+      "id": "1dfeR4HaWDbWqFHLkxsg1d"
+    }
+  ],
+  "preview_url": "https://p.scdn.co/mp3-preview/6449be89601b87f7d839bf7b25def9f4263a644e",
+  "is_playable": true,
+  "is_explicit": false,
+  "album": {
+    "name": "A Night At The Opera (2011 Remaster)",
+    "uri": "spotify:album:1GbtB4zTqAsyfZEsm1RZfx",
+    "id": "1GbtB4zTqAsyfZEsm1RZfx",
+    "images": [
+      {
+        "url": "https://i.scdn.co/image/ab67616d0000b273365b3fb800c19f7ff72602da",
+        "width": 640,
+        "height": 640
+      },
+      {
+        "url": "https://i.scdn.co/image/ab67616d00001e02365b3fb800c19f7ff72602da",
+        "width": 300,
+        "height": 300
+      },
+      {
+        "url": "https://i.scdn.co/image/ab67616d00004851365b3fb800c19f7ff72602da",
+        "width": 64,
+        "height": 64
+      }
+    ],
+    "release_date": "1975-11-21"
+  },
+  "lyrics": {
+    "sync_type": "LINE_SYNCED",
+    "lines": [
+      {
+        "start_time_ms": 0,
+        "words": "",
+        "end_time_ms": 0
+      },
+      {
+        "start_time_ms": 1000,
+        "words": "Is this the real life?",
+        "end_time_ms": 7000
+      },
+      {
+        "start_time_ms": 7000,
+        "words": "Is this just fantasy?",
+        "end_time_ms": 13000
+      },
+      {
+        "start_time_ms": 13000,
+        "words": "Caught in a landslide",
+        "end_time_ms": 16000
+      },
+      {
+        "start_time_ms": 16000,
+        "words": "No escape from reality",
+        "end_time_ms": 23000
+      },
+      {
+        "start_time_ms": 23000,
+        "words": "Open your eyes",
+        "end_time_ms": 28000
+      },
+      {
+        "start_time_ms": 28000,
+        "words": "Look up to the skies and see",
+        "end_time_ms": 34000
+      }
+    ],
+    "provider": "SPOTIFY",
+    "language": "en"
+  }
+}

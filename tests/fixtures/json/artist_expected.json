@@ -1,0 +1,67 @@
+{
+  "id": "1dfeR4HaWDbWqFHLkxsg1d",
+  "name": "Queen",
+  "uri": "spotify:artist:1dfeR4HaWDbWqFHLkxsg1d",
+  "type": "artist",
+  "is_verified": true,
+  "bio": "Queen are a British rock band formed in London in 1970. The band comprised Freddie Mercury (lead vocals, piano), Brian May (guitar, vocals), Roger Taylor (drums, vocals) and John Deacon (bass). Their earliest works were influenced by progressive rock, hard rock and heavy metal, but the band gradually ventured into more conventional and radio-friendly works by incorporating further styles, such as arena rock and pop rock.",
+  "images": [
+    {
+      "url": "https://i.scdn.co/image/ab6761610000e5eb6d9873b70ab4fe63d85ac5f6",
+      "width": 640,
+      "height": 640
+    }
+  ],
+  "stats": {
+    "followers": 40561648,
+    "monthly_listeners": 37829904,
+    "world_rank": 160
+  },
+  "popular_releases": [
+    {
+      "name": "Bohemian Rhapsody (The Original Soundtrack)",
+      "uri": "spotify:album:6i6folBtxKV28WX3msQ4FE",
+      "year": 2018,
+      "cover_url": "https://i.scdn.co/image/ab67616d00001e02e8b066f70c206551210d902b"
+    },
+    {
+      "name": "A Night At The Opera (2011 Remaster)",
+      "uri": "spotify:album:1GbtB4zTqAsyfZEsm1RZfx",
+      "year": 1975,
+      "cover_url": "https://i.scdn.co/image/ab67616d00001e02365b3fb800c19f7ff72602da"
+    }
+  ],
+  "discography_stats": {
+    "singles_count": 88,
+    "albums_count": 38,
+    "compilations_count": 33
+  },
+  "top_tracks": [
+    {
+      "id": "4u7EnebtmKWzUH433cf5Qv",
+      "name": "Bohemian Rhapsody - Remastered 2011",
+      "uri": "spotify:track:4u7EnebtmKWzUH433cf5Qv",
+      "duration_ms": 354320,
+      "is_playable": true,
+      "is_explicit": false,
+      "album": {
+        "name": "A Night At The Opera (2011 Remaster)",
+        "uri": "spotify:album:1GbtB4zTqAsyfZEsm1RZfx",
+        "cover_url": "https://i.scdn.co/image/ab67616d00001e02365b3fb800c19f7ff72602da"
+      }
+    },
+    {
+      "id": "7tFiyTwD0nx5a1eklYtX2J",
+      "name": "Bohemian Rhapsody",
+      "uri": "spotify:track:7tFiyTwD0nx5a1eklYtX2J",
+      "duration_ms": 354947,
+      "is_playable": true,
+      "is_explicit": false,
+      "album": {
+        "name": "Bohemian Rhapsody (The Original Soundtrack)",
+        "uri": "spotify:album:6i6folBtxKV28WX3msQ4FE",
+        "cover_url": "https://i.scdn.co/image/ab67616d00001e02e8b066f70c206551210d902b"
+      }
+    }
+  ]
+}
