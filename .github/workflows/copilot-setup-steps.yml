@@ -1,6 +1,6 @@
 name: "Copilot Setup Steps"
 
-on: 
+on:
   workflow_dispatch:
   push:
     branches: [ main, master ]
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: [ 3.6,3.7, '3.8', '3.9', '3.10', '3.11', '3.12' ]
     
     permissions:
       contents: read
@@ -54,7 +54,9 @@ jobs:
             zlib1g-dev \
             libjpeg-dev \
             libffi-dev \
-            libssl-dev
+            libssl-dev \
+            build-dep \
+            python3-lxml
 
       - name: Upgrade pip and install build tools
         run: |
