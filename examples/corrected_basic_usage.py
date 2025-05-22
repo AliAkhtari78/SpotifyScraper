@@ -26,12 +26,24 @@ def main():
         
         # Display track information
         print(f"Track: {track_info['name']}")
-        print(f"Artists: {', '.join(artist['name'] for artist in track_info['artists'])}")
-        print(f"Album: {track_info['album']['name']}")
-        print(f"Duration: {track_info['duration_ms'] / 1000:.2f} seconds")
+        print(f"Artists: {', '.join(artist['name'] for artist in track_info.get('artists', []))}")
+        
+        # Handle album information safely
+        album = track_info.get('album', {})
+        if isinstance(album, dict) and album.get('name'):
+            print(f"Album: {album['name']}")
+        else:
+            print("Album: Information not available")
+        
+        # Handle duration safely
+        duration_ms = track_info.get('duration_ms', 0)
+        if duration_ms:
+            print(f"Duration: {duration_ms / 1000:.2f} seconds")
         
         if track_info.get('preview_url'):
             print(f"Preview URL: {track_info['preview_url']}")
+        else:
+            print("Preview: Not available")
         
         # Additional methods available:
         print("\n--- Available Methods ---")

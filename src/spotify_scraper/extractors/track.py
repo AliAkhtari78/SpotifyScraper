@@ -137,6 +137,42 @@ class TrackExtractor:
         track_data = self.extract(url)
         return track_data.get("preview_url")
     
+    def get_track_info(self, url: str) -> Dict[str, Any]:
+        """
+        Get track information from a Spotify track URL.
+        
+        This is an alias for the extract method to maintain compatibility
+        with the SpotifyClient interface.
+        
+        Args:
+            url: Spotify track URL
+            
+        Returns:
+            Dictionary containing track information
+        """
+        return self.extract(url)
+    
+    def get_lyrics(self, url: str, require_auth: bool = True) -> Optional[str]:
+        """
+        Get lyrics for a Spotify track.
+        
+        Args:
+            url: Spotify track URL
+            require_auth: Whether authentication is required (placeholder for future implementation)
+            
+        Returns:
+            Lyrics string if available, None otherwise
+        """
+        track_data = self.extract(url)
+        
+        # Check if lyrics are available in the track data
+        if "lyrics" in track_data and track_data["lyrics"]:
+            return track_data["lyrics"]
+        
+        # For now, return None as lyrics extraction requires more complex implementation
+        logger.debug(f"No lyrics found for track: {url}")
+        return None
+    
     def extract_cover_url(self, url: str) -> Optional[str]:
         """
         Extract cover URL from a track.
