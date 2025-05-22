@@ -27,7 +27,7 @@ from spotify_scraper.core.exceptions import (
 # Utility functions
 from spotify_scraper.utils.url import (
     is_spotify_url,
-    extract_id_from_url,
+    extract_id,
     convert_to_embed_url,
 )
 
@@ -41,7 +41,7 @@ except ImportError:
 __all__ = [
     "SpotifyClient",
     "is_spotify_url",
-    "extract_id_from_url", 
+    "extract_id", 
     "convert_to_embed_url",
     "SpotifyScraperError",
     "URLError",

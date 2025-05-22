@@ -4,7 +4,8 @@
       "Bash(git pull:*)",
       "Bash(git add:*)",
       "Bash(git push:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

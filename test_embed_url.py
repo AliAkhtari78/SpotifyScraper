@@ -15,7 +15,7 @@ src_path = repo_root / "src"
 sys.path.insert(0, str(src_path))
 
 try:
-    from spotify_scraper.utils.url import convert_to_embed_url, is_spotify_url, extract_id_from_url
+    from spotify_scraper.utils.url import convert_to_embed_url, is_spotify_url, extract_id
     from spotify_scraper.core.constants import SPOTIFY_DOMAINS
     from spotify_scraper.client import SpotifyClient
     print("✅ Successfully imported SpotifyScraper modules")
@@ -50,7 +50,7 @@ def test_url_conversion():
             
             if is_valid:
                 # Test ID extraction
-                spotify_id = extract_id_from_url(url)
+                spotify_id = extract_id(url)
                 print(f"   🆔 Extracted ID: {spotify_id}")
                 
                 # Test embed conversion
@@ -145,7 +145,7 @@ def test_basic_extraction():
         
         # This is a basic test - in a real scenario we'd call client.get_track()
         # For now, just test that we can make the request
-        track_id = extract_id_from_url(test_track_url)
+        track_id = extract_id(test_track_url)
         embed_url = convert_to_embed_url(test_track_url)
         
         print(f"      🆔 Track ID: {track_id}")
