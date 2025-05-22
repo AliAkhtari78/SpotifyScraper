@@ -56,7 +56,6 @@ jobs:
             libjpeg-dev \
             libffi-dev \
             libssl-dev \
-            build-dep \
             python3-lxml
 
       - name: Upgrade pip and install build tools
