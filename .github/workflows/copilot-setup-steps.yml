@@ -1,0 +1,36 @@
+name: "Copilot Setup Steps"
+
+on: workflow_dispatch
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      # Allow Spotify embeds and other custom hosts
+      COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS: |
+        open.spotify.com,
+        spotify.com,
+        google.com,
+        github.com,
+        githubusercontent.com,
+        raw.githubusercontent.com,
+        gist.githubusercontent.com,
+        assets-cdn.github.com,
+        avatars.githubusercontent.com,
+        cloud.githubusercontent.com,
+        api.github.com,
+        copilot-telemetry.githubusercontent.com
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run embed URL test
+        run: python test_embed_url.py
+
