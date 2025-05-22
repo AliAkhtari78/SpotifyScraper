@@ -16,7 +16,6 @@ sys.path.insert(0, str(src_path))
 
 try:
     from spotify_scraper.utils.url import convert_to_embed_url, is_spotify_url, extract_id
-    from spotify_scraper.core.constants import SPOTIFY_DOMAINS
     from spotify_scraper.client import SpotifyClient
     print("✅ Successfully imported SpotifyScraper modules")
 except ImportError as e:
