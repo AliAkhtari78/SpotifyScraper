@@ -5,7 +5,12 @@
       "Bash(git add:*)",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(python -m pytest tests/unit/test_track_extractor.py -v)",
+      "Bash(python3 -m pytest tests/unit/test_track_extractor.py -v)",
+      "Bash(pip3 install:*)",
+      "Bash(python3 -m pip:*)"
     ],
     "deny": []
   }

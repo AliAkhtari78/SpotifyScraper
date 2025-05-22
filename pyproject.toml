@@ -66,6 +66,10 @@ dependencies = [
     # Parsing utilities
     "pyparsing",
     "deprecation",
+    
+    # CLI
+    "click>=8.0.0",
+    "rich>=13.0.0",  # For beautiful terminal output
 ]
 
 [project.optional-dependencies]
@@ -105,6 +109,10 @@ Documentation = "https://spotifyscraper.readthedocs.io/"
 Repository = "https://github.com/AliAkhtari78/SpotifyScraper"
 "Bug Reports" = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
 Changelog = "https://github.com/AliAkhtari78/SpotifyScraper/blob/main/CHANGELOG.md"
+
+[project.scripts]
+spotify-scraper = "spotify_scraper.cli:main"
+spotifyscraper = "spotify_scraper.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
