@@ -109,6 +109,28 @@ class AuthenticationError(SpotifyScraperError):
         super().__init__(msg)
 
 
+class TokenError(AuthenticationError):
+    """Exception raised for errors related to authentication tokens."""
+    
+    def __init__(self, message="Token error", token_type=None, details=None):
+        """
+        Initialize TokenError.
+        
+        Args:
+            message: Error message
+            token_type: Type of token (e.g., "access", "refresh")
+            details: Additional details about the error
+        """
+        self.token_type = token_type
+        self.details = details
+        msg = f"{message}"
+        if token_type:
+            msg += f" ({token_type} token)"
+        if details:
+            msg += f": {details}"
+        super().__init__(msg)
+
+
 class BrowserError(SpotifyScraperError):
     """Exception raised for errors related to browser operation."""
     

@@ -212,6 +212,35 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
         if "relatedEntityUri" in track_data:
             result["relatedEntityUri"] = track_data["relatedEntityUri"]
         
+        # Extract lyrics if available
+        if "lyrics" in track_data:
+            lyrics_data = track_data["lyrics"]
+            lyrics: LyricsData = {
+                "sync_type": lyrics_data.get("syncType", "UNSYNCED"),
+                "lines": []
+            }
+            
+            # Add provider and language if available
+            if "provider" in lyrics_data:
+                lyrics["provider"] = lyrics_data["provider"]
+            elif "syncType" in lyrics_data:  # If syncType is available but no provider, assume Spotify
+                lyrics["provider"] = "SPOTIFY"
+            
+            if "language" in lyrics_data:
+                lyrics["language"] = lyrics_data["language"]
+            
+            # Extract lyrics lines
+            if "lines" in lyrics_data:
+                for line in lyrics_data["lines"]:
+                    line_data: LyricsLineData = {
+                        "start_time_ms": line.get("startTimeMs", 0),
+                        "words": line.get("words", ""),
+                        "end_time_ms": line.get("endTimeMs", 0)
+                    }
+                    lyrics["lines"].append(line_data)
+            
+            result["lyrics"] = lyrics
+        
         return result
     except Exception as e:
         logger.error(f"Failed to extract track data: {e}")

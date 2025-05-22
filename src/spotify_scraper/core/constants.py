@@ -9,6 +9,7 @@ Using centralized constants improves maintainability and consistency.
 SPOTIFY_BASE_URL = "https://open.spotify.com"
 SPOTIFY_EMBED_URL = "https://open.spotify.com/embed"
 SPOTIFY_API_URL = "https://api.spotify.com/v1"
+TOKEN_URL = "https://accounts.spotify.com/api/token"
 
 # Default configuration values
 DEFAULT_TIMEOUT = 30  # seconds
@@ -52,3 +53,12 @@ EMBED_PLAYLIST_URL_PATTERN = r"^https://open\.spotify\.com/embed/playlist/([a-zA
 DEFAULT_DOWNLOAD_PATH = "./downloads"
 DEFAULT_IMAGE_DIRECTORY = "images"
 DEFAULT_AUDIO_DIRECTORY = "audio"
+
+# Default HTTP headers
+DEFAULT_HEADERS = {
+    "User-Agent": DEFAULT_USER_AGENT,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Referer": SPOTIFY_BASE_URL,
+    "DNT": "1",  # Do Not Track
+}
