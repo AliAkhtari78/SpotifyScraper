@@ -1,28 +1,52 @@
-appdirs==1.4.3
-beautifulsoup4==4.9.0
-bs4==0.0.1
-certifi==2020.4.5.1
-chardet==3.0.4
-cssselect==1.1.0
-deprecation==2.1.0
-eyeD3==0.9.5
-fake-useragent==0.1.11
-filetype==1.0.6
-idna==2.9
-lxml==4.5.0
-packaging==20.3
+# Core Web Scraping Dependencies
+beautifulsoup4
+lxml
+requests
+urllib3
 
-parse
+# HTML/XML Parsing
+cssselect
+pyquery
+soupsieve
+
+# Browser Automation (Optional)
+selenium
 pyppeteer
 
-pyee==7.0.1
-pyparsing==2.4.7
-pyquery==1.4.1
-PyYAML==5.3.1
-requests==2.23.0
-six==1.14.0
-soupsieve==2.0
-tqdm==4.45.0
-urllib3==1.25.9
-w3lib==1.21.0
-websockets==8.1
+# Media Processing
+eyeD3
+filetype
+
+# Network and HTTP
+fake-useragent
+certifi
+chardet
+idna
+
+# Configuration and Data
+PyYAML
+packaging
+six
+tqdm
+
+# Parsing and Utils
+pyparsing
+deprecation
+w3lib
+
+# Async Support
+pyee
+websockets
+
+# Compatibility (legacy support)
+appdirs
+parse
+
+# Development Dependencies (optional)
+# Uncomment for development:
+# pytest>=8.0.0,<9.0.0
+# pytest-asyncio>=0.23.0,<1.0.0
+# pytest-cov>=4.0.0,<5.0.0
+# black>=24.0.0,<25.0.0
+# flake8>=7.0.0,<8.0.0
+# mypy>=1.8.0,<2.0.0

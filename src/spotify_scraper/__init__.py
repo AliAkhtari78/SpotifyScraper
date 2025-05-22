@@ -8,9 +8,11 @@ Supports tracks, albums, artists, playlists, and lyrics with both requests and S
 __version__ = "2.0.0"
 __author__ = "Ali Akhtari"
 __email__ = "aliakhtari78@hotmail.com"
+__license__ = "MIT"
+__url__ = "https://github.com/AliAkhtari78/SpotifyScraper"
 
 # Core imports for easy access
-from spotify_scraper.core.client import SpotifyClient
+from spotify_scraper.client import SpotifyClient
 from spotify_scraper.core.exceptions import (
     SpotifyScraperError,
     URLError,
@@ -22,13 +24,25 @@ from spotify_scraper.core.exceptions import (
     MediaError,
 )
 
+# Utility functions
+from spotify_scraper.utils.url import (
+    is_spotify_url,
+    extract_id_from_url,
+    convert_to_embed_url,
+)
+
 # Backward compatibility imports
-from spotify_scraper.compat import Scraper, Request
+try:
+    from spotify_scraper.compat import Scraper, Request
+    _COMPAT_AVAILABLE = True
+except ImportError:
+    _COMPAT_AVAILABLE = False
 
 __all__ = [
     "SpotifyClient",
-    "Scraper",
-    "Request",
+    "is_spotify_url",
+    "extract_id_from_url", 
+    "convert_to_embed_url",
     "SpotifyScraperError",
     "URLError",
     "ParsingError",
@@ -38,3 +52,12 @@ __all__ = [
     "BrowserError",
     "MediaError",
 ]
+
+# Add backward compatibility exports if available
+if _COMPAT_AVAILABLE:
+    __all__.extend(["Scraper", "Request"])
+
+# Package metadata
+__title__ = "spotifyscraper"
+__description__ = "A modern Python library for extracting data from Spotify's web interface"
+__version_info__ = tuple(int(part) for part in __version__.split('.'))
