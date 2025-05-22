@@ -10,7 +10,15 @@
       "Bash(python -m pytest tests/unit/test_track_extractor.py -v)",
       "Bash(python3 -m pytest tests/unit/test_track_extractor.py -v)",
       "Bash(pip3 install:*)",
-      "Bash(python3 -m pip:*)"
+      "Bash(python3 -m pip:*)",
+      "Bash(python3:*)",
+      "Bash(apt-get:*)",
+      "Bash(apt-get install:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(pip show:*)",
+      "Bash(pytest:*)",
+      "Bash(spotify-scraper:*)"
     ],
     "deny": []
   }

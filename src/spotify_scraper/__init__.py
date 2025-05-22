@@ -31,12 +31,7 @@ from spotify_scraper.utils.url import (
     convert_to_embed_url,
 )
 
-# Backward compatibility imports
-try:
-    from spotify_scraper.compat import Scraper, Request
-    _COMPAT_AVAILABLE = True
-except ImportError:
-    _COMPAT_AVAILABLE = False
+# No backward compatibility needed
 
 __all__ = [
     "SpotifyClient",
@@ -52,10 +47,6 @@ __all__ = [
     "BrowserError",
     "MediaError",
 ]
-
-# Add backward compatibility exports if available
-if _COMPAT_AVAILABLE:
-    __all__.extend(["Scraper", "Request"])
 
 # Package metadata
 __title__ = "spotifyscraper"

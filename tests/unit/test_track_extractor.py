@@ -29,10 +29,8 @@ class MockBrowser:
         return self.get_page_content(url)
 
 
-# Import the TrackExtractor directly
-import sys
-sys.path.append('/home/runner/work/SpotifyScraper/SpotifyScraper/src/spotify_scraper/extractors/')
-from track import TrackExtractor
+# Import the TrackExtractor from the package
+from spotify_scraper.extractors.track import TrackExtractor
 
 
 class TestTrackExtractor:
