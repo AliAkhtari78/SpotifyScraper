@@ -1,0 +1,52 @@
+{
+  "browser_type": "requests",
+  "log_level": "INFO",
+  "log_file": "./spotify_scraper.log",
+  
+  "auth": {
+    "cookie_file": null,
+    "cookies": null,
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    },
+    "user_agent": null,
+    "session_file": "./session.json",
+    "auto_refresh": true
+  },
+  
+  "proxy": {
+    "http": null,
+    "https": null,
+    "no_proxy": ["localhost", "127.0.0.1"]
+  },
+  
+  "cache": {
+    "enabled": true,
+    "directory": "./cache",
+    "ttl_hours": 24,
+    "max_size_mb": 500
+  },
+  
+  "retry": {
+    "max_attempts": 3,
+    "delay_seconds": 1.0,
+    "exponential_backoff": true,
+    "retry_on_errors": ["NetworkError", "ScrapingError"]
+  },
+  
+  "media": {
+    "audio_quality": "high",
+    "audio_format": "mp3",
+    "cover_quality": "large",
+    "embed_metadata": true,
+    "organize_by_artist": false,
+    "sanitize_filenames": true
+  },
+  
+  "output_directory": "./output",
+  "create_output_dirs": true,
+  "timeout_seconds": 30,
+  "max_concurrent_requests": 5,
+  "rate_limit_delay": 0.5,
+  "debug_mode": false
+}
