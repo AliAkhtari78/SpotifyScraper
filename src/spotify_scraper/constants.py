@@ -7,8 +7,16 @@ used by other modules in the package.
 
 # Base URLs
 SPOTIFY_BASE_URL = "https://open.spotify.com"
+SPOTIFY_EMBED_URL = "https://open.spotify.com/embed"
 SPOTIFY_API_URL = "https://api.spotify.com/v1"
 SPOTIFY_CDN_URL = "https://i.scdn.co"
+
+# Domains
+SPOTIFY_DOMAINS = [
+    "open.spotify.com",
+    "spotify.com",
+    "www.spotify.com"
+]
 
 # URL patterns
 TRACK_URL_PATTERN = f"{SPOTIFY_BASE_URL}/track/"

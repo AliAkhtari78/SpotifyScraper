@@ -15,7 +15,7 @@ from spotify_scraper.browsers import create_browser
 from spotify_scraper.extractors.track import TrackExtractor
 from spotify_scraper.media.image import ImageDownloader
 from spotify_scraper.media.audio import AudioDownloader
-from spotify_scraper.utils.logging import configure_logging
+from spotify_scraper.utils.logger import configure_logging
 from spotify_scraper.exceptions import AuthenticationRequiredError
 
 logger = logging.getLogger(__name__)

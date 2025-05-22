@@ -173,3 +173,28 @@ class MediaError(SpotifyScraperError):
         if path:
             msg += f" at {path}"
         super().__init__(msg)
+
+
+class DownloadError(MediaError):
+    """Exception raised for errors during file downloads."""
+    
+    def __init__(self, message="Download failed", url=None, path=None, status_code=None):
+        """
+        Initialize DownloadError.
+        
+        Args:
+            message: Error message
+            url: URL that failed to download
+            path: Local path where file was supposed to be saved
+            status_code: HTTP status code received
+        """
+        self.url = url
+        self.status_code = status_code
+        msg = f"{message}"
+        if url:
+            msg += f" from {url}"
+        if status_code:
+            msg += f" (status code: {status_code})"
+        if path:
+            msg += f" to {path}"
+        super().__init__(msg, path=path)

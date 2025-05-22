@@ -14,6 +14,11 @@ class AuthenticationError(SpotifyScraperError):
     pass
 
 
+class AuthenticationRequiredError(AuthenticationError):
+    """Raised when authentication is required but not provided."""
+    pass
+
+
 class NetworkError(SpotifyScraperError):
     """Raised when network communication fails."""
     pass
