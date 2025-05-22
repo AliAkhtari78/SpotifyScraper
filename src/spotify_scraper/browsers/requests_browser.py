@@ -1,32 +1,24 @@
 """
 Requests-based browser implementation for SpotifyScraper.
 
-This module provides a browser implementation using the requests library,
-specialized for interacting with Spotify's web interface.
+This module provides a browser implementation using the requests library.
+Think of this as a simple web client that can fetch Spotify pages without
+the complexity of a full browser like Selenium. It's lighter weight but
+still handles the essential tasks of getting web page content.
 """
 
-import requests
-import json
 import logging
 import time
-from typing import Dict, Optional, Any, Union
-from bs4 import BeautifulSoup
+from typing import Any, Dict, Optional
+
+import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import (
-    NetworkError,
-    ParsingError,
-    RequestsError,
-    RateLimitError,
-    TimeoutError,
-)
-from spotify_scraper.core.constants import (
-    DEFAULT_HEADERS,
-    NEXT_DATA_SELECTOR,
-    DEFAULT_TIMEOUT,
-    DEFAULT_RETRIES,
-    DEFAULT_RETRY_DELAY,
-)
+from spotify_scraper.core.exceptions import NetworkError, AuthenticationError, BrowserError
+from spotify_scraper.core.constants import DEFAULT_HEADERS, DEFAULT_TIMEOUT, DEFAULT_RETRIES
+from spotify_scraper.auth.session import Session
 
 logger = logging.getLogger(__name__)
 
@@ -35,308 +27,260 @@ class RequestsBrowser(Browser):
     """
     Browser implementation using the requests library.
     
-    This class provides a browser implementation for SpotifyScraper using
-    the requests library, with support for retries, rate limiting, and
-    customizable headers and proxies.
+    This browser handles HTTP requests to Spotify using the popular requests
+    library. It's designed to be simple but robust, with automatic retries,
+    proper error handling, and session management.
     
-    Attributes:
-        session: Requests session for HTTP communication
-        timeout: Timeout for requests in seconds
-        max_retries: Maximum number of retry attempts
-        retry_delay: Initial delay between retries in seconds
-        headers: Custom headers for requests
+    Think of this as your primary tool for fetching Spotify web pages. It knows
+    how to handle authentication, cookies, and the various quirks of making
+    requests to Spotify's servers.
     """
     
     def __init__(
         self,
-        session: Optional[requests.Session] = None,
+        session: Optional[Session] = None,
         timeout: int = DEFAULT_TIMEOUT,
-        max_retries: int = DEFAULT_RETRIES,
-        retry_delay: int = DEFAULT_RETRY_DELAY,
+        retries: int = DEFAULT_RETRIES,
         headers: Optional[Dict[str, str]] = None,
     ):
         """
-        Initialize the RequestsBrowser.
+        Initialize the requests-based browser.
         
         Args:
-            session: Requests session (optional)
-            timeout: Request timeout in seconds (default: 30)
-            max_retries: Maximum number of retry attempts (default: 3)
-            retry_delay: Initial delay between retries in seconds (default: 1)
-            headers: Custom headers for requests (optional)
+            session: Authentication session to use
+            timeout: Request timeout in seconds
+            retries: Number of retry attempts for failed requests
+            headers: Additional headers to include in requests
         """
-        self.session = session or requests.Session()
+        self.session = session
         self.timeout = timeout
-        self.max_retries = max_retries
-        self.retry_delay = retry_delay
+        self.retries = retries
         
-        # Initialize headers
+        # Set up the requests session with retry strategy
+        self.requests_session = requests.Session()
+        
+        # Configure automatic retries for network issues
+        retry_strategy = Retry(
+            total=retries,
+            backoff_factor=1,  # Wait 1, 2, 4 seconds between retries
+            status_forcelist=[429, 500, 502, 503, 504],  # Retry on these HTTP status codes
+        )
+        
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self.requests_session.mount("http://", adapter)
+        self.requests_session.mount("https://", adapter)
+        
+        # Set up headers
+        self.default_headers = DEFAULT_HEADERS.copy()
         if headers:
-            self.session.headers.update(headers)
-        elif not session or not session.headers:
-            # Use default headers if no custom headers are provided
-            self.session.headers.update(DEFAULT_HEADERS)
+            self.default_headers.update(headers)
         
-        logger.debug(f"Initialized RequestsBrowser with timeout={timeout}, max_retries={max_retries}")
+        # Add authentication headers if we have a session
+        if self.session:
+            auth_headers = self.session.get_auth_headers()
+            self.default_headers.update(auth_headers)
+            
+            # Add cookies if available
+            if self.session.cookies:
+                self.requests_session.cookies.update(self.session.cookies)
+        
+        self.requests_session.headers.update(self.default_headers)
+        
+        logger.debug("Initialized RequestsBrowser")
     
-    def get(self, url: str, params: Optional[Dict[str, Any]] = None) -> str:
+    def get_page_content(self, url: str) -> str:
         """
-        Get page content from URL with retry logic.
+        Get the HTML content of a web page.
+        
+        This is the main method for fetching Spotify pages. It handles all the
+        complexity of making HTTP requests, dealing with errors, and returning
+        clean HTML content that can be parsed.
         
         Args:
-            url: URL to retrieve
-            params: Query parameters (optional)
+            url: URL of the page to get
             
         Returns:
-            Page content as string
+            HTML content of the page as a string
             
         Raises:
-            NetworkError: If the request fails after retries
-            RateLimitError: If rate limited by Spotify
-            TimeoutError: If the request times out
-        """
-        retry_count = 0
-        current_delay = self.retry_delay
-        
-        while retry_count <= self.max_retries:
-            try:
-                logger.debug(f"GET request to {url} (attempt {retry_count + 1}/{self.max_retries + 1})")
-                response = self.session.get(
-                    url,
-                    params=params,
-                    timeout=self.timeout,
-                    stream=True,
-                )
-                
-                # Check for rate limiting
-                if response.status_code == 429:
-                    retry_after = int(response.headers.get("Retry-After", 60))
-                    logger.warning(f"Rate limited by Spotify. Retry after {retry_after} seconds.")
-                    
-                    # If this is our last retry, raise an error
-                    if retry_count == self.max_retries:
-                        raise RateLimitError(
-                            f"Rate limited by Spotify after {self.max_retries + 1} attempts",
-                            retry_after=retry_after,
-                        )
-                    
-                    # Otherwise, wait and retry
-                    time.sleep(retry_after)
-                    retry_count += 1
-                    continue
-                
-                # Check for other errors
-                response.raise_for_status()
-                
-                return response.text
-            except requests.exceptions.Timeout as e:
-                logger.warning(f"Request timed out: {e}")
-                
-                # If this is our last retry, raise an error
-                if retry_count == self.max_retries:
-                    raise TimeoutError(
-                        f"Request timed out after {self.max_retries + 1} attempts",
-                        timeout=self.timeout,
-                    )
-            except requests.exceptions.RequestException as e:
-                logger.warning(f"Request failed: {e}")
-                
-                # If this is our last retry, raise an error
-                if retry_count == self.max_retries:
-                    if isinstance(e, requests.exceptions.HTTPError):
-                        status_code = e.response.status_code if hasattr(e, "response") else None
-                        raise NetworkError(
-                            f"HTTP error after {self.max_retries + 1} attempts: {e}",
-                            status_code=status_code,
-                        )
-                    else:
-                        raise NetworkError(f"Request failed after {self.max_retries + 1} attempts: {e}")
-            
-            # Exponential backoff for retries
-            time.sleep(current_delay)
-            current_delay *= 2  # Double the delay for next retry
-            retry_count += 1
-    
-    def post(
-        self,
-        url: str,
-        data: Optional[Dict[str, Any]] = None,
-        json_data: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None,
-    ) -> str:
-        """
-        Post data to URL with retry logic.
-        
-        Args:
-            url: URL to post to
-            data: Form data (optional)
-            json_data: JSON data (optional)
-            params: Query parameters (optional)
-            
-        Returns:
-            Response content as string
-            
-        Raises:
-            NetworkError: If the request fails after retries
-            RateLimitError: If rate limited by Spotify
-            TimeoutError: If the request times out
-        """
-        retry_count = 0
-        current_delay = self.retry_delay
-        
-        while retry_count <= self.max_retries:
-            try:
-                logger.debug(f"POST request to {url} (attempt {retry_count + 1}/{self.max_retries + 1})")
-                response = self.session.post(
-                    url,
-                    data=data,
-                    json=json_data,
-                    params=params,
-                    timeout=self.timeout,
-                )
-                
-                # Check for rate limiting
-                if response.status_code == 429:
-                    retry_after = int(response.headers.get("Retry-After", 60))
-                    logger.warning(f"Rate limited by Spotify. Retry after {retry_after} seconds.")
-                    
-                    # If this is our last retry, raise an error
-                    if retry_count == self.max_retries:
-                        raise RateLimitError(
-                            f"Rate limited by Spotify after {self.max_retries + 1} attempts",
-                            retry_after=retry_after,
-                        )
-                    
-                    # Otherwise, wait and retry
-                    time.sleep(retry_after)
-                    retry_count += 1
-                    continue
-                
-                # Check for other errors
-                response.raise_for_status()
-                
-                return response.text
-            except requests.exceptions.Timeout as e:
-                logger.warning(f"Request timed out: {e}")
-                
-                # If this is our last retry, raise an error
-                if retry_count == self.max_retries:
-                    raise TimeoutError(
-                        f"Request timed out after {self.max_retries + 1} attempts",
-                        timeout=self.timeout,
-                    )
-            except requests.exceptions.RequestException as e:
-                logger.warning(f"Request failed: {e}")
-                
-                # If this is our last retry, raise an error
-                if retry_count == self.max_retries:
-                    if isinstance(e, requests.exceptions.HTTPError):
-                        status_code = e.response.status_code if hasattr(e, "response") else None
-                        raise NetworkError(
-                            f"HTTP error after {self.max_retries + 1} attempts: {e}",
-                            status_code=status_code,
-                        )
-                    else:
-                        raise NetworkError(f"Request failed after {self.max_retries + 1} attempts: {e}")
-            
-            # Exponential backoff for retries
-            time.sleep(current_delay)
-            current_delay *= 2  # Double the delay for next retry
-            retry_count += 1
-    
-    def extract_json(self, selector: str) -> Dict[str, Any]:
-        """
-        Extract JSON data from current page using a CSS selector.
-        
-        Args:
-            selector: CSS selector for the script tag containing JSON
-            
-        Returns:
-            Parsed JSON data
-            
-        Raises:
-            ParsingError: If JSON extraction or parsing fails
+            NetworkError: If the page cannot be accessed
+            AuthenticationError: If authentication is required but fails
         """
         try:
-            # We need the current page content from the last request
-            # This is not stored in the session, so we need to get it again
-            if not hasattr(self, "_last_response"):
-                raise ParsingError("No page content available")
+            logger.debug(f"Fetching page content from: {url}")
             
-            page_content = self._last_response
+            response = self.requests_session.get(
+                url,
+                timeout=self.timeout,
+                allow_redirects=True,
+            )
             
-            # Parse HTML content
-            soup = BeautifulSoup(page_content, "html.parser")
+            # Check for authentication issues
+            if response.status_code == 401:
+                raise AuthenticationError(f"Authentication required for {url}")
+            elif response.status_code == 403:
+                raise AuthenticationError(f"Access forbidden for {url}")
             
-            # Find script tag with the given selector
-            script_tag = soup.select_one(selector)
-            if not script_tag or not script_tag.string:
-                raise ParsingError(f"No JSON data found with selector: {selector}")
+            # Check for other HTTP errors
+            response.raise_for_status()
             
-            # Extract and parse JSON data
-            json_data = json.loads(script_tag.string)
+            # Log success
+            logger.debug(f"Successfully fetched {len(response.text)} characters from {url}")
+            
+            return response.text
+            
+        except requests.exceptions.Timeout as e:
+            logger.error(f"Request timeout for {url}: {e}")
+            raise NetworkError(f"Request timeout", url=url)
+        
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"Connection error for {url}: {e}")
+            raise NetworkError(f"Connection error", url=url)
+        
+        except requests.exceptions.HTTPError as e:
+            status_code = e.response.status_code if e.response else None
+            logger.error(f"HTTP error for {url}: {e}")
+            raise NetworkError(f"HTTP error: {e}", url=url, status_code=status_code)
+        
+        except Exception as e:
+            logger.error(f"Unexpected error fetching {url}: {e}")
+            raise BrowserError(f"Unexpected error: {e}", browser_type="requests")
+    
+    def get_json(self, url: str) -> Dict[str, Any]:
+        """
+        Get JSON data from a URL.
+        
+        This method is useful for API endpoints that return JSON directly,
+        though most Spotify scraping will use get_page_content instead.
+        
+        Args:
+            url: URL to get JSON data from
+            
+        Returns:
+            Parsed JSON data as a dictionary
+            
+        Raises:
+            NetworkError: If the URL cannot be accessed
+            ParsingError: If the response is not valid JSON
+        """
+        try:
+            logger.debug(f"Fetching JSON from: {url}")
+            
+            response = self.requests_session.get(
+                url,
+                timeout=self.timeout,
+                headers={"Accept": "application/json"},
+            )
+            
+            response.raise_for_status()
+            
+            json_data = response.json()
+            logger.debug(f"Successfully fetched JSON with {len(json_data)} keys from {url}")
             
             return json_data
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse JSON data: {e}")
-            raise ParsingError(f"Failed to parse JSON data: {e}", data_type="JSON")
+            
+        except requests.exceptions.JSONDecodeError as e:
+            logger.error(f"Invalid JSON response from {url}: {e}")
+            raise NetworkError(f"Invalid JSON response", url=url)
+        
         except Exception as e:
-            logger.error(f"Failed to extract JSON data: {e}")
-            raise ParsingError(f"Failed to extract JSON data: {e}")
+            logger.error(f"Error fetching JSON from {url}: {e}")
+            raise NetworkError(f"Error fetching JSON: {e}", url=url)
     
-    def extract_element(self, selector: str) -> Optional[str]:
+    def download_file(self, url: str, path: str) -> str:
         """
-        Extract an HTML element from current page using a CSS selector.
+        Download a file from a URL and save it to disk.
+        
+        This method handles downloading media files like images and audio previews.
+        It streams the download to avoid loading large files entirely into memory.
         
         Args:
-            selector: CSS selector for the element
+            url: URL of the file to download
+            path: Path where the file should be saved
             
         Returns:
-            Element HTML as string, or None if not found
+            Path to the downloaded file
             
         Raises:
-            ParsingError: If HTML parsing fails
+            NetworkError: If the file cannot be downloaded
+            MediaError: If the file cannot be saved
         """
         try:
-            # We need the current page content from the last request
-            if not hasattr(self, "_last_response"):
-                raise ParsingError("No page content available")
+            logger.debug(f"Downloading file from {url} to {path}")
             
-            page_content = self._last_response
+            # Stream the download to handle large files efficiently
+            response = self.requests_session.get(
+                url,
+                stream=True,
+                timeout=self.timeout,
+            )
             
-            # Parse HTML content
-            soup = BeautifulSoup(page_content, "html.parser")
+            response.raise_for_status()
             
-            # Find element with the given selector
-            element = soup.select_one(selector)
-            if not element:
-                return None
+            # Save the file in chunks
+            with open(path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:  # Filter out keep-alive chunks
+                        f.write(chunk)
             
-            return str(element)
+            logger.debug(f"Successfully downloaded file to {path}")
+            return path
+            
         except Exception as e:
-            logger.error(f"Failed to extract element: {e}")
-            raise ParsingError(f"Failed to extract element: {e}")
+            logger.error(f"Error downloading file from {url}: {e}")
+            raise NetworkError(f"Download error: {e}", url=url)
     
-    def wait_for_element(self, selector: str, timeout: int = 10) -> bool:
+    def get_auth_token(self) -> Optional[str]:
         """
-        Wait for element to be available (always returns True for requests).
+        Get an authentication token for Spotify API access.
         
-        Requests browser doesn't support waiting, so this is a no-op.
+        This method attempts to extract an authentication token from the current
+        session or from Spotify pages. These tokens can be used for API calls
+        that require authentication.
         
-        Args:
-            selector: CSS selector for the element (unused)
-            timeout: Maximum time to wait in seconds (unused)
-            
         Returns:
-            Always True for RequestsBrowser
+            Authentication token if available, None otherwise
         """
-        # Requests browser doesn't support waiting
-        # This is here for compatibility with the Browser interface
-        return True
+        if self.session and self.session.access_token:
+            return self.session.access_token
+        
+        # For now, we don't have a way to extract tokens from pages
+        # This could be implemented by parsing the __NEXT_DATA__ script tag
+        # and extracting the session token from there
+        logger.debug("No authentication token available")
+        return None
     
     def close(self) -> None:
         """
-        Close browser session and release resources.
+        Close the browser and release any resources.
+        
+        This method cleans up the requests session and any other resources
+        that the browser was using. It's good practice to call this when
+        you're done using the browser.
         """
-        logger.debug("Closing RequestsBrowser session")
-        self.session.close()
+        if self.requests_session:
+            self.requests_session.close()
+        logger.debug("Closed RequestsBrowser")
+    
+    def update_session(self, session: Session) -> None:
+        """
+        Update the authentication session used by this browser.
+        
+        This method allows you to change the authentication credentials
+        without creating a new browser instance.
+        
+        Args:
+            session: New session to use for authentication
+        """
+        self.session = session
+        
+        # Update headers with new authentication info
+        if session:
+            auth_headers = session.get_auth_headers()
+            self.requests_session.headers.update(auth_headers)
+            
+            # Update cookies
+            if session.cookies:
+                self.requests_session.cookies.update(session.cookies)
+        
+        logger.debug("Updated browser session")

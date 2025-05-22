@@ -62,3 +62,14 @@ DEFAULT_HEADERS = {
     "Referer": SPOTIFY_BASE_URL,
     "DNT": "1",  # Do Not Track
 }
+
+# Authentication and session constants
+CREDENTIALS_FILE_NAME = ".spotify_credentials"
+SESSION_CACHE_FILE = ".spotify_session_cache"
+DEFAULT_SESSION_TIMEOUT = 3600  # 1 hour in seconds
+MAX_SESSION_RETRIES = 3
+
+# Browser configuration
+DEFAULT_BROWSER_TYPE = "requests"
+SELENIUM_TIMEOUT = 30
+SELENIUM_IMPLICIT_WAIT = 10

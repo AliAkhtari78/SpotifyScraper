@@ -10,6 +10,10 @@ class SpotifyScraperError(Exception):
     pass
 
 
+# Alias for backward compatibility and common usage
+ScrapingError = SpotifyScraperError
+
+
 class URLError(SpotifyScraperError):
     """Exception raised for errors related to URLs."""
     

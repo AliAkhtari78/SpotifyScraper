@@ -89,7 +89,7 @@ class TrackExtractor:
             logger.debug(f"Using embed URL: {embed_url}")
             
             # Get page content from embed URL
-            page_content = self.browser.get(embed_url)
+            page_content = self.browser.get_page_content(embed_url)
             
             # Parse track information
             track_data = extract_track_data_from_page(page_content)

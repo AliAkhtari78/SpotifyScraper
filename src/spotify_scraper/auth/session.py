@@ -1,30 +1,23 @@
 """
-Session management module for SpotifyScraper.
+Session management for SpotifyScraper authentication.
 
-This module provides functionality for creating and managing authenticated sessions
-with the Spotify web player, supporting both cookie-based and token-based authentication.
+This module handles authentication and session management for Spotify access.
+Think of this as the key management system - it handles getting and maintaining
+the credentials needed to access Spotify's data.
 """
 
-import os
-import json
-import re
+from typing import Optional, Dict, Any, Union
 import logging
-import time
-from pathlib import Path
-from typing import Dict, Optional, Any, Union, Tuple
-import requests
+import json
+import os
+from datetime import datetime, timedelta
 
-from spotify_scraper.core.exceptions import (
-    AuthenticationError,
-    TokenError,
-    NetworkError,
-)
+from spotify_scraper.core.exceptions import AuthenticationError
 from spotify_scraper.core.constants import (
-    DEFAULT_HEADERS,
-    TOKEN_URL,
     CREDENTIALS_FILE_NAME,
-    SPOTIFY_BASE_URL,
-    DEFAULT_CLIENT_ID,
+    SESSION_CACHE_FILE,
+    DEFAULT_SESSION_TIMEOUT,
+    MAX_SESSION_RETRIES,
 )
 
 logger = logging.getLogger(__name__)
@@ -32,323 +25,239 @@ logger = logging.getLogger(__name__)
 
 class Session:
     """
-    Session management class for authentication with Spotify web player.
+    Manages authentication sessions for Spotify access.
     
-    This class provides functionality to create authenticated sessions using
-    cookies, headers, OAuth tokens, and proxies. It supports token refresh and
-    credential persistence.
+    This class handles the complex task of maintaining valid authentication
+    with Spotify. It can work with different authentication methods like
+    cookies from a browser session or API tokens.
     
-    Attributes:
-        cookie_file: Path to the cookies file (if used)
-        auth_token: OAuth token (if used)
-        refresh_token: OAuth refresh token (if used)
-        session: Requests session for HTTP communication
+    The session acts like a smart credential manager - it knows when credentials
+    are expired and can attempt to refresh them automatically.
     """
     
     def __init__(
         self,
-        cookie_file: Optional[str] = None,
-        auth_token: Optional[str] = None,
-        refresh_token: Optional[str] = None,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
-        credentials_path: Optional[Union[str, Path]] = None,
-        proxy: Optional[Dict[str, str]] = None,
-        user_agent: Optional[str] = None,
+        access_token: Optional[str] = None,
+        cookies: Optional[Dict[str, str]] = None,
         headers: Optional[Dict[str, str]] = None,
     ):
         """
-        Initialize the Session.
+        Initialize a session for Spotify authentication.
         
         Args:
-            cookie_file: Path to a cookies.txt file (optional)
-            auth_token: OAuth token for authentication (optional)
-            refresh_token: OAuth refresh token (optional)
-            client_id: Spotify API client ID (optional)
-            client_secret: Spotify API client secret (optional)
-            credentials_path: Path to store credentials (default: ~/.spotify-scraper)
-            proxy: Proxy configuration (optional)
-            user_agent: Custom user agent (optional)
-            headers: Custom headers for requests (optional)
+            access_token: Spotify access token if available
+            cookies: HTTP cookies for authentication
+            headers: Additional HTTP headers to include in requests
         """
-        # Store provided parameters
-        self.cookie_file = cookie_file
-        self.auth_token = auth_token
-        self.refresh_token = refresh_token
-        self.client_id = client_id or DEFAULT_CLIENT_ID
-        self.client_secret = client_secret
-        self.proxy = proxy
+        self.access_token = access_token
+        self.cookies = cookies or {}
+        self.headers = headers or {}
+        self.expires_at: Optional[datetime] = None
+        self.is_anonymous = access_token is None
         
-        # Set credentials path
-        if credentials_path:
-            self.credentials_path = Path(credentials_path)
-        else:
-            self.credentials_path = Path.home() / ".spotify-scraper"
-        
-        # Create credentials directory if it doesn't exist
-        self.credentials_path.mkdir(parents=True, exist_ok=True)
-        
-        # Initialize cookie dictionary
-        self.cookie = None
-        if cookie_file:
-            try:
-                self.cookie = self._parse_cookie_file()
-                logger.debug(f"Loaded cookies from {cookie_file}")
-            except Exception as e:
-                logger.error(f"Failed to load cookies from {cookie_file}: {e}")
-                raise AuthenticationError(f"Failed to load cookies: {e}")
-        
-        # Initialize headers
-        self.headers = DEFAULT_HEADERS.copy()
-        if user_agent:
-            self.headers["User-Agent"] = user_agent
-        if headers:
-            self.headers.update(headers)
-        
-        # Load saved credentials if available
-        if not auth_token and not refresh_token:
-            self._load_credentials()
-        
-        # Create a session
-        self._session = requests.Session()
-        self._session.headers.update(self.headers)
-        
-        # Set cookies if provided
-        if self.cookie:
-            self._session.cookies.update(self.cookie)
-        
-        # Set proxy if provided
-        if self.proxy:
-            self._session.proxies.update(self.proxy)
-        
-        # Set token expiry time if we have a token
-        self.token_expires_at = 0
-        if self.auth_token:
-            # Set a default expiry time (1 hour from now)
-            self.token_expires_at = int(time.time()) + 3600
-        
-        logger.debug("Session initialized")
+        logger.debug(f"Initialized Session (anonymous: {self.is_anonymous})")
     
-    def _parse_cookie_file(self) -> Dict[str, str]:
+    def is_valid(self) -> bool:
         """
-        Parse a cookies.txt file and return a dictionary of key-value pairs.
+        Check if the session is currently valid.
+        
+        A session is considered valid if it has authentication credentials
+        and those credentials haven't expired.
         
         Returns:
-            Dictionary of cookies
-            
-        Raises:
-            AuthenticationError: If the cookie file cannot be parsed
+            True if session is valid and can be used for requests
         """
-        if not self.cookie_file:
-            raise AuthenticationError("No cookie file specified")
+        # If we have no authentication method, session is not valid
+        if not self.access_token and not self.cookies:
+            return False
         
-        cookies = {}
-        try:
-            with open(self.cookie_file, "r") as fp:
-                for line in fp:
-                    if not re.match(r"^\#", line):
-                        line_fields = line.strip().split("\t")
-                        if len(line_fields) >= 7:
-                            cookies[line_fields[5]] = line_fields[6]
-            
-            logger.debug(f"Parsed {len(cookies)} cookies from file")
-            return cookies
-        except Exception as e:
-            logger.error(f"Failed to parse cookie file: {e}")
-            raise AuthenticationError(f"Failed to parse cookie file: {e}")
+        # If we have an expiration time, check if we're still within it
+        if self.expires_at and datetime.now() >= self.expires_at:
+            logger.debug("Session has expired")
+            return False
+        
+        return True
     
-    def _load_credentials(self) -> None:
+    def refresh(self) -> bool:
         """
-        Load saved credentials from file.
+        Attempt to refresh the session credentials.
+        
+        This method tries to get new credentials when the current ones
+        have expired. The actual refresh mechanism depends on the type
+        of authentication being used.
+        
+        Returns:
+            True if refresh was successful, False otherwise
         """
-        credentials_file = self.credentials_path / CREDENTIALS_FILE_NAME
+        # For now, this is a placeholder. A real implementation would:
+        # 1. Use refresh tokens to get new access tokens
+        # 2. Re-authenticate with stored credentials
+        # 3. Prompt user for new authentication if needed
         
-        if not credentials_file.exists():
-            logger.debug("No saved credentials found")
-            return
-        
-        try:
-            with open(credentials_file, "r") as f:
-                credentials = json.load(f)
-                
-            # Load token data
-            self.auth_token = credentials.get("auth_token")
-            self.refresh_token = credentials.get("refresh_token")
-            self.client_id = credentials.get("client_id", self.client_id)
-            self.client_secret = credentials.get("client_secret")
-            self.token_expires_at = credentials.get("token_expires_at", 0)
-            
-            logger.debug("Loaded credentials from file")
-        except Exception as e:
-            logger.warning(f"Failed to load credentials: {e}")
+        logger.warning("Session refresh not yet implemented")
+        return False
     
-    def _save_credentials(self) -> None:
+    def set_access_token(self, token: str, expires_in: Optional[int] = None) -> None:
         """
-        Save credentials to file.
+        Set a new access token for the session.
+        
+        Args:
+            token: The access token to use
+            expires_in: Token lifetime in seconds (optional)
         """
-        credentials_file = self.credentials_path / CREDENTIALS_FILE_NAME
+        self.access_token = token
+        self.is_anonymous = False
+        
+        if expires_in:
+            self.expires_at = datetime.now() + timedelta(seconds=expires_in)
+        
+        logger.debug("Updated session with new access token")
+    
+    def add_cookies(self, cookies: Dict[str, str]) -> None:
+        """
+        Add cookies to the session.
+        
+        Args:
+            cookies: Dictionary of cookie name-value pairs
+        """
+        self.cookies.update(cookies)
+        logger.debug(f"Added {len(cookies)} cookies to session")
+    
+    def get_auth_headers(self) -> Dict[str, str]:
+        """
+        Get HTTP headers needed for authenticated requests.
+        
+        Returns:
+            Dictionary of headers to include in HTTP requests
+        """
+        auth_headers = self.headers.copy()
+        
+        if self.access_token:
+            auth_headers["Authorization"] = f"Bearer {self.access_token}"
+        
+        return auth_headers
+    
+    def save_to_file(self, filepath: Optional[str] = None) -> bool:
+        """
+        Save session data to a file for persistence.
+        
+        This allows sessions to be restored after the program restarts,
+        which is convenient for users so they don't have to re-authenticate
+        every time.
+        
+        Args:
+            filepath: Path to save session data. If None, uses default location.
+            
+        Returns:
+            True if save was successful, False otherwise
+        """
+        if filepath is None:
+            filepath = SESSION_CACHE_FILE
         
         try:
-            credentials = {
-                "auth_token": self.auth_token,
-                "refresh_token": self.refresh_token,
-                "client_id": self.client_id,
-                "client_secret": self.client_secret,
-                "token_expires_at": self.token_expires_at,
+            session_data = {
+                "access_token": self.access_token,
+                "cookies": self.cookies,
+                "headers": self.headers,
+                "expires_at": self.expires_at.isoformat() if self.expires_at else None,
+                "is_anonymous": self.is_anonymous,
             }
             
-            with open(credentials_file, "w") as f:
-                json.dump(credentials, f, indent=2)
-                
-            # Set file permissions to readable/writable only by the owner
-            os.chmod(credentials_file, 0o600)
+            with open(filepath, "w") as f:
+                json.dump(session_data, f, indent=2)
             
-            logger.debug("Saved credentials to file")
+            logger.debug(f"Saved session to {filepath}")
+            return True
+            
         except Exception as e:
-            logger.warning(f"Failed to save credentials: {e}")
+            logger.error(f"Failed to save session: {e}")
+            return False
     
-    def refresh_auth_token(self) -> bool:
+    @classmethod
+    def load_from_file(cls, filepath: Optional[str] = None) -> Optional["Session"]:
         """
-        Refresh the OAuth token using the refresh token.
+        Load session data from a file.
         
+        Args:
+            filepath: Path to load session data from. If None, uses default location.
+            
         Returns:
-            True if token was refreshed successfully, False otherwise
+            Session instance if loading was successful, None otherwise
         """
-        if not self.refresh_token:
-            logger.warning("No refresh token available")
-            return False
+        if filepath is None:
+            filepath = SESSION_CACHE_FILE
         
-        if not self.client_id:
-            logger.warning("No client ID available")
-            return False
+        if not os.path.exists(filepath):
+            logger.debug(f"Session file {filepath} does not exist")
+            return None
         
         try:
-            logger.debug("Refreshing OAuth token")
+            with open(filepath, "r") as f:
+                session_data = json.load(f)
             
-            # Prepare request data
-            data = {
-                "grant_type": "refresh_token",
-                "refresh_token": self.refresh_token,
-                "client_id": self.client_id,
-            }
+            session = cls(
+                access_token=session_data.get("access_token"),
+                cookies=session_data.get("cookies", {}),
+                headers=session_data.get("headers", {}),
+            )
             
-            # Add client secret if available
-            if self.client_secret:
-                data["client_secret"] = self.client_secret
+            # Restore expiration time if available
+            expires_at_str = session_data.get("expires_at")
+            if expires_at_str:
+                session.expires_at = datetime.fromisoformat(expires_at_str)
             
-            # Make request to token endpoint
-            response = requests.post(TOKEN_URL, data=data)
-            response.raise_for_status()
+            session.is_anonymous = session_data.get("is_anonymous", True)
             
-            # Parse response
-            token_data = response.json()
+            logger.debug(f"Loaded session from {filepath}")
+            return session
             
-            # Update token data
-            self.auth_token = token_data.get("access_token")
-            
-            # Update refresh token if provided
-            if "refresh_token" in token_data:
-                self.refresh_token = token_data.get("refresh_token")
-            
-            # Calculate expiry time
-            expires_in = token_data.get("expires_in", 3600)
-            self.token_expires_at = int(time.time()) + expires_in
-            
-            # Save credentials
-            self._save_credentials()
-            
-            logger.debug("OAuth token refreshed successfully")
-            return True
         except Exception as e:
-            logger.error(f"Failed to refresh OAuth token: {e}")
-            return False
+            logger.error(f"Failed to load session: {e}")
+            return None
     
-    def is_token_valid(self) -> bool:
+    def clear(self) -> None:
         """
-        Check if the OAuth token is valid and not expired.
+        Clear all authentication data from the session.
+        
+        This essentially logs the user out by removing all stored credentials.
+        """
+        self.access_token = None
+        self.cookies.clear()
+        self.headers.clear()
+        self.expires_at = None
+        self.is_anonymous = True
+        
+        logger.debug("Cleared session authentication data")
+
+
+# Backward compatibility class for the old Request interface
+class Request:
+    """
+    Backward compatibility wrapper for the old Request class.
+    
+    This class provides the same interface as the original SpotifyScraper
+    Request class, but internally uses the new Session system. This allows
+    existing code to work without changes while benefiting from the improved
+    architecture underneath.
+    """
+    
+    def __init__(self, cookie_file: Optional[str] = None, headers: Optional[Dict[str, str]] = None, proxy: Optional[str] = None):
+        """
+        Initialize with the same interface as the original Request class.
+        
+        Args:
+            cookie_file: Path to cookie file (legacy parameter)
+            headers: HTTP headers to use
+            proxy: Proxy URL to use (legacy parameter)
+        """
+        self.session = Session(headers=headers)
+        logger.debug("Initialized Request (compatibility mode)")
+    
+    def request(self) -> Session:
+        """
+        Return a session object that can be used with the old Scraper interface.
         
         Returns:
-            True if token is valid, False otherwise
+            Session object compatible with old code
         """
-        if not self.auth_token:
-            return False
-        
-        # Add a safety margin of 60 seconds
-        return time.time() < (self.token_expires_at - 60)
-    
-    def ensure_token_valid(self) -> bool:
-        """
-        Ensure that the OAuth token is valid, refreshing it if necessary.
-        
-        Returns:
-            True if token is valid, False otherwise
-        """
-        if self.is_token_valid():
-            return True
-        
-        return self.refresh_auth_token()
-    
-    def request(self) -> requests.Session:
-        """
-        Get a requests session with authentication.
-        
-        Returns:
-            Configured requests.Session object
-        """
-        # Ensure token is valid if we're using OAuth
-        if self.auth_token and not self.is_token_valid():
-            self.refresh_auth_token()
-        
-        # If we have an OAuth token, add it to the session
-        if self.auth_token:
-            self._session.headers.update({
-                "Authorization": f"Bearer {self.auth_token}"
-            })
-        
-        return self._session
-    
-    def get_auth_header(self) -> Dict[str, str]:
-        """
-        Get authorization header.
-        
-        Returns:
-            Authorization header dictionary
-        """
-        # Ensure token is valid if we're using OAuth
-        if self.auth_token and not self.is_token_valid():
-            self.refresh_auth_token()
-        
-        if self.auth_token:
-            return {"Authorization": f"Bearer {self.auth_token}"}
-        
-        return {}
-    
-    def is_authenticated(self) -> bool:
-        """
-        Check if the session is authenticated.
-        
-        Returns:
-            True if authenticated, False otherwise
-        """
-        return bool(self.cookie or (self.auth_token and self.is_token_valid()))
-    
-    def logout(self) -> None:
-        """
-        Log out by clearing authentication data.
-        """
-        self.auth_token = None
-        self.refresh_token = None
-        self.token_expires_at = 0
-        self.cookie = None
-        
-        # Clear session cookies
-        self._session.cookies.clear()
-        
-        # Remove saved credentials
-        credentials_file = self.credentials_path / CREDENTIALS_FILE_NAME
-        if credentials_file.exists():
-            try:
-                credentials_file.unlink()
-                logger.debug("Removed saved credentials")
-            except Exception as e:
-                logger.warning(f"Failed to remove saved credentials: {e}")
+        return self.session

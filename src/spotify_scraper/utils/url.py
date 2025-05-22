@@ -11,7 +11,7 @@ from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
 from spotify_scraper.core.constants import (
     SPOTIFY_BASE_URL,
-    SPOTIFY_EMBED_BASE_URL,
+    SPOTIFY_EMBED_URL,
     TRACK_URL_PATTERN,
     ALBUM_URL_PATTERN,
     ARTIST_URL_PATTERN,
@@ -312,11 +312,11 @@ def build_url(
         raise URLError("Resource ID cannot be empty")
     
     # Construct base URL
-    base_url = SPOTIFY_EMBED_BASE_URL if embed else SPOTIFY_BASE_URL
+    base_url = SPOTIFY_EMBED_URL if embed else SPOTIFY_BASE_URL
     
     # Construct path
     if embed:
-        path = f"/{resource_type}/{resource_id}"
+        path = f"/embed/{resource_type}/{resource_id}"
     else:
         path = f"/{resource_type}/{resource_id}"
     
