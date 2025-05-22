@@ -28,9 +28,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-dev libxslt1-dev python3-dev
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Run embed URL test
         run: python test_embed_url.py
-
