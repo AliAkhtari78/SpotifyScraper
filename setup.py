@@ -148,7 +148,7 @@ setup(
     keywords=[
         'spotify', 'scraper', 'scraping', 'web-scraping', 'downloader',
         'mp3', 'music', 'audio', 'cover', 'playlist', 'artist', 'album',
-        'beautifulsoup', 'selenium', 'requests', 'automation'
+        'beautifulsoup4', 'selenium', 'requests', 'automation'
     ],
 
     # Entry points (if any CLI tools are added)

@@ -18,7 +18,7 @@ requires-python = ">=3.8"
 keywords = [
     "spotify", "scraper", "scraping", "web-scraping", "downloader", 
     "mp3", "music", "audio", "cover", "playlist", "artist", "album",
-    "beautifulsoup", "selenium", "requests", "automation"
+    "beautifulsoup4", "selenium", "requests", "automation"
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -41,7 +41,7 @@ classifiers = [
 
 dependencies = [
     # Core web scraping
-    "beautifulsoup",
+    "beautifulsoup4",
     "lxml",
     "requests",
     "urllib3",
