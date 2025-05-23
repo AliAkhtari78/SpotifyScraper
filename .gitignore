@@ -216,12 +216,16 @@ SpotifyScraper/temo.py
 # Test files
 test_real_functionality.py
 test_environment/
+test_embed_url.py
 
 # Virtual environments
 package_build_env/
 
 # Claude Code local settings
 .claude/
+CLAUDE.md
+.cursorrules
+copilot-instructions.md
 
 # Authentication and credentials
 cookies.txt

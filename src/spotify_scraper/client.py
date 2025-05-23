@@ -26,8 +26,8 @@ from urllib.error import URLError
 
 from spotify_scraper.auth.session import Session
 from spotify_scraper.browsers import create_browser
-from spotify_scraper.core.scraper import Scraper
 from spotify_scraper.core.exceptions import AuthenticationError, MediaError
+from spotify_scraper.core.scraper import Scraper
 from spotify_scraper.extractors.album import AlbumExtractor
 from spotify_scraper.extractors.artist import ArtistExtractor
 from spotify_scraper.extractors.playlist import PlaylistExtractor

@@ -21,7 +21,7 @@ import logging
 from typing import Any, Dict, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import ParsingError, BrowserError
+from spotify_scraper.core.exceptions import BrowserError, ParsingError
 
 logger = logging.getLogger(__name__)
 
