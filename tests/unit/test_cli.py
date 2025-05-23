@@ -7,7 +7,7 @@ various input scenarios appropriately.
 
 import json
 from pathlib import Path
-from unittest.mock import Mock, patch, ANY
+from unittest.mock import ANY, Mock, patch
 
 import pytest
 from click.testing import CliRunner

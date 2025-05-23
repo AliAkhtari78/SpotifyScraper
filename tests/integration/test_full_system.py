@@ -30,10 +30,10 @@ sys.path.insert(0, str(project_root / "src"))
 
 from examples.production_usage import SpotifyScraperWrapper
 from spotify_scraper.config_manager import (
-    ConfigurationManager,
-    SpotifyScraperConfig,
-    LogLevel,
     CacheConfig,
+    ConfigurationManager,
+    LogLevel,
+    SpotifyScraperConfig,
 )
 from spotify_scraper.core.exceptions import NetworkError, SpotifyScraperError
 from spotify_scraper.utils.common import (
