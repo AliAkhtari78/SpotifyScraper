@@ -14,7 +14,7 @@ from click.testing import CliRunner
 
 from spotify_scraper.cli import cli
 from spotify_scraper.cli.commands import album, artist, download, playlist, track
-from spotify_scraper.exceptions import SpotifyScraperError
+from spotify_scraper.core.exceptions import SpotifyScraperError
 
 
 class TestCLI:

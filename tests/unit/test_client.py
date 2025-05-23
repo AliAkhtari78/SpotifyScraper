@@ -10,8 +10,8 @@ from unittest.mock import Mock, patch
 import pytest
 
 from spotify_scraper.client import SpotifyClient
-from spotify_scraper.exceptions import (
-    AuthenticationRequiredError,
+from spotify_scraper.core.exceptions import (
+    AuthenticationError,
     URLError,
 )
 
@@ -89,8 +89,8 @@ class TestSpotifyClient:
         # Mock session as not authenticated
         client.session.is_authenticated = Mock(return_value=False)
 
-        # Test that it raises AuthenticationRequiredError
-        with pytest.raises(AuthenticationRequiredError):
+        # Test that it raises AuthenticationError
+        with pytest.raises(AuthenticationError):
             client.get_track_lyrics("https://open.spotify.com/track/123", require_auth=True)
 
     def test_get_track_lyrics_with_auth(self, client):

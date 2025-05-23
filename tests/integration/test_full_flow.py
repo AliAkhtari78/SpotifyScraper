@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 
 from spotify_scraper import SpotifyClient, extract_id, is_spotify_url
-from spotify_scraper.exceptions import SpotifyScraperError, URLError
+from spotify_scraper.core.exceptions import SpotifyScraperError, URLError
 
 # Mark all tests in this module as integration tests
 pytestmark = pytest.mark.integration

@@ -31,8 +31,8 @@ from examples.production_usage import (
     create_authenticated_client,
     spotify_scraper_session,
 )
-from spotify_scraper.exceptions import (
-    AuthenticationRequiredError,
+from spotify_scraper.core.exceptions import (
+    AuthenticationError,
     NetworkError,
     URLError,
 )
@@ -264,9 +264,9 @@ class TestSpotifyScraperWrapper:
 
     def test_get_track_lyrics_auth_required(self, wrapper, mock_client):
         """Test lyrics retrieval with authentication required."""
-        mock_client.get_track_lyrics.side_effect = AuthenticationRequiredError("Auth required")
+        mock_client.get_track_lyrics.side_effect = AuthenticationError("Auth required")
 
-        with pytest.raises(AuthenticationRequiredError):
+        with pytest.raises(AuthenticationError):
             wrapper.get_track_lyrics("https://open.spotify.com/track/123", require_auth=True)
 
     def test_batch_process_success(self, wrapper, mock_client):
