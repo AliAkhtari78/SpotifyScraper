@@ -657,6 +657,12 @@ class SpotifyScraperWrapper:
         try:
             self.client.close()
             self.logger.info("SpotifyScraperWrapper closed successfully")
+            
+            # Close all file handlers to prevent Windows file locking issues
+            for handler in self.logger.handlers[:]:
+                if isinstance(handler, logging.FileHandler):
+                    handler.close()
+                    self.logger.removeHandler(handler)
         except Exception as e:
             self.logger.error(f"Error closing client: {e}")
     

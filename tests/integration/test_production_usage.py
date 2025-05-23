@@ -75,6 +75,8 @@ class TestSpotifyScraperWrapper:
             )
             wrapper.client = mock_client
             yield wrapper
+            # Close wrapper to ensure file handlers are released
+            wrapper.close()
 
     def test_initialization(self, temp_dir):
         """Test wrapper initialization with various parameters."""
@@ -108,6 +110,9 @@ class TestSpotifyScraperWrapper:
                 log_level="DEBUG",
                 log_file=str(temp_dir / "test.log"),
             )
+            
+            # Close wrapper to prevent file locking issues on Windows
+            wrapper.close()
 
     def test_cache_key_generation(self, wrapper):
         """Test cache key generation for different URL types."""
