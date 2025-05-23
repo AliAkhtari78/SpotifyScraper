@@ -15,11 +15,9 @@ Version: 2.0.0
 """
 
 import json
-import shutil
 
 # Add parent directory to path for imports
 import sys
-import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 

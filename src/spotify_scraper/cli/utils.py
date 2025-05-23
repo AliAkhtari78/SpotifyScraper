@@ -32,7 +32,7 @@ def create_client(ctx_obj: Dict[str, Any]) -> SpotifyClient:
     """
     if ctx_obj is None:
         ctx_obj = {}
-    
+
     return SpotifyClient(
         cookie_file=ctx_obj.get("cookie_file"),
         browser_type=ctx_obj.get("browser", "requests"),

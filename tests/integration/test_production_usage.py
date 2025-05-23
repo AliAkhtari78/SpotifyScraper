@@ -579,10 +579,10 @@ class TestIntegrationScenarios:
         # Export everything
         export_data = {"playlist": playlist, "tracks": track_results}
 
-        wrapper.export_results(export_data, temp_dir / "playlist_export.json", format="json")
+        wrapper.export_results(export_data, tmp_path / "playlist_export.json", format="json")
 
         # Verify
-        assert (temp_dir / "playlist_export.json").exists()
+        assert (tmp_path / "playlist_export.json").exists()
         assert len(track_results) == 3
         assert all(not isinstance(r, Exception) for r in track_results.values())
 
