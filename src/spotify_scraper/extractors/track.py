@@ -19,16 +19,15 @@ Example:
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Dict, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import ScrapingError, URLError
+from spotify_scraper.core.exceptions import URLError
 from spotify_scraper.core.types import TrackData
 from spotify_scraper.parsers.json_parser import extract_track_data_from_page
 from spotify_scraper.utils.url import (
     convert_to_embed_url,
     extract_id,
-    get_url_type,
     validate_url,
 )
 

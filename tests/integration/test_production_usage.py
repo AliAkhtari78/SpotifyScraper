@@ -16,8 +16,7 @@ import sys
 import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, Mock, call, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -32,8 +31,6 @@ from examples.production_usage import (
 from spotify_scraper.exceptions import (
     AuthenticationRequiredError,
     NetworkError,
-    ScrapingError,
-    SpotifyScraperError,
     URLError,
 )
 
@@ -511,7 +508,7 @@ class TestUtilityFunctions:
 
     def test_spotify_scraper_session(self):
         """Test session context manager."""
-        mock_client = Mock()
+        Mock()
 
         with patch("examples.production_usage.SpotifyScraperWrapper") as mock_wrapper_class:
             mock_wrapper_instance = Mock()

@@ -5,10 +5,9 @@ This module provides commands for extracting track information
 and lyrics from Spotify track URLs.
 """
 
-import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Optional
 
 import click
 
@@ -19,7 +18,6 @@ from spotify_scraper.cli.utils import (
     print_success,
     save_to_file,
 )
-from spotify_scraper.client import SpotifyClient
 from spotify_scraper.exceptions import AuthenticationRequiredError, SpotifyScraperError
 
 

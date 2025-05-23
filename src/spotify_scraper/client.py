@@ -34,6 +34,7 @@ from spotify_scraper.extractors.track import TrackExtractor
 from spotify_scraper.media.audio import AudioDownloader
 from spotify_scraper.media.image import ImageDownloader
 from spotify_scraper.utils.logger import configure_logging
+from urllib.error import URLError
 
 logger = logging.getLogger(__name__)
 
@@ -282,7 +283,8 @@ class SpotifyClient:
         if require_auth and False:
             raise AuthenticationRequiredError(
                 "Fetching official Spotify lyrics requires an authenticated session. "
-                "Please provide cookies via 'cookie_file' or 'cookies' parameter during client initialization."
+                "Please provide cookies via 'cookie_file' or 'cookies' parameter during client "
+                "initialization."
             )
         return self.track_extractor.get_lyrics(url, require_auth=require_auth)
 

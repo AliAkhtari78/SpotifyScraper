@@ -23,13 +23,12 @@ Example:
 
 import logging
 import os
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Optional
 
 import requests
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import DownloadError, MediaError
+from spotify_scraper.core.exceptions import DownloadError
 from spotify_scraper.core.types import TrackData
 from spotify_scraper.media.image import ImageDownloader
 

@@ -5,7 +5,6 @@ This module provides factory functions for creating browser instances.
 """
 
 import logging
-from typing import Any, Dict, Optional, Union
 
 from spotify_scraper.browsers.base import Browser
 from spotify_scraper.exceptions import BrowserError

@@ -7,14 +7,14 @@ various input scenarios appropriately.
 
 import json
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 from click.testing import CliRunner
 
 from spotify_scraper.cli import cli
 from spotify_scraper.cli.commands import album, artist, download, playlist, track
-from spotify_scraper.exceptions import AuthenticationRequiredError, SpotifyScraperError
+from spotify_scraper.exceptions import SpotifyScraperError
 
 
 class TestCLI:

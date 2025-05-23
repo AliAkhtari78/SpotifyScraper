@@ -6,7 +6,7 @@ This module handles session management and authentication.
 
 import logging
 import re
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 
 import requests
 

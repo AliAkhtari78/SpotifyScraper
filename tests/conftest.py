@@ -4,7 +4,6 @@ Pytest configuration file for test fixtures.
 This file contains shared fixtures and configuration for all test modules.
 """
 
-import os
 from pathlib import Path
 
 import pytest

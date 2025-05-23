@@ -8,7 +8,6 @@ still handles the essential tasks of getting web page content.
 """
 
 import logging
-import time
 from typing import Any, Dict, Optional
 
 import requests
@@ -131,11 +130,11 @@ class RequestsBrowser(Browser):
 
         except requests.exceptions.Timeout as e:
             logger.error(f"Request timeout for {url}: {e}")
-            raise NetworkError(f"Request timeout", url=url)
+            raise NetworkError("Request timeout", url=url)
 
         except requests.exceptions.ConnectionError as e:
             logger.error(f"Connection error for {url}: {e}")
-            raise NetworkError(f"Connection error", url=url)
+            raise NetworkError("Connection error", url=url)
 
         except requests.exceptions.HTTPError as e:
             status_code = e.response.status_code if e.response else None
@@ -181,7 +180,7 @@ class RequestsBrowser(Browser):
 
         except requests.exceptions.JSONDecodeError as e:
             logger.error(f"Invalid JSON response from {url}: {e}")
-            raise NetworkError(f"Invalid JSON response", url=url)
+            raise NetworkError("Invalid JSON response", url=url)
 
         except Exception as e:
             logger.error(f"Error fetching JSON from {url}: {e}")

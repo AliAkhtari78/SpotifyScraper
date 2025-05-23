@@ -5,17 +5,13 @@ These tests verify that the client correctly coordinates between different
 extractors and provides a unified interface for data extraction.
 """
 
-import json
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
 from spotify_scraper.client import SpotifyClient
 from spotify_scraper.exceptions import (
     AuthenticationRequiredError,
-    MediaError,
-    SpotifyScraperError,
     URLError,
 )
 

@@ -7,11 +7,11 @@ scraping functionality.
 
 import json
 import logging
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 from urllib.parse import urljoin, urlparse
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.constants import SPOTIFY_BASE_URL, SPOTIFY_EMBED_URL
+from spotify_scraper.constants import SPOTIFY_EMBED_URL
 from spotify_scraper.exceptions import ScrapingError, URLError
 
 logger = logging.getLogger(__name__)
@@ -146,7 +146,8 @@ class Scraper:
 
         Args:
             url: URL to validate.
-            expected_type: Expected URL type (e.g., 'track', 'playlist', 'album', 'artist', 'embed/track').
+            expected_type: Expected URL type (e.g., 'track', 'playlist', 'album', 'artist',
+                'embed/track').
 
         Returns:
             True if valid.

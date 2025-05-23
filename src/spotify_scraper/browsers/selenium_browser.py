@@ -18,10 +18,10 @@ except ImportError:
 
 import json
 import logging
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.exceptions import BrowserError, ParsingError, SeleniumError
+from spotify_scraper.exceptions import ParsingError, SeleniumError
 
 logger = logging.getLogger(__name__)
 

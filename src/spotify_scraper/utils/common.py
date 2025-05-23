@@ -16,13 +16,11 @@ import json
 import logging
 import re
 from collections import Counter, defaultdict
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from spotify_scraper import SpotifyClient
-from spotify_scraper.exceptions import SpotifyScraperError, URLError
-from spotify_scraper.utils.url import get_spotify_id, get_url_type
+from spotify_scraper.utils.url import get_url_type
 
 logger = logging.getLogger(__name__)
 

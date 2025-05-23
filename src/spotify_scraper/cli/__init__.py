@@ -8,7 +8,7 @@ allowing users to extract data from Spotify directly from the terminal.
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Optional
 
 import click
 

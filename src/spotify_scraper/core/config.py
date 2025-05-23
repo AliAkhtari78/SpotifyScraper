@@ -9,7 +9,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Dict, Optional, Union
 
 from spotify_scraper.core.exceptions import ConfigurationError
 
@@ -205,7 +205,8 @@ class Config:
         Save configuration to file.
 
         Args:
-            config_file: Path to configuration file (optional, uses self.config_file if not provided)
+            config_file: Path to configuration file (optional, uses self.config_file if not
+                provided)
 
         Raises:
             ConfigurationError: If the file cannot be written

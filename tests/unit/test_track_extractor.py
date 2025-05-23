@@ -6,13 +6,11 @@ from Spotify web pages, including track details, album information, and lyrics.
 """
 
 import json
-import os
 from pathlib import Path
 
 import pytest
 
 # Import the needed exceptions only
-from spotify_scraper.core.exceptions import ParsingError, URLError
 
 
 # Simple mock browser for testing (avoid complex imports)

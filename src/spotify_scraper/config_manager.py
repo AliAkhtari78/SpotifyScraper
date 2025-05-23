@@ -22,7 +22,8 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Union
+from spotify_scraper.client import SpotifyClient
 
 # Optional imports for additional format support
 try:
@@ -259,12 +260,10 @@ class ConfigLoader(ABC):
     @abstractmethod
     def load(self, path: Union[str, Path]) -> Dict[str, Any]:
         """Load configuration from file."""
-        pass
 
     @abstractmethod
     def save(self, config: Dict[str, Any], path: Union[str, Path]) -> None:
         """Save configuration to file."""
-        pass
 
 
 class JSONConfigLoader(ConfigLoader):

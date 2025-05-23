@@ -10,15 +10,11 @@ import json
 import logging
 import os
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional, Union
+from typing import Dict, Optional
 
 from spotify_scraper.core.constants import (
-    CREDENTIALS_FILE_NAME,
-    DEFAULT_SESSION_TIMEOUT,
-    MAX_SESSION_RETRIES,
     SESSION_CACHE_FILE,
 )
-from spotify_scraper.core.exceptions import AuthenticationError
 
 logger = logging.getLogger(__name__)
 

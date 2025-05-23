@@ -76,7 +76,6 @@ class Browser(ABC):
             >>> # Parse the HTML to extract data
             >>> data = extract_track_data_from_page(html)
         """
-        pass
 
     @abstractmethod
     def get_json(self, url: str) -> Dict[str, Any]:
@@ -109,7 +108,6 @@ class Browser(ABC):
             This method expects the response Content-Type to be application/json.
             For HTML pages with embedded JSON, use get_page_content() instead.
         """
-        pass
 
     @abstractmethod
     def download_file(self, url: str, path: str) -> str:
@@ -150,7 +148,6 @@ class Browser(ABC):
             - Large files should be downloaded in chunks to avoid memory issues
             - The file is saved with binary mode to handle all file types
         """
-        pass
 
     @abstractmethod
     def get_auth_token(self) -> Optional[str]:
@@ -182,7 +179,6 @@ class Browser(ABC):
             - Tokens may have expiration times and need refresh
             - Not all browser implementations support authentication
         """
-        pass
 
     @abstractmethod
     def close(self) -> None:
@@ -208,4 +204,3 @@ class Browser(ABC):
             - Calling close() multiple times should be safe (idempotent)
             - After close(), the browser instance should not be used again
         """
-        pass

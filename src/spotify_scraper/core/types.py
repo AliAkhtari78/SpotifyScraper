@@ -4,7 +4,7 @@ Core type definitions for the SpotifyScraper library.
 This module defines TypedDict classes for all data structures used in the library.
 """
 
-from typing import Any, Dict, List, Optional, TypedDict, Union
+from typing import Any, Dict, List, TypedDict
 
 
 class ImageData(TypedDict):

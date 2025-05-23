@@ -6,7 +6,6 @@ from Spotify web pages, including playlist details and tracks.
 """
 
 import json
-import os
 from pathlib import Path
 
 import pytest
@@ -52,7 +51,7 @@ class TestPlaylistExtractor:
     def test_extract_playlist_data(self, playlist_html, expected_playlist_data):
         """Test extracting playlist data from the HTML fixture."""
         # This test will fail until PlaylistExtractor is implemented
-        mock_browser = MockBrowser(playlist_html)
+        MockBrowser(playlist_html)
 
         # Example of how the extractor would be used
         # extractor = PlaylistExtractor(browser=mock_browser)
@@ -73,7 +72,7 @@ class TestPlaylistExtractor:
 
     def test_extract_playlist_tracks(self, playlist_html, expected_playlist_data):
         """Test that playlist tracks are correctly extracted."""
-        mock_browser = MockBrowser(playlist_html)
+        MockBrowser(playlist_html)
 
         # Example of how tracks would be accessed
         # extractor = PlaylistExtractor(browser=mock_browser)

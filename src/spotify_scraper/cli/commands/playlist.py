@@ -88,7 +88,8 @@ def playlist(
         spotify-scraper playlist --tracks-only --limit 50 https://open.spotify.com/playlist/...
 
         # Export playlist for backup
-        spotify-scraper playlist -o my_playlist_backup.yaml --format yaml https://open.spotify.com/playlist/...
+        spotify-scraper playlist -o my_playlist_backup.yaml --format yaml \\
+            https://open.spotify.com/playlist/...
     """
     try:
         # Create client from context
@@ -200,11 +201,13 @@ def playlist(
 
             if limit and track_count == limit:
                 print_info(
-                    f"Retrieved {track_count} tracks from '{output_data.get('playlist_name', 'Unknown')}' (limited to {limit})"
+                    f"Retrieved {track_count} tracks from "
+                    f"'{output_data.get('playlist_name', 'Unknown')}' (limited to {limit})"
                 )
             else:
                 print_info(
-                    f"Retrieved {track_count} of {total} tracks from '{output_data.get('playlist_name', 'Unknown')}'"
+                    f"Retrieved {track_count} of {total} tracks from "
+                    f"'{output_data.get('playlist_name', 'Unknown')}'"
                 )
 
     except AuthenticationError as e:

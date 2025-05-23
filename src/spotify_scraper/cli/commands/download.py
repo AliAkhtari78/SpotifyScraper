@@ -25,7 +25,6 @@ from spotify_scraper.exceptions import MediaError, SpotifyScraperError
 @click.group(name="download")
 def download():
     """Download media content from Spotify URLs."""
-    pass
 
 
 @download.command(name="cover")
@@ -389,7 +388,7 @@ def batch(
 
         # Show summary
         click.echo("\n" + "─" * 50)
-        print_info(f"Batch download complete")
+        print_info("Batch download complete")
         print_success(f"Successful: {successful}")
         if failed > 0:
             print_error(f"Failed: {failed}")

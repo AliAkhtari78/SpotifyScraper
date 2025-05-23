@@ -6,7 +6,6 @@ from Spotify web pages, including artist details, biography, discography, and to
 """
 
 import json
-import os
 from pathlib import Path
 
 import pytest
@@ -52,7 +51,7 @@ class TestArtistExtractor:
     def test_extract_artist_data(self, artist_html, expected_artist_data):
         """Test extracting artist data from the HTML fixture."""
         # This test will fail until ArtistExtractor is implemented
-        mock_browser = MockBrowser(artist_html)
+        MockBrowser(artist_html)
 
         # Example of how the extractor would be used
         # extractor = ArtistExtractor(browser=mock_browser)
@@ -73,7 +72,7 @@ class TestArtistExtractor:
 
     def test_extract_artist_top_tracks(self, artist_html, expected_artist_data):
         """Test that artist top tracks are correctly extracted."""
-        mock_browser = MockBrowser(artist_html)
+        MockBrowser(artist_html)
 
         # Example of how top tracks would be accessed
         # extractor = ArtistExtractor(browser=mock_browser)

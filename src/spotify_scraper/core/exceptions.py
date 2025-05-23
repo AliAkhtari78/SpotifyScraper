@@ -9,7 +9,6 @@ Using specific exception types allows for more precise error handling.
 class SpotifyScraperError(Exception):
     """Base exception for all SpotifyScraper errors."""
 
-    pass
 
 
 # Alias for backward compatibility and common usage

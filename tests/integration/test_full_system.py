@@ -28,7 +28,6 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from examples.production_usage import SpotifyScraperWrapper
-from spotify_scraper import SpotifyClient
 from spotify_scraper.config_manager import ConfigurationManager, SpotifyScraperConfig
 from spotify_scraper.utils.common import (
     SpotifyBulkOperations,
@@ -141,7 +140,7 @@ class TestFullSystemIntegration:
 
         # Create client with configuration
         with patch("spotify_scraper.config_manager.SpotifyClient") as mock_client:
-            client = new_manager.create_client()
+            new_manager.create_client()
             mock_client.assert_called_once()
 
     def test_wrapper_with_utilities(self, temp_dir, mock_track_data, mock_playlist_data):
@@ -325,7 +324,7 @@ class TestFullSystemIntegration:
                 cache=CacheConfig(directory=str(temp_dir / "cache")),
             )
 
-            manager = ConfigurationManager(config)
+            ConfigurationManager(config)
 
             # 2. Create wrapper with configuration
             wrapper = SpotifyScraperWrapper(

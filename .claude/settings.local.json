@@ -32,7 +32,8 @@
       "Bash(gh run view:*)",
       "Bash(black:*)",
       "Bash(git restore:*)",
-      "Bash(isort:*)"
+      "Bash(isort:*)",
+      "Bash(flake8:*)"
     ],
     "deny": []
   }
