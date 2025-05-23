@@ -110,7 +110,7 @@ class TestSpotifyScraperWrapper:
                 log_level="DEBUG",
                 log_file=str(temp_dir / "test.log"),
             )
-            
+
             # Close wrapper to prevent file locking issues on Windows
             wrapper.close()
 
