@@ -23,6 +23,7 @@ from dataclasses import asdict, dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+
 from spotify_scraper.client import SpotifyClient
 
 # Optional imports for additional format support

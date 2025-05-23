@@ -22,6 +22,7 @@ Example:
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+from urllib.error import URLError
 
 from spotify_scraper.auth.session import Session
 from spotify_scraper.browsers import create_browser
@@ -34,7 +35,6 @@ from spotify_scraper.extractors.track import TrackExtractor
 from spotify_scraper.media.audio import AudioDownloader
 from spotify_scraper.media.image import ImageDownloader
 from spotify_scraper.utils.logger import configure_logging
-from urllib.error import URLError
 
 logger = logging.getLogger(__name__)
 
