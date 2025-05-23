@@ -8,13 +8,13 @@ Note: These tests may require internet connection and may be affected
 by changes to Spotify's web interface.
 """
 
-import pytest
 import os
 from pathlib import Path
 
-from spotify_scraper import SpotifyClient, is_spotify_url, extract_id
-from spotify_scraper.exceptions import SpotifyScraperError, URLError
+import pytest
 
+from spotify_scraper import SpotifyClient, extract_id, is_spotify_url
+from spotify_scraper.exceptions import SpotifyScraperError, URLError
 
 # Mark all tests in this module as integration tests
 pytestmark = pytest.mark.integration

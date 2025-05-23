@@ -6,19 +6,19 @@ Think of this as the key management system - it handles getting and maintaining
 the credentials needed to access Spotify's data.
 """
 
-from typing import Optional, Dict, Any, Union
-import logging
 import json
+import logging
 import os
 from datetime import datetime, timedelta
+from typing import Any, Dict, Optional, Union
 
-from spotify_scraper.core.exceptions import AuthenticationError
 from spotify_scraper.core.constants import (
     CREDENTIALS_FILE_NAME,
-    SESSION_CACHE_FILE,
     DEFAULT_SESSION_TIMEOUT,
     MAX_SESSION_RETRIES,
+    SESSION_CACHE_FILE,
 )
+from spotify_scraper.core.exceptions import AuthenticationError
 
 logger = logging.getLogger(__name__)
 

@@ -5,20 +5,21 @@ This module provides commands for extracting artist information
 from Spotify artist URLs.
 """
 
-import click
 import sys
-from typing import Optional
 from pathlib import Path
+from typing import Optional
 
-from spotify_scraper.exceptions import SpotifyScraperError
+import click
+
 from spotify_scraper.cli.utils import (
+    create_client,
     format_output,
     print_error,
-    print_success,
     print_info,
-    create_client,
+    print_success,
     save_to_file,
 )
+from spotify_scraper.exceptions import SpotifyScraperError
 
 
 @click.command(name="artist")

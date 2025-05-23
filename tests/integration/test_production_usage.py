@@ -11,30 +11,30 @@ Version: 2.0.0
 """
 
 import json
-import pytest
-import tempfile
 import shutil
-from pathlib import Path
-from datetime import datetime, timedelta
-from unittest.mock import Mock, patch, MagicMock, call
-from typing import Dict, Any, List
-
 import sys
+import tempfile
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List
+from unittest.mock import MagicMock, Mock, call, patch
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from examples.production_usage import (
     SpotifyScraperWrapper,
-    create_authenticated_client,
     analyze_spotify_url,
+    create_authenticated_client,
     spotify_scraper_session,
 )
 from spotify_scraper.exceptions import (
-    SpotifyScraperError,
-    URLError,
+    AuthenticationRequiredError,
     NetworkError,
     ScrapingError,
-    AuthenticationRequiredError,
+    SpotifyScraperError,
+    URLError,
 )
 
 

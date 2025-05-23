@@ -5,11 +5,11 @@ This module provides functionality for managing configuration options,
 with support for default values, environment variables, and configuration files.
 """
 
-import os
 import json
 import logging
+import os
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, List, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from spotify_scraper.core.exceptions import ConfigurationError
 

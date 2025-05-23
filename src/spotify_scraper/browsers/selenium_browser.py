@@ -7,10 +7,10 @@ dynamic web content.
 
 try:
     from selenium import webdriver
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
     from selenium.common.exceptions import TimeoutException, WebDriverException
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.support.ui import WebDriverWait
 
     SELENIUM_AVAILABLE = True
 except ImportError:
@@ -18,10 +18,10 @@ except ImportError:
 
 import json
 import logging
-from typing import Dict, Optional, Any, Union
+from typing import Any, Dict, Optional, Union
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.exceptions import BrowserError, SeleniumError, ParsingError
+from spotify_scraper.exceptions import BrowserError, ParsingError, SeleniumError
 
 logger = logging.getLogger(__name__)
 

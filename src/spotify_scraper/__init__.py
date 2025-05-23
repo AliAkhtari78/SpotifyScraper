@@ -48,21 +48,21 @@ __url__ = "https://github.com/AliAkhtari78/SpotifyScraper"
 # Core imports for easy access
 from spotify_scraper.client import SpotifyClient
 from spotify_scraper.core.exceptions import (
-    SpotifyScraperError,
-    URLError,
-    ParsingError,
-    ExtractionError,
-    NetworkError,
     AuthenticationError,
     BrowserError,
+    ExtractionError,
     MediaError,
+    NetworkError,
+    ParsingError,
+    SpotifyScraperError,
+    URLError,
 )
 
 # Utility functions
 from spotify_scraper.utils.url import (
-    is_spotify_url,
-    extract_id,
     convert_to_embed_url,
+    extract_id,
+    is_spotify_url,
 )
 
 # No backward compatibility needed

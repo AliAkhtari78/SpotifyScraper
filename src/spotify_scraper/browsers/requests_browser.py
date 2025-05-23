@@ -15,10 +15,10 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import NetworkError, AuthenticationError, BrowserError
-from spotify_scraper.core.constants import DEFAULT_HEADERS, DEFAULT_TIMEOUT, DEFAULT_RETRIES
 from spotify_scraper.auth.session import Session
+from spotify_scraper.browsers.base import Browser
+from spotify_scraper.core.constants import DEFAULT_HEADERS, DEFAULT_RETRIES, DEFAULT_TIMEOUT
+from spotify_scraper.core.exceptions import AuthenticationError, BrowserError, NetworkError
 
 logger = logging.getLogger(__name__)
 

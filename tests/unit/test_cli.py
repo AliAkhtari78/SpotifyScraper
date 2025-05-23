@@ -5,15 +5,16 @@ These tests verify that the CLI commands work correctly and handle
 various input scenarios appropriately.
 """
 
-import pytest
-from click.testing import CliRunner
-from unittest.mock import Mock, patch, MagicMock
 import json
 from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+from click.testing import CliRunner
 
 from spotify_scraper.cli import cli
-from spotify_scraper.cli.commands import track, album, artist, playlist, download
-from spotify_scraper.exceptions import SpotifyScraperError, AuthenticationRequiredError
+from spotify_scraper.cli.commands import album, artist, download, playlist, track
+from spotify_scraper.exceptions import AuthenticationRequiredError, SpotifyScraperError
 
 
 class TestCLI:

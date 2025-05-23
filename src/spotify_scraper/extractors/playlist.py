@@ -6,10 +6,11 @@ from Spotify playlist pages, with support for both regular and embed URLs.
 """
 
 import logging
-from typing import Dict, Optional, Any, Union, List, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import ScrapingError, URLError, ParsingError
+from spotify_scraper.core.constants import PLAYLIST_JSON_PATH
+from spotify_scraper.core.exceptions import ParsingError, ScrapingError, URLError
 from spotify_scraper.core.types import PlaylistData, TrackData
 from spotify_scraper.parsers.json_parser import (
     extract_json_from_next_data,
@@ -18,11 +19,10 @@ from spotify_scraper.parsers.json_parser import (
 )
 from spotify_scraper.utils.url import (
     convert_to_embed_url,
-    validate_url,
     extract_id,
     get_url_type,
+    validate_url,
 )
-from spotify_scraper.core.constants import PLAYLIST_JSON_PATH
 
 logger = logging.getLogger(__name__)
 

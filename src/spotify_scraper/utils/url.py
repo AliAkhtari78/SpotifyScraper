@@ -23,16 +23,16 @@ Example:
 """
 
 import re
-from typing import Dict, Optional, Tuple, Literal, Union
-from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+from typing import Dict, Literal, Optional, Tuple, Union
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from spotify_scraper.core.constants import (
-    SPOTIFY_BASE_URL,
-    SPOTIFY_EMBED_URL,
-    TRACK_URL_PATTERN,
     ALBUM_URL_PATTERN,
     ARTIST_URL_PATTERN,
     PLAYLIST_URL_PATTERN,
+    SPOTIFY_BASE_URL,
+    SPOTIFY_EMBED_URL,
+    TRACK_URL_PATTERN,
 )
 from spotify_scraper.core.exceptions import URLError
 

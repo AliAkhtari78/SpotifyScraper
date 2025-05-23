@@ -5,14 +5,15 @@ This module provides the command-line interface for SpotifyScraper,
 allowing users to extract data from Spotify directly from the terminal.
 """
 
-import click
 import logging
 import sys
-from typing import Optional, Dict, Any
 from pathlib import Path
+from typing import Any, Dict, Optional
+
+import click
 
 from spotify_scraper import __version__
-from spotify_scraper.cli.commands import track, album, artist, playlist, download
+from spotify_scraper.cli.commands import album, artist, download, playlist, track
 
 logger = logging.getLogger(__name__)
 

@@ -4,11 +4,11 @@ Browser factory module for SpotifyScraper.
 This module provides factory functions for creating browser instances.
 """
 
-from typing import Optional, Union, Dict, Any
 import logging
+from typing import Any, Dict, Optional, Union
 
-from spotify_scraper.exceptions import BrowserError
 from spotify_scraper.browsers.base import Browser
+from spotify_scraper.exceptions import BrowserError
 
 logger = logging.getLogger(__name__)
 

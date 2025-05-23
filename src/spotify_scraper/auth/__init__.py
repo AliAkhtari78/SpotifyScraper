@@ -4,13 +4,14 @@ Authentication module for SpotifyScraper.
 This module handles session management and authentication.
 """
 
-from typing import Dict, Optional, Any
-import re
-import requests
 import logging
+import re
+from typing import Any, Dict, Optional
 
-from spotify_scraper.exceptions import AuthenticationError
+import requests
+
 from spotify_scraper.constants import DEFAULT_HEADERS
+from spotify_scraper.exceptions import AuthenticationError
 
 logger = logging.getLogger(__name__)
 

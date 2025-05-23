@@ -6,12 +6,12 @@ interface for users of the library. Think of this as the command center that
 coordinates all the different extraction capabilities.
 """
 
-from typing import Optional, Dict, Any, Union
 import logging
+from typing import Any, Dict, Optional, Union
 
-from spotify_scraper.core.exceptions import SpotifyScraperError, URLError
-from spotify_scraper.core.types import TrackData, AlbumData, ArtistData, PlaylistData
 from spotify_scraper.browsers.base import Browser
+from spotify_scraper.core.exceptions import SpotifyScraperError, URLError
+from spotify_scraper.core.types import AlbumData, ArtistData, PlaylistData, TrackData
 from spotify_scraper.extractors.track import TrackExtractor
 
 logger = logging.getLogger(__name__)

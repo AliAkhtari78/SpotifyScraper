@@ -14,28 +14,29 @@ Date: 2025-01-22
 Version: 2.0.0
 """
 
-import pytest
-import tempfile
-import shutil
-from pathlib import Path
-from unittest.mock import Mock, patch
 import json
+import shutil
 
 # Add parent directory to path for imports
 import sys
+import tempfile
+from pathlib import Path
+from unittest.mock import Mock, patch
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+from examples.production_usage import SpotifyScraperWrapper
 from spotify_scraper import SpotifyClient
 from spotify_scraper.config_manager import ConfigurationManager, SpotifyScraperConfig
 from spotify_scraper.utils.common import (
+    SpotifyBulkOperations,
     SpotifyDataAnalyzer,
     SpotifyDataFormatter,
-    SpotifyBulkOperations,
     format_duration,
     validate_spotify_urls,
 )
-from examples.production_usage import SpotifyScraperWrapper
 
 
 class TestFullSystemIntegration:
@@ -376,9 +377,8 @@ class TestFullSystemIntegration:
 
 
 # Import required enums for the test
-from spotify_scraper.config_manager import LogLevel, CacheConfig
+from spotify_scraper.config_manager import CacheConfig, LogLevel
 from spotify_scraper.exceptions import NetworkError
-
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])

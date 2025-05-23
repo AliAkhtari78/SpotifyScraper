@@ -5,21 +5,22 @@ This module provides commands for extracting track information
 and lyrics from Spotify track URLs.
 """
 
-import click
 import json
 import sys
-from typing import Optional, Dict, Any
 from pathlib import Path
+from typing import Any, Dict, Optional
 
-from spotify_scraper.client import SpotifyClient
-from spotify_scraper.exceptions import SpotifyScraperError, AuthenticationRequiredError
+import click
+
 from spotify_scraper.cli.utils import (
+    create_client,
     format_output,
     print_error,
     print_success,
-    create_client,
     save_to_file,
 )
+from spotify_scraper.client import SpotifyClient
+from spotify_scraper.exceptions import AuthenticationRequiredError, SpotifyScraperError
 
 
 @click.command(name="track")

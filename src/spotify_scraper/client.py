@@ -19,21 +19,21 @@ Example:
     >>> print(track_info['name'])
 """
 
-from typing import Dict, List, Optional, Union, Any
 import logging
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 from spotify_scraper.auth.session import Session
-from spotify_scraper.core.scraper import Scraper
 from spotify_scraper.browsers import create_browser
-from spotify_scraper.extractors.track import TrackExtractor
+from spotify_scraper.core.scraper import Scraper
+from spotify_scraper.exceptions import AuthenticationRequiredError, MediaError
 from spotify_scraper.extractors.album import AlbumExtractor
 from spotify_scraper.extractors.artist import ArtistExtractor
 from spotify_scraper.extractors.playlist import PlaylistExtractor
-from spotify_scraper.media.image import ImageDownloader
+from spotify_scraper.extractors.track import TrackExtractor
 from spotify_scraper.media.audio import AudioDownloader
+from spotify_scraper.media.image import ImageDownloader
 from spotify_scraper.utils.logger import configure_logging
-from spotify_scraper.exceptions import AuthenticationRequiredError, MediaError
 
 logger = logging.getLogger(__name__)
 

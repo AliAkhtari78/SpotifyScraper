@@ -6,18 +6,18 @@ including output formatting, error handling, and client creation.
 """
 
 import json
-import yaml
 import sys
-from typing import Dict, Any, Optional, Union
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, Optional, Union
 
 import click
+import yaml
+from rich import print as rprint
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
 from rich.syntax import Syntax
-from rich import print as rprint
+from rich.table import Table
 
 from spotify_scraper.client import SpotifyClient
 

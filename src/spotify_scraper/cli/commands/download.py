@@ -5,20 +5,21 @@ This module provides commands for downloading media content
 (cover images and preview MP3s) from Spotify URLs.
 """
 
-import click
 import sys
-from typing import Optional
 from pathlib import Path
+from typing import Optional
 
-from spotify_scraper.exceptions import SpotifyScraperError, MediaError
+import click
+
 from spotify_scraper.cli.utils import (
-    print_error,
-    print_success,
-    print_info,
-    print_warning,
-    create_client,
     confirm_action,
+    create_client,
+    print_error,
+    print_info,
+    print_success,
+    print_warning,
 )
+from spotify_scraper.exceptions import MediaError, SpotifyScraperError
 
 
 @click.group(name="download")

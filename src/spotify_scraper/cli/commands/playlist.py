@@ -5,21 +5,22 @@ This module provides commands for extracting playlist information
 from Spotify playlist URLs.
 """
 
-import click
 import sys
-from typing import Optional
 from pathlib import Path
+from typing import Optional
 
-from spotify_scraper.exceptions import SpotifyScraperError, AuthenticationError
+import click
+
 from spotify_scraper.cli.utils import (
+    create_client,
     format_output,
     print_error,
-    print_success,
     print_info,
+    print_success,
     print_warning,
-    create_client,
     save_to_file,
 )
+from spotify_scraper.exceptions import AuthenticationError, SpotifyScraperError
 
 
 @click.command(name="playlist")

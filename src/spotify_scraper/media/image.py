@@ -22,15 +22,16 @@ Example:
     >>> print(f"Cover saved to: {cover_path}")
 """
 
-import os
 import logging
-import requests
+import os
 from pathlib import Path
-from typing import Dict, List, Optional, Union, Any
+from typing import Any, Dict, List, Optional, Union
+
+import requests
 
 from spotify_scraper.browsers.base import Browser
 from spotify_scraper.core.exceptions import DownloadError
-from spotify_scraper.core.types import TrackData, AlbumData, ArtistData, PlaylistData
+from spotify_scraper.core.types import AlbumData, ArtistData, PlaylistData, TrackData
 
 logger = logging.getLogger(__name__)
 

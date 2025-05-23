@@ -8,6 +8,7 @@ from Spotify web pages, including playlist details and tracks.
 import json
 import os
 from pathlib import Path
+
 import pytest
 
 # This will be the actual import once the module is implemented

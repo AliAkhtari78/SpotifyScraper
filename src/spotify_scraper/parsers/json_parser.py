@@ -8,26 +8,26 @@ and data formats.
 
 import json
 import logging
-from typing import Any, Dict, List, Optional, Union, Callable, TypeVar, cast
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union, cast
 
 from bs4 import BeautifulSoup
 
+from spotify_scraper.core.constants import (
+    ALBUM_JSON_PATH,
+    ARTIST_JSON_PATH,
+    NEXT_DATA_SELECTOR,
+    PLAYLIST_JSON_PATH,
+    RESOURCE_SELECTOR,
+    TRACK_JSON_PATH,
+)
+from spotify_scraper.core.exceptions import ParsingError
 from spotify_scraper.core.types import (
-    TrackData,
     AlbumData,
     ArtistData,
     PlaylistData,
+    TrackData,
     VisualIdentityData,
 )
-from spotify_scraper.core.constants import (
-    NEXT_DATA_SELECTOR,
-    RESOURCE_SELECTOR,
-    TRACK_JSON_PATH,
-    ALBUM_JSON_PATH,
-    ARTIST_JSON_PATH,
-    PLAYLIST_JSON_PATH,
-)
-from spotify_scraper.core.exceptions import ParsingError
 
 logger = logging.getLogger(__name__)
 

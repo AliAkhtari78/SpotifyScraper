@@ -8,6 +8,7 @@ from Spotify web pages, including track details, album information, and lyrics.
 import json
 import os
 from pathlib import Path
+
 import pytest
 
 # Import the needed exceptions only

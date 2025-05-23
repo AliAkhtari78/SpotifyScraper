@@ -21,11 +21,12 @@ Example:
     >>> print(f"Downloaded to: {mp3_path}")
 """
 
-import os
 import logging
-import requests
+import os
 from pathlib import Path
-from typing import Dict, List, Optional, Union, Any
+from typing import Any, Dict, List, Optional, Union
+
+import requests
 
 from spotify_scraper.browsers.base import Browser
 from spotify_scraper.core.exceptions import DownloadError, MediaError

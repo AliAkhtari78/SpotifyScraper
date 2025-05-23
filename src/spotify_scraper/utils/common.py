@@ -11,19 +11,18 @@ Date: 2025-01-22
 Version: 2.0.0
 """
 
-import re
-import json
 import csv
-from pathlib import Path
-from typing import Dict, List, Optional, Union, Any, Tuple, Iterator
-from datetime import datetime, timedelta
-from collections import defaultdict, Counter
+import json
 import logging
+import re
+from collections import Counter, defaultdict
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
 
 from spotify_scraper import SpotifyClient
-from spotify_scraper.utils.url import get_url_type, get_spotify_id
-from spotify_scraper.exceptions import URLError, SpotifyScraperError
-
+from spotify_scraper.exceptions import SpotifyScraperError, URLError
+from spotify_scraper.utils.url import get_spotify_id, get_url_type
 
 logger = logging.getLogger(__name__)
 

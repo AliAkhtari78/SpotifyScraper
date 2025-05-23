@@ -23,7 +23,16 @@
       "Bash(mkdir:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
-      "Bash(twine check:*)"
+      "Bash(twine check:*)",
+      "Bash(git config:*)",
+      "Bash(git tag:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh workflow list:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(black:*)",
+      "Bash(git restore:*)",
+      "Bash(isort:*)"
     ],
     "deny": []
   }

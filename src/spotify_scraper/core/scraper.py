@@ -5,14 +5,14 @@ This module provides the base Scraper class that handles the low-level
 scraping functionality.
 """
 
-from typing import Dict, Optional, Any, Union
-import logging
 import json
-from urllib.parse import urlparse, urljoin
+import logging
+from typing import Any, Dict, Optional, Union
+from urllib.parse import urljoin, urlparse
 
-from spotify_scraper.exceptions import ScrapingError, URLError
 from spotify_scraper.browsers.base import Browser
 from spotify_scraper.constants import SPOTIFY_BASE_URL, SPOTIFY_EMBED_URL
+from spotify_scraper.exceptions import ScrapingError, URLError
 
 logger = logging.getLogger(__name__)
 
