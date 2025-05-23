@@ -57,19 +57,18 @@ pip install -e .
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 
 # Create a client
-browser = RequestsBrowser()
-client = SpotifyClient(browser=browser)
+client = SpotifyClient()
 
 # Extract track information
 track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
-track_data = client.get_track(track_url)
+track_data = client.get_track_info(track_url)
 
 print(f"Track: {track_data['name']}")
 print(f"Artist: {track_data['artists'][0]['name']}")
-print(f"Album: {track_data['album']['name']}")
+# Note: Album name may be empty for tracks due to Spotify embed API limitations
+print(f"Album: {track_data.get('album', {}).get('name', 'N/A')}")
 ```
 
 ## Documentation Structure
@@ -85,6 +84,22 @@ print(f"Album: {track_data['album']['name']}")
   - [Quick Start Guide](examples/quickstart.md) - Get started in minutes
   - [Advanced Usage](examples/advanced.md) - Complex scenarios and patterns
   - [CLI Guide](examples/cli.md) - Command-line interface documentation
+
+## Known Limitations
+
+SpotifyScraper uses Spotify's embed URLs to avoid authentication requirements. While this provides reliable access to most data, there are some limitations:
+
+- **Track Album Names**: Track data from embed URLs doesn't include the album name, only album images
+- **Limited Artist Data**: Only basic artist information is available without authentication  
+- **No Personal Data**: User playlists, saved tracks, and personal data require authentication
+- **Regional Restrictions**: Some content may not be available in all regions
+
+Features requiring authentication (via cookies):
+- Song lyrics
+- User profiles
+- Private playlists
+- Full artist discographies
+- Personal library access
 
 ## Version History
 

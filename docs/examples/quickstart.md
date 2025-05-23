@@ -62,10 +62,10 @@ def get_track_info(url):
     return {
         "title": track['name'],
         "artist": track['artists'][0]['name'],
-        "album": track['album']['name'],
+        "album": track.get('album', {}).get('name', 'N/A'),  # Album name may be empty
         "duration": track['duration_ms'],
         "preview_url": track.get('preview_url'),
-        "release_date": track['album'].get('release_date')
+        "release_date": track.get('release_date')
     }
 
 # Example usage
@@ -197,29 +197,19 @@ analyze_playlist("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
 ### URL Validation and Parsing
 
 ```python
-from spotify_scraper.utils.url import (
-    is_spotify_url,
-    get_url_type,
-    extract_id,
-    clean_url
-)
+from spotify_scraper import is_spotify_url, extract_id
 
 def analyze_url(url):
-    # Clean the URL
-    clean = clean_url(url)
-    
     # Check if it's valid
     if not is_spotify_url(url):
         print("Not a valid Spotify URL")
         return
     
-    # Get URL info
-    url_type = get_url_type(url)
+    # Get Spotify ID
     spotify_id = extract_id(url)
     
-    print(f"URL Type: {url_type}")
     print(f"Spotify ID: {spotify_id}")
-    print(f"Clean URL: {clean}")
+    print(f"Valid URL: {url}")
 
 # Example usage
 analyze_url("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6?si=abcd123")
@@ -228,25 +218,14 @@ analyze_url("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6?si=abcd123")
 ### Convert Between URL Formats
 
 ```python
-from spotify_scraper.utils.url import (
-    convert_to_embed_url,
-    convert_spotify_uri_to_url,
-    convert_url_to_spotify_uri
-)
+from spotify_scraper import convert_to_embed_url
 
 # Regular URL to embed URL
 regular_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
 embed_url = convert_to_embed_url(regular_url)
 print(f"Embed URL: {embed_url}")
 
-# Spotify URI to URL
-uri = "spotify:track:6rqhFgbbKwnb9MLmUQDhG6"
-url = convert_spotify_uri_to_url(uri)
-print(f"URL from URI: {url}")
-
-# URL to Spotify URI
-uri = convert_url_to_spotify_uri(regular_url)
-print(f"URI from URL: {uri}")
+# Note: SpotifyScraper primarily uses embed URLs internally for better reliability
 ```
 
 ## Error Handling
@@ -388,30 +367,21 @@ for result in results:
 Here's a complete example that combines multiple features:
 
 ```python
-from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
-from spotify_scraper.media import AudioDownloader, ImageDownloader
-from spotify_scraper.utils.url import is_spotify_url, get_url_type
+from spotify_scraper import SpotifyClient, is_spotify_url
 import os
 
 class TrackAnalyzer:
     def __init__(self):
-        self.browser = RequestsBrowser()
-        self.client = SpotifyClient(browser=self.browser)
-        self.audio_downloader = AudioDownloader(self.browser)
-        self.image_downloader = ImageDownloader(self.browser)
+        self.client = SpotifyClient()
     
     def analyze(self, url, download_media=False):
         # Validate URL
         if not is_spotify_url(url):
             return {"error": "Invalid Spotify URL"}
         
-        if get_url_type(url) != "track":
-            return {"error": "URL is not a track"}
-        
         try:
             # Extract track data
-            track_data = self.client.get_track(url)
+            track_data = self.client.get_track_info(url)
             
             # Build analysis
             analysis = {
@@ -423,12 +393,11 @@ class TrackAnalyzer:
                 },
                 "artist": {
                     "name": track_data['artists'][0]['name'],
-                    "id": track_data['artists'][0]['id']
+                    "id": track_data['artists'][0].get('id', '')
                 },
                 "album": {
-                    "name": track_data['album']['name'],
-                    "release_date": track_data['album'].get('release_date'),
-                    "total_tracks": track_data['album'].get('total_tracks')
+                    "name": track_data.get('album', {}).get('name', 'N/A'),
+                    "release_date": track_data.get('release_date'),
                 },
                 "preview_available": bool(track_data.get('preview_url'))
             }
@@ -440,17 +409,16 @@ class TrackAnalyzer:
                 
                 # Download preview if available
                 if track_data.get('preview_url'):
-                    audio_path = self.audio_downloader.download_preview(
-                        track_data,
+                    audio_path = self.client.download_preview_mp3(
+                        url,
                         path=media_dir
                     )
                     analysis['downloaded_audio'] = audio_path
                 
                 # Download cover
-                cover_path = self.image_downloader.download_cover(
-                    track_data,
-                    path=media_dir,
-                    size="large"
+                cover_path = self.client.download_cover(
+                    url,
+                    path=media_dir
                 )
                 analysis['downloaded_cover'] = cover_path
             

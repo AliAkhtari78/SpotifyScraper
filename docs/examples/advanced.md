@@ -10,18 +10,20 @@ To access additional features like lyrics, you need to authenticate using cookie
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 
-# Method 1: Cookie file
-browser = RequestsBrowser(cookie_file="spotify_cookies.txt")
-client = SpotifyClient(browser=browser)
+# Cookie file authentication
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
 
-# Now you can access lyrics
-track_data = client.get_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-if 'lyrics' in track_data:
+# Get track with lyrics
+track_data = client.get_track_info_with_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+if track_data.get('lyrics'):
     print("Lyrics available!")
-    for line in track_data['lyrics']['lines']:
-        print(f"{line['start_time_ms']}: {line['words']}")
+    print(track_data['lyrics'])
+
+# Or get just the lyrics
+lyrics = client.get_track_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+if lyrics:
+    print(lyrics)
 ```
 
 ### Extracting Cookies from Browser
@@ -36,7 +38,7 @@ To get cookies from your browser:
 ### Custom Headers and Proxy
 
 ```python
-from spotify_scraper.browsers import RequestsBrowser
+from spotify_scraper import SpotifyClient
 
 # Custom headers
 headers = {
@@ -51,7 +53,7 @@ proxy = {
     'https': 'https://proxy.example.com:8080'
 }
 
-browser = RequestsBrowser(
+client = SpotifyClient(
     headers=headers,
     proxy=proxy,
     cookie_file="cookies.txt"
@@ -64,26 +66,17 @@ For complex scenarios requiring JavaScript execution:
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import SeleniumBrowser
-from selenium.webdriver.chrome.options import Options
 
-# Configure Chrome options
-chrome_options = Options()
-chrome_options.add_argument('--headless')  # Run in background
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
+# Use Selenium browser type
+client = SpotifyClient(browser_type="selenium")
 
-# Create Selenium browser
-browser = SeleniumBrowser(
-    driver_name='chrome',
-    options=chrome_options,
-    executable_path='/path/to/chromedriver'  # Optional
-)
-
-# Use with client
-with SpotifyClient(browser=browser) as client:
-    track_data = client.get_track(url)
-    # Browser automatically closes when exiting context
+try:
+    # Extract data as usual
+    track_data = client.get_track_info(url)
+    album_data = client.get_album_info(album_url)
+finally:
+    # Always close when using Selenium
+    client.close()
 ```
 
 ## Advanced Data Extraction
@@ -92,16 +85,14 @@ with SpotifyClient(browser=browser) as client:
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 
 class LyricsExtractor:
     def __init__(self, cookie_file):
-        self.browser = RequestsBrowser(cookie_file=cookie_file)
-        self.client = SpotifyClient(browser=self.browser)
+        self.client = SpotifyClient(cookie_file=cookie_file)
     
     def get_synced_lyrics(self, track_url):
         """Extract lyrics with millisecond-precision timing."""
-        track_data = self.client.get_track(track_url)
+        track_data = self.client.get_track_info_with_lyrics(track_url)
         
         if 'lyrics' not in track_data:
             return None
@@ -154,16 +145,14 @@ extractor.export_to_lrc(
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 
 class ArtistAnalyzer:
     def __init__(self):
-        self.browser = RequestsBrowser()
-        self.client = SpotifyClient(browser=self.browser)
+        self.client = SpotifyClient()
     
     def analyze_artist(self, artist_url):
         """Perform deep analysis of an artist."""
-        artist_data = self.client.get_artist(artist_url)
+        artist_data = self.client.get_artist_info(artist_url)
         
         analysis = {
             'basic_info': {
