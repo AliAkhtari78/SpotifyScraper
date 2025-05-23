@@ -24,12 +24,12 @@ if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from spotify_scraper import SpotifyClient
-from spotify_scraper.exceptions import (
+from spotify_scraper.core.exceptions import (
     SpotifyScraperError,
     URLError,
     NetworkError,
     ScrapingError,
-    AuthenticationRequiredError
+    AuthenticationError
 )
 
 
@@ -311,7 +311,7 @@ class SpotifyScraperWrapper:
             Lyrics string or None if not available
             
         Raises:
-            AuthenticationRequiredError: If authentication is required but not provided
+            AuthenticationError: If authentication is required but not provided
         """
         self.logger.info(f"Getting lyrics for: {url}")
         
@@ -335,7 +335,7 @@ class SpotifyScraperWrapper:
             
             return lyrics
             
-        except AuthenticationRequiredError:
+        except AuthenticationError:
             self.logger.warning("Authentication required for lyrics")
             raise
         except Exception as e:
@@ -763,7 +763,7 @@ def main():
                 lyrics = scraper.get_track_lyrics(example_urls["track"], require_auth=False)
                 if lyrics:
                     print(f"Lyrics preview: {lyrics[:100]}...")
-            except AuthenticationRequiredError:
+            except AuthenticationError:
                 print("Lyrics require authentication")
                 
         except Exception as e:

@@ -11,7 +11,7 @@ from typing import Dict, Optional
 import requests
 
 from spotify_scraper.constants import DEFAULT_HEADERS
-from spotify_scraper.exceptions import AuthenticationError
+from spotify_scraper.core.exceptions import AuthenticationError
 
 logger = logging.getLogger(__name__)
 

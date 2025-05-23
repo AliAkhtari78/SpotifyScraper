@@ -18,7 +18,7 @@ from spotify_scraper.cli.utils import (
     print_success,
     save_to_file,
 )
-from spotify_scraper.exceptions import AuthenticationRequiredError, SpotifyScraperError
+from spotify_scraper.core.exceptions import AuthenticationError, SpotifyScraperError
 
 
 @click.command(name="track")
@@ -88,7 +88,7 @@ def track(
             click.echo("Extracting track information with lyrics...")
             try:
                 track_info = client.get_track_info_with_lyrics(url)
-            except AuthenticationRequiredError as e:
+            except AuthenticationError as e:
                 print_error(f"Authentication required for lyrics: {e}")
                 click.echo("Falling back to track info without lyrics...")
                 track_info = client.get_track_info(url)

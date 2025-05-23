@@ -20,7 +20,7 @@ from spotify_scraper.cli.utils import (
     print_warning,
     save_to_file,
 )
-from spotify_scraper.exceptions import AuthenticationError, SpotifyScraperError
+from spotify_scraper.core.exceptions import AuthenticationError, SpotifyScraperError
 
 
 @click.command(name="playlist")

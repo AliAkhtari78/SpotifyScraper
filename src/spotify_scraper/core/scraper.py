@@ -12,7 +12,7 @@ from urllib.parse import urljoin, urlparse
 
 from spotify_scraper.browsers.base import Browser
 from spotify_scraper.constants import SPOTIFY_EMBED_URL
-from spotify_scraper.exceptions import ScrapingError, URLError
+from spotify_scraper.core.exceptions import ScrapingError, URLError
 
 logger = logging.getLogger(__name__)
 

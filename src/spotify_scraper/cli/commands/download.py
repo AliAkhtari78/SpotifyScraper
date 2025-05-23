@@ -19,7 +19,7 @@ from spotify_scraper.cli.utils import (
     print_success,
     print_warning,
 )
-from spotify_scraper.exceptions import MediaError, SpotifyScraperError
+from spotify_scraper.core.exceptions import MediaError, SpotifyScraperError
 
 
 @click.group(name="download")

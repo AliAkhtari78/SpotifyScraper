@@ -7,7 +7,7 @@ This module provides factory functions for creating browser instances.
 import logging
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.exceptions import BrowserError
+from spotify_scraper.core.exceptions import BrowserError
 
 logger = logging.getLogger(__name__)
 

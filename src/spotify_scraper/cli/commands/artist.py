@@ -19,7 +19,7 @@ from spotify_scraper.cli.utils import (
     print_success,
     save_to_file,
 )
-from spotify_scraper.exceptions import SpotifyScraperError
+from spotify_scraper.core.exceptions import SpotifyScraperError
 
 
 @click.command(name="artist")

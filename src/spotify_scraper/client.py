@@ -27,7 +27,7 @@ from urllib.error import URLError
 from spotify_scraper.auth.session import Session
 from spotify_scraper.browsers import create_browser
 from spotify_scraper.core.scraper import Scraper
-from spotify_scraper.exceptions import AuthenticationRequiredError, MediaError
+from spotify_scraper.core.exceptions import AuthenticationError, MediaError
 from spotify_scraper.extractors.album import AlbumExtractor
 from spotify_scraper.extractors.artist import ArtistExtractor
 from spotify_scraper.extractors.playlist import PlaylistExtractor
@@ -252,7 +252,7 @@ class SpotifyClient:
                 authentication is required but not provided.
 
         Raises:
-            AuthenticationRequiredError: If require_auth is True and the client
+            AuthenticationError: If require_auth is True and the client
                 is not authenticated (no cookies provided).
             URLError: If the URL is not a valid Spotify track URL.
             ScrapingError: If there's an error extracting the lyrics.
@@ -281,7 +281,7 @@ class SpotifyClient:
         logger.info(f"Getting lyrics for track {url}")
         # For now, skip authentication check until session is properly implemented
         if require_auth and False:
-            raise AuthenticationRequiredError(
+            raise AuthenticationError(
                 "Fetching official Spotify lyrics requires an authenticated session. "
                 "Please provide cookies via 'cookie_file' or 'cookies' parameter during client "
                 "initialization."
@@ -329,7 +329,7 @@ class SpotifyClient:
         try:
             lyrics = self.get_track_lyrics(url, require_auth=require_lyrics_auth)
             track_info["lyrics"] = lyrics
-        except AuthenticationRequiredError as e:
+        except AuthenticationError as e:
             logger.warning(f"Could not fetch lyrics for {url} due to authentication: {e}")
             track_info["lyrics"] = None
         except Exception as e:

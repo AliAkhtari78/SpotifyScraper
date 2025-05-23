@@ -21,7 +21,7 @@ import logging
 from typing import Any, Dict, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.exceptions import ParsingError, SeleniumError
+from spotify_scraper.core.exceptions import ParsingError, BrowserError
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ class SeleniumBrowser(Browser):
                 self.driver = webdriver.Chrome(options=options)
             except WebDriverException as e:
                 logger.error(f"Failed to create Chrome driver: {e}")
-                raise SeleniumError(f"Failed to create Chrome driver: {e}") from e
+                raise BrowserError(f"Failed to create Chrome driver: {e}") from e
         else:
             self.driver = driver
 
@@ -81,7 +81,7 @@ class SeleniumBrowser(Browser):
             return self.driver.page_source
         except WebDriverException as e:
             logger.error(f"Failed to navigate to {url}: {e}")
-            raise SeleniumError(f"Failed to navigate to {url}: {e}") from e
+            raise BrowserError(f"Failed to navigate to {url}: {e}") from e
 
     def extract_json(self, selector: str) -> Dict[str, Any]:
         """
@@ -116,7 +116,7 @@ class SeleniumBrowser(Browser):
             raise ParsingError(f"Failed to parse JSON data: {e}") from e
         except Exception as e:
             logger.error(f"Failed to extract JSON data: {e}")
-            raise SeleniumError(f"Failed to extract JSON data: {e}") from e
+            raise BrowserError(f"Failed to extract JSON data: {e}") from e
 
     def wait_for_element(self, selector: str, timeout: int = 10) -> bool:
         """
