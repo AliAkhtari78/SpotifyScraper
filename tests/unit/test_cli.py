@@ -7,7 +7,7 @@ various input scenarios appropriately.
 
 import json
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, ANY
 
 import pytest
 from click.testing import CliRunner
@@ -81,7 +81,7 @@ class TestTrackCommand:
 
     def test_track_basic(self, runner, mock_client):
         """Test basic track extraction."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.track.create_client", return_value=mock_client):
             result = runner.invoke(track.track, ["https://open.spotify.com/track/123"])
 
             assert result.exit_code == 0
@@ -91,7 +91,9 @@ class TestTrackCommand:
     def test_track_with_output_file(self, runner, mock_client):
         """Test track extraction with output to file."""
         with runner.isolated_filesystem():
-            with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+            with patch(
+                "spotify_scraper.cli.commands.track.create_client", return_value=mock_client
+            ):
                 result = runner.invoke(
                     track.track, ["https://open.spotify.com/track/123", "-o", "track.json"]
                 )
@@ -106,7 +108,7 @@ class TestTrackCommand:
 
     def test_track_with_lyrics(self, runner, mock_client):
         """Test track extraction with lyrics."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.track.create_client", return_value=mock_client):
             result = runner.invoke(
                 track.track, ["https://open.spotify.com/track/123", "--with-lyrics"]
             )
@@ -116,7 +118,7 @@ class TestTrackCommand:
 
     def test_track_pretty_format(self, runner, mock_client):
         """Test track extraction with pretty formatting."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.track.create_client", return_value=mock_client):
             result = runner.invoke(track.track, ["https://open.spotify.com/track/123", "--pretty"])
 
             assert result.exit_code == 0
@@ -125,7 +127,7 @@ class TestTrackCommand:
 
     def test_track_table_format(self, runner, mock_client):
         """Test track extraction with table format."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.track.create_client", return_value=mock_client):
             with patch("spotify_scraper.cli.utils.format_as_table", return_value="Table output"):
                 result = runner.invoke(
                     track.track, ["https://open.spotify.com/track/123", "--format", "table"]
@@ -140,7 +142,7 @@ class TestTrackCommand:
         mock_client.get_track_info = Mock(side_effect=SpotifyScraperError("Network error"))
         mock_client.close = Mock()
 
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.track.create_client", return_value=mock_client):
             result = runner.invoke(track.track, ["https://open.spotify.com/track/123"])
 
             assert result.exit_code == 1
@@ -179,7 +181,7 @@ class TestAlbumCommand:
 
     def test_album_basic(self, runner, mock_client):
         """Test basic album extraction."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.album.create_client", return_value=mock_client):
             result = runner.invoke(album.album, ["https://open.spotify.com/album/456"])
 
             assert result.exit_code == 0
@@ -188,7 +190,7 @@ class TestAlbumCommand:
 
     def test_album_tracks_only(self, runner, mock_client):
         """Test album extraction with tracks only."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.album.create_client", return_value=mock_client):
             result = runner.invoke(
                 album.album, ["https://open.spotify.com/album/456", "--tracks-only"]
             )
@@ -226,7 +228,7 @@ class TestArtistCommand:
 
     def test_artist_basic(self, runner, mock_client):
         """Test basic artist extraction."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.artist.create_client", return_value=mock_client):
             result = runner.invoke(artist.artist, ["https://open.spotify.com/artist/789"])
 
             assert result.exit_code == 0
@@ -235,7 +237,7 @@ class TestArtistCommand:
 
     def test_artist_top_tracks_only(self, runner, mock_client):
         """Test artist extraction with top tracks only."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.artist.create_client", return_value=mock_client):
             result = runner.invoke(
                 artist.artist, ["https://open.spotify.com/artist/789", "--top-tracks-only"]
             )
@@ -279,7 +281,7 @@ class TestPlaylistCommand:
 
     def test_playlist_basic(self, runner, mock_client):
         """Test basic playlist extraction."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.playlist.create_client", return_value=mock_client):
             result = runner.invoke(playlist.playlist, ["https://open.spotify.com/playlist/abc"])
 
             assert result.exit_code == 0
@@ -288,7 +290,7 @@ class TestPlaylistCommand:
 
     def test_playlist_with_limit(self, runner, mock_client):
         """Test playlist extraction with track limit."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+        with patch("spotify_scraper.cli.commands.playlist.create_client", return_value=mock_client):
             result = runner.invoke(
                 playlist.playlist, ["https://open.spotify.com/playlist/abc", "--limit", "10"]
             )
@@ -310,8 +312,9 @@ class TestDownloadCommand:
     def mock_client(self):
         """Create a mock SpotifyClient."""
         client = Mock()
-        client.download_cover = Mock(return_value="/path/to/cover.jpg")
-        client.download_preview_mp3 = Mock(return_value="/path/to/preview.mp3")
+        # Return relative paths that will exist in isolated filesystem
+        client.download_cover = Mock(return_value="cover.jpg")
+        client.download_preview_mp3 = Mock(return_value="preview.mp3")
         client.get_track_info = Mock(
             return_value={
                 "name": "Test Track",
@@ -324,37 +327,56 @@ class TestDownloadCommand:
 
     def test_download_cover(self, runner, mock_client):
         """Test downloading cover image."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
-            result = runner.invoke(
-                download.download, ["cover", "https://open.spotify.com/track/123"]
-            )
+        with runner.isolated_filesystem():
+            # Create the mock downloaded file
+            Path("cover.jpg").touch()
 
-            assert result.exit_code == 0
-            assert "saved to" in result.output
-            mock_client.download_cover.assert_called_once()
+            with patch(
+                "spotify_scraper.cli.commands.download.create_client", return_value=mock_client
+            ):
+                result = runner.invoke(
+                    download.download, ["cover", "https://open.spotify.com/track/123", "--force"]
+                )
+
+                assert result.exit_code == 0
+                assert "saved to" in result.output
+                mock_client.download_cover.assert_called_once()
 
     def test_download_track(self, runner, mock_client):
         """Test downloading track preview."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
-            result = runner.invoke(
-                download.download, ["track", "https://open.spotify.com/track/123"]
-            )
+        with runner.isolated_filesystem():
+            # Create the mock downloaded file
+            Path("preview.mp3").touch()
 
-            assert result.exit_code == 0
-            assert "saved to" in result.output
-            mock_client.download_preview_mp3.assert_called_once()
+            with patch(
+                "spotify_scraper.cli.commands.download.create_client", return_value=mock_client
+            ):
+                result = runner.invoke(
+                    download.download, ["track", "https://open.spotify.com/track/123", "--force"]
+                )
+
+                assert result.exit_code == 0
+                assert "saved to" in result.output
+                mock_client.download_preview_mp3.assert_called_once()
 
     def test_download_track_with_cover(self, runner, mock_client):
         """Test downloading track with embedded cover."""
-        with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
-            result = runner.invoke(
-                download.download, ["track", "https://open.spotify.com/track/123", "--with-cover"]
-            )
+        with runner.isolated_filesystem():
+            # Create the mock downloaded file
+            Path("preview.mp3").touch()
 
-            assert result.exit_code == 0
-            mock_client.download_preview_mp3.assert_called_with(
-                url="https://open.spotify.com/track/123", path=".", with_cover=True
-            )
+            with patch(
+                "spotify_scraper.cli.commands.download.create_client", return_value=mock_client
+            ):
+                result = runner.invoke(
+                    download.download,
+                    ["track", "https://open.spotify.com/track/123", "--with-cover", "--force"],
+                )
+
+                assert result.exit_code == 0
+                mock_client.download_preview_mp3.assert_called_with(
+                    url="https://open.spotify.com/track/123", path=ANY, with_cover=True
+                )
 
     def test_download_batch(self, runner, mock_client):
         """Test batch download from file."""
@@ -367,7 +389,9 @@ class TestDownloadCommand:
                 f.write("\n")  # Empty line
                 f.write("https://open.spotify.com/album/789\n")
 
-            with patch("spotify_scraper.cli.utils.create_client", return_value=mock_client):
+            with patch(
+                "spotify_scraper.cli.commands.download.create_client", return_value=mock_client
+            ):
                 with patch("spotify_scraper.utils.url.get_url_type") as mock_get_type:
                     mock_get_type.side_effect = ["track", "track", "album"]
 

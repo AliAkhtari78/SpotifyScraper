@@ -41,17 +41,20 @@ def is_spotify_url(url: str) -> bool:
 
     Validates whether the provided URL belongs to Spotify's domains.
     Supports all known Spotify domains including regular, embed, and legacy.
+    Also supports Spotify URIs (spotify:track:...).
 
     Args:
         url: URL string to validate. Can be any string.
 
     Returns:
-        bool: True if the URL is from a Spotify domain, False otherwise.
+        bool: True if the URL is from a Spotify domain or is a Spotify URI, False otherwise.
 
     Example:
         >>> is_spotify_url("https://open.spotify.com/track/123")
         True
         >>> is_spotify_url("https://open.spotify.com/embed/track/123")
+        True
+        >>> is_spotify_url("spotify:track:123")
         True
         >>> is_spotify_url("https://example.com/track/123")
         False
@@ -59,9 +62,14 @@ def is_spotify_url(url: str) -> bool:
         False
 
     Note:
-        This function only checks the domain, not whether the URL
+        This function only checks the domain/format, not whether the URL
         structure is valid or the resource exists.
     """
+    # Check if it's a Spotify URI
+    if url.startswith("spotify:"):
+        return True
+
+    # Check if it's a Spotify URL
     parsed_url = urlparse(url)
     return parsed_url.netloc in ["open.spotify.com", "play.spotify.com", "embed.spotify.com"]
 
@@ -70,10 +78,11 @@ def get_url_type(url: str) -> URLType:
     """Determine the type of Spotify entity from a URL.
 
     Analyzes the URL path to determine what type of Spotify entity
-    it references. Handles both regular and embed URL formats.
+    it references. Handles both regular and embed URL formats, as well
+    as Spotify URIs.
 
     Args:
-        url: Spotify URL to analyze. Must be a valid Spotify URL.
+        url: Spotify URL or URI to analyze. Must be a valid Spotify URL/URI.
 
     Returns:
         URLType: The entity type as a string literal:
@@ -85,18 +94,29 @@ def get_url_type(url: str) -> URLType:
             - "unknown": Valid Spotify URL but unknown type
 
     Raises:
-        URLError: If the URL is not from a Spotify domain.
+        URLError: If the URL is not from a Spotify domain or valid URI.
 
     Example:
         >>> get_url_type("https://open.spotify.com/track/123")
         'track'
         >>> get_url_type("https://open.spotify.com/embed/album/456")
         'album'
+        >>> get_url_type("spotify:track:789")
+        'track'
         >>> get_url_type("https://open.spotify.com/search/queen")
         'search'
     """
     if not is_spotify_url(url):
         raise URLError(f"Not a valid Spotify URL: {url}")
+
+    # Handle Spotify URIs
+    if url.startswith("spotify:"):
+        parts = url.split(":")
+        if len(parts) >= 2:
+            resource_type = parts[1]
+            if resource_type in ["track", "album", "artist", "playlist"]:
+                return resource_type
+        return "unknown"
 
     parsed_url = urlparse(url)
     path_parts = parsed_url.path.strip("/").split("/")
@@ -129,10 +149,11 @@ def extract_id(url: str) -> str:
     uniquely identifies the Spotify entity (track, album, artist, or playlist).
 
     Args:
-        url: Spotify URL containing an entity ID. Supports:
+        url: Spotify URL or URI containing an entity ID. Supports:
             - Regular: https://open.spotify.com/track/{id}
             - Embed: https://open.spotify.com/embed/track/{id}
             - With params: https://open.spotify.com/track/{id}?si=...
+            - URI: spotify:track:{id}
 
     Returns:
         str: The 22-character Spotify ID.
@@ -147,11 +168,20 @@ def extract_id(url: str) -> str:
         '6rqhFgbbKwnb9MLmUQDhG6'
         >>> extract_id("https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3")
         '1DFixLWuPkv3KT3TnV35m3'
+        >>> extract_id("spotify:track:789")
+        '789'
         >>> extract_id("https://open.spotify.com/track/123?si=abcd&utm_source=copy")
         '123'
     """
     if not is_spotify_url(url):
         raise URLError(f"Not a valid Spotify URL: {url}")
+
+    # Handle Spotify URIs
+    if url.startswith("spotify:"):
+        parts = url.split(":")
+        if len(parts) >= 3:
+            return parts[2]
+        raise URLError(f"Could not extract ID from URI: {url}")
 
     # Parse the URL
     parsed_url = urlparse(url)
@@ -220,6 +250,17 @@ def convert_to_embed_url(url: str) -> str:
     """
     if not is_spotify_url(url):
         raise URLError(f"Not a valid Spotify URL: {url}")
+
+    # Handle Spotify URIs first
+    if url.startswith("spotify:"):
+        url_type = get_url_type(url)
+        if url_type == "unknown":
+            raise URLError(f"Cannot convert URI of unknown type to embed URL: {url}")
+        try:
+            id_value = extract_id(url)
+        except URLError:
+            raise URLError(f"Could not extract ID for embed URL conversion: {url}")
+        return f"{SPOTIFY_EMBED_URL}/embed/{url_type}/{id_value}"
 
     # If it's already an embed URL, return it
     parsed_url = urlparse(url)

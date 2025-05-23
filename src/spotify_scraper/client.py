@@ -22,11 +22,10 @@ Example:
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
-from urllib.error import URLError
 
 from spotify_scraper.auth.session import Session
 from spotify_scraper.browsers import create_browser
-from spotify_scraper.core.exceptions import AuthenticationError, MediaError
+from spotify_scraper.core.exceptions import AuthenticationError, MediaError, URLError
 from spotify_scraper.core.scraper import Scraper
 from spotify_scraper.extractors.album import AlbumExtractor
 from spotify_scraper.extractors.artist import ArtistExtractor
@@ -279,8 +278,8 @@ class SpotifyClient:
             lyrics available.
         """
         logger.info(f"Getting lyrics for track {url}")
-        # For now, skip authentication check until session is properly implemented
-        if require_auth and False:
+        # Check authentication if required
+        if require_auth and not self.session.is_authenticated():
             raise AuthenticationError(
                 "Fetching official Spotify lyrics requires an authenticated session. "
                 "Please provide cookies via 'cookie_file' or 'cookies' parameter during client "

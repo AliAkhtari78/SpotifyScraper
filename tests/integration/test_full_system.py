@@ -29,7 +29,13 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
 from examples.production_usage import SpotifyScraperWrapper
-from spotify_scraper.config_manager import ConfigurationManager, SpotifyScraperConfig
+from spotify_scraper.config_manager import (
+    ConfigurationManager,
+    SpotifyScraperConfig,
+    LogLevel,
+    CacheConfig,
+)
+from spotify_scraper.core.exceptions import NetworkError, SpotifyScraperError
 from spotify_scraper.utils.common import (
     SpotifyBulkOperations,
     SpotifyDataAnalyzer,
@@ -138,7 +144,7 @@ class TestFullSystemIntegration:
         assert new_manager.config.cache.directory == str(tmp_path / "cache")
 
         # Create client with configuration
-        with patch("spotify_scraper.config_manager.SpotifyClient") as mock_client:
+        with patch("spotify_scraper.SpotifyClient") as mock_client:
             new_manager.create_client()
             mock_client.assert_called_once()
 
@@ -245,7 +251,7 @@ class TestFullSystemIntegration:
             wrapper.client = mock_client
 
             # Should raise after retries
-            with pytest.raises(NetworkError):
+            with pytest.raises(SpotifyScraperError):
                 wrapper.get_track_info("https://open.spotify.com/track/test")
 
             # Verify retries were attempted

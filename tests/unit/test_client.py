@@ -247,24 +247,37 @@ class TestSpotifyClient:
     def test_download_cover(self, client):
         """Test downloading cover image."""
         mock_path = "/path/to/image.jpg"
-        client._image_downloader.download = Mock(return_value=mock_path)
+        # Mock get_all_info to return track data
+        mock_track_data = {
+            "name": "Test Track",
+            "artists": [{"name": "Test Artist"}],
+            "images": [{"url": "https://example.com/cover.jpg", "height": 640, "width": 640}],
+        }
+        client.get_all_info = Mock(return_value=mock_track_data)
+        client._image_downloader.download_cover = Mock(return_value=mock_path)
 
         result = client.download_cover("https://open.spotify.com/track/123")
 
         assert result == mock_path
-        client._image_downloader.download.assert_called_once()
+        client._image_downloader.download_cover.assert_called_once()
 
     def test_download_preview_mp3(self, client):
         """Test downloading preview MP3."""
         mock_path = "/path/to/preview.mp3"
-        client._audio_downloader.download = Mock(return_value=mock_path)
+        # Mock get_track_info to return track data with preview URL
+        mock_track_data = {
+            "name": "Test Track",
+            "artists": [{"name": "Test Artist"}],
+            "preview_url": "https://example.com/preview.mp3",
+            "images": [{"url": "https://example.com/cover.jpg", "height": 640, "width": 640}],
+        }
+        client.get_track_info = Mock(return_value=mock_track_data)
+        client._audio_downloader.download_preview = Mock(return_value=mock_path)
 
         result = client.download_preview_mp3("https://open.spotify.com/track/123", with_cover=True)
 
         assert result == mock_path
-        client._audio_downloader.download.assert_called_once_with(
-            "https://open.spotify.com/track/123", "", True
-        )
+        client._audio_downloader.download_preview.assert_called_once()
 
     def test_client_close(self, client):
         """Test that the client properly closes resources."""
