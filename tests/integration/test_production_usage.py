@@ -20,7 +20,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+# Add both the project root and src directory to path for development
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
 
 from examples.production_usage import (
     SpotifyScraperWrapper,
@@ -525,19 +528,19 @@ class TestIntegrationScenarios:
     """Integration test scenarios combining multiple features."""
 
     @pytest.fixture
-    def integration_wrapper(self, temp_dir):
+    def integration_wrapper(self, tmp_path):
         """Create wrapper for integration testing."""
         with patch("examples.production_usage.SpotifyClient") as mock_client_class:
             mock_client = Mock()
             mock_client_class.return_value = mock_client
 
             wrapper = SpotifyScraperWrapper(
-                cache_dir=temp_dir / "cache", log_level="INFO", max_retries=2, retry_delay=0.1
+                cache_dir=tmp_path / "cache", log_level="INFO", max_retries=2, retry_delay=0.1
             )
             wrapper.client = mock_client
             yield wrapper, mock_client
 
-    def test_full_playlist_processing(self, integration_wrapper, temp_dir):
+    def test_full_playlist_processing(self, integration_wrapper, tmp_path):
         """Test processing a full playlist with caching and export."""
         wrapper, mock_client = integration_wrapper
 

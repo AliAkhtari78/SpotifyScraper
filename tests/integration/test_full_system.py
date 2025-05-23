@@ -25,7 +25,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+# Add both the project root and src directory to path for development
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
 
 from examples.production_usage import SpotifyScraperWrapper
 from spotify_scraper.config_manager import ConfigurationManager, SpotifyScraperConfig
@@ -42,11 +45,9 @@ class TestFullSystemIntegration:
     """Test full system integration."""
 
     @pytest.fixture
-    def temp_dir(self):
+    def temp_dir(self, tmp_path):
         """Create temporary directory for tests."""
-        temp_dir = tempfile.mkdtemp()
-        yield Path(temp_dir)
-        shutil.rmtree(temp_dir)
+        yield tmp_path
 
     @pytest.fixture
     def mock_track_data(self):
@@ -114,20 +115,20 @@ class TestFullSystemIntegration:
             },
         }
 
-    def test_configuration_to_client_workflow(self, temp_dir):
+    def test_configuration_to_client_workflow(self, tmp_path):
         """Test workflow from configuration to client creation."""
         # Create configuration
         config = SpotifyScraperConfig(
             log_level=LogLevel.DEBUG,
-            cache=CacheConfig(enabled=True, directory=str(temp_dir / "cache")),
-            output_directory=str(temp_dir / "output"),
+            cache=CacheConfig(enabled=True, directory=str(tmp_path / "cache")),
+            output_directory=str(tmp_path / "output"),
         )
 
         # Create manager
         manager = ConfigurationManager(config)
 
         # Save configuration
-        config_file = temp_dir / "config.json"
+        config_file = tmp_path / "config.json"
         manager.save_to_file(config_file)
 
         # Load configuration
@@ -136,14 +137,14 @@ class TestFullSystemIntegration:
 
         # Verify configuration was preserved
         assert new_manager.config.log_level == LogLevel.DEBUG
-        assert new_manager.config.cache.directory == str(temp_dir / "cache")
+        assert new_manager.config.cache.directory == str(tmp_path / "cache")
 
         # Create client with configuration
         with patch("spotify_scraper.config_manager.SpotifyClient") as mock_client:
             new_manager.create_client()
             mock_client.assert_called_once()
 
-    def test_wrapper_with_utilities(self, temp_dir, mock_track_data, mock_playlist_data):
+    def test_wrapper_with_utilities(self, tmp_path, mock_track_data, mock_playlist_data):
         """Test SpotifyScraperWrapper with utility functions."""
         with patch("examples.production_usage.SpotifyClient") as mock_client_class:
             mock_client = Mock()
@@ -154,7 +155,7 @@ class TestFullSystemIntegration:
             mock_client.get_playlist_info.return_value = mock_playlist_data
 
             # Create wrapper
-            wrapper = SpotifyScraperWrapper(cache_dir=temp_dir / "cache", log_level="INFO")
+            wrapper = SpotifyScraperWrapper(cache_dir=tmp_path / "cache", log_level="INFO")
             wrapper.client = mock_client
 
             # Test track operations
@@ -184,13 +185,13 @@ class TestFullSystemIntegration:
             # Export results
             wrapper.export_results(
                 {"track": track_info, "playlist": playlist_info},
-                temp_dir / "results.json",
+                tmp_path / "results.json",
                 format="json",
             )
 
-            assert (temp_dir / "results.json").exists()
+            assert (tmp_path / "results.json").exists()
 
-    def test_bulk_operations_integration(self, temp_dir, mock_track_data):
+    def test_bulk_operations_integration(self, tmp_path, mock_track_data):
         """Test bulk operations with configuration."""
         with patch("spotify_scraper.utils.common.SpotifyClient") as mock_client_class:
             mock_client = Mock()
@@ -219,7 +220,7 @@ class TestFullSystemIntegration:
             assert any("artist" in url for url in urls)
 
             # Test dataset creation
-            dataset_file = temp_dir / "dataset.json"
+            dataset_file = tmp_path / "dataset.json"
             bulk_ops.create_dataset(
                 ["https://open.spotify.com/track/test123"], dataset_file, format="json"
             )
@@ -230,7 +231,7 @@ class TestFullSystemIntegration:
             assert len(dataset) == 1
             assert dataset[0]["name"] == "Test Track"
 
-    def test_error_handling_integration(self, temp_dir):
+    def test_error_handling_integration(self, tmp_path):
         """Test error handling across components."""
         with patch("examples.production_usage.SpotifyClient") as mock_client_class:
             mock_client = Mock()
@@ -241,7 +242,7 @@ class TestFullSystemIntegration:
 
             # Create wrapper with retry logic
             wrapper = SpotifyScraperWrapper(
-                cache_dir=temp_dir / "cache", max_retries=2, retry_delay=0.1
+                cache_dir=tmp_path / "cache", max_retries=2, retry_delay=0.1
             )
             wrapper.client = mock_client
 
@@ -252,7 +253,7 @@ class TestFullSystemIntegration:
             # Verify retries were attempted
             assert mock_client.get_track_info.call_count == 2
 
-    def test_cache_integration(self, temp_dir, mock_track_data):
+    def test_cache_integration(self, tmp_path, mock_track_data):
         """Test caching across operations."""
         with patch("examples.production_usage.SpotifyClient") as mock_client_class:
             mock_client = Mock()
@@ -260,7 +261,7 @@ class TestFullSystemIntegration:
             mock_client.get_track_info.return_value = mock_track_data
 
             # Create wrapper with cache
-            wrapper = SpotifyScraperWrapper(cache_dir=temp_dir / "cache")
+            wrapper = SpotifyScraperWrapper(cache_dir=tmp_path / "cache")
             wrapper.client = mock_client
 
             url = "https://open.spotify.com/track/test123"
@@ -275,7 +276,7 @@ class TestFullSystemIntegration:
             assert result1 == result2
 
             # Verify cache file exists
-            cache_files = list((temp_dir / "cache").glob("*.json"))
+            cache_files = list((tmp_path / "cache").glob("*.json"))
             assert len(cache_files) == 1
 
     def test_validation_utilities(self):
@@ -303,7 +304,7 @@ class TestFullSystemIntegration:
         assert format_duration(3723000) == "1:02:03"
         assert format_duration(183000) == "3:03"
 
-    def test_end_to_end_workflow(self, temp_dir, mock_track_data, mock_playlist_data):
+    def test_end_to_end_workflow(self, tmp_path, mock_track_data, mock_playlist_data):
         """Test complete end-to-end workflow."""
         with patch("examples.production_usage.SpotifyClient") as mock_client_class:
             mock_client = Mock()
@@ -315,13 +316,13 @@ class TestFullSystemIntegration:
             mock_client.get_all_info.side_effect = lambda url: (
                 mock_track_data if "track" in url else mock_playlist_data
             )
-            mock_client.download_preview_mp3.return_value = str(temp_dir / "audio.mp3")
-            mock_client.download_cover.return_value = str(temp_dir / "cover.jpg")
+            mock_client.download_preview_mp3.return_value = str(tmp_path / "audio.mp3")
+            mock_client.download_cover.return_value = str(tmp_path / "cover.jpg")
 
             # 1. Create configuration
             config = SpotifyScraperConfig(
-                output_directory=str(temp_dir / "output"),
-                cache=CacheConfig(directory=str(temp_dir / "cache")),
+                output_directory=str(tmp_path / "output"),
+                cache=CacheConfig(directory=str(tmp_path / "cache")),
             )
 
             ConfigurationManager(config)
@@ -360,7 +361,7 @@ class TestFullSystemIntegration:
                 "formatted_output": markdown_output,
             }
 
-            output_file = temp_dir / "final_results.json"
+            output_file = tmp_path / "final_results.json"
             wrapper.export_results(final_output, output_file, format="json")
 
             # Verify everything worked

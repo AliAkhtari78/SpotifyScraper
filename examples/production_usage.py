@@ -19,6 +19,10 @@ from typing import Dict, Any, Optional, List, Union
 from contextlib import contextmanager
 from datetime import datetime
 
+# Add src directory to path if running as script
+if __name__ == "__main__":
+    sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+
 from spotify_scraper import SpotifyClient
 from spotify_scraper.exceptions import (
     SpotifyScraperError,
@@ -694,12 +698,12 @@ def analyze_spotify_url(url: str) -> Dict[str, Any]:
     Returns:
         Dictionary with URL analysis results
     """
-    from spotify_scraper.utils.url import get_url_type, get_spotify_id
+    from spotify_scraper.utils.url import get_url_type, extract_id
     
     return {
         "url": url,
         "type": get_url_type(url),
-        "id": get_spotify_id(url),
+        "id": extract_id(url),
         "is_valid": get_url_type(url) is not None
     }
 
