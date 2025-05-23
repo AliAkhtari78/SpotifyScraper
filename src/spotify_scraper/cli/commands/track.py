@@ -25,22 +25,26 @@ from spotify_scraper.cli.utils import (
 @click.command(name="track")
 @click.argument("url", type=str)
 @click.option(
-    "--output", "-o",
+    "--output",
+    "-o",
     type=click.Path(path_type=Path),
     help="Save output to file (JSON format)",
 )
 @click.option(
-    "--pretty", "-p",
+    "--pretty",
+    "-p",
     is_flag=True,
     help="Pretty print the output",
 )
 @click.option(
-    "--with-lyrics", "-l",
+    "--with-lyrics",
+    "-l",
     is_flag=True,
     help="Include lyrics (requires authentication)",
 )
 @click.option(
-    "--format", "-f",
+    "--format",
+    "-f",
     type=click.Choice(["json", "yaml", "table"], case_sensitive=False),
     default="json",
     help="Output format",
@@ -56,30 +60,30 @@ def track(
 ) -> None:
     """
     Extract track information from a Spotify track URL.
-    
+
     This command extracts comprehensive track information including:
     - Track metadata (name, artists, album, duration)
     - Audio features (preview URL if available)
     - Cover art URLs in various sizes
     - Lyrics (if --with-lyrics flag is used and authenticated)
-    
+
     Examples:
         # Basic track info
         spotify-scraper track https://open.spotify.com/track/3n3Ppam7vgaVa1iaRUc9Lp
-        
+
         # Track info with lyrics (requires authentication)
         spotify-scraper -c cookies.txt track --with-lyrics https://open.spotify.com/track/...
-        
+
         # Save to file with pretty formatting
         spotify-scraper track -o track_info.json --pretty https://open.spotify.com/track/...
-        
+
         # Display as table
         spotify-scraper track --format table https://open.spotify.com/track/...
     """
     try:
         # Create client from context
         client = create_client(ctx.obj)
-        
+
         # Extract track information
         if with_lyrics:
             click.echo("Extracting track information with lyrics...")
@@ -92,15 +96,15 @@ def track(
         else:
             click.echo("Extracting track information...")
             track_info = client.get_track_info(url)
-        
+
         # Check for errors in the response
         if "ERROR" in track_info:
             print_error(f"Failed to extract track: {track_info['ERROR']}")
             sys.exit(1)
-        
+
         # Format and display output
         formatted_output = format_output(track_info, format, pretty)
-        
+
         if output:
             # Save to file
             save_to_file(formatted_output, output, format)
@@ -108,17 +112,16 @@ def track(
         else:
             # Display to console
             click.echo(formatted_output)
-        
+
         # Show summary
         if track_info.get("name"):
-            artist_names = ", ".join([
-                artist.get("name", "Unknown") 
-                for artist in track_info.get("artists", [])
-            ])
+            artist_names = ", ".join(
+                [artist.get("name", "Unknown") for artist in track_info.get("artists", [])]
+            )
             duration_ms = track_info.get("duration_ms", 0)
             duration_min = duration_ms // 60000
             duration_sec = (duration_ms % 60000) // 1000
-            
+
             click.echo("\n" + "─" * 50)
             click.echo(f"✓ Track: {track_info['name']}")
             click.echo(f"✓ Artist(s): {artist_names}")
@@ -128,7 +131,7 @@ def track(
                 click.echo("✓ Preview available: Yes")
             if track_info.get("lyrics"):
                 click.echo(f"✓ Lyrics: {len(track_info['lyrics'])} characters")
-        
+
     except SpotifyScraperError as e:
         print_error(f"Scraping error: {e}")
         sys.exit(1)
@@ -137,5 +140,5 @@ def track(
         sys.exit(1)
     finally:
         # Clean up
-        if 'client' in locals():
+        if "client" in locals():
             client.close()

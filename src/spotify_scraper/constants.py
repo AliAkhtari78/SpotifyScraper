@@ -12,11 +12,7 @@ SPOTIFY_API_URL = "https://api.spotify.com/v1"
 SPOTIFY_CDN_URL = "https://i.scdn.co"
 
 # Domains
-SPOTIFY_DOMAINS = [
-    "open.spotify.com",
-    "spotify.com",
-    "www.spotify.com"
-]
+SPOTIFY_DOMAINS = ["open.spotify.com", "spotify.com", "www.spotify.com"]
 
 # URL patterns
 TRACK_URL_PATTERN = f"{SPOTIFY_BASE_URL}/track/"

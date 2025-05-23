@@ -1,7 +1,7 @@
 """SpotifyScraper - Modern Spotify Web Scraper.
 
 A fast, modern Python library for extracting data from Spotify's web player.
-Supports tracks, albums, artists, playlists, and lyrics with both requests and 
+Supports tracks, albums, artists, playlists, and lyrics with both requests and
 Selenium backends.
 
 This package provides a high-level interface for extracting metadata from Spotify's
@@ -18,14 +18,14 @@ Key Features:
 
 Typical usage example:
     from spotify_scraper import SpotifyClient
-    
+
     # Create a client
     client = SpotifyClient()
-    
+
     # Extract track information
     track_data = client.get_track_info("https://open.spotify.com/track/...")
     print(f"Track: {track_data['name']} by {track_data['artists'][0]['name']}")
-    
+
     # Download preview and cover
     client.download_preview_mp3(track_url, path="downloads/")
     client.download_cover(track_url, path="covers/")
@@ -70,7 +70,7 @@ from spotify_scraper.utils.url import (
 __all__ = [
     "SpotifyClient",
     "is_spotify_url",
-    "extract_id", 
+    "extract_id",
     "convert_to_embed_url",
     "SpotifyScraperError",
     "URLError",
@@ -85,4 +85,4 @@ __all__ = [
 # Package metadata
 __title__ = "spotifyscraper"
 __description__ = "A modern Python library for extracting data from Spotify's web interface"
-__version_info__ = tuple(int(part) for part in __version__.split('.'))
+__version_info__ = tuple(int(part) for part in __version__.split("."))

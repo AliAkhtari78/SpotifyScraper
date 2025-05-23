@@ -20,14 +20,14 @@ logger = logging.getLogger(__name__)
 class Scraper:
     """
     Base scraper class for extracting data from Spotify web player.
-    
+
     This class provides common scraping functionality used by various extractors.
     """
-    
+
     def __init__(self, browser: Browser, log_level: str = "INFO"):
         """
         Initialize the Scraper.
-        
+
         Args:
             browser: Browser instance for web interactions
             log_level: Logging level string (e.g., "DEBUG", "INFO")
@@ -38,11 +38,11 @@ class Scraper:
         try:
             logger.setLevel(getattr(logging, log_level.upper()))
         except AttributeError:
-            logger.setLevel(logging.INFO) # Default to INFO if invalid level is provided
+            logger.setLevel(logging.INFO)  # Default to INFO if invalid level is provided
             logger.warning(f"Invalid log_level '{log_level}'. Defaulting to INFO.")
 
         logger.debug("Initialized Scraper")
-    
+
     @staticmethod
     def _script_data_to_json(script_content: str) -> Dict[str, Any]:
         """
@@ -62,7 +62,7 @@ class Scraper:
             return json.loads(script_content)
         except json.JSONDecodeError as e:
             logger.error(f"Error parsing __NEXT_DATA__ JSON: {e}")
-            logger.debug(f"Problematic script content: {script_content[:500]}...") # Log snippet
+            logger.debug(f"Problematic script content: {script_content[:500]}...")  # Log snippet
             raise ScrapingError(f"Error parsing __NEXT_DATA__ JSON: {e}") from e
 
     @staticmethod
@@ -72,7 +72,7 @@ class Scraper:
 
         Args:
             millis: Time in milliseconds
-            
+
         Returns:
             Formatted time string (e.g., "4:30" or "1:30:45")
         """
@@ -91,7 +91,7 @@ class Scraper:
             return f"{minutes}:{seconds:02d}"
         else:
             return f"{hours}:{minutes:02d}:{seconds:02d}"
-    
+
     @staticmethod
     def convert_to_embed_url(url: str) -> Optional[str]:
         """
@@ -107,7 +107,7 @@ class Scraper:
         parsed_url = urlparse(url)
         if parsed_url.netloc == "open.spotify.com" and parsed_url.path.startswith("/track/"):
             track_id = parsed_url.path.split("/track/")[-1]
-            if "?" in track_id: # Remove query params from track_id
+            if "?" in track_id:  # Remove query params from track_id
                 track_id = track_id.split("?")[0]
             return urljoin(SPOTIFY_EMBED_URL, f"track/{track_id}")
         logger.warning(f"Could not convert URL to embed URL: {url}")
@@ -129,10 +129,14 @@ class Scraper:
             path_parts = parsed_url.path.strip("/").split("/")
             if len(path_parts) >= 2 and path_parts[0] in ["track", "embed"]:
                 # For /track/ID or /embed/track/ID
-                track_id_index = 1 if path_parts[0] == "track" else (2 if path_parts[0] == "embed" and path_parts[1] == "track" else -1)
+                track_id_index = (
+                    1
+                    if path_parts[0] == "track"
+                    else (2 if path_parts[0] == "embed" and path_parts[1] == "track" else -1)
+                )
                 if track_id_index != -1 and track_id_index < len(path_parts):
                     track_id = path_parts[track_id_index]
-                    return track_id.split("?")[0] # Remove query parameters
+                    return track_id.split("?")[0]  # Remove query parameters
         logger.warning(f"Could not extract track ID from URL: {url}")
         return None
 
@@ -157,18 +161,18 @@ class Scraper:
         if parsed_url.scheme not in ["http", "https"] or parsed_url.netloc != "open.spotify.com":
             raise URLError(f"Invalid Spotify URL: {url}. Must be from 'open.spotify.com'.")
 
-        path = parsed_url.path.strip("/") # Normalize path
+        path = parsed_url.path.strip("/")  # Normalize path
 
         if expected_type:
             # Handle embed case specifically if needed, e.g. 'embed/track'
             if expected_type.startswith("embed/"):
                 if not path.startswith(expected_type):
-                    raise URLError(f"URL '{url}' is not a Spotify {expected_type} URL. Path: '{path}'")
+                    raise URLError(
+                        f"URL '{url}' is not a Spotify {expected_type} URL. Path: '{path}'"
+                    )
             elif not path.startswith(expected_type + "/"):
-                 # Ensure it's followed by a slash for non-embed types like 'track/'
+                # Ensure it's followed by a slash for non-embed types like 'track/'
                 raise URLError(f"URL '{url}' is not a Spotify {expected_type} URL. Path: '{path}'")
 
         logger.debug(f"Validated Spotify URL: {url} (Expected type: {expected_type})")
         return True
-
-

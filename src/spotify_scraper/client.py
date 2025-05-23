@@ -40,22 +40,22 @@ logger = logging.getLogger(__name__)
 
 class SpotifyClient:
     """High-level client for interacting with Spotify web player.
-    
+
     This class provides a simplified, user-friendly interface for extracting
     information from Spotify's web player and downloading related media files.
     It abstracts away the complexity of web scraping and provides clean methods
     for common operations.
-    
+
     The client supports extracting data from:
         - Tracks (including lyrics with authentication)
         - Albums (with full track listings)
         - Artists (including top tracks and discography)
         - Playlists (with all track details)
-    
+
     It also supports downloading:
         - Audio preview clips (30-second MP3s)
         - Cover images in various sizes
-    
+
     Attributes:
         session: Authentication session for accessing protected content.
         scraper: Core scraper instance that handles web interactions.
@@ -64,33 +64,33 @@ class SpotifyClient:
         album_extractor: Specialized extractor for album data.
         artist_extractor: Specialized extractor for artist data.
         playlist_extractor: Specialized extractor for playlist data.
-    
+
     Example:
         Basic usage without authentication::
-        
+
             client = SpotifyClient()
             track = client.get_track_info("https://open.spotify.com/track/...")
             print(f"{track['name']} by {track['artists'][0]['name']}")
-            
+
         With authentication for lyrics::
-        
+
             client = SpotifyClient(cookie_file="spotify_cookies.txt")
             track = client.get_track_info_with_lyrics(track_url)
             print(track['lyrics'])
-            
+
         Download media files::
-        
+
             # Download 30-second preview
             client.download_preview_mp3(track_url, path="previews/")
-            
+
             # Download album cover
             client.download_cover(album_url, path="covers/", size="large")
-    
+
     Note:
         Authentication via cookies is required for some features like lyrics.
         The library will work without authentication for most metadata extraction.
     """
-    
+
     def __init__(
         self,
         cookie_file: Optional[str] = None,
@@ -102,11 +102,11 @@ class SpotifyClient:
         log_file: Optional[str] = None,
     ):
         """Initialize the SpotifyClient.
-        
+
         Creates a new SpotifyClient instance with the specified configuration.
         The client can be customized with authentication cookies, custom headers,
         proxy settings, and browser backend selection.
-        
+
         Args:
             cookie_file: Path to a Netscape-format cookies.txt file containing
                 Spotify authentication cookies. Used for accessing protected
@@ -129,18 +129,18 @@ class SpotifyClient:
                 Default: "INFO"
             log_file: Path to write log messages to. If None, logs to console only.
                 Example: "spotify_scraper.log"
-        
+
         Raises:
             ValueError: If browser_type is not one of the supported values.
             FileNotFoundError: If cookie_file is specified but doesn't exist.
-        
+
         Example:
             >>> # Simple client with default settings
             >>> client = SpotifyClient()
-            
+
             >>> # Client with authentication
             >>> client = SpotifyClient(cookie_file="cookies.txt")
-            
+
             >>> # Client with custom configuration
             >>> client = SpotifyClient(
             ...     browser_type="selenium",
@@ -174,7 +174,7 @@ class SpotifyClient:
         # Create downloaders
         self._image_downloader = ImageDownloader(browser=self.browser)
         self._audio_downloader = AudioDownloader(browser=self.browser)
-        
+
         logger.info("SpotifyClient initialized")
 
     def get_track_info(self, url: str) -> Dict[str, Any]:
@@ -224,7 +224,7 @@ class SpotifyClient:
             ... )
             >>> print(f"{track['name']} - {track['duration_ms'] / 1000:.1f}s")
             Bohemian Rhapsody - 354.9s
-            
+
         Note:
             This method automatically converts regular URLs to embed format
             for better reliability and to avoid authentication requirements.
@@ -265,7 +265,7 @@ class SpotifyClient:
             >>> if lyrics:
             ...     print(lyrics.split('\n')[0])  # Print first line
             Is this the real life?
-            
+
             >>> # Without authentication (will likely fail)
             >>> client = SpotifyClient()
             >>> lyrics = client.get_track_lyrics(track_url, require_auth=False)
@@ -286,7 +286,9 @@ class SpotifyClient:
             )
         return self.track_extractor.get_lyrics(url, require_auth=require_auth)
 
-    def get_track_info_with_lyrics(self, url: str, require_lyrics_auth: bool = True) -> Dict[str, Any]:
+    def get_track_info_with_lyrics(
+        self, url: str, require_lyrics_auth: bool = True
+    ) -> Dict[str, Any]:
         """Get track information and lyrics in a single call.
 
         Convenience method that fetches both track metadata and lyrics (if available)
@@ -520,10 +522,10 @@ class SpotifyClient:
             >>> # Works with any Spotify URL type
             >>> data1 = client.get_all_info("https://open.spotify.com/track/...")
             >>> print(f"Track: {data1['name']}")
-            
+
             >>> data2 = client.get_all_info("https://open.spotify.com/album/...")
             >>> print(f"Album: {data2['name']} ({data2['total_tracks']} tracks)")
-            
+
             >>> # Useful for processing mixed URL lists
             >>> urls = [track_url, album_url, artist_url, playlist_url]
             >>> for url in urls:
@@ -536,10 +538,10 @@ class SpotifyClient:
             get_track_info) will be slightly faster.
         """
         from spotify_scraper.utils.url import get_url_type
-        
+
         logger.info(f"Auto-detecting URL type for {url}")
         url_type = get_url_type(url)
-        
+
         if url_type == "track":
             return self.get_track_info(url)
         elif url_type == "album":
@@ -551,7 +553,13 @@ class SpotifyClient:
         else:
             raise URLError(f"Unable to determine URL type for: {url}")
 
-    def download_cover(self, url: str, path: Union[str, Path] = "", filename: Optional[str] = None, quality_preference: Optional[List[str]] = None) -> Optional[str]:
+    def download_cover(
+        self,
+        url: str,
+        path: Union[str, Path] = "",
+        filename: Optional[str] = None,
+        quality_preference: Optional[List[str]] = None,
+    ) -> Optional[str]:
         """Download cover image from any Spotify entity.
 
         Downloads the cover art/image for a track, album, playlist, or artist.
@@ -589,7 +597,7 @@ class SpotifyClient:
             ... )
             >>> print(f"Cover saved to: {cover_path}")
             Cover saved to: covers/bohemian_rhapsody.jpg
-            
+
             >>> # Download with automatic filename
             >>> cover_path = client.download_cover(album_url)
             >>> print(cover_path)
@@ -601,17 +609,17 @@ class SpotifyClient:
             - Files are overwritten if they already exist
         """
         logger.info(f"Downloading cover for {url}")
-        
+
         # First, extract the entity data based on URL type
         try:
             entity_data = self.get_all_info(url)
-            
+
             # Download cover using the entity data
             return self._image_downloader.download_cover(
                 entity_data=entity_data,
                 filename=filename,
                 path=str(path) if path else "",
-                size="large" if not quality_preference else quality_preference[0]
+                size="large" if not quality_preference else quality_preference[0],
             )
         except Exception as e:
             logger.error(f"Failed to download cover: {e}")
@@ -650,7 +658,7 @@ class SpotifyClient:
             ... )
             >>> print(f"Preview saved to: {mp3_path}")
             Preview saved to: Bohemian_Rhapsody_by_Queen.mp3
-            
+
             >>> # Download with cover art embedded
             >>> mp3_path = client.download_preview_mp3(
             ...     track_url,
@@ -668,16 +676,14 @@ class SpotifyClient:
               pip install eyeD3
         """
         logger.info(f"Downloading preview MP3 for {url}")
-        
+
         # First, extract the track data
         try:
             track_data = self.get_track_info(url)
-            
+
             # Download preview using the track data
             return self._audio_downloader.download_preview(
-                track_data=track_data,
-                path=path,
-                with_cover=with_cover
+                track_data=track_data, path=path, with_cover=with_cover
             )
         except Exception as e:
             logger.error(f"Failed to download preview MP3: {e}")
@@ -685,16 +691,16 @@ class SpotifyClient:
 
     def close(self) -> None:
         """Close the client and release all resources.
-        
+
         Properly shuts down the SpotifyClient by closing browser connections,
         clearing caches, and releasing any held resources. This is especially
         important when using the Selenium browser backend to ensure the browser
         process is terminated.
-        
+
         While Python's garbage collector will eventually clean up resources,
         explicitly calling close() ensures immediate cleanup and is considered
         best practice, especially in long-running applications.
-        
+
         Example:
             >>> client = SpotifyClient(browser_type="selenium")
             >>> try:
@@ -703,13 +709,13 @@ class SpotifyClient:
             ... finally:
             ...     # Always close when done
             ...     client.close()
-            
+
             Or using context manager (if implemented)::
-            
+
             >>> with SpotifyClient() as client:
             ...     track = client.get_track_info(track_url)
             ... # Automatically closed
-        
+
         Note:
             After calling close(), the client instance should not be used again.
             Create a new client if you need to make more requests.

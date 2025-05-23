@@ -186,6 +186,3 @@ jobs:
         body: "This PR updates the CHANGELOG.md file with the latest release information."
         branch: "changelog-${{ github.ref_name }}"
         delete-branch: true
-        labels: |
-          documentation
-          automated

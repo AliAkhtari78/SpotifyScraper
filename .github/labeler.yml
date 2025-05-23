@@ -1,45 +1,117 @@
-# Add 'documentation' label to any change in docs folder or markdown files
+# Configuration for PR labeler action
+# https://github.com/actions/labeler
+
 documentation:
-  - docs/**
-  - '**/*.md'
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'docs/**'
+      - '**/*.md'
+      - '**/*.rst'
 
-# Add 'tests' label to any change in test files
 tests:
-  - tests/**
-  - '**/test_*.py'
-  - '**/*_test.py'
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'tests/**'
+      - '**/test_*.py'
+      - '**/*_test.py'
+      - 'conftest.py'
+      - 'pytest.ini'
+      - 'tox.ini'
 
-# Add 'dependencies' label to dependency-related files
 dependencies:
-  - requirements*.txt
-  - setup.py
-  - pyproject.toml
-  - poetry.lock
-  - Pipfile.lock
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'requirements*.txt'
+      - 'setup.py'
+      - 'setup.cfg'
+      - 'pyproject.toml'
+      - 'poetry.lock'
+      - 'Pipfile*'
 
-# Add 'github-actions' label to workflow changes
 github-actions:
-  - .github/workflows/**
-  - .github/actions/**
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/**'
 
-# Add 'cli' label to CLI-related changes
 cli:
-  - src/spotify_scraper/cli/**
-  - src/spotify_scraper/__main__.py
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/spotify_scraper/cli/**'
+      - 'src/spotify_scraper/__main__.py'
 
-# Add 'extractors' label to extractor changes
-extractors:
-  - src/spotify_scraper/extractors/**
-
-# Add 'core' label to core functionality changes
 core:
-  - src/spotify_scraper/core/**
-  - src/spotify_scraper/client.py
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/spotify_scraper/core/**'
+      - 'src/spotify_scraper/client.py'
 
-# Add 'browsers' label to browser-related changes
-browsers:
-  - src/spotify_scraper/browsers/**
+extractors:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/spotify_scraper/extractors/**'
 
-# Add 'media' label to media handling changes
 media:
-  - src/spotify_scraper/media/**
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/spotify_scraper/media/**'
+
+browsers:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/spotify_scraper/browsers/**'
+
+auth:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/spotify_scraper/auth/**'
+
+utils:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/spotify_scraper/utils/**'
+
+parsers:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/spotify_scraper/parsers/**'
+
+examples:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'examples/**'
+
+config:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*config*'
+      - '.editorconfig'
+      - '.gitignore'
+      - '.gitattributes'
+
+security:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'SECURITY.md'
+      - '.github/workflows/security*.yml'
+      - '.github/workflows/*security*.yml'
+
+enhancement:
+  - head-branch:
+    - '^feat(ure)?[/-]'
+    - '^enhance[/-]'
+    - '^improvement[/-]'
+
+bug:
+  - head-branch:
+    - '^fix[/-]'
+    - '^bug[/-]'
+    - '^hotfix[/-]'
+    - '^patch[/-]'
+
+breaking-change:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'BREAKING*.md'
+  - head-branch:
+    - '^breaking[/-]'
+    - '^major[/-]'

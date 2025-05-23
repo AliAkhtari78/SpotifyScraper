@@ -1,0 +1,5 @@
+# Documentation dependencies
+sphinx>=8.0
+sphinx-rtd-theme>=3.0
+recommonmark>=0.7.1
+myst-parser>=4.0.0

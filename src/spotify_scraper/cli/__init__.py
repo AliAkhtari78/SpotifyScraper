@@ -55,39 +55,40 @@ def cli(
 ) -> None:
     """
     SpotifyScraper - Extract data from Spotify's web interface.
-    
+
     A modern Python library and CLI for extracting track, album, artist,
     and playlist information from Spotify without using the official API.
-    
+
     Examples:
         # Get track information
         spotify-scraper track https://open.spotify.com/track/...
-        
+
         # Get album with pretty output
         spotify-scraper album --pretty https://open.spotify.com/album/...
-        
+
         # Download track preview MP3
         spotify-scraper download track --with-cover https://open.spotify.com/track/...
-        
+
         # Get playlist info and save to file
         spotify-scraper playlist -o playlist.json https://open.spotify.com/playlist/...
     """
     # Configure logging
     from spotify_scraper.utils.logger import configure_logging
+
     configure_logging(level=log_level.upper())
-    
+
     # Store shared options in context
     ctx.ensure_object(dict)
-    ctx.obj['cookie_file'] = str(cookie_file) if cookie_file else None
-    ctx.obj['browser'] = browser
-    ctx.obj['log_level'] = log_level
-    
+    ctx.obj["cookie_file"] = str(cookie_file) if cookie_file else None
+    ctx.obj["browser"] = browser
+    ctx.obj["log_level"] = log_level
+
     # Parse proxy if provided
     if proxy:
-        ctx.obj['proxy'] = {"http": proxy, "https": proxy}
+        ctx.obj["proxy"] = {"http": proxy, "https": proxy}
     else:
-        ctx.obj['proxy'] = None
-    
+        ctx.obj["proxy"] = None
+
     # Show help if no command is provided
     if ctx.invoked_subcommand is None:
         click.echo(ctx.get_help())

@@ -5,8 +5,10 @@ This module defines custom exceptions for error handling throughout the library.
 Using specific exception types allows for more precise error handling.
 """
 
+
 class SpotifyScraperError(Exception):
     """Base exception for all SpotifyScraper errors."""
+
     pass
 
 
@@ -16,11 +18,11 @@ ScrapingError = SpotifyScraperError
 
 class URLError(SpotifyScraperError):
     """Exception raised for errors related to URLs."""
-    
+
     def __init__(self, message="Invalid URL", url=None):
         """
         Initialize URLError.
-        
+
         Args:
             message: Error message
             url: The problematic URL
@@ -31,11 +33,11 @@ class URLError(SpotifyScraperError):
 
 class ParsingError(SpotifyScraperError):
     """Exception raised for errors during parsing of HTML or JSON data."""
-    
+
     def __init__(self, message="Failed to parse data", data_type=None, details=None):
         """
         Initialize ParsingError.
-        
+
         Args:
             message: Error message
             data_type: Type of data that failed to parse (e.g., "HTML", "JSON")
@@ -53,11 +55,11 @@ class ParsingError(SpotifyScraperError):
 
 class ExtractionError(SpotifyScraperError):
     """Exception raised for errors during data extraction."""
-    
+
     def __init__(self, message="Failed to extract data", entity_type=None, url=None):
         """
         Initialize ExtractionError.
-        
+
         Args:
             message: Error message
             entity_type: Type of entity being extracted (e.g., "track", "album")
@@ -75,11 +77,11 @@ class ExtractionError(SpotifyScraperError):
 
 class NetworkError(SpotifyScraperError):
     """Exception raised for network-related errors."""
-    
+
     def __init__(self, message="Network error", url=None, status_code=None):
         """
         Initialize NetworkError.
-        
+
         Args:
             message: Error message
             url: The URL that was being accessed
@@ -97,11 +99,11 @@ class NetworkError(SpotifyScraperError):
 
 class AuthenticationError(SpotifyScraperError):
     """Exception raised for authentication-related errors."""
-    
+
     def __init__(self, message="Authentication error", auth_type=None):
         """
         Initialize AuthenticationError.
-        
+
         Args:
             message: Error message
             auth_type: Type of authentication that failed (e.g., "cookie", "token")
@@ -115,11 +117,11 @@ class AuthenticationError(SpotifyScraperError):
 
 class TokenError(AuthenticationError):
     """Exception raised for errors related to authentication tokens."""
-    
+
     def __init__(self, message="Token error", token_type=None, details=None):
         """
         Initialize TokenError.
-        
+
         Args:
             message: Error message
             token_type: Type of token (e.g., "access", "refresh")
@@ -137,11 +139,11 @@ class TokenError(AuthenticationError):
 
 class BrowserError(SpotifyScraperError):
     """Exception raised for errors related to browser operation."""
-    
+
     def __init__(self, message="Browser error", browser_type=None):
         """
         Initialize BrowserError.
-        
+
         Args:
             message: Error message
             browser_type: Type of browser that encountered the error
@@ -155,11 +157,11 @@ class BrowserError(SpotifyScraperError):
 
 class MediaError(SpotifyScraperError):
     """Exception raised for errors related to media handling."""
-    
+
     def __init__(self, message="Media error", media_type=None, path=None):
         """
         Initialize MediaError.
-        
+
         Args:
             message: Error message
             media_type: Type of media (e.g., "image", "audio")
@@ -177,11 +179,11 @@ class MediaError(SpotifyScraperError):
 
 class DownloadError(MediaError):
     """Exception raised for errors during file downloads."""
-    
+
     def __init__(self, message="Download failed", url=None, path=None, status_code=None):
         """
         Initialize DownloadError.
-        
+
         Args:
             message: Error message
             url: URL that failed to download
