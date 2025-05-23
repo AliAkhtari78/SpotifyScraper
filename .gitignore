@@ -212,3 +212,7 @@ fabric.properties
 
 
 SpotifyScraper/temo.py
+
+# Test files
+test_real_functionality.py
+test_environment/

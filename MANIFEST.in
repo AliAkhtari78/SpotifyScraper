@@ -1,0 +1,47 @@
+# MANIFEST.in for SpotifyScraper
+# Include additional files in the source distribution
+
+# Documentation files
+include README.md
+include CHANGELOG.md
+include LICENSE
+include CONTRIBUTING.md
+include CODE_OF_CONDUCT.md
+include SECURITY.md
+
+# Configuration files
+include pyproject.toml
+include setup.cfg
+include tox.ini
+include .travis.yml
+
+# Documentation
+recursive-include docs *.md *.rst *.py *.txt
+recursive-include docs/_static *
+recursive-include docs/_templates *
+
+# Examples
+recursive-include examples *.py *.json *.sh *.txt
+
+# Tests
+recursive-include tests *.py
+recursive-include tests/fixtures *.json *.html
+
+# Type stubs
+include src/spotify_scraper/py.typed
+
+# Exclude build artifacts and development files
+prune build
+prune dist
+prune *.egg-info
+prune .tox
+prune .pytest_cache
+prune __pycache__
+prune .git
+exclude .gitignore
+exclude test_real_functionality.py
+prune test_environment
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *~
+global-exclude .*

@@ -1,8 +1,24 @@
-"""
-Audio downloading and processing module for SpotifyScraper.
+"""Audio downloading and processing module for SpotifyScraper.
 
-This module provides functionality for downloading and processing
-audio previews and other audio assets from Spotify.
+This module handles the downloading of audio preview clips from Spotify tracks.
+It provides functionality to download 30-second MP3 previews and optionally
+embed metadata and cover art into the downloaded files.
+
+The module uses the requests library for downloading and optionally eyeD3
+for embedding metadata and cover art into MP3 files.
+
+Example:
+    >>> from spotify_scraper.browsers import create_browser
+    >>> from spotify_scraper.media.audio import AudioDownloader
+    >>> from spotify_scraper.extractors.track import TrackExtractor
+    >>> 
+    >>> browser = create_browser("requests")
+    >>> downloader = AudioDownloader(browser)
+    >>> extractor = TrackExtractor(browser)
+    >>> 
+    >>> track_data = extractor.extract("https://open.spotify.com/track/...")
+    >>> mp3_path = downloader.download_preview(track_data, with_cover=True)
+    >>> print(f"Downloaded to: {mp3_path}")
 """
 
 import os
@@ -20,33 +36,68 @@ logger = logging.getLogger(__name__)
 
 
 class AudioDownloader:
-    """
-    Download and process audio from Spotify.
+    """Download and process audio previews from Spotify.
     
-    This class handles downloading of preview audio files,
-    with support for various formats, quality levels, and metadata.
+    This class specializes in downloading 30-second preview clips that Spotify
+    provides for most tracks. It handles the complete download process including
+    file naming, metadata embedding, and cover art integration.
+    
+    Key features:
+        - Downloads 30-second MP3 preview clips
+        - Automatic filename generation from track metadata
+        - Optional cover art embedding (requires eyeD3)
+        - Metadata tagging (title, artist, album)
+        - Safe filename generation for all platforms
     
     Attributes:
-        browser: Browser instance for web interactions
+        browser: Browser instance for web interactions (though primarily uses
+            direct requests for audio downloads).
+        _image_downloader: Lazy-loaded ImageDownloader instance for cover art.
+    
+    Example:
+        >>> downloader = AudioDownloader(browser)
+        >>> # Download with automatic filename
+        >>> path = downloader.download_preview(track_data)
+        >>> 
+        >>> # Download with custom settings
+        >>> path = downloader.download_preview(
+        ...     track_data,
+        ...     filename="my_preview",
+        ...     path="downloads/",
+        ...     with_cover=True
+        ... )
+    
+    Note:
+        Not all Spotify tracks have preview URLs available. This is typically
+        due to licensing restrictions or regional availability.
     """
     
     def __init__(self, browser: Browser):
-        """
-        Initialize the AudioDownloader.
+        """Initialize the AudioDownloader.
         
         Args:
-            browser: Browser instance for web interactions
+            browser: Browser instance for web interactions. While the browser
+                is not directly used for downloading audio (uses requests),
+                it's maintained for consistency with other components and
+                potential future use.
+        
+        Example:
+            >>> from spotify_scraper.browsers import create_browser
+            >>> browser = create_browser("requests")
+            >>> downloader = AudioDownloader(browser)
         """
         self.browser = browser
         self._image_downloader = None
         logger.debug("Initialized AudioDownloader")
     
     def _get_image_downloader(self) -> ImageDownloader:
-        """
-        Get or create the image downloader.
+        """Get or create the image downloader instance.
+        
+        Lazy-loads the ImageDownloader to avoid unnecessary initialization
+        if cover art embedding is not used.
         
         Returns:
-            ImageDownloader instance
+            ImageDownloader: Cached instance for downloading cover art
         """
         if not self._image_downloader:
             self._image_downloader = ImageDownloader(browser=self.browser)
@@ -59,21 +110,52 @@ class AudioDownloader:
         path: str = "",
         with_cover: bool = True,
     ) -> str:
-        """
-        Download preview MP3 for a track.
+        """Download preview MP3 for a track.
+        
+        Downloads the 30-second preview clip from Spotify and saves it as an MP3 file.
+        Optionally embeds cover art and metadata tags into the file.
         
         Args:
-            track_data: Track data from TrackExtractor
-            filename: Custom filename (optional)
-            path: Directory to save the audio (default: current directory)
-            with_cover: Whether to embed the cover image (default: True)
+            track_data: Track information dictionary from TrackExtractor.extract().
+                Must contain at least 'preview_url' or 'audioPreview.url'.
+                Should also contain 'name', 'artists', and 'album' for proper
+                filename generation and metadata tagging.
+            filename: Custom filename for the MP3 (without extension).
+                If None, generates filename as: "{track_name}_by_{artist_name}.mp3"
+                Special characters are sanitized for filesystem compatibility.
+            path: Directory path where the MP3 should be saved.
+                Defaults to current directory. Directory will be created if needed.
+            with_cover: Whether to embed album cover art in the MP3 metadata.
+                Requires eyeD3 library. If eyeD3 is not installed, this option
+                is silently ignored with a warning logged.
             
         Returns:
-            Path to the downloaded audio file
+            str: Full path to the downloaded MP3 file.
+                Example: "/downloads/Bohemian_Rhapsody_by_Queen.mp3"
             
         Raises:
-            DownloadError: If download fails
-            MediaError: If metadata processing fails
+            DownloadError: If no preview URL is available or download fails.
+                Includes the URL and file path in the error for debugging.
+            MediaError: If there's an error processing metadata (rare).
+        
+        Example:
+            >>> # Basic download
+            >>> track_data = track_extractor.extract(track_url)
+            >>> mp3_path = downloader.download_preview(track_data)
+            >>> print(f"Downloaded: {mp3_path}")
+            
+            >>> # Custom filename and path with cover
+            >>> mp3_path = downloader.download_preview(
+            ...     track_data,
+            ...     filename="my_favorite_song",
+            ...     path="music/previews/",
+            ...     with_cover=True
+            ... )
+        
+        Note:
+            - Preview clips are typically 96-128 kbps MP3 files
+            - Not all tracks have previews (regional/licensing restrictions)
+            - Cover embedding will fail silently if eyeD3 is not installed
         """
         # Get preview URL
         preview_url = track_data.get("preview_url")
@@ -131,15 +213,25 @@ class AudioDownloader:
             raise DownloadError(f"Failed to download preview audio: {e}", url=preview_url, file_path=file_path)
     
     def _embed_cover(self, file_path: str, track_data: TrackData) -> None:
-        """
-        Embed cover image in an audio file.
+        """Embed cover image and metadata in an MP3 file.
+        
+        Uses eyeD3 library to embed album cover art and metadata tags
+        (title, artist, album) into the MP3 file. This enriches the file
+        with visual and textual information for better media player support.
         
         Args:
-            file_path: Path to the audio file
-            track_data: Track data
+            file_path: Full path to the MP3 file to modify
+            track_data: Track information containing metadata and cover image URL
             
         Raises:
-            MediaError: If embedding fails
+            MediaError: If critical errors occur during embedding (currently
+                suppressed - failures are logged as warnings instead)
+        
+        Note:
+            - Requires eyeD3 library: pip install eyeD3
+            - Downloads cover to temporary file, embeds it, then cleans up
+            - Failures are non-critical and logged as warnings
+            - Sets ID3v2.3 tags for maximum compatibility
         """
         try:
             # Try to import eyed3

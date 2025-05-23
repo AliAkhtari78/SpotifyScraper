@@ -18,7 +18,12 @@
       "Bash(pip install:*)",
       "Bash(pip show:*)",
       "Bash(pytest:*)",
-      "Bash(spotify-scraper:*)"
+      "Bash(spotify-scraper:*)",
+      "Bash(python:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(twine check:*)"
     ],
     "deny": []
   }

@@ -151,10 +151,11 @@ setup(
         'beautifulsoup4', 'selenium', 'requests', 'automation'
     ],
 
-    # Entry points (if any CLI tools are added)
+    # Entry points for CLI commands
     entry_points={
         'console_scripts': [
-            # 'spotifyscraper=spotify_scraper.cli:main',  # Uncomment if CLI is implemented
+            'spotify-scraper=spotify_scraper.cli:main',
+            'spotifyscraper=spotify_scraper.cli:main',  # Alternative name
         ],
     },
 
