@@ -423,6 +423,26 @@ See the [CHANGELOG](CHANGELOG.md) for a complete list of changes.
 - 🔄 **[Migration Guide](https://spotifyscraper.readthedocs.io/en/latest/migration/)** - Upgrading from v1.x
 - ❓ **[FAQ](https://spotifyscraper.readthedocs.io/en/latest/faq/)** - Common questions and solutions
 
+## ⚠️ Known Limitations
+
+### Embed URL Limitations
+
+SpotifyScraper uses Spotify's embed URLs to avoid authentication requirements. While this provides reliable access to most data, there are some limitations:
+
+1. **Track Album Names**: Track data from embed URLs doesn't include the album name, only album images.
+2. **Limited Artist Data**: Only basic artist information is available without authentication.
+3. **No Personal Data**: User playlists, saved tracks, and personal data require authentication.
+4. **Regional Restrictions**: Some content may not be available in all regions.
+
+### Authentication Features
+
+Features requiring authentication (via cookies):
+- Song lyrics
+- User profiles
+- Private playlists
+- Full artist discographies
+- Personal library access
+
 ## 🛠️ Development
 
 ### Setting Up Development Environment
