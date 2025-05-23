@@ -219,3 +219,22 @@ test_environment/
 
 # Virtual environments
 package_build_env/
+
+# Claude Code local settings
+.claude/
+
+# Authentication and credentials
+cookies.txt
+*.cookie
+*.cookies
+credentials.*
+*_credentials.*
+auth.json
+token.json
+secrets.json
+
+# Local configuration files
+config.local.json
+settings.local.json
+.env.local
+.env.*.local
