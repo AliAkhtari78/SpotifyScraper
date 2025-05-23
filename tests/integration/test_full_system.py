@@ -380,9 +380,5 @@ class TestFullSystemIntegration:
             wrapper.close()
 
 
-# Import required enums for the test
-from spotify_scraper.config_manager import CacheConfig, LogLevel
-from spotify_scraper.core.exceptions import NetworkError
-
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
