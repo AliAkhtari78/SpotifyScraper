@@ -699,13 +699,24 @@ def analyze_spotify_url(url: str) -> Dict[str, Any]:
         Dictionary with URL analysis results
     """
     from spotify_scraper.utils.url import get_url_type, extract_id
+    from spotify_scraper.core.exceptions import URLError
     
-    return {
-        "url": url,
-        "type": get_url_type(url),
-        "id": extract_id(url),
-        "is_valid": get_url_type(url) is not None
-    }
+    try:
+        url_type = get_url_type(url)
+        url_id = extract_id(url)
+        return {
+            "url": url,
+            "type": url_type,
+            "id": url_id,
+            "is_valid": True
+        }
+    except URLError:
+        return {
+            "url": url,
+            "type": None,
+            "id": None,
+            "is_valid": False
+        }
 
 
 @contextmanager

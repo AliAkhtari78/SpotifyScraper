@@ -240,9 +240,9 @@ class TestSpotifyClient:
 
     def test_get_all_info_invalid_url(self, client):
         """Test get_all_info with an invalid URL type."""
-        with patch("spotify_scraper.utils.url.get_url_type", return_value=None):
-            with pytest.raises(URLError):
-                client.get_all_info("https://invalid.url.com")
+        # Don't mock get_url_type - let it raise URLError naturally
+        with pytest.raises(URLError):
+            client.get_all_info("https://invalid.url.com")
 
     def test_download_cover(self, client):
         """Test downloading cover image."""

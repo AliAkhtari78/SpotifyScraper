@@ -127,43 +127,97 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
 
         # Extract duration - handle both string and numeric representations
         if "duration" in track_data:
-            result["duration"] = track_data["duration"]
+            if isinstance(track_data["duration"], dict) and "totalMilliseconds" in track_data["duration"]:
+                result["duration_ms"] = track_data["duration"]["totalMilliseconds"]
+            else:
+                result["duration"] = track_data["duration"]
 
         if "duration_ms" in track_data:
             result["duration_ms"] = track_data["duration_ms"]
         elif "duration" in track_data and isinstance(track_data["duration"], int):
             result["duration_ms"] = track_data["duration"]
 
-        # Extract artists
+        # Extract artists - handle both direct array and nested items structure
+        artists_list = []
         if "artists" in track_data:
-            result["artists"] = []
-            for artist in track_data["artists"]:
-                artist_data: ArtistData = {
-                    "name": artist.get("name", ""),
-                    "uri": artist.get("uri", ""),
-                }
+            if isinstance(track_data["artists"], dict) and "items" in track_data["artists"]:
+                # Handle nested structure from test fixtures
+                for artist in track_data["artists"]["items"]:
+                    artist_name = ""
+                    artist_uri = artist.get("uri", "")
+                    
+                    # Extract name from profile if present
+                    if "profile" in artist and "name" in artist["profile"]:
+                        artist_name = artist["profile"]["name"]
+                    else:
+                        artist_name = artist.get("name", "")
+                    
+                    artist_data: ArtistData = {
+                        "name": artist_name,
+                        "uri": artist_uri,
+                    }
+                    
+                    if artist_uri:
+                        artist_data["id"] = artist_uri.split(":")[-1]
+                    
+                    artists_list.append(artist_data)
+            elif isinstance(track_data["artists"], list):
+                # Handle direct array structure
+                for artist in track_data["artists"]:
+                    artist_data: ArtistData = {
+                        "name": artist.get("name", ""),
+                        "uri": artist.get("uri", ""),
+                    }
 
-                if "uri" in artist:
-                    artist_data["id"] = artist["uri"].split(":")[-1]
+                    if "uri" in artist:
+                        artist_data["id"] = artist["uri"].split(":")[-1]
 
-                result["artists"].append(artist_data)
+                    artists_list.append(artist_data)
+        
+        # Also check for single artist field
+        elif "artist" in track_data:
+            artist = track_data["artist"]
+            artist_name = ""
+            if "profile" in artist and "name" in artist["profile"]:
+                artist_name = artist["profile"]["name"]
+            else:
+                artist_name = artist.get("name", "")
+            
+            artists_list.append({
+                "name": artist_name,
+                "uri": artist.get("uri", ""),
+            })
+        
+        if artists_list:
+            result["artists"] = artists_list
 
-        # Extract audio preview
-        if "audioPreview" in track_data and "url" in track_data["audioPreview"]:
-            result["preview_url"] = track_data["audioPreview"]["url"]
+        # Extract audio preview - handle both audioPreview object and direct preview_url
+        if "audioPreview" in track_data:
+            if isinstance(track_data["audioPreview"], dict) and "url" in track_data["audioPreview"]:
+                result["preview_url"] = track_data["audioPreview"]["url"]
+            elif isinstance(track_data["audioPreview"], str):
+                result["preview_url"] = track_data["audioPreview"]
         elif "preview_url" in track_data:
             result["preview_url"] = track_data["preview_url"]
 
         # Extract playability and explicit flags
         if "isPlayable" in track_data:
             result["isPlayable"] = track_data["isPlayable"]
+        elif "playability" in track_data and isinstance(track_data["playability"], dict):
+            result["isPlayable"] = track_data["playability"].get("playable", True)
+        else:
+            result["is_playable"] = True  # Default to playable
 
         if "isExplicit" in track_data:
             result["isExplicit"] = track_data["isExplicit"]
+        elif "contentRating" in track_data and isinstance(track_data["contentRating"], dict):
+            result["isExplicit"] = track_data["contentRating"].get("label", "NONE") != "NONE"
+        else:
+            result["is_explicit"] = False  # Default to not explicit
 
-        # Extract album - this may be a nested structure or a reference
-        if "album" in track_data:
-            album_data = track_data["album"]
+        # Extract album - handle both "album" and "albumOfTrack" fields
+        album_data = track_data.get("album") or track_data.get("albumOfTrack")
+        if album_data:
             album: AlbumData = {
                 "name": album_data.get("name", ""),
             }
@@ -172,8 +226,33 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                 album["uri"] = album_data["uri"]
                 album["id"] = album_data["uri"].split(":")[-1]
 
+            # Extract images from various possible locations
             if "images" in album_data:
                 album["images"] = album_data["images"]
+            elif "coverArt" in album_data and "sources" in album_data["coverArt"]:
+                # Convert coverArt sources to images format
+                album["images"] = []
+                for source in album_data["coverArt"]["sources"]:
+                    album["images"].append({
+                        "url": source.get("url", ""),
+                        "width": source.get("width", 0),
+                        "height": source.get("height", 0),
+                    })
+            
+            # Extract release date if available
+            if "releaseDate" in album_data:
+                if isinstance(album_data["releaseDate"], dict):
+                    # Handle structured date format
+                    date_obj = album_data["releaseDate"]
+                    year = date_obj.get("year", "")
+                    month = str(date_obj.get("month", "")).zfill(2)
+                    day = str(date_obj.get("day", "")).zfill(2)
+                    if year and month and day:
+                        album["release_date"] = f"{year}-{month}-{day}"
+                else:
+                    album["release_date"] = album_data["releaseDate"]
+            elif "release_date" in album_data:
+                album["release_date"] = album_data["release_date"]
 
             result["album"] = album
 
@@ -217,26 +296,30 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
         # Extract lyrics if available
         if "lyrics" in track_data:
             lyrics_data = track_data["lyrics"]
-            lyrics: LyricsData = {"sync_type": lyrics_data.get("syncType", "UNSYNCED"), "lines": []}
+            # Handle different sync type field names
+            sync_type = lyrics_data.get("syncType") or lyrics_data.get("sync_type", "UNSYNCED")
+            lyrics: LyricsData = {"sync_type": sync_type, "lines": []}
 
             # Add provider and language if available
             if "provider" in lyrics_data:
                 lyrics["provider"] = lyrics_data["provider"]
-            elif (
-                "syncType" in lyrics_data
-            ):  # If syncType is available but no provider, assume Spotify
+            elif sync_type:  # If syncType is available but no provider, assume Spotify
                 lyrics["provider"] = "SPOTIFY"
 
             if "language" in lyrics_data:
                 lyrics["language"] = lyrics_data["language"]
 
-            # Extract lyrics lines
+            # Extract lyrics lines - handle both field naming conventions
             if "lines" in lyrics_data:
                 for line in lyrics_data["lines"]:
+                    # Handle both camelCase and snake_case field names
+                    start_time = line.get("startTimeMs") or line.get("start_time_ms", 0)
+                    end_time = line.get("endTimeMs") or line.get("end_time_ms", 0)
+                    
                     line_data: LyricsLineData = {
-                        "start_time_ms": line.get("startTimeMs", 0),
+                        "start_time_ms": start_time,
                         "words": line.get("words", ""),
-                        "end_time_ms": line.get("endTimeMs", 0),
+                        "end_time_ms": end_time,
                     }
                     lyrics["lines"].append(line_data)
 
