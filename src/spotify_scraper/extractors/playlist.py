@@ -91,7 +91,8 @@ class PlaylistExtractor:
             # If we got valid data, return it
             if playlist_data and not playlist_data.get("ERROR"):
                 logger.debug(
-                    f"Successfully extracted data for playlist: {playlist_data.get('name', playlist_id)}"
+                    f"Successfully extracted data for playlist: "
+                    f"{playlist_data.get('name', playlist_id)}"
                 )
                 return playlist_data
 
