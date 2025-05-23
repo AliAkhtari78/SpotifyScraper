@@ -315,10 +315,10 @@ Preview: {'Available' if track_data.get('preview_url') else 'Not Available'}
 
         markdown = f"""# {playlist_data.get('name', 'Unnamed Playlist')}
 
-**Owner:** {playlist_data.get('owner', {}).get('display_name', 'Unknown')}  
-**Tracks:** {playlist_data.get('tracks', {}).get('total', 0)}  
-**Public:** {'Yes' if playlist_data.get('public') else 'No'}  
-**Collaborative:** {'Yes' if playlist_data.get('collaborative') else 'No'}  
+**Owner:** {playlist_data.get('owner', {}).get('display_name', 'Unknown')}
+**Tracks:** {playlist_data.get('tracks', {}).get('total', 0)}
+**Public:** {'Yes' if playlist_data.get('public') else 'No'}
+**Collaborative:** {'Yes' if playlist_data.get('collaborative') else 'No'}
 
 ## Description
 {playlist_data.get('description', 'No description available')}
