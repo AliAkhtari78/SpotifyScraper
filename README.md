@@ -30,15 +30,15 @@ from spotify_scraper import SpotifyClient
 client = SpotifyClient()
 
 # Get track info
-track = client.get_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 print(f"Track: {track['name']} by {track['artists'][0]['name']}")
 
 # Download preview
-file_path = client.download_preview(track["id"])
+file_path = client.download_preview_mp3("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 print(f"Downloaded preview to {file_path}")
 
 # Download cover image
-cover_path = client.download_cover(track["id"])
+cover_path = client.download_cover("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 print(f"Downloaded cover to {cover_path}")
 ```
 
@@ -136,10 +136,7 @@ from spotify_scraper import SpotifyClient
 client = SpotifyClient()
 
 # From URL
-track = client.get_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-
-# From ID
-track = client.get_track_by_id("6rqhFgbbKwnb9MLmUQDhG6")
+track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 
 # Access track data
 print(f"Title: {track['name']}")
@@ -157,7 +154,7 @@ from spotify_scraper import SpotifyClient
 client = SpotifyClient()
 
 # Get album info
-album = client.get_album("https://open.spotify.com/album/1DFixLWuPkv3KT3TnV35m3")
+album = client.get_album_info("https://open.spotify.com/album/1DFixLWuPkv3KT3TnV35m3")
 
 # Access album data
 print(f"Album: {album['name']}")
@@ -178,7 +175,7 @@ from spotify_scraper import SpotifyClient
 client = SpotifyClient()
 
 # Get artist info
-artist = client.get_artist("https://open.spotify.com/artist/4Z8W4fKeB5YxbusRsdQVPb")
+artist = client.get_artist_info("https://open.spotify.com/artist/4Z8W4fKeB5YxbusRsdQVPb")
 
 # Access artist data
 print(f"Artist: {artist['name']}")
@@ -198,7 +195,7 @@ from spotify_scraper import SpotifyClient
 client = SpotifyClient()
 
 # Get playlist info
-playlist = client.get_playlist("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
+playlist = client.get_playlist_info("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
 
 # Access playlist data
 print(f"Playlist: {playlist['name']}")
@@ -220,14 +217,13 @@ from spotify_scraper import SpotifyClient
 client = SpotifyClient()
 
 # Download with default settings
-path = client.download_preview("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+path = client.download_preview_mp3("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 
-# With custom filename and path
-path = client.download_preview(
-    "6rqhFgbbKwnb9MLmUQDhG6",
-    filename="my_song.mp3",
+# With custom path and embed cover
+path = client.download_preview_mp3(
+    "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",
     path="~/Music",
-    with_cover=True,  # Embed cover art
+    with_cover=True  # Embed cover art
 )
 ```
 
@@ -241,12 +237,12 @@ client = SpotifyClient()
 # Download with default settings
 path = client.download_cover("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 
-# With custom filename, path and size
+# With custom filename and path
 path = client.download_cover(
-    "6rqhFgbbKwnb9MLmUQDhG6",
-    filename="album_cover.jpg",
+    "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",
+    filename="album_cover",
     path="~/Pictures",
-    size="large",  # 'small', 'medium', or 'large'
+    quality_preference=["large"]  # List of size preferences
 )
 ```
 
@@ -263,13 +259,13 @@ client = SpotifyClient(
 )
 
 # Get track with lyrics (requires authentication)
-track = client.get_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-lyrics = client.get_lyrics(track["id"])
-print(lyrics["text"])
+track = client.get_track_info_with_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+if track.get('lyrics'):
+    print(track['lyrics'])
 
-# Access user-specific content
-user_playlists = client.get_user_playlists("spotify_username")
-private_playlist = client.get_playlist("private_playlist_id")
+# Access user-specific content (requires authentication)
+# Note: User playlist functionality may require additional implementation
+private_playlist = client.get_playlist_info("https://open.spotify.com/playlist/private_playlist_id")
 ```
 
 #### Using Configuration Files
@@ -304,12 +300,13 @@ track_urls = [
 ]
 
 # Synchronous batch processing
-tracks = [client.get_track(url) for url in track_urls]
+tracks = [client.get_track_info(url) for url in track_urls]
 
 # Download all previews
-for track in tracks:
+for url in track_urls:
+    track = client.get_track_info(url)
     if track.get("preview_url"):
-        client.download_preview(track["id"], path="downloads/")
+        client.download_preview_mp3(url, path="downloads/")
 ```
 
 ### CLI Usage
@@ -355,14 +352,15 @@ class SpotifyClient:
 
 | Method | Description | Returns |
 |--------|-------------|----------|
-| `get_track(url_or_id)` | Extract track metadata | `TrackDict` |
-| `get_album(url_or_id)` | Extract album with all tracks | `AlbumDict` |
-| `get_artist(url_or_id)` | Extract artist profile | `ArtistDict` |
-| `get_playlist(url_or_id)` | Extract playlist tracks | `PlaylistDict` |
-| `get_lyrics(track_id)` | Get song lyrics (auth required) | `LyricsDict` |
-| `download_preview(track_id, **kwargs)` | Download track preview MP3 | `str` (file path) |
-| `download_cover(entity_id, **kwargs)` | Download cover art | `str` (file path) |
-| `search(query, limit, type)` | Search Spotify content | `SearchResults` |
+| `get_track_info(url)` | Extract track metadata | `Dict[str, Any]` |
+| `get_track_info_with_lyrics(url)` | Extract track with lyrics | `Dict[str, Any]` |
+| `get_album_info(url)` | Extract album with all tracks | `Dict[str, Any]` |
+| `get_artist_info(url)` | Extract artist profile | `Dict[str, Any]` |
+| `get_playlist_info(url)` | Extract playlist tracks | `Dict[str, Any]` |
+| `get_track_lyrics(url)` | Get song lyrics (auth required) | `Optional[str]` |
+| `download_preview_mp3(url, **kwargs)` | Download track preview MP3 | `str` (file path) |
+| `download_cover(url, **kwargs)` | Download cover art | `Optional[str]` |
+| `get_all_info(url)` | Auto-detect URL type and extract | `Dict[str, Any]` |
 
 ### Data Types
 

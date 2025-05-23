@@ -8,7 +8,7 @@ and data formats.
 
 import json
 import logging
-from typing import Any, Callable, Dict, Optional, TypeVar, cast
+from typing import Any, Callable, Dict, Optional, TypeVar
 
 from bs4 import BeautifulSoup
 
@@ -26,7 +26,6 @@ from spotify_scraper.core.types import (
     LyricsLineData,
     PlaylistData,
     TrackData,
-    VisualIdentityData,
 )
 
 logger = logging.getLogger(__name__)
@@ -205,18 +204,13 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
         elif "preview_url" in track_data:
             result["preview_url"] = track_data["preview_url"]
 
-        # Extract playability and explicit flags
-        if "isPlayable" in track_data:
-            result["isPlayable"] = track_data["isPlayable"]
-        elif "playability" in track_data and isinstance(track_data["playability"], dict):
-            result["isPlayable"] = track_data["playability"].get("playable", True)
-        else:
-            result["is_playable"] = True  # Default to playable
-
+        # Extract explicit flag
         if "isExplicit" in track_data:
-            result["isExplicit"] = track_data["isExplicit"]
+            result["is_explicit"] = track_data["isExplicit"]
         elif "contentRating" in track_data and isinstance(track_data["contentRating"], dict):
-            result["isExplicit"] = track_data["contentRating"].get("label", "NONE") != "NONE"
+            result["is_explicit"] = track_data["contentRating"].get("label", "NONE") != "NONE"
+        elif "explicit" in track_data:
+            result["is_explicit"] = track_data["explicit"]
         else:
             result["is_explicit"] = False  # Default to not explicit
 
@@ -225,6 +219,7 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
         if album_data:
             album: AlbumData = {
                 "name": album_data.get("name", ""),
+                "type": "album",
             }
 
             if "uri" in album_data:
@@ -263,7 +258,7 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
 
             result["album"] = album
 
-        # Extract visual identity data if available
+        # Extract visual identity data if available (only for album images)
         if "visualIdentity" in track_data:
             visual_identity = track_data["visualIdentity"]
 
@@ -280,25 +275,30 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                     )
 
                 # If we have album data, add images to it
-                if "album" in result:
+                if "album" in result and "images" not in result["album"]:
                     result["album"]["images"] = images
 
-            # Include the full visual identity data
-            result["visualIdentity"] = cast(VisualIdentityData, visual_identity)
-
-        # Extract release date
+        # Extract release date if available
+        release_date = None
         if "release_date" in track_data:
-            result["release_date"] = track_data["release_date"]
+            release_date = track_data["release_date"]
         elif "releaseDate" in track_data:
-            result["release_date"] = track_data["releaseDate"]
+            if isinstance(track_data["releaseDate"], dict):
+                # Handle structured date format
+                date_obj = track_data["releaseDate"]
+                if "isoString" in date_obj:
+                    release_date = date_obj["isoString"][:10]  # Extract YYYY-MM-DD
+                elif "year" in date_obj:
+                    year = date_obj.get("year", "")
+                    month = str(date_obj.get("month", "")).zfill(2)
+                    day = str(date_obj.get("day", "")).zfill(2)
+                    if year and month and day:
+                        release_date = f"{year}-{month}-{day}"
+            else:
+                release_date = track_data["releaseDate"]
 
-        # Extract hasVideo flag
-        if "hasVideo" in track_data:
-            result["hasVideo"] = track_data["hasVideo"]
-
-        # Extract related entity URI
-        if "relatedEntityUri" in track_data:
-            result["relatedEntityUri"] = track_data["relatedEntityUri"]
+        if release_date:
+            result["release_date"] = release_date
 
         # Extract lyrics if available
         if "lyrics" in track_data:

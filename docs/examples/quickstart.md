@@ -31,20 +31,19 @@ Here's the simplest way to extract track information:
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 
 # Create a client
-browser = RequestsBrowser()
-client = SpotifyClient(browser=browser)
+client = SpotifyClient()
 
 # Extract track information
 track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
-track_data = client.get_track(track_url)
+track_data = client.get_track_info(track_url)
 
 # Display results
 print(f"Track: {track_data['name']}")
 print(f"Artist: {track_data['artists'][0]['name']}")
-print(f"Album: {track_data['album']['name']}")
+if 'album' in track_data and track_data['album']:
+    print(f"Album: {track_data['album']['name']}")
 print(f"Duration: {track_data['duration_ms'] / 1000:.2f} seconds")
 ```
 
@@ -54,13 +53,11 @@ print(f"Duration: {track_data['duration_ms'] / 1000:.2f} seconds")
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 
 def get_track_info(url):
-    browser = RequestsBrowser()
-    client = SpotifyClient(browser=browser)
+    client = SpotifyClient()
     
-    track = client.get_track(url)
+    track = client.get_track_info(url)
     
     return {
         "title": track['name'],
@@ -80,22 +77,38 @@ print(info)
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
-from spotify_scraper.media import AudioDownloader
 
 def download_track_preview(url, output_folder="downloads"):
-    browser = RequestsBrowser()
-    client = SpotifyClient(browser=browser)
+    client = SpotifyClient()
     
-    # Get track data
-    track_data = client.get_track(url)
+    # Simply use the client's download method
+    return client.download_preview_mp3(url, path=output_folder)
     
-    # Check if preview is available
+# Example usage
+file_path = download_track_preview("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+if file_path:
+    print(f"Downloaded to: {file_path}")
+```
+
+### 2b. Alternative: Manual Download with AudioDownloader
+
+```python
+from spotify_scraper import SpotifyClient
+from spotify_scraper.browsers import create_browser
+from spotify_scraper.media import AudioDownloader
+
+def manual_download_preview(url, output_folder="downloads"):
+    client = SpotifyClient()
+    
+    # Get track data first
+    track_data = client.get_track_info(url)
+    
     if not track_data.get('preview_url'):
-        print("No preview available for this track")
+        print("No preview available")
         return None
-    
-    # Download preview
+        
+    # Manual download using AudioDownloader
+    browser = create_browser("requests")
     audio_downloader = AudioDownloader(browser)
     file_path = audio_downloader.download_preview(
         track_data,
@@ -114,24 +127,15 @@ download_track_preview("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
-from spotify_scraper.media import ImageDownloader
 
-def download_album_cover(url, size="large"):
-    browser = RequestsBrowser()
-    client = SpotifyClient(browser=browser)
+def download_album_cover(url):
+    client = SpotifyClient()
     
-    # Get track data
-    track_data = client.get_track(url)
+    # Use the client's download_cover method
+    cover_path = client.download_cover(url)
     
-    # Download cover
-    image_downloader = ImageDownloader(browser)
-    cover_path = image_downloader.download_cover(
-        track_data,
-        size=size  # "small", "medium", or "large"
-    )
-    
-    print(f"Cover saved to: {cover_path}")
+    if cover_path:
+        print(f"Cover saved to: {cover_path}")
     return cover_path
 
 # Example usage
@@ -142,13 +146,11 @@ download_album_cover("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 
 def get_album_tracks(album_url):
-    browser = RequestsBrowser()
-    client = SpotifyClient(browser=browser)
+    client = SpotifyClient()
     
-    album = client.get_album(album_url)
+    album = client.get_album_info(album_url)
     
     print(f"Album: {album['name']}")
     print(f"Artist: {album['artists'][0]['name']}")
@@ -167,13 +169,11 @@ get_album_tracks("https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv")
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 
 def analyze_playlist(playlist_url):
-    browser = RequestsBrowser()
-    client = SpotifyClient(browser=browser)
+    client = SpotifyClient()
     
-    playlist = client.get_playlist(playlist_url)
+    playlist = client.get_playlist_info(playlist_url)
     
     print(f"Playlist: {playlist['name']}")
     print(f"Owner: {playlist['owner']['name']}")
@@ -255,7 +255,6 @@ Always handle potential errors:
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 from spotify_scraper.core.exceptions import (
     SpotifyScraperError,
     URLError,
@@ -264,11 +263,10 @@ from spotify_scraper.core.exceptions import (
 )
 
 def safe_extract_track(url):
-    browser = RequestsBrowser()
-    client = SpotifyClient(browser=browser)
+    client = SpotifyClient()
     
     try:
-        track_data = client.get_track(url)
+        track_data = client.get_track_info(url)
         return {
             "success": True,
             "data": track_data
@@ -314,15 +312,18 @@ For automatic resource cleanup:
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 
-# The client will automatically close when done
-with SpotifyClient(browser=RequestsBrowser()) as client:
-    track = client.get_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-    album = client.get_album("https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv")
+# Note: SpotifyClient doesn't currently support context manager protocol
+# You can manually close it when done
+client = SpotifyClient()
+try:
+    track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+    album = client.get_album_info("https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv")
     
     print(f"Track: {track['name']}")
     print(f"Album: {album['name']}")
+finally:
+    client.close()
 ```
 
 ## Batch Processing
@@ -331,19 +332,17 @@ Process multiple URLs efficiently:
 
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.browsers import RequestsBrowser
 import time
 
 def batch_extract_tracks(urls):
-    browser = RequestsBrowser()
-    client = SpotifyClient(browser=browser)
+    client = SpotifyClient()
     
     results = []
     
     for url in urls:
         try:
             print(f"Processing: {url}")
-            track_data = client.get_track(url)
+            track_data = client.get_track_info(url)
             results.append({
                 "url": url,
                 "name": track_data['name'],

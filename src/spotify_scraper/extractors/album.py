@@ -194,10 +194,42 @@ class AlbumExtractor:
             }
 
             # Extract release date
+            release_date = None
             if "release_date" in album_data:
-                result["release_date"] = album_data["release_date"]
+                release_date = album_data["release_date"]
             elif "releaseDate" in album_data:
-                result["release_date"] = album_data["releaseDate"]
+                if isinstance(album_data["releaseDate"], dict):
+                    # Handle structured date format
+                    date_obj = album_data["releaseDate"]
+                    if "isoString" in date_obj:
+                        release_date = date_obj["isoString"][:10]  # Extract YYYY-MM-DD
+                    elif "year" in date_obj:
+                        year = date_obj.get("year", "")
+                        month = (
+                            str(date_obj.get("month", "")).zfill(2)
+                            if date_obj.get("month")
+                            else "01"
+                        )
+                        day = str(date_obj.get("day", "")).zfill(2) if date_obj.get("day") else "01"
+                        if year:
+                            release_date = f"{year}-{month}-{day}"
+                else:
+                    release_date = album_data["releaseDate"]
+            elif "date" in album_data:
+                if isinstance(album_data["date"], dict):
+                    date_obj = album_data["date"]
+                    year = date_obj.get("year", "")
+                    month = (
+                        str(date_obj.get("month", "")).zfill(2) if date_obj.get("month") else "01"
+                    )
+                    day = str(date_obj.get("day", "")).zfill(2) if date_obj.get("day") else "01"
+                    if year:
+                        release_date = f"{year}-{month}-{day}"
+                else:
+                    release_date = album_data["date"]
+
+            if release_date:
+                result["release_date"] = release_date
 
             # Extract total tracks
             if "total_tracks" in album_data:

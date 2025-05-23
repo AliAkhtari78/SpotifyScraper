@@ -192,8 +192,19 @@ class PlaylistExtractor:
                 owner_data = playlist_data["owner"]
                 result["owner"] = {
                     "id": owner_data.get("id", ""),
-                    "name": owner_data.get("display_name", owner_data.get("name", "")),
+                    "name": owner_data.get(
+                        "display_name", owner_data.get("name", owner_data.get("displayName", ""))
+                    ),
                     "uri": owner_data.get("uri", ""),
+                    "type": "user",
+                }
+            elif "ownerV2" in playlist_data and "data" in playlist_data["ownerV2"]:
+                owner_data = playlist_data["ownerV2"]["data"]
+                result["owner"] = {
+                    "id": owner_data.get("id", owner_data.get("username", "")),
+                    "name": owner_data.get("name", owner_data.get("displayName", "")),
+                    "uri": owner_data.get("uri", ""),
+                    "type": "user",
                 }
 
             # Extract images
@@ -234,6 +245,10 @@ class PlaylistExtractor:
                 for item in playlist_data["tracks"]["items"]:
                     # Some APIs return track in a nested 'track' field
                     track = item.get("track", item)
+
+                    # Skip if track is None (e.g., removed tracks)
+                    if not track:
+                        continue
 
                     track_data: TrackData = {
                         "id": track.get("id", ""),
@@ -305,8 +320,26 @@ class PlaylistExtractor:
                 result["public"] = playlist_data["public"]
 
             # Extract followers count
-            if "followers" in playlist_data and "total" in playlist_data["followers"]:
-                result["followers"] = playlist_data["followers"]["total"]
+            if "followers" in playlist_data:
+                if (
+                    isinstance(playlist_data["followers"], dict)
+                    and "total" in playlist_data["followers"]
+                ):
+                    result["followers"] = playlist_data["followers"]["total"]
+                elif isinstance(playlist_data["followers"], int):
+                    result["followers"] = playlist_data["followers"]
+
+            # Extract duration if available
+            if "duration_ms" in playlist_data:
+                result["duration_ms"] = playlist_data["duration_ms"]
+            elif result.get("tracks"):
+                # Calculate total duration from tracks
+                total_duration = 0
+                for track in result["tracks"]:
+                    if "duration_ms" in track:
+                        total_duration += track["duration_ms"]
+                if total_duration > 0:
+                    result["duration_ms"] = total_duration
 
             return result
 
