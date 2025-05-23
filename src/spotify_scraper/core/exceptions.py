@@ -10,7 +10,6 @@ class SpotifyScraperError(Exception):
     """Base exception for all SpotifyScraper errors."""
 
 
-
 # Alias for backward compatibility and common usage
 ScrapingError = SpotifyScraperError
 
