@@ -47,9 +47,11 @@ __url__ = "https://github.com/AliAkhtari78/SpotifyScraper"
 
 # Core imports for easy access
 from spotify_scraper.client import SpotifyClient
+from spotify_scraper.core.config import Config
 from spotify_scraper.core.exceptions import (
     AuthenticationError,
     BrowserError,
+    ConfigurationError,
     ExtractionError,
     MediaError,
     NetworkError,
@@ -69,6 +71,7 @@ from spotify_scraper.utils.url import (
 
 __all__ = [
     "SpotifyClient",
+    "Config",
     "is_spotify_url",
     "extract_id",
     "convert_to_embed_url",
@@ -80,6 +83,7 @@ __all__ = [
     "AuthenticationError",
     "BrowserError",
     "MediaError",
+    "ConfigurationError",
 ]
 
 # Package metadata

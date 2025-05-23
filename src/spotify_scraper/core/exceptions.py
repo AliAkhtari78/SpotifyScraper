@@ -198,3 +198,21 @@ class DownloadError(MediaError):
         if path:
             msg += f" to {path}"
         super().__init__(msg, path=path)
+
+
+class ConfigurationError(SpotifyScraperError):
+    """Exception raised for configuration-related errors."""
+
+    def __init__(self, message="Configuration error", key=None):
+        """
+        Initialize ConfigurationError.
+
+        Args:
+            message: Error message
+            key: Configuration key that caused the error
+        """
+        self.key = key
+        msg = f"{message}"
+        if key:
+            msg += f" for key: {key}"
+        super().__init__(msg)

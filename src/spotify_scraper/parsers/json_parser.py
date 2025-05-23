@@ -257,6 +257,26 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                 album["release_date"] = album_data["release_date"]
 
             result["album"] = album
+        else:
+            # For embed URLs, construct album from visualIdentity if available
+            if "visualIdentity" in track_data and "image" in track_data["visualIdentity"]:
+                album: AlbumData = {
+                    "name": "",  # Album name not available in embed
+                    "type": "album",
+                    "images": [],
+                }
+
+                # Convert visualIdentity images to album images
+                for img in track_data["visualIdentity"]["image"]:
+                    album["images"].append(
+                        {
+                            "url": img.get("url", ""),
+                            "width": img.get("maxWidth", 0),
+                            "height": img.get("maxHeight", 0),
+                        }
+                    )
+
+                result["album"] = album
 
         # Extract visual identity data if available (only for album images)
         if "visualIdentity" in track_data:

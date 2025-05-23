@@ -206,6 +206,14 @@ class PlaylistExtractor:
                     "uri": owner_data.get("uri", ""),
                     "type": "user",
                 }
+            elif "subtitle" in playlist_data:
+                # For embed URLs, subtitle contains owner name
+                result["owner"] = {
+                    "id": "",
+                    "name": playlist_data["subtitle"],
+                    "uri": "",
+                    "type": "user",
+                }
 
             # Extract images
             if "images" in playlist_data:
@@ -310,6 +318,36 @@ class PlaylistExtractor:
                         track_data["is_explicit"] = track["isExplicit"]
 
                     result["tracks"].append(track_data)
+            elif "trackList" in playlist_data:
+                # For embed URLs, trackList is a simple list
+                result["tracks"] = []
+                if isinstance(playlist_data["trackList"], list):
+                    for track_item in playlist_data["trackList"]:
+                        # Embed trackList items have limited info
+                        track_data: TrackData = {
+                            "id": track_item.get("id", ""),
+                            "name": track_item.get("title", track_item.get("name", "")),
+                            "uri": track_item.get("uri", ""),
+                            "type": "track",
+                        }
+
+                        if "duration" in track_item:
+                            track_data["duration_ms"] = track_item["duration"]
+
+                        if "subtitle" in track_item:
+                            # Subtitle contains artist names
+                            track_data["artists"] = [
+                                {
+                                    "name": track_item["subtitle"],
+                                    "id": "",
+                                    "uri": "",
+                                    "type": "artist",
+                                }
+                            ]
+
+                        result["tracks"].append(track_data)
+
+                result["track_count"] = len(result.get("tracks", []))
 
             # Extract collaborative flag
             if "collaborative" in playlist_data:

@@ -253,6 +253,11 @@ class AlbumExtractor:
                         artist_data["id"] = artist["uri"].split(":")[-1]
 
                     result["artists"].append(artist_data)
+            elif "subtitle" in album_data:
+                # For embed URLs, subtitle contains artist name
+                result["artists"] = [
+                    {"id": "", "name": album_data["subtitle"], "uri": "", "type": "artist"}
+                ]
 
             # Extract images
             if "images" in album_data:
@@ -314,6 +319,29 @@ class AlbumExtractor:
                         track_data["is_explicit"] = track["isExplicit"]
 
                     result["tracks"].append(track_data)
+            elif "trackList" in album_data:
+                # For embed URLs, trackList is a simple list
+                result["tracks"] = []
+                if isinstance(album_data["trackList"], list):
+                    for idx, track_item in enumerate(album_data["trackList"]):
+                        # Embed trackList items have limited info
+                        track_data: TrackData = {
+                            "id": track_item.get("id", ""),
+                            "name": track_item.get("title", track_item.get("name", "")),
+                            "uri": track_item.get("uri", ""),
+                            "type": "track",
+                            "track_number": idx + 1,
+                        }
+
+                        if "duration" in track_item:
+                            track_data["duration_ms"] = track_item["duration"]
+
+                        if "artists" in track_item:
+                            track_data["artists"] = track_item["artists"]
+
+                        result["tracks"].append(track_data)
+
+                result["total_tracks"] = len(result.get("tracks", []))
 
             # Extract album type
             if "album_type" in album_data:
