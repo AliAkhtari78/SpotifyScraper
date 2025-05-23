@@ -181,7 +181,6 @@ minversion = "8.0"
 addopts = "-ra -q --strict-markers --strict-config"
 testpaths = [
     "tests",
-    "src",
 ]
 pythonpath = ["src"]
 markers = [
@@ -189,6 +188,7 @@ markers = [
     "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
 ]
+asyncio_default_fixture_loop_scope = "function"
 
 # Coverage configuration
 [tool.coverage.run]
