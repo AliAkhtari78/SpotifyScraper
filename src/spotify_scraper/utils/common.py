@@ -715,7 +715,7 @@ def validate_spotify_urls(urls: List[str]) -> Tuple[List[str], List[str]]:
         Tuple of (valid_urls, invalid_urls)
     """
     from spotify_scraper.core.exceptions import URLError
-    
+
     valid = []
     invalid = []
 
@@ -743,7 +743,7 @@ def group_urls_by_type(urls: List[str]) -> Dict[str, List[str]]:
         Dictionary with URL types as keys and lists of URLs as values
     """
     from spotify_scraper.core.exceptions import URLError
-    
+
     grouped = defaultdict(list)
 
     for url in urls:

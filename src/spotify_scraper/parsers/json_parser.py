@@ -127,7 +127,10 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
 
         # Extract duration - handle both string and numeric representations
         if "duration" in track_data:
-            if isinstance(track_data["duration"], dict) and "totalMilliseconds" in track_data["duration"]:
+            if (
+                isinstance(track_data["duration"], dict)
+                and "totalMilliseconds" in track_data["duration"]
+            ):
                 result["duration_ms"] = track_data["duration"]["totalMilliseconds"]
             else:
                 result["duration"] = track_data["duration"]
@@ -145,21 +148,21 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                 for artist in track_data["artists"]["items"]:
                     artist_name = ""
                     artist_uri = artist.get("uri", "")
-                    
+
                     # Extract name from profile if present
                     if "profile" in artist and "name" in artist["profile"]:
                         artist_name = artist["profile"]["name"]
                     else:
                         artist_name = artist.get("name", "")
-                    
+
                     artist_data: ArtistData = {
                         "name": artist_name,
                         "uri": artist_uri,
                     }
-                    
+
                     if artist_uri:
                         artist_data["id"] = artist_uri.split(":")[-1]
-                    
+
                     artists_list.append(artist_data)
             elif isinstance(track_data["artists"], list):
                 # Handle direct array structure
@@ -173,7 +176,7 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                         artist_data["id"] = artist["uri"].split(":")[-1]
 
                     artists_list.append(artist_data)
-        
+
         # Also check for single artist field
         elif "artist" in track_data:
             artist = track_data["artist"]
@@ -182,12 +185,14 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                 artist_name = artist["profile"]["name"]
             else:
                 artist_name = artist.get("name", "")
-            
-            artists_list.append({
-                "name": artist_name,
-                "uri": artist.get("uri", ""),
-            })
-        
+
+            artists_list.append(
+                {
+                    "name": artist_name,
+                    "uri": artist.get("uri", ""),
+                }
+            )
+
         if artists_list:
             result["artists"] = artists_list
 
@@ -233,12 +238,14 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                 # Convert coverArt sources to images format
                 album["images"] = []
                 for source in album_data["coverArt"]["sources"]:
-                    album["images"].append({
-                        "url": source.get("url", ""),
-                        "width": source.get("width", 0),
-                        "height": source.get("height", 0),
-                    })
-            
+                    album["images"].append(
+                        {
+                            "url": source.get("url", ""),
+                            "width": source.get("width", 0),
+                            "height": source.get("height", 0),
+                        }
+                    )
+
             # Extract release date if available
             if "releaseDate" in album_data:
                 if isinstance(album_data["releaseDate"], dict):
@@ -315,7 +322,7 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                     # Handle both camelCase and snake_case field names
                     start_time = line.get("startTimeMs") or line.get("start_time_ms", 0)
                     end_time = line.get("endTimeMs") or line.get("end_time_ms", 0)
-                    
+
                     line_data: LyricsLineData = {
                         "start_time_ms": start_time,
                         "words": line.get("words", ""),
