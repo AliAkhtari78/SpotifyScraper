@@ -216,3 +216,6 @@ SpotifyScraper/temo.py
 # Test files
 test_real_functionality.py
 test_environment/
+
+# Virtual environments
+package_build_env/
