@@ -4,7 +4,7 @@ import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from spotify_scraper.auth.session import Session, Request
+from spotify_scraper.auth.session import Request, Session
 
 
 class TestSession:
