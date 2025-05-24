@@ -671,7 +671,7 @@ class SpotifyBulkOperations:
 
                         if cover_path:
                             downloaded.append(cover_path)
-                            self.logger.info("Downloaded cover for: %s", album.get('name'))
+                            self.logger.info("Downloaded cover for: %s", album.get("name"))
 
                     except Exception as e:
                         self.logger.error("Failed to download cover for album %s: %s", album_id, e)
