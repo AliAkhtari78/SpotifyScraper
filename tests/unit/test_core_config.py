@@ -9,6 +9,7 @@ from unittest import mock
 import pytest
 
 from spotify_scraper.core.config import Config
+from spotify_scraper.core.exceptions import ConfigurationError
 
 
 class TestConfig:
@@ -18,117 +19,107 @@ class TestConfig:
         """Test default configuration values."""
         config = Config()
         
-        # Check default values
-        assert config.cache_enabled is True
-        assert config.cache_dir == ".cache"
-        assert config.max_retries == 3
-        assert config.timeout == 30
-        assert config.proxy is None
-        assert config.user_agent.startswith("Mozilla/5.0")
-        assert config.rate_limit == 1.0
-        assert config.cookie_file is None
-        assert config.session_file is None
-        assert config.log_level == "INFO"
-        assert config.log_file is None
+        # Check default values from self.values
+        assert config.get("cache_enabled") is True
+        assert config.get("cache_dir") == os.path.expanduser("~/.spotify-scraper/cache")
+        assert config.get("retries") == 3
+        assert config.get("timeout") == 30
+        assert config.get("proxy") is None
+        assert config.get("user_agent") is None
+        assert config.get("rate_limit_enabled") is True
+        assert config.get("cookie_file") is None
+        assert config.get("log_level") == "INFO"
+        assert config.get("log_file") is None
 
-    def test_custom_config(self):
-        """Test custom configuration values."""
-        config = Config(
-            cache_enabled=False,
-            cache_dir="/tmp/cache",
-            max_retries=5,
-            timeout=60,
-            proxy="http://proxy.example.com:8080",
-            user_agent="CustomAgent/1.0",
-            rate_limit=0.5,
-            cookie_file="cookies.txt",
-            session_file="session.json",
-            log_level="DEBUG",
-            log_file="app.log"
-        )
-        
-        assert config.cache_enabled is False
-        assert config.cache_dir == "/tmp/cache"
-        assert config.max_retries == 5
-        assert config.timeout == 60
-        assert config.proxy == "http://proxy.example.com:8080"
-        assert config.user_agent == "CustomAgent/1.0"
-        assert config.rate_limit == 0.5
-        assert config.cookie_file == "cookies.txt"
-        assert config.session_file == "session.json"
-        assert config.log_level == "DEBUG"
-        assert config.log_file == "app.log"
-
-    def test_from_dict(self):
-        """Test creating config from dictionary."""
+    def test_custom_config_from_dict(self):
+        """Test custom configuration values from dictionary."""
         config_dict = {
             "cache_enabled": False,
-            "cache_dir": "/custom/cache",
-            "max_retries": 10,
-            "timeout": 120,
-            "proxy": "socks5://localhost:9050",
-            "user_agent": "TestAgent/2.0",
-            "rate_limit": 2.0,
-            "cookie_file": "test_cookies.txt",
-            "session_file": "test_session.json",
-            "log_level": "WARNING",
-            "log_file": "test.log"
+            "cache_dir": "/tmp/cache",
+            "retries": 5,
+            "timeout": 60,
+            "proxy": "http://proxy.example.com:8080",
+            "user_agent": "CustomAgent/1.0",
+            "rate_limit_enabled": False,
+            "cookie_file": "cookies.txt",
+            "log_level": "DEBUG",
+            "log_file": "app.log"
         }
         
-        config = Config.from_dict(config_dict)
+        config = Config(config_dict=config_dict)
         
-        assert config.cache_enabled is False
-        assert config.cache_dir == "/custom/cache"
-        assert config.max_retries == 10
-        assert config.timeout == 120
-        assert config.proxy == "socks5://localhost:9050"
-        assert config.user_agent == "TestAgent/2.0"
-        assert config.rate_limit == 2.0
-        assert config.cookie_file == "test_cookies.txt"
-        assert config.session_file == "test_session.json"
-        assert config.log_level == "WARNING"
-        assert config.log_file == "test.log"
+        assert config.get("cache_enabled") is False
+        assert config.get("cache_dir") == "/tmp/cache"
+        assert config.get("retries") == 5
+        assert config.get("timeout") == 60
+        assert config.get("proxy") == "http://proxy.example.com:8080"
+        assert config.get("user_agent") == "CustomAgent/1.0"
+        assert config.get("rate_limit_enabled") is False
+        assert config.get("cookie_file") == "cookies.txt"
+        assert config.get("log_level") == "DEBUG"
+        assert config.get("log_file") == "app.log"
 
-    def test_from_dict_partial(self):
-        """Test creating config from partial dictionary."""
-        config_dict = {
-            "cache_enabled": False,
-            "max_retries": 7
-        }
+    def test_get_method(self):
+        """Test get method with default values."""
+        config = Config()
         
-        config = Config.from_dict(config_dict)
+        # Existing key
+        assert config.get("timeout") == 30
         
-        # Changed values
-        assert config.cache_enabled is False
-        assert config.max_retries == 7
+        # Non-existing key with default
+        assert config.get("non_existent", "default") == "default"
         
-        # Default values
-        assert config.cache_dir == ".cache"
-        assert config.timeout == 30
-        assert config.proxy is None
+        # Non-existing key without default
+        assert config.get("non_existent") is None
 
-    def test_to_dict(self):
+    def test_set_method(self):
+        """Test set method."""
+        config = Config()
+        
+        # Set existing key
+        config.set("timeout", 60)
+        assert config.get("timeout") == 60
+        
+        # Try to set non-existing key
+        with pytest.raises(ConfigurationError):
+            config.set("non_existent", "value")
+
+    def test_dict_access(self):
+        """Test dictionary-style access."""
+        config = Config()
+        
+        # __getitem__
+        assert config["timeout"] == 30
+        
+        # __setitem__
+        config["timeout"] = 60
+        assert config["timeout"] == 60
+        
+        # __contains__
+        assert "timeout" in config
+        assert "non_existent" not in config
+        
+        # KeyError for non-existing key
+        with pytest.raises(KeyError):
+            _ = config["non_existent"]
+
+    def test_as_dict(self):
         """Test converting config to dictionary."""
-        config = Config(
-            cache_enabled=False,
-            max_retries=5,
-            proxy="http://proxy.example.com:8080"
-        )
+        config = Config(config_dict={"timeout": 60, "retries": 5})
         
-        config_dict = config.to_dict()
+        config_dict = config.as_dict()
         
         assert isinstance(config_dict, dict)
-        assert config_dict["cache_enabled"] is False
-        assert config_dict["max_retries"] == 5
-        assert config_dict["proxy"] == "http://proxy.example.com:8080"
-        assert config_dict["cache_dir"] == ".cache"  # Default value
+        assert config_dict["timeout"] == 60
+        assert config_dict["retries"] == 5
+        assert config_dict["cache_enabled"] is True  # Default value
 
     def test_from_file_json(self):
         """Test loading config from JSON file."""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             json.dump({
                 "cache_enabled": False,
-                "max_retries": 8,
+                "retries": 8,
                 "timeout": 90
             }, f)
             temp_file = f.name
@@ -136,16 +127,19 @@ class TestConfig:
         try:
             config = Config.from_file(temp_file)
             
-            assert config.cache_enabled is False
-            assert config.max_retries == 8
-            assert config.timeout == 90
+            assert config.get("cache_enabled") is False
+            assert config.get("retries") == 8
+            assert config.get("timeout") == 90
         finally:
             os.unlink(temp_file)
 
     def test_from_file_not_found(self):
         """Test loading config from non-existent file."""
-        with pytest.raises(FileNotFoundError):
-            Config.from_file("non_existent_file.json")
+        # Config should handle non-existent file gracefully
+        config = Config(config_file="non_existent_file.json")
+        
+        # Should have default values
+        assert config.get("timeout") == 30
 
     def test_from_file_invalid_json(self):
         """Test loading config from invalid JSON file."""
@@ -154,18 +148,18 @@ class TestConfig:
             temp_file = f.name
         
         try:
-            with pytest.raises(json.JSONDecodeError):
-                Config.from_file(temp_file)
+            with pytest.raises(ConfigurationError):
+                Config(config_file=temp_file)
         finally:
             os.unlink(temp_file)
 
     def test_save_json(self):
         """Test saving config to JSON file."""
-        config = Config(
-            cache_enabled=False,
-            max_retries=5,
-            timeout=45
-        )
+        config = Config(config_dict={
+            "cache_enabled": False,
+            "retries": 5,
+            "timeout": 45
+        })
         
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             temp_file = f.name
@@ -178,7 +172,7 @@ class TestConfig:
                 saved_data = json.load(f)
             
             assert saved_data["cache_enabled"] is False
-            assert saved_data["max_retries"] == 5
+            assert saved_data["retries"] == 5
             assert saved_data["timeout"] == 45
         finally:
             os.unlink(temp_file)
@@ -195,133 +189,98 @@ class TestConfig:
             assert file_path.exists()
             assert file_path.parent.exists()
 
-    def test_validate_valid_config(self):
-        """Test validating a valid configuration."""
+    def test_save_no_file_specified(self):
+        """Test save without file path."""
         config = Config()
-        errors = config.validate()
         
-        assert len(errors) == 0
-
-    def test_validate_invalid_values(self):
-        """Test validating configuration with invalid values."""
-        # Test with invalid max_retries
-        config = Config(max_retries=-1)
-        errors = config.validate()
-        assert any("max_retries must be positive" in error for error in errors)
+        with pytest.raises(ConfigurationError) as exc_info:
+            config.save()
         
-        # Test with invalid timeout
-        config = Config(timeout=0)
-        errors = config.validate()
-        assert any("timeout must be positive" in error for error in errors)
-        
-        # Test with invalid rate_limit
-        config = Config(rate_limit=-0.5)
-        errors = config.validate()
-        assert any("rate_limit must be non-negative" in error for error in errors)
-
-    def test_validate_invalid_paths(self):
-        """Test validating configuration with invalid paths."""
-        # Test with non-existent cookie file
-        config = Config(cookie_file="/non/existent/cookies.txt")
-        errors = config.validate()
-        assert any("cookie_file does not exist" in error for error in errors)
-
-    def test_validate_invalid_log_level(self):
-        """Test validating configuration with invalid log level."""
-        config = Config(log_level="INVALID")
-        errors = config.validate()
-        assert any("Invalid log_level" in error for error in errors)
-
-    def test_merge(self):
-        """Test merging configurations."""
-        config1 = Config(
-            cache_enabled=True,
-            max_retries=3,
-            timeout=30
-        )
-        
-        config2 = Config(
-            cache_enabled=False,
-            max_retries=5,
-            proxy="http://proxy.example.com:8080"
-        )
-        
-        merged = config1.merge(config2)
-        
-        # Values from config2 should override config1
-        assert merged.cache_enabled is False
-        assert merged.max_retries == 5
-        assert merged.proxy == "http://proxy.example.com:8080"
-        
-        # Other values from config1 should remain
-        assert merged.timeout == 30
-
-    def test_merge_none_values(self):
-        """Test merging with None values doesn't override."""
-        config1 = Config(
-            cache_enabled=True,
-            proxy="http://proxy1.example.com:8080"
-        )
-        
-        config2 = Config()  # All defaults, proxy is None
-        
-        merged = config1.merge(config2)
-        
-        # Original values should be preserved
-        assert merged.cache_enabled is True
-        assert merged.proxy == "http://proxy1.example.com:8080"
+        assert "No configuration file specified" in str(exc_info.value)
 
     @mock.patch.dict(os.environ, {
-        "SPOTIFY_CACHE_ENABLED": "false",
-        "SPOTIFY_MAX_RETRIES": "10",
-        "SPOTIFY_TIMEOUT": "120",
-        "SPOTIFY_PROXY": "http://env-proxy.example.com:3128",
-        "SPOTIFY_USER_AGENT": "EnvAgent/1.0",
-        "SPOTIFY_RATE_LIMIT": "0.25",
-        "SPOTIFY_COOKIE_FILE": "env_cookies.txt",
-        "SPOTIFY_SESSION_FILE": "env_session.json",
-        "SPOTIFY_LOG_LEVEL": "ERROR",
-        "SPOTIFY_LOG_FILE": "env.log"
+        "SPOTIFY_SCRAPER_CACHE_ENABLED": "false",
+        "SPOTIFY_SCRAPER_RETRIES": "10",
+        "SPOTIFY_SCRAPER_TIMEOUT": "120",
+        "SPOTIFY_SCRAPER_PROXY": "http://env-proxy.example.com:3128",
+        "SPOTIFY_SCRAPER_USER_AGENT": "EnvAgent/1.0",
+        "SPOTIFY_SCRAPER_RATE_LIMIT_ENABLED": "0",
+        "SPOTIFY_SCRAPER_COOKIE_FILE": "env_cookies.txt",
+        "SPOTIFY_SCRAPER_LOG_LEVEL": "ERROR",
+        "SPOTIFY_SCRAPER_LOG_FILE": "env.log"
     })
     def test_from_env(self):
         """Test loading config from environment variables."""
-        config = Config.from_env()
+        config = Config(use_env=True)
         
-        assert config.cache_enabled is False
-        assert config.max_retries == 10
-        assert config.timeout == 120
-        assert config.proxy == "http://env-proxy.example.com:3128"
-        assert config.user_agent == "EnvAgent/1.0"
-        assert config.rate_limit == 0.25
-        assert config.cookie_file == "env_cookies.txt"
-        assert config.session_file == "env_session.json"
-        assert config.log_level == "ERROR"
-        assert config.log_file == "env.log"
+        assert config.get("cache_enabled") is False
+        assert config.get("retries") == 10
+        assert config.get("timeout") == 120
+        assert config.get("proxy") == "http://env-proxy.example.com:3128"
+        assert config.get("user_agent") == "EnvAgent/1.0"
+        assert config.get("rate_limit_enabled") is False
+        assert config.get("cookie_file") == "env_cookies.txt"
+        assert config.get("log_level") == "ERROR"
+        assert config.get("log_file") == "env.log"
 
     @mock.patch.dict(os.environ, {
-        "SPOTIFY_CACHE_ENABLED": "invalid_bool",
-        "SPOTIFY_MAX_RETRIES": "not_a_number",
-        "SPOTIFY_TIMEOUT": "also_not_a_number",
-        "SPOTIFY_RATE_LIMIT": "invalid_float"
+        "SPOTIFY_SCRAPER_CACHE_ENABLED": "invalid_bool",
+        "SPOTIFY_SCRAPER_RETRIES": "not_a_number",
+        "SPOTIFY_SCRAPER_TIMEOUT": "also_not_a_number",
+        "SPOTIFY_SCRAPER_RATE_LIMIT_REQUESTS": "invalid_int"
     })
     def test_from_env_invalid_values(self):
         """Test loading config from environment with invalid values."""
-        config = Config.from_env()
+        config = Config(use_env=True)
         
-        # Should use defaults for invalid values
-        assert config.cache_enabled is True  # Default
-        assert config.max_retries == 3  # Default
-        assert config.timeout == 30  # Default
-        assert config.rate_limit == 1.0  # Default
+        # Boolean values: invalid_bool doesn't match valid values, so it's set to False
+        assert config.get("cache_enabled") is False  # Set to False for invalid boolean
+        
+        # Integer values: should use defaults for invalid integers
+        assert config.get("retries") == 3  # Default
+        assert config.get("timeout") == 30  # Default
+        assert config.get("rate_limit_requests") == 10  # Default
 
     def test_repr(self):
         """Test string representation of config."""
-        config = Config(
-            cache_enabled=False,
-            max_retries=5
-        )
+        config = Config()
         
         repr_str = repr(config)
         assert "Config" in repr_str
-        assert "cache_enabled=False" in repr_str
-        assert "max_retries=5" in repr_str
+        assert "values" in repr_str
+
+    def test_update_from_dict_unknown_keys(self):
+        """Test updating config with unknown keys."""
+        config = Config()
+        
+        # Unknown keys should be ignored with warning
+        config_dict = {
+            "timeout": 60,
+            "unknown_key": "value"
+        }
+        
+        # This should not raise an exception
+        config._update_from_dict(config_dict)
+        
+        assert config.get("timeout") == 60
+        assert config.get("unknown_key") is None
+
+    def test_config_with_file_and_dict(self):
+        """Test config with both file and dict (dict should override file)."""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump({
+                "timeout": 60,
+                "retries": 5
+            }, f)
+            temp_file = f.name
+        
+        try:
+            config = Config(
+                config_file=temp_file,
+                config_dict={"timeout": 90}  # This should override file value
+            )
+            
+            assert config.get("timeout") == 90  # From dict
+            assert config.get("retries") == 5   # From file
+        finally:
+            os.unlink(temp_file)

@@ -1,28 +1,42 @@
 """Tests for core.scraper module."""
 
+import json
+import logging
+from typing import Any, Dict, Optional
 from unittest import mock
 
 import pytest
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import BrowserError, ExtractionError, NetworkError
+from spotify_scraper.core.exceptions import ScrapingError, URLError
 from spotify_scraper.core.scraper import Scraper
 
 
 class MockBrowser(Browser):
     """Mock browser for testing."""
     
-    def __init__(self, responses=None):
+    def __init__(self):
         super().__init__()
-        self.responses = responses or {}
         self.closed = False
     
-    def get(self, url, **kwargs):
-        if url in self.responses:
-            return self.responses[url]
-        raise NetworkError(f"No mock response for {url}")
+    def get_page_content(self, url: str) -> str:
+        """Mock implementation of get_page_content."""
+        return "<html><body>Mock content</body></html>"
     
-    def close(self):
+    def get_json(self, url: str) -> Dict[str, Any]:
+        """Mock implementation of get_json."""
+        return {"status": "ok", "data": {}}
+    
+    def download_file(self, url: str, path: str) -> str:
+        """Mock implementation of download_file."""
+        return path
+    
+    def get_auth_token(self) -> Optional[str]:
+        """Mock implementation of get_auth_token."""
+        return None
+    
+    def close(self) -> None:
+        """Mock implementation of close."""
         self.closed = True
 
 
@@ -36,231 +50,221 @@ class TestScraper:
         
         assert scraper.browser is browser
 
-    @mock.patch('spotify_scraper.core.scraper.RequestsBrowser')
-    def test_init_default_browser(self, mock_browser_class):
-        """Test initializing scraper with default browser."""
-        mock_browser = mock.Mock()
-        mock_browser_class.return_value = mock_browser
+    def test_init_with_log_level(self):
+        """Test initializing scraper with custom log level."""
+        browser = MockBrowser()
         
-        scraper = Scraper()
+        # Valid log level
+        scraper = Scraper(browser=browser, log_level="DEBUG")
+        # Logger configuration happens internally
         
-        assert scraper.browser is mock_browser
-        mock_browser_class.assert_called_once()
+        # Invalid log level should default to INFO
+        scraper = Scraper(browser=browser, log_level="INVALID")
+        # Logger defaults to INFO internally
 
-    def test_fetch_success(self):
-        """Test successful page fetch."""
-        browser = MockBrowser({
-            "https://example.com": {"html": "<html><body>Test</body></html>"}
-        })
-        scraper = Scraper(browser=browser)
+    def test_script_data_to_json_success(self):
+        """Test converting script content to JSON."""
+        script_content = '{"data": {"id": "123", "name": "Test"}}'
         
-        result = scraper.fetch("https://example.com")
+        result = Scraper._script_data_to_json(script_content)
         
-        assert result == {"html": "<html><body>Test</body></html>"}
+        assert result == {"data": {"id": "123", "name": "Test"}}
 
-    def test_fetch_network_error(self):
-        """Test fetch with network error."""
-        browser = MockBrowser()  # No responses configured
-        scraper = Scraper(browser=browser)
+    def test_script_data_to_json_invalid(self):
+        """Test converting invalid script content to JSON."""
+        script_content = '{invalid json content}'
         
-        with pytest.raises(NetworkError):
-            scraper.fetch("https://example.com")
+        with pytest.raises(ScrapingError) as exc_info:
+            Scraper._script_data_to_json(script_content)
+        
+        assert "Error parsing __NEXT_DATA__ JSON" in str(exc_info.value)
 
-    def test_extract_json_from_html_success(self):
-        """Test extracting JSON from HTML."""
-        html = '''
-        <html>
-        <body>
-        <script id="session" data-testid="session">
-            {"user": {"name": "Test User"}}
-        </script>
-        </body>
-        </html>
-        '''
+    def test_script_data_to_json_empty(self):
+        """Test converting empty script content to JSON."""
+        script_content = ''
         
-        scraper = Scraper()
-        data = scraper.extract_json_from_html(html, "session")
+        with pytest.raises(ScrapingError) as exc_info:
+            Scraper._script_data_to_json(script_content)
         
-        assert data == {"user": {"name": "Test User"}}
+        assert "Error parsing __NEXT_DATA__ JSON" in str(exc_info.value)
 
-    def test_extract_json_from_html_not_found(self):
-        """Test extracting JSON when script not found."""
-        html = '<html><body>No script here</body></html>'
+    def test_ms_to_readable_valid(self):
+        """Test converting milliseconds to readable format."""
+        # Test seconds only
+        assert Scraper._ms_to_readable(30000) == "0:30"
+        assert Scraper._ms_to_readable(45000) == "0:45"
         
-        scraper = Scraper()
+        # Test minutes and seconds
+        assert Scraper._ms_to_readable(90000) == "1:30"
+        assert Scraper._ms_to_readable(270000) == "4:30"
+        assert Scraper._ms_to_readable(605000) == "10:05"
         
-        with pytest.raises(ExtractionError) as exc_info:
-            scraper.extract_json_from_html(html, "session")
-        
-        assert "Script with data-testid='session' not found" in str(exc_info.value)
+        # Test hours
+        assert Scraper._ms_to_readable(3600000) == "1:00:00"
+        assert Scraper._ms_to_readable(5430000) == "1:30:30"
+        assert Scraper._ms_to_readable(7265000) == "2:01:05"
 
-    def test_extract_json_from_html_invalid_json(self):
-        """Test extracting invalid JSON from HTML."""
-        html = '''
-        <html>
-        <body>
-        <script id="session" data-testid="session">
-            {invalid json content}
-        </script>
-        </body>
-        </html>
-        '''
+    def test_ms_to_readable_invalid(self):
+        """Test converting invalid milliseconds values."""
+        # Negative values
+        assert Scraper._ms_to_readable(-1000) == "0:00"
         
-        scraper = Scraper()
-        
-        with pytest.raises(ExtractionError) as exc_info:
-            scraper.extract_json_from_html(html, "session")
-        
-        assert "Failed to parse JSON" in str(exc_info.value)
+        # Non-integer values
+        assert Scraper._ms_to_readable("not a number") == "0:00"
+        assert Scraper._ms_to_readable(None) == "0:00"
+        assert Scraper._ms_to_readable(3.14) == "0:00"
 
-    def test_extract_json_from_html_empty_script(self):
-        """Test extracting from empty script tag."""
-        html = '''
-        <html>
-        <body>
-        <script id="session" data-testid="session"></script>
-        </body>
-        </html>
-        '''
+    def test_ms_to_readable_edge_cases(self):
+        """Test edge cases for milliseconds conversion."""
+        # Zero
+        assert Scraper._ms_to_readable(0) == "0:00"
         
-        scraper = Scraper()
+        # One second
+        assert Scraper._ms_to_readable(1000) == "0:01"
         
-        with pytest.raises(ExtractionError) as exc_info:
-            scraper.extract_json_from_html(html, "session")
+        # 59 seconds
+        assert Scraper._ms_to_readable(59000) == "0:59"
         
-        assert "Failed to parse JSON" in str(exc_info.value)
+        # 59 minutes 59 seconds
+        assert Scraper._ms_to_readable(3599000) == "59:59"
 
-    def test_extract_metadata_success(self):
-        """Test extracting metadata from page."""
-        html = '''
-        <html>
-        <head>
-            <meta property="og:title" content="Test Title">
-            <meta property="og:description" content="Test Description">
-            <meta property="og:image" content="https://example.com/image.jpg">
-            <meta property="og:type" content="music.song">
-        </head>
-        </html>
-        '''
+    def test_convert_to_embed_url_valid(self):
+        """Test converting standard track URL to embed URL."""
+        # Standard track URL
+        url = "https://open.spotify.com/track/1234567890abcdef"
+        expected = "https://open.spotify.com/embed/track/1234567890abcdef"
         
-        scraper = Scraper()
-        metadata = scraper.extract_metadata(html)
+        assert Scraper.convert_to_embed_url(url) == expected
         
-        assert metadata["title"] == "Test Title"
-        assert metadata["description"] == "Test Description"
-        assert metadata["image"] == "https://example.com/image.jpg"
-        assert metadata["type"] == "music.song"
+        # Track URL with query parameters
+        url = "https://open.spotify.com/track/1234567890abcdef?si=xyz123"
+        expected = "https://open.spotify.com/embed/track/1234567890abcdef"
+        
+        assert Scraper.convert_to_embed_url(url) == expected
 
-    def test_extract_metadata_missing_tags(self):
-        """Test extracting metadata when tags are missing."""
-        html = '''
-        <html>
-        <head>
-            <meta property="og:title" content="Only Title">
-        </head>
-        </html>
-        '''
+    def test_convert_to_embed_url_invalid(self):
+        """Test converting invalid URLs to embed URL."""
+        # Not a track URL
+        assert Scraper.convert_to_embed_url("https://open.spotify.com/album/123") is None
+        assert Scraper.convert_to_embed_url("https://open.spotify.com/playlist/123") is None
         
-        scraper = Scraper()
-        metadata = scraper.extract_metadata(html)
+        # Not a Spotify URL
+        assert Scraper.convert_to_embed_url("https://example.com/track/123") is None
         
-        assert metadata["title"] == "Only Title"
-        assert metadata["description"] is None
-        assert metadata["image"] is None
-        assert metadata["type"] is None
+        # Invalid URL format
+        assert Scraper.convert_to_embed_url("not a url") is None
 
-    def test_extract_metadata_no_content(self):
-        """Test extracting metadata with no content attribute."""
-        html = '''
-        <html>
-        <head>
-            <meta property="og:title">
-            <meta property="og:description" content="">
-        </head>
-        </html>
-        '''
+    def test_get_track_id_from_url_standard(self):
+        """Test extracting track ID from standard URLs."""
+        # Standard track URL
+        url = "https://open.spotify.com/track/1234567890abcdef"
+        assert Scraper.get_track_id_from_url(url) == "1234567890abcdef"
         
-        scraper = Scraper()
-        metadata = scraper.extract_metadata(html)
-        
-        assert metadata["title"] is None
-        assert metadata["description"] == ""
+        # Track URL with query parameters
+        url = "https://open.spotify.com/track/1234567890abcdef?si=xyz123"
+        assert Scraper.get_track_id_from_url(url) == "1234567890abcdef"
 
-    def test_parse_html(self):
-        """Test parsing HTML content."""
-        html = '<html><body><div class="test">Content</div></body></html>'
+    def test_get_track_id_from_url_embed(self):
+        """Test extracting track ID from embed URLs."""
+        # Embed track URL
+        url = "https://open.spotify.com/embed/track/1234567890abcdef"
+        assert Scraper.get_track_id_from_url(url) == "1234567890abcdef"
         
-        scraper = Scraper()
-        soup = scraper.parse_html(html)
-        
-        assert soup is not None
-        assert soup.find("div", class_="test").text == "Content"
+        # Embed track URL with query parameters
+        url = "https://open.spotify.com/embed/track/1234567890abcdef?utm_source=generator"
+        assert Scraper.get_track_id_from_url(url) == "1234567890abcdef"
 
-    def test_parse_html_invalid(self):
-        """Test parsing invalid HTML."""
-        html = "Not HTML content"
+    def test_get_track_id_from_url_invalid(self):
+        """Test extracting track ID from invalid URLs."""
+        # Not a track URL
+        assert Scraper.get_track_id_from_url("https://open.spotify.com/album/123") is None
+        assert Scraper.get_track_id_from_url("https://open.spotify.com/playlist/123") is None
         
-        scraper = Scraper()
-        soup = scraper.parse_html(html)
+        # Not a Spotify URL
+        assert Scraper.get_track_id_from_url("https://example.com/track/123") is None
         
-        # BeautifulSoup handles invalid content gracefully
-        assert soup is not None
+        # Invalid URL format
+        assert Scraper.get_track_id_from_url("not a url") is None
+        
+        # Empty or None
+        assert Scraper.get_track_id_from_url("") is None
 
-    def test_close(self):
-        """Test closing the scraper."""
+    def test_validate_spotify_url_valid(self):
+        """Test validating valid Spotify URLs."""
         browser = MockBrowser()
         scraper = Scraper(browser=browser)
         
-        assert not browser.closed
+        # Valid track URL
+        assert scraper.validate_spotify_url("https://open.spotify.com/track/123") is True
         
-        scraper.close()
+        # Valid album URL
+        assert scraper.validate_spotify_url("https://open.spotify.com/album/123") is True
         
-        assert browser.closed
+        # Valid playlist URL
+        assert scraper.validate_spotify_url("https://open.spotify.com/playlist/123") is True
+        
+        # Valid artist URL
+        assert scraper.validate_spotify_url("https://open.spotify.com/artist/123") is True
 
-    def test_context_manager(self):
-        """Test using scraper as context manager."""
+    def test_validate_spotify_url_with_expected_type(self):
+        """Test validating URLs with expected type."""
         browser = MockBrowser()
-        
-        with Scraper(browser=browser) as scraper:
-            assert scraper.browser is browser
-            assert not browser.closed
-        
-        assert browser.closed
-
-    def test_fetch_and_extract_success(self):
-        """Test combined fetch and extract operation."""
-        html = '''
-        <html>
-        <body>
-        <script id="session" data-testid="session">
-            {"status": "success", "data": {"id": "123"}}
-        </script>
-        </body>
-        </html>
-        '''
-        
-        browser = MockBrowser({
-            "https://example.com": {"html": html}
-        })
         scraper = Scraper(browser=browser)
         
-        page_data = scraper.fetch("https://example.com")
-        json_data = scraper.extract_json_from_html(page_data["html"], "session")
+        # Correct type
+        assert scraper.validate_spotify_url(
+            "https://open.spotify.com/track/123", 
+            expected_type="track"
+        ) is True
         
-        assert json_data["status"] == "success"
-        assert json_data["data"]["id"] == "123"
+        # Wrong type
+        with pytest.raises(URLError) as exc_info:
+            scraper.validate_spotify_url(
+                "https://open.spotify.com/album/123", 
+                expected_type="track"
+            )
+        assert "is not a Spotify track URL" in str(exc_info.value)
 
-    def test_browser_error_propagation(self):
-        """Test that browser errors are properly propagated."""
-        def raise_browser_error(url, **kwargs):
-            raise BrowserError("Browser failed")
-        
+    def test_validate_spotify_url_embed(self):
+        """Test validating embed URLs."""
         browser = MockBrowser()
-        browser.get = raise_browser_error
-        
         scraper = Scraper(browser=browser)
         
-        with pytest.raises(BrowserError) as exc_info:
-            scraper.fetch("https://example.com")
+        # Valid embed URL
+        assert scraper.validate_spotify_url(
+            "https://open.spotify.com/embed/track/123",
+            expected_type="embed/track"
+        ) is True
         
-        assert "Browser failed" in str(exc_info.value)
+        # Wrong embed type
+        with pytest.raises(URLError) as exc_info:
+            scraper.validate_spotify_url(
+                "https://open.spotify.com/embed/album/123",
+                expected_type="embed/track"
+            )
+        assert "is not a Spotify embed/track URL" in str(exc_info.value)
+
+    def test_validate_spotify_url_invalid(self):
+        """Test validating invalid URLs."""
+        browser = MockBrowser()
+        scraper = Scraper(browser=browser)
+        
+        # Empty URL
+        with pytest.raises(URLError) as exc_info:
+            scraper.validate_spotify_url("")
+        assert "URL must be a non-empty string" in str(exc_info.value)
+        
+        # None URL
+        with pytest.raises(URLError) as exc_info:
+            scraper.validate_spotify_url(None)
+        assert "URL must be a non-empty string" in str(exc_info.value)
+        
+        # Not a Spotify URL
+        with pytest.raises(URLError) as exc_info:
+            scraper.validate_spotify_url("https://example.com/track/123")
+        assert "Must be from 'open.spotify.com'" in str(exc_info.value)
+        
+        # Invalid scheme
+        with pytest.raises(URLError) as exc_info:
+            scraper.validate_spotify_url("ftp://open.spotify.com/track/123")
+        assert "Invalid Spotify URL" in str(exc_info.value)
