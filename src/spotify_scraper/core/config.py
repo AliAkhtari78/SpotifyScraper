@@ -121,7 +121,7 @@ class Config:
             logger.debug(f"Loaded configuration from {self.config_file}")
         except Exception as e:
             logger.error(f"Failed to load configuration from {self.config_file}: {e}")
-            raise ConfigurationError(f"Failed to load configuration file: {e}")
+            raise ConfigurationError(f"Failed to load configuration file: {e}") from e
 
     def _update_from_dict(self, config_dict: Dict[str, Any]) -> None:
         """
@@ -227,7 +227,7 @@ class Config:
             logger.debug(f"Saved configuration to {file_path}")
         except Exception as e:
             logger.error(f"Failed to save configuration to {file_path}: {e}")
-            raise ConfigurationError(f"Failed to save configuration file: {e}")
+            raise ConfigurationError(f"Failed to save configuration file: {e}") from e
 
     def __getitem__(self, key: str) -> Any:
         """

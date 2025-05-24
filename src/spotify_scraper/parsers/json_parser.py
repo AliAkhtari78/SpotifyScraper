@@ -63,10 +63,10 @@ def extract_json_from_html(html_content: str, selector: str) -> Dict[str, Any]:
         return json_data
     except json.JSONDecodeError as e:
         logger.error(f"Failed to parse JSON data: {e}")
-        raise ParsingError(f"Failed to parse JSON data: {e}", data_type="JSON")
+        raise ParsingError(f"Failed to parse JSON data: {e}", data_type="JSON") from e
     except Exception as e:
         logger.error(f"Failed to extract JSON data: {e}")
-        raise ParsingError(f"Failed to extract JSON data: {e}")
+        raise ParsingError(f"Failed to extract JSON data: {e}") from e
 
 
 def get_nested_value(

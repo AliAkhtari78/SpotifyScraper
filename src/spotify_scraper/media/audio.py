@@ -212,7 +212,7 @@ class AudioDownloader:
             logger.error(f"Failed to download preview audio: {e}")
             raise DownloadError(
                 f"Failed to download preview audio: {e}", url=preview_url, file_path=file_path
-            )
+            ) from e
 
     def _embed_cover(self, file_path: str, track_data: TrackData) -> None:
         """Embed cover image and metadata in an MP3 file.
