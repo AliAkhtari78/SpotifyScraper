@@ -53,7 +53,7 @@ jobs:
       run: mypy src/ --ignore-missing-imports
     
     - name: Run Bandit Security Scan
-      run: bandit -r src/ -f json -o bandit-report.json
+      run: bandit -r src/ -f json -o bandit-report.json -ll
     
     - name: Check dependencies with Safety
       run: safety check
