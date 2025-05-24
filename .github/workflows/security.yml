@@ -8,6 +8,7 @@ on:
   schedule:
     - cron: '0 0 * * 1'  # Weekly on Mondays
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
