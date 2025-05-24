@@ -112,6 +112,7 @@ class SeleniumBrowser(Browser):
             Path where file was saved
         """
         import os
+
         import requests
 
         try:

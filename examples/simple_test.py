@@ -16,7 +16,7 @@ try:
 
     # Test 2: Import main components
     print("\n2. Testing component imports...")
-    from spotify_scraper import SpotifyClient, is_spotify_url, extract_id
+    from spotify_scraper import SpotifyClient, extract_id, is_spotify_url
 
     print("   ✓ SpotifyClient imported")
     print("   ✓ Utility functions imported")
@@ -36,10 +36,10 @@ try:
     # Test 5: Test extractors
     print("\n5. Testing extractor imports...")
     from spotify_scraper.extractors import (
-        TrackExtractor,
         AlbumExtractor,
         ArtistExtractor,
         PlaylistExtractor,
+        TrackExtractor,
     )
 
     print("   ✓ All extractors imported successfully")

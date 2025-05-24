@@ -6,7 +6,7 @@ This script demonstrates the basic functionality of the SpotifyScraper library,
 including extracting information from tracks, albums, artists, and playlists.
 """
 
-from spotify_scraper import SpotifyClient, is_spotify_url, extract_id
+from spotify_scraper import SpotifyClient, extract_id, is_spotify_url
 
 
 def main():

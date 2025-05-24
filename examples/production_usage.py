@@ -14,10 +14,10 @@ Version: 2.0.0
 import json
 import logging
 import sys
-from pathlib import Path
-from typing import Dict, Any, Optional, List, Union
 from contextlib import contextmanager
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 # Add src directory to path if running as script
 if __name__ == "__main__":
@@ -25,11 +25,11 @@ if __name__ == "__main__":
 
 from spotify_scraper import SpotifyClient
 from spotify_scraper.core.exceptions import (
-    SpotifyScraperError,
-    URLError,
+    AuthenticationError,
     NetworkError,
     ScrapingError,
-    AuthenticationError,
+    SpotifyScraperError,
+    URLError,
 )
 
 
@@ -693,8 +693,8 @@ def analyze_spotify_url(url: str) -> Dict[str, Any]:
     Returns:
         Dictionary with URL analysis results
     """
-    from spotify_scraper.utils.url import get_url_type, extract_id
     from spotify_scraper.core.exceptions import URLError
+    from spotify_scraper.utils.url import extract_id, get_url_type
 
     try:
         url_type = get_url_type(url)

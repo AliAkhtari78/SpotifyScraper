@@ -8,11 +8,11 @@ This example shows how to use the Config class to:
 - Use environment variables
 """
 
-from pathlib import Path
 import json
 import os
+from pathlib import Path
 
-from spotify_scraper import SpotifyClient, Config
+from spotify_scraper import Config, SpotifyClient
 
 
 def main():
