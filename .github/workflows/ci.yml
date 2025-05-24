@@ -46,7 +46,9 @@ jobs:
       run: flake8 src/ tests/
     
     - name: Run Pylint
-      run: pylint src/    - name: Run MyPy
+      run: pylint src/
+    
+    - name: Run MyPy
       run: mypy src/ --ignore-missing-imports
     
     - name: Run Bandit Security Scan

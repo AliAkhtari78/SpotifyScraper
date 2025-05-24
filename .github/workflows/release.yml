@@ -47,7 +47,9 @@ jobs:
       run: python -m build
     
     - name: Check distribution
-      run: twine check dist/*    - name: Publish to Test PyPI
+      run: twine check dist/*
+    
+    - name: Publish to Test PyPI
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
