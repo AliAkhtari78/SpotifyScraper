@@ -1,7 +1,7 @@
 # Multi-stage Dockerfile for SpotifyScraper
 
 # Stage 1: Build stage
-FROM python:3.11-slim as builder
+FROM python:3.13-slim as builder
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -29,7 +29,7 @@ RUN pip install --user --no-warn-script-location -r requirements.txt
 RUN pip install --user --no-warn-script-location .
 
 # Stage 2: Runtime stage
-FROM python:3.11-slim
+FROM python:3.13-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
