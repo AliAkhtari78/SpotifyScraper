@@ -19,26 +19,24 @@ The main client class for interacting with Spotify.
 ```python
 SpotifyClient(
     cookie_file: Optional[str] = None,
-    cache_enabled: bool = True,
-    cache_dir: Optional[str] = None,
-    max_retries: int = 3,
-    timeout: int = 30,
-    proxy: Optional[str] = None,
-    session: Optional[requests.Session] = None,
-    config: Optional[Config] = None
+    cookies: Optional[Dict[str, str]] = None,
+    headers: Optional[Dict[str, str]] = None,
+    proxy: Optional[Dict[str, str]] = None,
+    browser_type: str = "requests",
+    log_level: str = "INFO",
+    log_file: Optional[str] = None
 )
 ```
 
 #### Parameters
 
-- `cookie_file` (str, optional): Path to cookies file for authenticated features
-- `cache_enabled` (bool): Enable/disable caching (default: True)
-- `cache_dir` (str, optional): Directory for cache files
-- `max_retries` (int): Maximum retry attempts (default: 3)
-- `timeout` (int): Request timeout in seconds (default: 30)
-- `proxy` (str, optional): Proxy URL
-- `session` (requests.Session, optional): Custom session object
-- `config` (Config, optional): Configuration object
+- `cookie_file` (str, optional): Path to Netscape-format cookies.txt file for authentication
+- `cookies` (Dict[str, str], optional): Dictionary of cookies to use instead of cookie_file
+- `headers` (Dict[str, str], optional): Custom HTTP headers to include in all requests
+- `proxy` (Dict[str, str], optional): Proxy server configuration (e.g., {"http": "http://proxy:8080"})
+- `browser_type` (str): Backend browser implementation ("requests", "selenium", or "auto")
+- `log_level` (str): Logging verbosity level ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL")
+- `log_file` (str, optional): Path to write log messages to
 
 ### Methods
 
@@ -92,14 +90,13 @@ Extract track metadata with lyrics.
 #### get_album_info
 
 ```python
-get_album_info(url: str, tracks_limit: Optional[int] = None) -> Dict[str, Any]
+get_album_info(url: str) -> Dict[str, Any]
 ```
 
 Extract album metadata.
 
 **Parameters:**
 - `url` (str): Spotify album URL
-- `tracks_limit` (int, optional): Maximum number of tracks to fetch
 
 **Returns:**
 - Dict containing album metadata

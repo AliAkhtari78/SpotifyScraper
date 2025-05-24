@@ -53,6 +53,11 @@ class Session:
 
         logger.debug("Initialized Session (anonymous: %s)", self.is_anonymous)
 
+    @property
+    def _cookies(self):
+        """Compatibility property for accessing cookies."""
+        return self.cookies
+
     def is_valid(self) -> bool:
         """
         Check if the session is currently valid.

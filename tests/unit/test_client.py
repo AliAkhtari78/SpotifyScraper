@@ -97,6 +97,7 @@ class TestSpotifyClient:
         """Test getting lyrics with authentication."""
         # Mock session as authenticated
         client.session.is_authenticated = Mock(return_value=True)
+        client.cookie_file = "test_cookies.txt"  # Set cookie file to pass auth check
 
         # Mock the track extractor
         mock_lyrics = "These are the lyrics to the song"
@@ -113,6 +114,7 @@ class TestSpotifyClient:
         """Test getting track info with lyrics."""
         # Mock session as authenticated
         client.session.is_authenticated = Mock(return_value=True)
+        client.cookie_file = "test_cookies.txt"  # Set cookie file to pass auth check
 
         # Mock track data and lyrics
         mock_track_data = {"id": "123", "name": "Test Track", "artists": [{"name": "Test Artist"}]}

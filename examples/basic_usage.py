@@ -90,9 +90,9 @@ def main():
         
         if "ERROR" not in playlist_info:
             print(f"   Name: {playlist_info.get('name', 'Unknown')}")
-            print(f"   Owner: {playlist_info.get('owner', {}).get('display_name', 'Unknown')}")
+            print(f"   Owner: {playlist_info.get('owner', {}).get('name', 'Unknown')}")
             print(f"   Description: {playlist_info.get('description', 'N/A')[:50]}...")
-            print(f"   Total Tracks: {playlist_info.get('tracks', {}).get('total', 0)}")
+            print(f"   Total Tracks: {playlist_info.get('track_count', 0)}")
             print(f"   Public: {'Yes' if playlist_info.get('public') else 'No'}")
         else:
             print(f"   Error: {playlist_info['ERROR']}")
