@@ -1,32 +1,19 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = ["setuptools>=65", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "spotifyscraper"
 version = "2.0.0"
-description = "A modern Python library for extracting data from Spotify's web interface without using the official API"
+description = "Python library for extracting data from Spotify without authentication"
+readme = "README.md"
 authors = [
-    {name = "Ali Akhtari", email = "aliakhtari78@hotmail.com"}
-]
-maintainers = [
-    {name = "Ali Akhtari", email = "aliakhtari78@hotmail.com"}
+    {name = "Ali Akhtari", email = "aliakhtari78@hotmail.com"},
 ]
 license = {text = "MIT"}
-readme = "README.md"
-requires-python = ">=3.8"
-keywords = [
-    "spotify", "scraper", "scraping", "web-scraping", "downloader", 
-    "mp3", "music", "audio", "cover", "playlist", "artist", "album",
-    "beautifulsoup4", "selenium", "requests", "automation"
-]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Internet :: WWW/HTTP :: Browsers",
-    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
-    "Topic :: Multimedia :: Sound/Audio",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
@@ -35,84 +22,61 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Sound/Audio",
 ]
-
+keywords = ["spotify", "scraper", "music", "api", "download"]
 dependencies = [
-    # Core web scraping
-    "beautifulsoup4",
-    "lxml",
-    "requests",
-    "urllib3",
-    
-    # HTML/XML parsing
-    "cssselect",
-    "soupsieve",
-    
-    # Media processing
-    "eyeD3",
-    "filetype",
-    
-    # Network utilities
-    "fake-useragent",
-    "certifi",
-    
-    # Configuration and data
-    "PyYAML",
-    "packaging",
-    "tqdm",
-    
-    # Parsing utilities
-    "pyparsing",
-    "deprecation",
-    
-    # CLI
-    "click>=8.0.0",
-    "rich>=13.0.0",  # For beautiful terminal output
+    "requests>=2.25.0",
+    "beautifulsoup4>=4.9.0",
+    "lxml>=4.9.0",
+    "pyyaml>=6.0",
+    "eyeD3>=0.9.5",
 ]
-
-[project.optional-dependencies]
-selenium = [
-    "selenium",
-]
-async = [
-    "pyppeteer",
-    "pyee",
-    "websockets",
-]
-dev = [
-    "pytest",
-    "pytest-asyncio",
-    "pytest-cov",
-    "black",
-    "isort",
-    "flake8",
-    "mypy",
-    "pre-commit",
-]
-docs = [
-    "sphinx",
-    "sphinx-rtd-theme",
-    "myst-parser",
-]
-all = [
-    "selenium",
-    "pyppeteer",
-    "pyee",
-    "websockets",
-]
+requires-python = ">=3.8"
 
 [project.urls]
 Homepage = "https://github.com/AliAkhtari78/SpotifyScraper"
 Documentation = "https://spotifyscraper.readthedocs.io/"
-Repository = "https://github.com/AliAkhtari78/SpotifyScraper"
-"Bug Reports" = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
-Changelog = "https://github.com/AliAkhtari78/SpotifyScraper/blob/main/CHANGELOG.md"
+Repository = "https://github.com/AliAkhtari78/SpotifyScraper.git"
+"Bug Tracker" = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
+Changelog = "https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CHANGELOG.md"
+
+[project.optional-dependencies]
+selenium = [
+    "selenium>=4.0.0",
+]dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.5.0",
+    "pytest-timeout>=2.2.0",
+    "pytest-mock>=3.12.0",
+    "black>=24.2.0",
+    "isort>=5.13.0",
+    "flake8>=7.0.0",
+    "pylint>=3.0.0",
+    "mypy>=1.8.0",
+    "bandit[toml]>=1.7.7",
+    "pre-commit>=3.6.0",
+]
+test = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.5.0",
+    "pytest-timeout>=2.2.0",
+    "pytest-mock>=3.12.0",
+]
+docs = [
+    "sphinx>=7.2.0",
+    "sphinx-rtd-theme>=2.0.0",
+    "myst-parser>=2.0.0",
+]
+all = [
+    "spotifyscraper[selenium,dev,test,docs]",
+]
 
 [project.scripts]
-spotify-scraper = "spotify_scraper.cli:main"
-spotifyscraper = "spotify_scraper.cli:main"
+spotify-scraper = "spotify_scraper.__main__:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -120,96 +84,72 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.package-data]
-spotify_scraper = ["py.typed"]
-
-# Black configuration
 [tool.black]
 line-length = 100
-target-version = ['py38']
+target-version = ['py38', 'py39', 'py310', 'py311']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
-    \.eggs
+  # directories
+  \.eggs
   | \.git
   | \.hg
-  | \.mypy_cache
-  | \.tox
+  | \.mypy_cache  | \.tox
   | \.venv
   | _build
   | buck-out
   | build
   | dist
+  | venv
 )/
 '''
 
-# isort configuration
 [tool.isort]
 profile = "black"
 line_length = 100
-known_first_party = ["spotify_scraper"]
-skip_glob = ["*/migrations/*"]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
 
-# mypy configuration
-[tool.mypy]
-python_version = "3.8"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-check_untyped_defs = true
-disallow_untyped_decorators = true
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_no_return = true
-warn_unreachable = true
-strict_equality = true
+[tool.bandit]
+targets = ["src"]
+skips = ["B101", "B601"]
 
-[[tool.mypy.overrides]]
-module = [
-    "eyeD3.*",
-    "fake_useragent.*",
-    "pyppeteer.*",
-    "pyee.*",
-]
-ignore_missing_imports = true
-
-# pytest configuration
-[tool.pytest.ini_options]
-minversion = "8.0"
-addopts = "-ra -q --strict-markers --strict-config"
-testpaths = [
-    "tests",
-]
-pythonpath = ["src"]
-markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
-    "unit: marks tests as unit tests",
-]
-asyncio_default_fixture_loop_scope = "function"
-
-# Coverage configuration
 [tool.coverage.run]
-source = ["src"]
-omit = [
-    "*/tests/*",
-    "*/test_*.py",
-    "*/__pycache__/*",
-    "*/.*",
-]
+source = ["src/spotify_scraper"]
+branch = true
+parallel = true
 
 [tool.coverage.report]
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
     "if self.debug:",
-    "if settings.DEBUG",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if 0:",
     "if __name__ == .__main__.:",
-    "class .*\\bProtocol\\):",
-    "@(abc\\.)?abstractmethod",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]
+precision = 2
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "2.0.0"
+version_files = [
+    "pyproject.toml:version",
+    "src/spotify_scraper/__init__.py:__version__",
+]
+update_changelog_on_bump = true
+style = [
+    ["qmark", "fg:#ff9d00 bold"],
+    ["question", "bold"],
+    ["answer", "fg:#ff9d00 bold"],
+    ["pointer", "fg:#ff9d00 bold"],
+    ["highlighted", "fg:#ff9d00 bold"],
+    ["selected", "fg:#cc5454"],
+    ["separator", "fg:#cc5454"],
+    ["instruction", ""],
+    ["text", ""],
+    ["disabled", "fg:#858585 italic"],
 ]

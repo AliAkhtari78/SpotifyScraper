@@ -1,35 +1,52 @@
+# Dependabot configuration for automated dependency updates
+
 version: 2
 updates:
-  # Enable version updates for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-    labels:
-      - "dependencies"
-      - "github-actions"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    
-  # Enable version updates for Python dependencies
+  # Python dependencies
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "06:00"
+      time: "00:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "AliAkhtari78"
     labels:
       - "dependencies"
       - "python"
     commit-message:
       prefix: "chore"
       include: "scope"
-    ignore:
-      # Ignore major version updates for critical dependencies
-      - dependency-name: "selenium"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "beautifulsoup4"
-        update-types: ["version-update:semver-major"]
+    pull-request-branch-name:
+      separator: "-"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "00:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "AliAkhtari78"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "00:00"
+    labels:
+      - "dependencies"      - "docker"
+    commit-message:
+      prefix: "build"
+      include: "scope"

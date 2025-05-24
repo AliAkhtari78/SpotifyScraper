@@ -2,146 +2,76 @@ name: Documentation
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main, master ]
     paths:
       - 'docs/**'
       - 'src/**'
-      - '.github/workflows/docs.yml'
       - 'README.md'
-      - 'pyproject.toml'
+      - '.readthedocs.yaml'
       - 'setup.py'
+      - 'pyproject.toml'
   pull_request:
-    branches: [ master, main ]
+    branches: [ main, master ]
     paths:
       - 'docs/**'
       - 'src/**'
-      - '.github/workflows/docs.yml'
+      - 'README.md'
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
   build-docs:
+    name: Build Documentation
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Full history for git info in docs
     
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
-    
-    - name: Cache pip packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-docs-${{ hashFiles('**/requirements.txt', '**/pyproject.toml', 'docs/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-docs-
-          ${{ runner.os }}-pip-
+        python-version: "3.11"
     
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e ".[dev]"
         pip install -r docs/requirements.txt
-        pip install sphinx-autodoc-typehints sphinxcontrib-napoleon sphinxcontrib-programoutput
+        pip install -e .
     
-    - name: Build documentation
+    - name: Build Sphinx documentation
       run: |
         cd docs
         make clean
         make html
-        touch _build/html/.nojekyll
-    
-    - name: Check for broken links
-      run: |
-        pip install sphinx-sitemap
-        cd docs
-        make linkcheck || true
+        make linkcheck
     
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: documentation
-        path: docs/_build/html/
-        retention-days: 7
-
-  test-docs:
-    needs: build-docs
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+        name: docs-html        path: docs/_build/html/
     
-    steps:
-    - name: Download documentation
-      uses: actions/download-artifact@v4
-      with:
-        name: documentation
-        path: docs-test/
-    
-    - name: Test documentation structure
+    - name: Check for broken links
+      if: failure()
       run: |
-        # Check that main files exist
-        test -f docs-test/index.html
-        test -f docs-test/api.html || test -f docs-test/api/index.html || echo "API docs not found"
-        
-        # Check for common issues
-        ! grep -r "undefined" docs-test/*.html || echo "Found undefined references"
-        ! grep -r "TODO" docs-test/*.html || echo "Found TODO items"
-
-  deploy-docs:
-    needs: build-docs
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+        echo "Documentation build failed or has broken links"
+        exit 1
     
-    steps:
-    - name: Setup Pages
-      uses: actions/configure-pages@v5
-    
-    - name: Download documentation
-      uses: actions/download-artifact@v4
+    - name: Deploy to GitHub Pages (PR Preview)
+      if: github.event_name == 'pull_request'
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        name: documentation
-        path: docs-deploy/
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/_build/html
+        destination_dir: pr-${{ github.event.pull_request.number }}
     
-    - name: Upload to GitHub Pages
-      uses: actions/upload-pages-artifact@v3
+    - name: Comment PR with preview link
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
       with:
-        path: docs-deploy/
-    
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
-
-  # Optional: Deploy to ReadTheDocs
-  notify-rtd:
-    needs: build-docs
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-    continue-on-error: true
-    
-    steps:
-    - name: Trigger ReadTheDocs build
-      env:
-        RTD_TOKEN: ${{ secrets.READTHEDOCS_TOKEN }}
-      if: env.RTD_TOKEN != ''
-      run: |
-        curl -X POST \
-          -H "Authorization: Token $RTD_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d '{"branch": "master"}' \
-          https://readthedocs.org/api/v3/projects/spotify-scraper/versions/latest/builds/
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '📚 Documentation preview is ready! View it at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.pull_request.number }}/'
+          })

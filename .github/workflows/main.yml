@@ -1,0 +1,92 @@
+name: Main Workflow
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Quick checks that should pass before anything else
+  pre-checks:
+    name: Pre-flight Checks
+    runs-on: ubuntu-latest
+    outputs:
+      should-run-tests: ${{ steps.filter.outputs.src }}
+      should-build-docs: ${{ steps.filter.outputs.docs }}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          src:
+            - 'src/**'
+            - 'tests/**'
+            - 'setup.py'
+            - 'pyproject.toml'
+            - 'requirements*.txt'
+          docs:
+            - 'docs/**'
+            - 'README.md'
+            - '.readthedocs.yaml'
+
+  # Run all checks in parallel for speed
+  quality:
+    name: Code Quality
+    needs: pre-checks
+    if: needs.pre-checks.outputs.should-run-tests == 'true'
+    uses: ./.github/workflows/ci.yml
+  
+  security:
+    name: Security Scan
+    needs: pre-checks    uses: ./.github/workflows/security.yml
+  
+  docs:
+    name: Documentation
+    needs: pre-checks
+    if: needs.pre-checks.outputs.should-build-docs == 'true'
+    uses: ./.github/workflows/docs.yml
+  
+  # Update badges and status
+  update-status:
+    name: Update Project Status
+    needs: [quality, security, docs]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Update README badges
+      run: |
+        # This would update dynamic badges in README
+        echo "All checks passed!"
+    
+    - name: Trigger ReadTheDocs build
+      if: success()
+      run: |
+        curl -X POST \
+          -H "Authorization: Token ${{ secrets.READTHEDOCS_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          https://readthedocs.org/api/v3/projects/spotifyscraper/versions/latest/builds/ \
+          -d '{}'
+    
+    - name: Update GitHub Pages
+      if: success()
+      run: |
+        echo "Documentation is automatically updated via ReadTheDocs webhook"
+    
+    - name: Notify success
+      if: success()
+      run: |
+        echo "✅ All automation workflows completed successfully!"
+        echo "📚 Documentation: https://spotifyscraper.readthedocs.io/"
+        echo "📦 Package: https://pypi.org/project/spotifyscraper/"
+        echo "🐳 Docker: ghcr.io/${{ github.repository }}"

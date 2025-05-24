@@ -1,188 +1,117 @@
-name: Release Management
+name: Release
 
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*'
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to release (e.g., 2.0.1)'
+        description: 'Version to release (e.g., v2.0.1)'
         required: true
         type: string
-      prerelease:
-        description: 'Is this a pre-release?'
-        required: false
-        type: boolean
-        default: false
-
-permissions:
-  contents: write
-  pull-requests: write
 
 jobs:
-  create-release:
+  build-and-publish:
+    name: Build and Publish to PyPI
     runs-on: ubuntu-latest
-    outputs:
-      release-url: ${{ steps.create-release.outputs.url }}
-      upload-url: ${{ steps.create-release.outputs.upload_url }}
+    environment:
+      name: pypi
+      url: https://pypi.org/project/spotifyscraper/
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for changelog
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+    
+    - name: Extract version
+      id: get_version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Build distribution
+      run: python -m build
+    
+    - name: Check distribution
+      run: twine check dist/*    - name: Publish to Test PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+      run: |
+        twine upload --repository testpypi dist/*
+    
+    - name: Test installation from Test PyPI
+      run: |
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ spotifyscraper==${{ steps.get_version.outputs.VERSION }}
+        python -c "import spotify_scraper; print(spotify_scraper.__version__)"
+    
+    - name: Publish to PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+      run: |
+        twine upload dist/*
+    
+    - name: Upload release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-dist
+        path: dist/
+
+  create-github-release:
+    name: Create GitHub Release
+    needs: build-and-publish
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     
-    - name: Set version
-      id: version
-      run: |
-        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-          VERSION="v${{ github.event.inputs.version }}"
-        else
-          VERSION="${{ github.ref_name }}"
-        fi
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "Version: $VERSION"
-    
     - name: Generate changelog
       id: changelog
       run: |
-        # Generate changelog from git commits
-        if git describe --tags --abbrev=0 2>/dev/null; then
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0)
-          echo "## What's Changed" > changelog.md
-          echo "" >> changelog.md
-          git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s by @%an" >> changelog.md
-        else
-          echo "## Initial Release" > changelog.md
-          echo "" >> changelog.md
-          echo "First release of SpotifyScraper v2.0" >> changelog.md
-        fi
-        
-        echo "" >> changelog.md
-        echo "## Full Changelog" >> changelog.md
-        echo "https://github.com/${{ github.repository }}/commits/${{ steps.version.outputs.version }}" >> changelog.md
+        # Generate changelog from commits
+        echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+        git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
     
-    - name: Create Release
-      id: create-release
-      uses: actions/create-release@v1
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: release-dist
+        path: dist/    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        name: Release ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## What's Changed
+          ${{ steps.changelog.outputs.CHANGELOG }}
+          
+          ## Installation
+          ```bash
+          pip install spotifyscraper==${{ steps.get_version.outputs.VERSION }}
+          ```
+          
+          ## Full Changelog
+          https://github.com/${{ github.repository }}/compare/$(git describe --tags --abbrev=0 HEAD^)...${{ steps.get_version.outputs.VERSION }}
+        files: dist/*
+        draft: false
+        prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.version.outputs.version }}
-        release_name: SpotifyScraper ${{ steps.version.outputs.version }}
-        body_path: changelog.md
-        draft: false
-        prerelease: ${{ github.event.inputs.prerelease || false }}
-
-  build-and-upload:
-    needs: create-release
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Install build dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build wheel setuptools
-    
-    - name: Build packages
-      run: |
-        python -m build
-        ls -la dist/
-    
-    - name: Generate checksums
-      run: |
-        cd dist
-        sha256sum * > checksums.txt
-        cat checksums.txt
-    
-    - name: Upload Release Assets
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const path = require('path');
-          
-          const uploadUrl = '${{ needs.create-release.outputs.upload-url }}';
-          const files = fs.readdirSync('dist');
-          
-          for (const file of files) {
-            const filePath = path.join('dist', file);
-            const stats = fs.statSync(filePath);
-            
-            if (stats.isFile()) {
-              console.log(`Uploading ${file}...`);
-              
-              const data = fs.readFileSync(filePath);
-              const contentType = file.endsWith('.whl') ? 'application/x-wheel+zip' : 
-                                file.endsWith('.tar.gz') ? 'application/gzip' : 
-                                'text/plain';
-              
-              await github.rest.repos.uploadReleaseAsset({
-                url: uploadUrl,
-                headers: {
-                  'content-type': contentType,
-                  'content-length': stats.size
-                },
-                name: file,
-                data: data
-              });
-            }
-          }
-
-  update-changelog:
-    needs: create-release
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        ref: ${{ github.event.repository.default_branch }}
-    
-    - name: Update CHANGELOG.md
-      run: |
-        # Create a proper changelog entry
-        VERSION="${{ github.ref_name }}"
-        DATE=$(date +%Y-%m-%d)
-        
-        # Create temporary changelog
-        echo "# Changelog" > CHANGELOG.tmp.md
-        echo "" >> CHANGELOG.tmp.md
-        echo "## [${VERSION}] - ${DATE}" >> CHANGELOG.tmp.md
-        echo "" >> CHANGELOG.tmp.md
-        
-        # Add commit messages
-        if git describe --tags --abbrev=0 HEAD^ 2>/dev/null; then
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^)
-          git log ${PREVIOUS_TAG}..${VERSION} --pretty=format:"- %s" >> CHANGELOG.tmp.md
-        else
-          echo "- Initial release" >> CHANGELOG.tmp.md
-        fi
-        
-        echo "" >> CHANGELOG.tmp.md
-        echo "" >> CHANGELOG.tmp.md
-        
-        # Append existing changelog if it exists
-        if [ -f CHANGELOG.md ]; then
-          tail -n +2 CHANGELOG.md >> CHANGELOG.tmp.md
-        fi
-        
-        mv CHANGELOG.tmp.md CHANGELOG.md
-    
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v7
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "chore: update CHANGELOG.md for ${{ github.ref_name }}"
-        title: "Update CHANGELOG.md for ${{ github.ref_name }}"
-        body: "This PR updates the CHANGELOG.md file with the latest release information."
-        branch: "changelog-${{ github.ref_name }}"
-        delete-branch: true

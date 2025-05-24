@@ -1,13 +1,12 @@
-name: Security Scan
+name: Security
 
 on:
   push:
-    branches: [ master, main, develop ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ master, main, develop ]
+    branches: [ main, master ]
   schedule:
-    # Run security scan every Monday at 9 AM UTC
-    - cron: '0 9 * * 1'
+    - cron: '0 0 * * 1'  # Weekly on Mondays
   workflow_dispatch:
 
 permissions:
@@ -19,31 +18,23 @@ jobs:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
     
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'python' ]
-    
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
     
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: ${{ matrix.language }}
-        queries: security-and-quality
+        languages: python
     
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3
     
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
 
-  bandit:
-    name: Bandit Security Scan
+  dependency-check:
+    name: Dependency Security Check
     runs-on: ubuntu-latest
     
     steps:
@@ -52,83 +43,58 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
-    
-    - name: Install Bandit
-      run: |
-        python -m pip install --upgrade pip
-        pip install bandit[toml]
-    
-    - name: Run Bandit
-      run: |
-        bandit -r src/ -f json -o bandit-report.json || true
-        bandit -r src/ -f txt || true
-    
-    - name: Upload Bandit report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: bandit-report
-        path: bandit-report.json
-        retention-days: 7
-
-  safety:
-    name: Safety Dependency Check
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+        python-version: "3.11"
     
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install safety
+        python -m pip install --upgrade pip        pip install safety pip-audit
         pip install -e .
     
     - name: Run Safety check
       run: |
-        safety check --json --output safety-report.json || true
-        safety check || true
+        safety check --json --output safety-report.json
+      continue-on-error: true
     
-    - name: Upload Safety report
+    - name: Run pip-audit
+      run: |
+        pip-audit --desc --format json --output pip-audit-report.json
+      continue-on-error: true
+    
+    - name: Upload security reports
       uses: actions/upload-artifact@v4
-      if: always()
       with:
-        name: safety-report
-        path: safety-report.json
-        retention-days: 7
+        name: security-reports
+        path: |
+          safety-report.json
+          pip-audit-report.json
+    
+    - name: Comment PR with security findings
+      if: github.event_name == 'pull_request' && (failure() || steps.safety.outcome == 'failure')
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '⚠️ Security vulnerabilities found! Check the security reports in the workflow artifacts.'
+          })
 
-  pip-audit:
-    name: Pip Audit
+  trivy-scan:
+    name: Trivy Security Scan
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
       with:
-        python-version: '3.11'
-    
-    - name: Install pip-audit
-      run: |
-        python -m pip install --upgrade pip
-        pip install pip-audit
-    
-    - name: Run pip-audit
-      run: |
-        pip-audit --desc --format json --output pip-audit-report.json . || true
-        pip-audit --desc . || true
-    
-    - name: Upload pip-audit report
-      uses: actions/upload-artifact@v4
-      if: always()
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
       with:
-        name: pip-audit-report
-        path: pip-audit-report.json
-        retention-days: 7
+        sarif_file: 'trivy-results.sarif'

@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  spotifyscraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: spotifyscraper:latest
+    container_name: spotifyscraper
+    environment:
+      - SPOTIFY_SCRAPER_LOG_LEVEL=INFO
+      - SPOTIFY_SCRAPER_CACHE_ENABLED=true
+      - SPOTIFY_SCRAPER_CACHE_TTL=3600
+    volumes:
+      - ./cache:/app/cache
+      - ./downloads:/app/downloads
+      - ./logs:/app/logs
+    networks:
+      - spotify-net
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: spotifyscraper-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - spotify-net
+    restart: unless-stopped
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
+
+  # Development environment with hot reload
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    image: spotifyscraper:dev
+    container_name: spotifyscraper-dev
+    environment:
+      - SPOTIFY_SCRAPER_LOG_LEVEL=DEBUG
+      - SPOTIFY_SCRAPER_CACHE_ENABLED=true
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - ./cache:/app/cache
+      - ./downloads:/app/downloads
+    networks:
+      - spotify-net
+    depends_on:
+      - redis
+    command: python -m pytest tests/ -v --watch
+
+networks:
+  spotify-net:
+    driver: bridge
+
+volumes:
+  redis-data:
