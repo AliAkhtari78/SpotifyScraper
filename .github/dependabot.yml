@@ -46,7 +46,8 @@ updates:
       day: "monday"
       time: "00:00"
     labels:
-      - "dependencies"      - "docker"
+      - "dependencies"
+      - "docker"
     commit-message:
       prefix: "build"
       include: "scope"

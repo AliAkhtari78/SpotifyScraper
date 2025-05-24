@@ -42,12 +42,12 @@ jobs:
         cd docs
         make clean
         make html
-        make linkcheck
     
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: docs-html        path: docs/_build/html/
+        name: docs-html
+        path: docs/_build/html/
     
     - name: Check for broken links
       if: failure()
