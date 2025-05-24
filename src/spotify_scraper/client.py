@@ -279,7 +279,7 @@ class SpotifyClient:
         """
         logger.info("Getting lyrics for track %s", url)
         # Check authentication if required
-        if require_auth and not (self.cookie_file or getattr(self.session, '_cookies', None)):
+        if require_auth and not (self.cookie_file or getattr(self.session, "_cookies", None)):
             raise AuthenticationError(
                 "Fetching official Spotify lyrics requires an authenticated session. "
                 "Please provide cookies via 'cookie_file' or 'cookies' parameter during client "
