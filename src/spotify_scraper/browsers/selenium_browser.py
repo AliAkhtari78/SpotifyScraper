@@ -58,7 +58,7 @@ class SeleniumBrowser(Browser):
             try:
                 self.driver = webdriver.Chrome(options=options)
             except WebDriverException as e:
-                logger.error(f"Failed to create Chrome driver: {e}")
+                logger.error("Failed to create Chrome driver: %s", e)
                 raise BrowserError(f"Failed to create Chrome driver: {e}") from e
         else:
             self.driver = driver
@@ -76,11 +76,11 @@ class SeleniumBrowser(Browser):
             Page content as string
         """
         try:
-            logger.debug(f"Navigating to {url}")
+            logger.debug("Navigating to %s", url)
             self.driver.get(url)
             return self.driver.page_source
         except WebDriverException as e:
-            logger.error(f"Failed to navigate to {url}: {e}")
+            logger.error("Failed to navigate to %s: %s", url, e)
             raise BrowserError(f"Failed to navigate to {url}: {e}") from e
 
     def extract_json(self, selector: str) -> Dict[str, Any]:
@@ -104,7 +104,7 @@ class SeleniumBrowser(Browser):
             json_str = self.driver.execute_script(script)
 
             if not json_str:
-                logger.error(f"JSON data not found with selector: {selector}")
+                logger.error("JSON data not found with selector: %s", selector)
                 raise ParsingError(f"JSON data not found with selector: {selector}")
 
             # Parse the JSON data
@@ -112,10 +112,10 @@ class SeleniumBrowser(Browser):
 
             return json_data
         except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse JSON data: {e}")
+            logger.error("Failed to parse JSON data: %s", e)
             raise ParsingError(f"Failed to parse JSON data: {e}") from e
         except Exception as e:
-            logger.error(f"Failed to extract JSON data: {e}")
+            logger.error("Failed to extract JSON data: %s", e)
             raise BrowserError(f"Failed to extract JSON data: {e}") from e
 
     def wait_for_element(self, selector: str, timeout: int = 10) -> bool:
@@ -135,7 +135,7 @@ class SeleniumBrowser(Browser):
             )
             return True
         except TimeoutException:
-            logger.warning(f"Timeout waiting for element: {selector}")
+            logger.warning("Timeout waiting for element: %s", selector)
             return False
 
     def close(self) -> None:

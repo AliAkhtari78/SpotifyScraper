@@ -181,7 +181,7 @@ class ImageDownloader:
 
         # Download the image
         try:
-            logger.debug(f"Downloading cover image from {cover_url}")
+            logger.debug("Downloading cover image from %s", cover_url)
             response = requests.get(cover_url, stream=True, timeout=30)
             response.raise_for_status()
 
@@ -189,10 +189,10 @@ class ImageDownloader:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
 
-            logger.debug(f"Cover image saved to {file_path}")
+            logger.debug("Cover image saved to %s", file_path)
             return file_path
         except Exception as e:
-            logger.error(f"Failed to download cover image: {e}")
+            logger.error("Failed to download cover image: %s", e)
             raise DownloadError(
                 f"Failed to download cover image: {e}", url=cover_url, file_path=file_path
             ) from e

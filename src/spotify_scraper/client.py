@@ -229,7 +229,7 @@ class SpotifyClient:
             This method automatically converts regular URLs to embed format
             for better reliability and to avoid authentication requirements.
         """
-        logger.info(f"Getting track info for {url}")
+        logger.info("Getting track info for %s", url)
         return self.track_extractor.get_track_info(url)
 
     def get_track_lyrics(self, url: str, require_auth: bool = True) -> Optional[str]:
@@ -277,7 +277,7 @@ class SpotifyClient:
             for all tracks. Even with authentication, some tracks may not have
             lyrics available.
         """
-        logger.info(f"Getting lyrics for track {url}")
+        logger.info("Getting lyrics for track %s", url)
         # Check authentication if required
         if require_auth and not self.session.is_authenticated():
             raise AuthenticationError(
@@ -323,16 +323,16 @@ class SpotifyClient:
             Instead, it sets the 'lyrics' field to None and logs a warning.
             This allows you to get track info even when lyrics aren't accessible.
         """
-        logger.info(f"Getting track info and lyrics for {url}")
+        logger.info("Getting track info and lyrics for %s", url)
         track_info = self.get_track_info(url)
         try:
             lyrics = self.get_track_lyrics(url, require_auth=require_lyrics_auth)
             track_info["lyrics"] = lyrics
         except AuthenticationError as e:
-            logger.warning(f"Could not fetch lyrics for {url} due to authentication: {e}")
+            logger.warning("Could not fetch lyrics for %s due to authentication: %s", url, e)
             track_info["lyrics"] = None
         except Exception as e:
-            logger.error(f"An error occurred while fetching lyrics for {url}: {e}")
+            logger.error("An error occurred while fetching lyrics for %s: %s", url, e)
             track_info["lyrics"] = None
 
         return track_info
@@ -380,7 +380,7 @@ class SpotifyClient:
             ScrapingError: If the album data cannot be extracted.
             NetworkError: If there are network connectivity issues.
         """
-        logger.info(f"Getting album info for {url}")
+        logger.info("Getting album info for %s", url)
         return self.album_extractor.extract(url)
 
     def get_artist_info(self, url: str) -> Dict[str, Any]:
@@ -431,7 +431,7 @@ class SpotifyClient:
             ScrapingError: If the artist data cannot be extracted.
             NetworkError: If there are network connectivity issues.
         """
-        logger.info(f"Getting artist info for {url}")
+        logger.info("Getting artist info for %s", url)
         return self.artist_extractor.extract(url)
 
     def get_playlist_info(self, url: str) -> Dict[str, Any]:
@@ -485,7 +485,7 @@ class SpotifyClient:
             NetworkError: If there are network connectivity issues.
             AuthenticationError: If trying to access a private playlist without auth.
         """
-        logger.info(f"Getting playlist info for {url}")
+        logger.info("Getting playlist info for %s", url)
         return self.playlist_extractor.extract(url)
 
     def get_all_info(self, url: str) -> Dict[str, Any]:
@@ -540,7 +540,7 @@ class SpotifyClient:
         """
         from spotify_scraper.utils.url import get_url_type
 
-        logger.info(f"Auto-detecting URL type for {url}")
+        logger.info("Auto-detecting URL type for %s", url)
         url_type = get_url_type(url)
 
         if url_type == "track":
@@ -609,7 +609,7 @@ class SpotifyClient:
             - Image quality/size depends on what Spotify provides
             - Files are overwritten if they already exist
         """
-        logger.info(f"Downloading cover for {url}")
+        logger.info("Downloading cover for %s", url)
 
         # First, extract the entity data based on URL type
         try:
@@ -623,7 +623,7 @@ class SpotifyClient:
                 size="large" if not quality_preference else quality_preference[0],
             )
         except Exception as e:
-            logger.error(f"Failed to download cover: {e}")
+            logger.error("Failed to download cover: %s", e)
             raise MediaError(f"Failed to download cover: {e}") from e
 
     def download_preview_mp3(self, url: str, path: str = "", with_cover: bool = False) -> str:
@@ -676,7 +676,7 @@ class SpotifyClient:
             - Cover embedding requires the eyeD3 library:
               pip install eyeD3
         """
-        logger.info(f"Downloading preview MP3 for {url}")
+        logger.info("Downloading preview MP3 for %s", url)
 
         # First, extract the track data
         try:
@@ -687,7 +687,7 @@ class SpotifyClient:
                 track_data=track_data, path=path, with_cover=with_cover
             )
         except Exception as e:
-            logger.error(f"Failed to download preview MP3: {e}")
+            logger.error("Failed to download preview MP3: %s", e)
             raise MediaError(f"Failed to download preview MP3: {e}") from e
 
     def close(self) -> None:

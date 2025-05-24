@@ -125,17 +125,17 @@ class TrackExtractor:
             Bohemian Rhapsody by Queen
         """
         # Validate URL
-        logger.debug(f"Extracting data from track URL: {url}")
+        logger.debug("Extracting data from track URL: %s", url)
         try:
             validate_url(url, expected_type="track")
         except URLError as e:
-            logger.error(f"Invalid track URL: {e}")
+            logger.error("Invalid track URL: %s", e)
             return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "track"}
 
         # Extract track ID for logging
         try:
             track_id = extract_id(url)
-            logger.debug(f"Extracted track ID: {track_id}")
+            logger.debug("Extracted track ID: %s", track_id)
         except URLError:
             track_id = "unknown"
 
@@ -143,7 +143,7 @@ class TrackExtractor:
         try:
             # Convert any track URL to embed format
             embed_url = convert_to_embed_url(url)
-            logger.debug(f"Using embed URL: {embed_url}")
+            logger.debug("Using embed URL: %s", embed_url)
 
             # Get page content from embed URL
             page_content = self.browser.get_page_content(embed_url)
@@ -160,11 +160,11 @@ class TrackExtractor:
 
             # If extraction failed, log the error and return the error data
             error_msg = track_data.get("ERROR", "Unknown error")
-            logger.warning(f"Failed to extract track data from embed URL: {error_msg}")
+            logger.warning("Failed to extract track data from embed URL: %s", error_msg)
             return track_data
 
         except Exception as e:
-            logger.error(f"Failed to extract track data: {e}")
+            logger.error("Failed to extract track data: %s", e)
             return {"ERROR": str(e), "id": track_id, "name": "", "uri": "", "type": "track"}
 
     def extract_by_id(self, track_id: str) -> TrackData:
@@ -281,7 +281,7 @@ class TrackExtractor:
             return track_data["lyrics"]
 
         # For now, return None as lyrics extraction requires more complex implementation
-        logger.debug(f"No lyrics found for track: {url}")
+        logger.debug("No lyrics found for track: %s", url)
         return None
 
     def extract_cover_url(self, url: str) -> Optional[str]:

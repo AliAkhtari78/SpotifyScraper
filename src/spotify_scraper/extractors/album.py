@@ -72,17 +72,17 @@ class AlbumExtractor:
             ScrapingError: If extraction fails
         """
         # Validate URL
-        logger.debug(f"Extracting data from album URL: {url}")
+        logger.debug("Extracting data from album URL: %s", url)
         try:
             validate_url(url, expected_type="album")
         except URLError as e:
-            logger.error(f"Invalid album URL: {e}")
+            logger.error("Invalid album URL: %s", e)
             return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "album"}
 
         # Extract album ID for logging
         try:
             album_id = extract_id(url)
-            logger.debug(f"Extracted album ID: {album_id}")
+            logger.debug("Extracted album ID: %s", album_id)
         except URLError:
             album_id = "unknown"
 
@@ -90,7 +90,7 @@ class AlbumExtractor:
         try:
             # Convert any album URL to embed format
             embed_url = convert_to_embed_url(url)
-            logger.debug(f"Using embed URL: {embed_url}")
+            logger.debug("Using embed URL: %s", embed_url)
 
             # Get page content from embed URL
             page_content = self.browser.get_page_content(embed_url)
@@ -107,11 +107,11 @@ class AlbumExtractor:
 
             # If extraction failed, log the error and return the error data
             error_msg = album_data.get("ERROR", "Unknown error")
-            logger.warning(f"Failed to extract album data from embed URL: {error_msg}")
+            logger.warning("Failed to extract album data from embed URL: %s", error_msg)
             return album_data
 
         except Exception as e:
-            logger.error(f"Failed to extract album data: {e}")
+            logger.error("Failed to extract album data: %s", e)
             return {"ERROR": str(e), "id": album_id, "name": "", "uri": "", "type": "album"}
 
     def extract_by_id(self, album_id: str) -> AlbumData:
@@ -151,7 +151,7 @@ class AlbumExtractor:
             json_data = extract_json_from_next_data(html_content)
             return self.extract_album_data(json_data, ALBUM_JSON_PATH)
         except ParsingError as e:
-            logger.warning(f"Failed to extract album data using __NEXT_DATA__: {e}")
+            logger.warning("Failed to extract album data using __NEXT_DATA__: %s", e)
 
         # Fallback to resource script tag (legacy approach)
         try:
@@ -159,7 +159,7 @@ class AlbumExtractor:
             # For resource script tag, the data is directly in the root
             return self.extract_album_data(json_data, "")
         except ParsingError as e:
-            logger.warning(f"Failed to extract album data using resource script: {e}")
+            logger.warning("Failed to extract album data using resource script: %s", e)
 
         # If all methods fail, raise a more specific error
         raise ParsingError("Failed to extract album data from page using any method")
@@ -364,7 +364,7 @@ class AlbumExtractor:
             return result
 
         except Exception as e:
-            logger.error(f"Failed to extract album data: {e}")
+            logger.error("Failed to extract album data: %s", e)
             # Return a minimal album data object with error information
             return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "album"}
 

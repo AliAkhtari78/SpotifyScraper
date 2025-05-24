@@ -108,7 +108,7 @@ def main() -> None:
     try:
         cli()
     except Exception as e:
-        logger.error(f"An error occurred: {e}")
+        logger.error("An error occurred: %s", e)
         sys.exit(1)
 
 

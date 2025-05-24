@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
-[![CI Status](https://github.com/AliAkhtari78/SpotifyScraper/workflows/CI/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions)
+[![CI](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml)
 [![Coverage Status](https://codecov.io/gh/AliAkhtari78/SpotifyScraper/branch/master/graph/badge.svg)](https://codecov.io/gh/AliAkhtari78/SpotifyScraper)
 [![Documentation Status](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

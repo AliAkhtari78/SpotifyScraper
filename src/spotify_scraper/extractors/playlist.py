@@ -63,24 +63,24 @@ class PlaylistExtractor:
             ScrapingError: If extraction fails
         """
         # Validate URL
-        logger.debug(f"Extracting data from playlist URL: {url}")
+        logger.debug("Extracting data from playlist URL: %s", url)
         try:
             validate_url(url, expected_type="playlist")
         except URLError as e:
-            logger.error(f"Invalid playlist URL: {e}")
+            logger.error("Invalid playlist URL: %s", e)
             return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "playlist"}
 
         # Extract playlist ID for logging
         try:
             playlist_id = extract_id(url)
-            logger.debug(f"Extracted playlist ID: {playlist_id}")
+            logger.debug("Extracted playlist ID: %s", playlist_id)
         except URLError:
             playlist_id = "unknown"
 
         try:
             # Convert any playlist URL to embed format
             embed_url = convert_to_embed_url(url)
-            logger.debug(f"Using embed URL: {embed_url}")
+            logger.debug("Using embed URL: %s", embed_url)
 
             # Get page content from embed URL
             page_content = self.browser.get_page_content(embed_url)
@@ -98,11 +98,11 @@ class PlaylistExtractor:
 
             # If extraction failed, log the error and return the error data
             error_msg = playlist_data.get("ERROR", "Unknown error")
-            logger.warning(f"Failed to extract playlist data from embed URL: {error_msg}")
+            logger.warning("Failed to extract playlist data from embed URL: %s", error_msg)
             return playlist_data
 
         except Exception as e:
-            logger.error(f"Failed to extract playlist data: {e}")
+            logger.error("Failed to extract playlist data: %s", e)
             return {"ERROR": str(e), "id": playlist_id, "name": "", "uri": "", "type": "playlist"}
 
     def extract_by_id(self, playlist_id: str) -> PlaylistData:
@@ -142,7 +142,7 @@ class PlaylistExtractor:
             json_data = extract_json_from_next_data(html_content)
             return self.extract_playlist_data(json_data, PLAYLIST_JSON_PATH)
         except ParsingError as e:
-            logger.warning(f"Failed to extract playlist data using __NEXT_DATA__: {e}")
+            logger.warning("Failed to extract playlist data using __NEXT_DATA__: %s", e)
 
         # Fallback to resource script tag (legacy approach)
         try:
@@ -150,7 +150,7 @@ class PlaylistExtractor:
             # For resource script tag, the data is directly in the root
             return self.extract_playlist_data(json_data, "")
         except ParsingError as e:
-            logger.warning(f"Failed to extract playlist data using resource script: {e}")
+            logger.warning("Failed to extract playlist data using resource script: %s", e)
 
         # If all methods fail, raise a more specific error
         raise ParsingError("Failed to extract playlist data from page using any method")
@@ -382,7 +382,7 @@ class PlaylistExtractor:
             return result
 
         except Exception as e:
-            logger.error(f"Failed to extract playlist data: {e}")
+            logger.error("Failed to extract playlist data: %s", e)
             # Return a minimal playlist data object with error information
             return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "playlist"}
 

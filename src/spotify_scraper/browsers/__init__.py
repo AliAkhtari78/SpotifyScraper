@@ -60,7 +60,7 @@ def create_browser(browser_type: str = "auto", **kwargs) -> Browser:
             browser.get("https://open.spotify.com")
             return browser
         except Exception as e:
-            logger.warning(f"RequestsBrowser failed: {e}")
+            logger.warning("RequestsBrowser failed: %s", e)
 
             if selenium_available:
                 logger.debug("Falling back to SeleniumBrowser")

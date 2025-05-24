@@ -63,24 +63,24 @@ class ArtistExtractor:
             ScrapingError: If extraction fails
         """
         # Validate URL
-        logger.debug(f"Extracting data from artist URL: {url}")
+        logger.debug("Extracting data from artist URL: %s", url)
         try:
             validate_url(url, expected_type="artist")
         except URLError as e:
-            logger.error(f"Invalid artist URL: {e}")
+            logger.error("Invalid artist URL: %s", e)
             return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "artist"}
 
         # Extract artist ID for logging
         try:
             artist_id = extract_id(url)
-            logger.debug(f"Extracted artist ID: {artist_id}")
+            logger.debug("Extracted artist ID: %s", artist_id)
         except URLError:
             artist_id = "unknown"
 
         try:
             # Convert any artist URL to embed format
             embed_url = convert_to_embed_url(url)
-            logger.debug(f"Using embed URL: {embed_url}")
+            logger.debug("Using embed URL: %s", embed_url)
 
             # Get page content from embed URL
             page_content = self.browser.get_page_content(embed_url)
@@ -97,11 +97,11 @@ class ArtistExtractor:
 
             # If extraction failed, log the error and return the error data
             error_msg = artist_data.get("ERROR", "Unknown error")
-            logger.warning(f"Failed to extract artist data from embed URL: {error_msg}")
+            logger.warning("Failed to extract artist data from embed URL: %s", error_msg)
             return artist_data
 
         except Exception as e:
-            logger.error(f"Failed to extract artist data: {e}")
+            logger.error("Failed to extract artist data: %s", e)
             return {"ERROR": str(e), "id": artist_id, "name": "", "uri": "", "type": "artist"}
 
     def extract_by_id(self, artist_id: str) -> ArtistData:
@@ -141,7 +141,7 @@ class ArtistExtractor:
             json_data = extract_json_from_next_data(html_content)
             return self.extract_artist_data(json_data, ARTIST_JSON_PATH)
         except ParsingError as e:
-            logger.warning(f"Failed to extract artist data using __NEXT_DATA__: {e}")
+            logger.warning("Failed to extract artist data using __NEXT_DATA__: %s", e)
 
         # Fallback to resource script tag (legacy approach)
         try:
@@ -149,7 +149,7 @@ class ArtistExtractor:
             # For resource script tag, the data is directly in the root
             return self.extract_artist_data(json_data, "")
         except ParsingError as e:
-            logger.warning(f"Failed to extract artist data using resource script: {e}")
+            logger.warning("Failed to extract artist data using resource script: %s", e)
 
         # If all methods fail, raise a more specific error
         raise ParsingError("Failed to extract artist data from page using any method")
@@ -257,7 +257,7 @@ class ArtistExtractor:
             return result
 
         except Exception as e:
-            logger.error(f"Failed to extract artist data: {e}")
+            logger.error("Failed to extract artist data: %s", e)
             # Return a minimal artist data object with error information
             return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "artist"}
 

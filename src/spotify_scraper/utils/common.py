@@ -488,7 +488,7 @@ class SpotifyBulkOperations:
                     found_urls = self.extract_urls_from_text(line)
                     urls.extend(found_urls)
 
-        self.logger.info(f"Found {len(urls)} URLs in {file_path}")
+        self.logger.info("Found %s URLs in %s", len(urls), file_path)
 
         results = {"total_urls": len(urls), "processed": 0, "failed": 0, "results": {}}
 
@@ -530,12 +530,12 @@ class SpotifyBulkOperations:
                             "cover": cover_path,
                         }
                     except Exception as e:
-                        self.logger.error(f"Download failed for {url}: {e}")
+                        self.logger.error("Download failed for %s: %s", url, e)
 
                 results["processed"] += 1
 
             except Exception as e:
-                self.logger.error(f"Failed to process {url}: {e}")
+                self.logger.error("Failed to process %s: %s", url, e)
                 results["failed"] += 1
                 results["results"][url] = {"error": str(e)}
 
@@ -609,7 +609,7 @@ class SpotifyBulkOperations:
                                 dataset.append(track)
 
             except Exception as e:
-                self.logger.error(f"Failed to process {url}: {e}")
+                self.logger.error("Failed to process %s: %s", url, e)
 
         # Save dataset
         if format == "json":
@@ -624,7 +624,7 @@ class SpotifyBulkOperations:
                     writer.writeheader()
                     writer.writerows(dataset)
 
-        self.logger.info(f"Created dataset with {len(dataset)} items: {output_file}")
+        self.logger.info("Created dataset with %s items: %s", len(dataset), output_file)
 
     def download_playlist_covers(
         self, playlist_url: str, output_dir: Union[str, Path], size_preference: str = "large"
@@ -671,12 +671,12 @@ class SpotifyBulkOperations:
 
                         if cover_path:
                             downloaded.append(cover_path)
-                            self.logger.info(f"Downloaded cover for: {album.get('name')}")
+                            self.logger.info("Downloaded cover for: %s", album.get('name'))
 
                     except Exception as e:
-                        self.logger.error(f"Failed to download cover for album {album_id}: {e}")
+                        self.logger.error("Failed to download cover for album %s: %s", album_id, e)
 
-        self.logger.info(f"Downloaded {len(downloaded)} unique album covers")
+        self.logger.info("Downloaded %s unique album covers", len(downloaded))
         return downloaded
 
 

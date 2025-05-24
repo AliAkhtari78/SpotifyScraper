@@ -476,10 +476,10 @@ class ConfigurationManager:
             if path.exists():
                 try:
                     self.load_from_file(path)
-                    logger.info(f"Loaded configuration from: {path}")
+                    logger.info("Loaded configuration from: %s", path)
                     break
                 except Exception as e:
-                    logger.warning(f"Failed to load config from {path}: {e}")
+                    logger.warning("Failed to load config from %s: %s", path, e)
 
     def _load_from_environment(self) -> None:
         """Load configuration from environment variables."""
@@ -551,7 +551,7 @@ class ConfigurationManager:
         loader = self._loaders[format]
         loader.save(self.config.to_dict(), path)
 
-        logger.info(f"Saved configuration to: {path}")
+        logger.info("Saved configuration to: %s", path)
 
     def update(self, updates: Dict[str, Any]) -> None:
         """
@@ -640,7 +640,7 @@ class ConfigurationManager:
                 data = loader.load(profile_path)
                 return SpotifyScraperConfig.from_dict(data)
             except Exception as e:
-                logger.error(f"Failed to load profile {profile_name}: {e}")
+                logger.error("Failed to load profile %s: %s", profile_name, e)
 
         return None
 
@@ -663,7 +663,7 @@ class ConfigurationManager:
         loader = self._loaders[ConfigFormat.JSON]
         loader.save(config.to_dict(), profile_path)
 
-        logger.info(f"Saved profile: {profile_name}")
+        logger.info("Saved profile: %s", profile_name)
 
     def list_profiles(self) -> List[str]:
         """

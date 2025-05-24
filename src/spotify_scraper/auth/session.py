@@ -51,7 +51,7 @@ class Session:
         self.expires_at: Optional[datetime] = None
         self.is_anonymous = access_token is None
 
-        logger.debug(f"Initialized Session (anonymous: {self.is_anonymous})")
+        logger.debug("Initialized Session (anonymous: %s)", self.is_anonymous)
 
     def is_valid(self) -> bool:
         """
@@ -117,7 +117,7 @@ class Session:
             cookies: Dictionary of cookie name-value pairs
         """
         self.cookies.update(cookies)
-        logger.debug(f"Added {len(cookies)} cookies to session")
+        logger.debug("Added %s cookies to session", len(cookies))
 
     def get_auth_headers(self) -> Dict[str, str]:
         """
@@ -162,11 +162,11 @@ class Session:
             with open(filepath, "w") as f:
                 json.dump(session_data, f, indent=2)
 
-            logger.debug(f"Saved session to {filepath}")
+            logger.debug("Saved session to %s", filepath)
             return True
 
         except Exception as e:
-            logger.error(f"Failed to save session: {e}")
+            logger.error("Failed to save session: %s", e)
             return False
 
     @classmethod
@@ -184,7 +184,7 @@ class Session:
             filepath = SESSION_CACHE_FILE
 
         if not os.path.exists(filepath):
-            logger.debug(f"Session file {filepath} does not exist")
+            logger.debug("Session file %s does not exist", filepath)
             return None
 
         try:
@@ -204,11 +204,11 @@ class Session:
 
             session.is_anonymous = session_data.get("is_anonymous", True)
 
-            logger.debug(f"Loaded session from {filepath}")
+            logger.debug("Loaded session from %s", filepath)
             return session
 
         except Exception as e:
-            logger.error(f"Failed to load session: {e}")
+            logger.error("Failed to load session: %s", e)
             return None
 
     def clear(self) -> None:

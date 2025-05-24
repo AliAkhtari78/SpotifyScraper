@@ -193,7 +193,7 @@ class AudioDownloader:
 
         # Download the audio
         try:
-            logger.debug(f"Downloading preview audio from {preview_url}")
+            logger.debug("Downloading preview audio from %s", preview_url)
             response = requests.get(preview_url, stream=True, timeout=30)
             response.raise_for_status()
 
@@ -201,7 +201,7 @@ class AudioDownloader:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
 
-            logger.debug(f"Preview audio saved to {file_path}")
+            logger.debug("Preview audio saved to %s", file_path)
 
             # Embed cover image if requested
             if with_cover:
@@ -209,7 +209,7 @@ class AudioDownloader:
 
             return file_path
         except Exception as e:
-            logger.error(f"Failed to download preview audio: {e}")
+            logger.error("Failed to download preview audio: %s", e)
             raise DownloadError(
                 f"Failed to download preview audio: {e}", url=preview_url, file_path=file_path
             ) from e
@@ -273,11 +273,11 @@ class AudioDownloader:
 
                 # Save changes
                 audio_file.tag.save()
-                logger.debug(f"Embedded cover image in {file_path}")
+                logger.debug("Embedded cover image in %s", file_path)
             finally:
                 # Clean up temporary files
                 if os.path.exists(temp_cover_path):
                     os.remove(temp_cover_path)
         except Exception as e:
-            logger.warning(f"Failed to embed cover image: {e}")
+            logger.warning("Failed to embed cover image: %s", e)
             # This is not a critical error, so we don't raise an exception

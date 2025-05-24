@@ -62,10 +62,10 @@ def extract_json_from_html(html_content: str, selector: str) -> Dict[str, Any]:
 
         return json_data
     except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse JSON data: {e}")
+        logger.error("Failed to parse JSON data: %s", e)
         raise ParsingError(f"Failed to parse JSON data: {e}", data_type="JSON") from e
     except Exception as e:
-        logger.error(f"Failed to extract JSON data: {e}")
+        logger.error("Failed to extract JSON data: %s", e)
         raise ParsingError(f"Failed to extract JSON data: {e}") from e
 
 
@@ -354,7 +354,7 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
 
         return result
     except Exception as e:
-        logger.error(f"Failed to extract track data: {e}")
+        logger.error("Failed to extract track data: %s", e)
         # Return a minimal track data object with error information
         return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "track"}
 
@@ -416,7 +416,7 @@ def extract_track_data_from_page(html_content: str) -> TrackData:
         json_data = extract_json_from_next_data(html_content)
         return extract_track_data(json_data, TRACK_JSON_PATH)
     except ParsingError as e:
-        logger.warning(f"Failed to extract track data using __NEXT_DATA__: {e}")
+        logger.warning("Failed to extract track data using __NEXT_DATA__: %s", e)
 
     # Fallback to resource script tag (legacy approach)
     try:
@@ -424,7 +424,7 @@ def extract_track_data_from_page(html_content: str) -> TrackData:
         # For resource script tag, the data is directly in the root
         return extract_track_data(json_data, "")
     except ParsingError as e:
-        logger.warning(f"Failed to extract track data using resource script: {e}")
+        logger.warning("Failed to extract track data using resource script: %s", e)
 
     # If all methods fail, raise a more specific error
     raise ParsingError("Failed to extract track data from page using any method")
@@ -507,7 +507,7 @@ def extract_auth_token_from_page(html_content: str) -> Optional[str]:
         json_data = extract_json_from_next_data(html_content)
         return get_nested_value(json_data, AUTH_TOKEN_JSON_PATH)
     except Exception as e:
-        logger.warning(f"Failed to extract auth token: {e}")
+        logger.warning("Failed to extract auth token: %s", e)
         return None
 
 
@@ -532,11 +532,11 @@ def with_fallback(
     try:
         return primary_func(*args, **kwargs)
     except Exception as primary_error:
-        logger.warning(f"Primary function failed: {primary_error}")
+        logger.warning("Primary function failed: %s", primary_error)
         try:
             return fallback_func(*args, **kwargs)
         except Exception as fallback_error:
-            logger.error(f"Fallback function also failed: {fallback_error}")
+            logger.error("Fallback function also failed: %s", fallback_error)
             raise Exception(
                 f"Both primary and fallback functions failed: {primary_error} / {fallback_error}"
             )

@@ -50,9 +50,9 @@ class Session:
         else:
             try:
                 self.cookie = self._parse_cookie_file()
-                logger.debug(f"Loaded cookies from {cookie_file}")
+                logger.debug("Loaded cookies from %s", cookie_file)
             except Exception as e:
-                logger.error(f"Failed to load cookies from {cookie_file}: {e}")
+                logger.error("Failed to load cookies from %s: %s", cookie_file, e)
                 raise AuthenticationError(f"Failed to load cookies: {e}") from e
 
     def _parse_cookie_file(self) -> Dict[str, str]:

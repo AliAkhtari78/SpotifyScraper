@@ -39,7 +39,7 @@ class Scraper:
             logger.setLevel(getattr(logging, log_level.upper()))
         except AttributeError:
             logger.setLevel(logging.INFO)  # Default to INFO if invalid level is provided
-            logger.warning(f"Invalid log_level '{log_level}'. Defaulting to INFO.")
+            logger.warning("Invalid log_level '%s'. Defaulting to INFO.", log_level)
 
         logger.debug("Initialized Scraper")
 
@@ -61,8 +61,8 @@ class Scraper:
             # The content is typically directly JSON.
             return json.loads(script_content)
         except json.JSONDecodeError as e:
-            logger.error(f"Error parsing __NEXT_DATA__ JSON: {e}")
-            logger.debug(f"Problematic script content: {script_content[:500]}...")  # Log snippet
+            logger.error("Error parsing __NEXT_DATA__ JSON: %s", e)
+            logger.debug("Problematic script content: %s...", script_content[:500])  # Log snippet
             raise ScrapingError(f"Error parsing __NEXT_DATA__ JSON: {e}") from e
 
     @staticmethod
@@ -77,7 +77,7 @@ class Scraper:
             Formatted time string (e.g., "4:30" or "1:30:45")
         """
         if not isinstance(millis, int) or millis < 0:
-            logger.warning(f"Invalid milliseconds value: {millis}. Returning '0:00'.")
+            logger.warning("Invalid milliseconds value: %s. Returning '0:00'.", millis)
             return "0:00"
 
         seconds_total = millis // 1000
@@ -110,7 +110,7 @@ class Scraper:
             if "?" in track_id:  # Remove query params from track_id
                 track_id = track_id.split("?")[0]
             return urljoin(SPOTIFY_EMBED_URL, f"track/{track_id}")
-        logger.warning(f"Could not convert URL to embed URL: {url}")
+        logger.warning("Could not convert URL to embed URL: %s", url)
         return None
 
     @staticmethod
@@ -137,7 +137,7 @@ class Scraper:
                 if track_id_index != -1 and track_id_index < len(path_parts):
                     track_id = path_parts[track_id_index]
                     return track_id.split("?")[0]  # Remove query parameters
-        logger.warning(f"Could not extract track ID from URL: {url}")
+        logger.warning("Could not extract track ID from URL: %s", url)
         return None
 
     def validate_spotify_url(self, url: str, expected_type: Optional[str] = None) -> bool:
@@ -175,5 +175,5 @@ class Scraper:
                 # Ensure it's followed by a slash for non-embed types like 'track/'
                 raise URLError(f"URL '{url}' is not a Spotify {expected_type} URL. Path: '{path}'")
 
-        logger.debug(f"Validated Spotify URL: {url} (Expected type: {expected_type})")
+        logger.debug("Validated Spotify URL: %s (Expected type: %s)", url, expected_type)
         return True

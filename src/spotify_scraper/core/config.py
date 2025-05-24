@@ -100,7 +100,7 @@ class Config:
         if use_env:
             self._update_from_env()
 
-        logger.debug(f"Configuration initialized with {len(self.values)} values")
+        logger.debug("Configuration initialized with %s values", len(self.values))
 
     def _load_from_file(self) -> None:
         """
@@ -110,7 +110,7 @@ class Config:
             ConfigurationError: If the file cannot be read or parsed
         """
         if not self.config_file or not self.config_file.exists():
-            logger.debug(f"Configuration file not found: {self.config_file}")
+            logger.debug("Configuration file not found: %s", self.config_file)
             return
 
         try:
@@ -118,9 +118,9 @@ class Config:
                 config_data = json.load(f)
 
             self._update_from_dict(config_data)
-            logger.debug(f"Loaded configuration from {self.config_file}")
+            logger.debug("Loaded configuration from %s", self.config_file)
         except Exception as e:
-            logger.error(f"Failed to load configuration from {self.config_file}: {e}")
+            logger.error("Failed to load configuration from %s: %s", self.config_file, e)
             raise ConfigurationError(f"Failed to load configuration file: {e}") from e
 
     def _update_from_dict(self, config_dict: Dict[str, Any]) -> None:
@@ -134,7 +134,7 @@ class Config:
             if key in self.values:
                 self.values[key] = value
             else:
-                logger.warning(f"Unknown configuration key: {key}")
+                logger.warning("Unknown configuration key: %s", key)
 
     def _update_from_env(self) -> None:
         """
@@ -156,18 +156,18 @@ class Config:
                         try:
                             self.values[config_key] = int(value)
                         except ValueError:
-                            logger.warning(f"Invalid integer value for {key}: {value}")
+                            logger.warning("Invalid integer value for %s: %s", key, value)
                     elif isinstance(self.values[config_key], float):
                         try:
                             self.values[config_key] = float(value)
                         except ValueError:
-                            logger.warning(f"Invalid float value for {key}: {value}")
+                            logger.warning("Invalid float value for %s: %s", key, value)
                     elif isinstance(self.values[config_key], list):
                         self.values[config_key] = value.split(",")
                     else:
                         self.values[config_key] = value
 
-                    logger.debug(f"Set {config_key} from environment variable {key}")
+                    logger.debug("Set %s from environment variable %s", config_key, key)
 
     def get(self, key: str, default: Any = None) -> Any:
         """
@@ -195,9 +195,9 @@ class Config:
         """
         if key in self.values:
             self.values[key] = value
-            logger.debug(f"Set configuration value: {key}={value}")
+            logger.debug("Set configuration value: %s=%s", key, value)
         else:
-            logger.error(f"Invalid configuration key: {key}")
+            logger.error("Invalid configuration key: %s", key)
             raise ConfigurationError(f"Invalid configuration key: {key}")
 
     def save(self, config_file: Optional[Union[str, Path]] = None) -> None:
@@ -224,9 +224,9 @@ class Config:
             with open(file_path, "w") as f:
                 json.dump(self.values, f, indent=2)
 
-            logger.debug(f"Saved configuration to {file_path}")
+            logger.debug("Saved configuration to %s", file_path)
         except Exception as e:
-            logger.error(f"Failed to save configuration to {file_path}: {e}")
+            logger.error("Failed to save configuration to %s: %s", file_path, e)
             raise ConfigurationError(f"Failed to save configuration file: {e}") from e
 
     def __getitem__(self, key: str) -> Any:
