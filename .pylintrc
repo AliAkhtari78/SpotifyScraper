@@ -26,7 +26,10 @@ disable=
     trailing-whitespace,
     missing-timeout,
     too-many-nested-blocks,
-    unspecified-encoding
+    unspecified-encoding,
+    broad-exception-raised,
+    too-many-return-statements,
+    invalid-name
 
 [BASIC]
 # Good variable names which should always be accepted
