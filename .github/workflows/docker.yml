@@ -37,11 +37,12 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Log in to Docker Hub
-      if: github.event_name != 'pull_request' && secrets.DOCKERHUB_USERNAME != ''
+      if: github.event_name != 'pull_request'
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      continue-on-error: true
     
     - name: Extract metadata
       id: meta
