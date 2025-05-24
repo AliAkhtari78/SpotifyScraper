@@ -96,7 +96,9 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: release-dist
-        path: dist/    - name: Create Release
+        path: dist/
+    
+    - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.get_version.outputs.VERSION }}

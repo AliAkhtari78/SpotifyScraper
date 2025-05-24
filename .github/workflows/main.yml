@@ -46,7 +46,8 @@ jobs:
   
   security:
     name: Security Scan
-    needs: pre-checks    uses: ./.github/workflows/security.yml
+    needs: pre-checks
+    uses: ./.github/workflows/security.yml
   
   docs:
     name: Documentation

@@ -148,7 +148,9 @@ jobs:
         SPOTIFY_TEST_TRACK_ID: ${{ secrets.SPOTIFY_TEST_TRACK_ID }}
         SPOTIFY_TEST_ALBUM_ID: ${{ secrets.SPOTIFY_TEST_ALBUM_ID }}
         SPOTIFY_TEST_ARTIST_ID: ${{ secrets.SPOTIFY_TEST_ARTIST_ID }}
-        SPOTIFY_TEST_PLAYLIST_ID: ${{ secrets.SPOTIFY_TEST_PLAYLIST_ID }}  build-dist:
+        SPOTIFY_TEST_PLAYLIST_ID: ${{ secrets.SPOTIFY_TEST_PLAYLIST_ID }}
+  
+  build-dist:
     name: Build Distribution
     runs-on: ubuntu-latest
     needs: [lint, test]
