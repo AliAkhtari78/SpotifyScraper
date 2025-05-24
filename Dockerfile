@@ -22,6 +22,7 @@ COPY requirements.txt .
 COPY setup.py .
 COPY pyproject.toml .
 COPY README.md .
+COPY src/ ./src/
 
 # Install Python dependencies
 RUN pip install --user --no-warn-script-location -r requirements.txt
@@ -45,7 +46,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd -m -u 1000 appuser
 
 # Copy installed packages from builder
-COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local# Create app directory
+COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local
+
+# Create app directory
 WORKDIR /app
 
 # Copy application code
