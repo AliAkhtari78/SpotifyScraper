@@ -165,7 +165,19 @@ DISCOVERY_SUMMARY.md
 scripts/automation-summary.md
 scripts/verify-automation.py
 FILESYSTEM_SERVER_ANALYSIS.md
+FILESYSTEM_SERVER_RESOLUTION.md
 COMPLETE_MCP_TOOL_INVENTORY.md
 test_taskmaster/
 .cursorrules
 copilot-instructions.md
+PLANNING.md
+**/PROJECT_COMPLETION_SUMMARY.md
+DOCKER_HUB_SETUP.md
+fix_logging.py
+
+# Any internal analysis or resolution files
+*_ANALYSIS.md
+*_RESOLUTION.md
+*_REPORT.md
+*_INVENTORY.md
+*_SUMMARY.md
