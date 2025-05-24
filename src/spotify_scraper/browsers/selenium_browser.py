@@ -120,7 +120,7 @@ class SeleniumBrowser(Browser):
 
             os.makedirs(os.path.dirname(path), exist_ok=True)
 
-            with open(path, 'wb') as f:
+            with open(path, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
 
