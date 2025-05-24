@@ -182,7 +182,7 @@ class ImageDownloader:
         # Download the image
         try:
             logger.debug(f"Downloading cover image from {cover_url}")
-            response = requests.get(cover_url, stream=True)
+            response = requests.get(cover_url, stream=True, timeout=30)
             response.raise_for_status()
 
             with open(file_path, "wb") as f:

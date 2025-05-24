@@ -194,7 +194,7 @@ class AudioDownloader:
         # Download the audio
         try:
             logger.debug(f"Downloading preview audio from {preview_url}")
-            response = requests.get(preview_url, stream=True)
+            response = requests.get(preview_url, stream=True, timeout=30)
             response.raise_for_status()
 
             with open(file_path, "wb") as f:
