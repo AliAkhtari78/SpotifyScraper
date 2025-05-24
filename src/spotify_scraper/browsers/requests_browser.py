@@ -106,7 +106,7 @@ class RequestsBrowser(Browser):
             AuthenticationError: If authentication is required but fails
         """
         try:
-            logger.debug(f"Fetching page content from: {url}")
+            logger.debug("Fetching page content from: %s", url)
 
             response = self.requests_session.get(
                 url,
@@ -124,26 +124,26 @@ class RequestsBrowser(Browser):
             response.raise_for_status()
 
             # Log success
-            logger.debug(f"Successfully fetched {len(response.text)} characters from {url}")
+            logger.debug("Successfully fetched %d characters from %s", len(response.text), url)
 
             return response.text
 
         except requests.exceptions.Timeout as e:
-            logger.error(f"Request timeout for {url}: {e}")
-            raise NetworkError("Request timeout", url=url)
+            logger.error("Request timeout for %s: %s", url, e)
+            raise NetworkError("Request timeout", url=url) from e
 
         except requests.exceptions.ConnectionError as e:
-            logger.error(f"Connection error for {url}: {e}")
-            raise NetworkError("Connection error", url=url)
+            logger.error("Connection error for %s: %s", url, e)
+            raise NetworkError("Connection error", url=url) from e
 
         except requests.exceptions.HTTPError as e:
             status_code = e.response.status_code if e.response else None
-            logger.error(f"HTTP error for {url}: {e}")
-            raise NetworkError(f"HTTP error: {e}", url=url, status_code=status_code)
+            logger.error("HTTP error for %s: %s", url, e)
+            raise NetworkError(f"HTTP error: {e}", url=url, status_code=status_code) from e
 
         except Exception as e:
-            logger.error(f"Unexpected error fetching {url}: {e}")
-            raise BrowserError(f"Unexpected error: {e}", browser_type="requests")
+            logger.error("Unexpected error fetching %s: %s", url, e)
+            raise BrowserError(f"Unexpected error: {e}", browser_type="requests") from e
 
     def get_json(self, url: str) -> Dict[str, Any]:
         """
@@ -163,7 +163,7 @@ class RequestsBrowser(Browser):
             ParsingError: If the response is not valid JSON
         """
         try:
-            logger.debug(f"Fetching JSON from: {url}")
+            logger.debug("Fetching JSON from: %s", url)
 
             response = self.requests_session.get(
                 url,
@@ -174,17 +174,17 @@ class RequestsBrowser(Browser):
             response.raise_for_status()
 
             json_data = response.json()
-            logger.debug(f"Successfully fetched JSON with {len(json_data)} keys from {url}")
+            logger.debug("Successfully fetched JSON with %d keys from %s", len(json_data), url)
 
             return json_data
 
         except requests.exceptions.JSONDecodeError as e:
-            logger.error(f"Invalid JSON response from {url}: {e}")
-            raise NetworkError("Invalid JSON response", url=url)
+            logger.error("Invalid JSON response from %s: %s", url, e)
+            raise NetworkError("Invalid JSON response", url=url) from e
 
         except Exception as e:
-            logger.error(f"Error fetching JSON from {url}: {e}")
-            raise NetworkError(f"Error fetching JSON: {e}", url=url)
+            logger.error("Error fetching JSON from %s: %s", url, e)
+            raise NetworkError(f"Error fetching JSON: {e}", url=url) from e
 
     def download_file(self, url: str, path: str) -> str:
         """
@@ -205,7 +205,7 @@ class RequestsBrowser(Browser):
             MediaError: If the file cannot be saved
         """
         try:
-            logger.debug(f"Downloading file from {url} to {path}")
+            logger.debug("Downloading file from %s to %s", url, path)
 
             # Stream the download to handle large files efficiently
             response = self.requests_session.get(
@@ -222,12 +222,12 @@ class RequestsBrowser(Browser):
                     if chunk:  # Filter out keep-alive chunks
                         f.write(chunk)
 
-            logger.debug(f"Successfully downloaded file to {path}")
+            logger.debug("Successfully downloaded file to %s", path)
             return path
 
         except Exception as e:
-            logger.error(f"Error downloading file from {url}: {e}")
-            raise NetworkError(f"Download error: {e}", url=url)
+            logger.error("Error downloading file from %s: %s", url, e)
+            raise NetworkError(f"Download error: {e}", url=url) from e
 
     def get_auth_token(self) -> Optional[str]:
         """
