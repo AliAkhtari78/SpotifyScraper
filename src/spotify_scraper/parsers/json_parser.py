@@ -539,4 +539,4 @@ def with_fallback(
             logger.error("Fallback function also failed: %s", fallback_error)
             raise Exception(
                 f"Both primary and fallback functions failed: {primary_error} / {fallback_error}"
-            )
+            ) from fallback_error

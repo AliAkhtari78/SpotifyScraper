@@ -219,40 +219,40 @@ class SpotifyScraperConfig:
         Returns:
             List of validation error messages (empty if valid)
         """
-        errors = []
+        validation_errors = []
 
         # Validate paths
         if self.auth.cookie_file and not Path(self.auth.cookie_file).exists():
-            errors.append(f"Cookie file not found: {self.auth.cookie_file}")
+            validation_errors.append(f"Cookie file not found: {self.auth.cookie_file}")
 
         if self.auth.session_file and not Path(self.auth.session_file).parent.exists():
-            errors.append(
+            validation_errors.append(
                 f"Session file directory not found: {Path(self.auth.session_file).parent}"
             )
 
         # Validate numeric ranges
         if self.retry.max_attempts < 1:
-            errors.append("max_attempts must be at least 1")
+            validation_errors.append("max_attempts must be at least 1")
 
         if self.retry.delay_seconds < 0:
-            errors.append("delay_seconds must be non-negative")
+            validation_errors.append("delay_seconds must be non-negative")
 
         if self.timeout_seconds < 1:
-            errors.append("timeout_seconds must be at least 1")
+            validation_errors.append("timeout_seconds must be at least 1")
 
         if self.cache.ttl_hours < 1:
-            errors.append("cache.ttl_hours must be at least 1")
+            validation_errors.append("cache.ttl_hours must be at least 1")
 
         # Validate media settings
         valid_audio_qualities = ["high", "medium", "low"]
         if self.media.audio_quality not in valid_audio_qualities:
-            errors.append(f"audio_quality must be one of: {valid_audio_qualities}")
+            validation_errors.append(f"audio_quality must be one of: {valid_audio_qualities}")
 
         valid_cover_qualities = ["large", "medium", "small"]
         if self.media.cover_quality not in valid_cover_qualities:
-            errors.append(f"cover_quality must be one of: {valid_cover_qualities}")
+            validation_errors.append(f"cover_quality must be one of: {valid_cover_qualities}")
 
-        return errors
+        return validation_errors
 
 
 class ConfigLoader(ABC):
@@ -506,8 +506,8 @@ class ConfigurationManager:
             ext = path.suffix.lower().lstrip(".")
             try:
                 format = ConfigFormat(ext)
-            except ValueError:
-                raise ValueError(f"Unknown configuration format: {ext}")
+            except ValueError as e:
+                raise ValueError(f"Unknown configuration format: {ext}") from e
 
         # Check if loader is available
         if format not in self._loaders:
