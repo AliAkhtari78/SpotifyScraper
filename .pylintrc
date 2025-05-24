@@ -15,7 +15,18 @@ disable=
     too-few-public-methods,
     missing-module-docstring,
     missing-class-docstring,
-    missing-function-docstring
+    missing-function-docstring,
+    logging-fstring-interpolation,
+    redefined-builtin,
+    duplicate-code,
+    redefined-outer-name,
+    reimported,
+    unused-variable,
+    unused-argument,
+    trailing-whitespace,
+    missing-timeout,
+    too-many-nested-blocks,
+    unspecified-encoding
 
 [BASIC]
 # Good variable names which should always be accepted

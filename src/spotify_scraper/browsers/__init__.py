@@ -57,7 +57,7 @@ def create_browser(browser_type: str = "auto", **kwargs) -> Browser:
             logger.debug("Trying RequestsBrowser")
             browser = RequestsBrowser(**kwargs)
             # Test browser with a simple request
-            browser.get("https://open.spotify.com")
+            browser.get_page_content("https://open.spotify.com")
             return browser
         except Exception as e:
             logger.warning("RequestsBrowser failed: %s", e)
