@@ -45,7 +45,8 @@ Changelog = "https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CHANGELO
 [project.optional-dependencies]
 selenium = [
     "selenium>=4.0.0",
-]dev = [
+]
+dev = [
     "pytest>=8.0.0",
     "pytest-cov>=4.1.0",
     "pytest-xdist>=3.5.0",
