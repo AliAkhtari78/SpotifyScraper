@@ -10,13 +10,13 @@ try:
     # Test 1: Import the package
     print("1. Testing package import...")
     import spotify_scraper
+    from spotify_scraper import SpotifyClient, extract_id, is_spotify_url
 
     print(f"   ✓ Package imported successfully")
     print(f"   ✓ Version: {spotify_scraper.__version__}")
 
     # Test 2: Import main components
     print("\n2. Testing component imports...")
-    from spotify_scraper import SpotifyClient, extract_id, is_spotify_url
 
     print("   ✓ SpotifyClient imported")
     print("   ✓ Utility functions imported")

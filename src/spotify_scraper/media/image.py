@@ -194,7 +194,9 @@ class ImageDownloader:
         except Exception as e:
             logger.error("Failed to download cover image: %s", e)
             raise DownloadError(
-                f"Failed to download cover image: {e}", url=cover_url, path=file_path
+                message=f"Failed to download cover image: {e}", 
+                url=cover_url, 
+                path=file_path
             ) from e
 
     def _get_cover_url(

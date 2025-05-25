@@ -9,7 +9,6 @@ This example shows how to use the Config class to:
 """
 
 import json
-import os
 from pathlib import Path
 
 from spotify_scraper import Config, SpotifyClient
