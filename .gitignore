@@ -181,3 +181,4 @@ fix_logging.py
 *_REPORT.md
 *_INVENTORY.md
 *_SUMMARY.md
+venv_security/
