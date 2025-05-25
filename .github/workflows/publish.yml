@@ -32,7 +32,7 @@ jobs:
     - name: Install build dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install build wheel setuptools>=65 setuptools-scm
+        pip install build wheel "setuptools>=77.0.0" setuptools-scm
         # Install all build requirements for no-isolation build
         pip install -r requirements.txt || true
     

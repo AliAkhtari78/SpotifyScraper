@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=65", "wheel"]
+requires = ["setuptools>=77.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "spotifyscraper"
-version = "2.0.6"
+version = "2.0.7"
 description = "Python library for extracting data from Spotify without authentication"
 readme = "README.md"
 authors = [
@@ -31,6 +31,16 @@ dependencies = [
     "lxml>=4.9.0",
     "pyyaml>=6.0",
     "eyeD3>=0.9.5",
+    "urllib3",
+    "cssselect",
+    "soupsieve",
+    "filetype",
+    "fake-useragent",
+    "certifi",
+    "packaging",
+    "tqdm",
+    "pyparsing",
+    "deprecation",
 ]
 requires-python = ">=3.8"
 
@@ -44,6 +54,11 @@ Changelog = "https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CHANGELO
 [project.optional-dependencies]
 selenium = [
     "selenium>=4.0.0",
+]
+async = [
+    "pyppeteer",
+    "pyee",
+    "websockets",
 ]
 dev = [
     "pytest>=8.0.0",
@@ -72,17 +87,22 @@ docs = [
     "myst-parser>=2.0.0",
 ]
 all = [
-    "spotifyscraper[selenium,dev,test,docs]",
+    "spotifyscraper[selenium,async,dev,test,docs]",
 ]
 
 [project.scripts]
 spotify-scraper = "spotify_scraper.__main__:main"
+spotifyscraper = "spotify_scraper.__main__:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+spotify_scraper = ["py.typed"]
 
 [tool.black]
 line-length = 100
@@ -135,7 +155,7 @@ precision = 2
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "2.0.6"
+version = "2.0.7"
 version_files = [
     "pyproject.toml:version",
     "src/spotify_scraper/__init__.py:__version__",
