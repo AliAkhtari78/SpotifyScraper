@@ -102,7 +102,7 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        pip install twine
+        pip install "twine<5.0.0"
         twine upload --non-interactive --skip-existing dist/*
     
     # Alternative: Use trusted publishing (requires PyPI configuration)
