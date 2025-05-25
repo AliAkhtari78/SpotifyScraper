@@ -32,7 +32,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install build twine
+        pip install build wheel setuptools>=65 setuptools-scm twine
+        # Install all build requirements for no-isolation build
+        pip install -r requirements.txt || true
     
     - name: Extract version
       id: get_version
@@ -45,11 +47,15 @@ jobs:
     
     - name: Build distribution
       run: |
-        # Clean any existing build artifacts
+        # Clean any existing build artifacts and caches
         rm -rf build/ dist/ *.egg-info src/*.egg-info
         find . -type d -name "*.egg-info" -exec rm -rf {} + || true
-        # Build fresh packages
-        python -m build
+        find . -type d -name "__pycache__" -exec rm -rf {} + || true
+        rm -rf ~/.cache/pip
+        # Ensure clean pyproject.toml processing
+        python -m pip cache purge
+        # Build fresh packages with no build isolation to ensure clean metadata
+        python -m build --no-isolation
     
     - name: Check distribution
       run: twine check dist/*
@@ -99,12 +105,27 @@ jobs:
       with:
         fetch-depth: 0
     
+    - name: Extract version for release
+      id: release_version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+    
     - name: Generate changelog
       id: changelog
       run: |
         # Generate changelog from commits
         echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
-        git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> $GITHUB_OUTPUT
+        PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+        if [ -z "$PREV_TAG" ]; then
+          echo "Initial release" >> $GITHUB_OUTPUT
+        else
+          git log --pretty=format:"- %s" ${PREV_TAG}..HEAD >> $GITHUB_OUTPUT
+        fi
+        echo "" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
     
     - name: Download artifacts
@@ -116,19 +137,19 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ steps.get_version.outputs.VERSION }}
-        name: Release ${{ steps.get_version.outputs.VERSION }}
+        tag_name: ${{ steps.release_version.outputs.VERSION }}
+        name: Release ${{ steps.release_version.outputs.VERSION }}
         body: |
           ## What's Changed
           ${{ steps.changelog.outputs.CHANGELOG }}
           
           ## Installation
           ```bash
-          pip install spotifyscraper==${{ steps.get_version.outputs.VERSION }}
+          pip install spotifyscraper==${{ steps.release_version.outputs.VERSION }}
           ```
           
           ## Full Changelog
-          https://github.com/${{ github.repository }}/compare/$(git describe --tags --abbrev=0 HEAD^)...${{ steps.get_version.outputs.VERSION }}
+          https://github.com/${{ github.repository }}/compare/$(git describe --tags --abbrev=0 HEAD^)...${{ steps.release_version.outputs.VERSION }}
         files: dist/*
         draft: false
         prerelease: false

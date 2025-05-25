@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.6] - 2025-05-25
+
+### Fixed
+- Fixed automated PyPI deployment by using --no-isolation build to prevent cached metadata
+- Added pip cache purge to ensure clean builds
+- Fixed Release workflow changelog generation to handle missing previous tags
+- Fixed version reference in create-github-release job
+- Improved build process to clean all caches and artifacts
+
+### Changed
+- Updated all workflows to use consistent clean build process
+- Enhanced error handling in changelog generation
+
 ## [2.0.5] - 2025-05-25
 
 ### Fixed
