@@ -1,0 +1,48 @@
+# GitHub Pages Configuration
+# This file tells GitHub Pages to exclude certain directories from processing
+
+# Exclude Python source code and other non-documentation files
+exclude:
+  - src/
+  - tests/
+  - scripts/
+  - venv/
+  - venv_security/
+  - dist/
+  - build/
+  - "*.egg-info/"
+  - __pycache__/
+  - .pytest_cache/
+  - .tox/
+  - .coverage
+  - htmlcov/
+  - .git/
+  - .github/
+  - "*.py"
+  - requirements*.txt
+  - setup.py
+  - setup.cfg
+  - pyproject.toml
+  - Makefile
+  - tox.ini
+  - pytest.ini
+  - mypy.ini
+  - .pylintrc
+  - .gitignore
+  - .gitattributes
+  - bandit-report.json
+  - MANIFEST.in
+  - Dockerfile
+  - docker-compose.yml
+  - examples/
+  - wiki/
+
+# Include only documentation
+include:
+  - README.md
+  - LICENSE
+  - docs/
+
+# Disable Jekyll processing
+plugins: []
+markdown: kramdown
