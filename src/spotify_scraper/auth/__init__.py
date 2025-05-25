@@ -63,7 +63,7 @@ class Session:
             Dictionary of cookies
         """
         cookies = {}
-        with open(self.cookie_file, "r") as fp:
+        with open(self.cookie_file, "r", encoding="utf-8") as fp:
             for line in fp:
                 if not re.match(r"^\#", line):
                     line_fields = line.strip().split("\t")

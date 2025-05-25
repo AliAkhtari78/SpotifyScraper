@@ -1,544 +1,345 @@
-# SpotifyScraper 🎵
+# SpotifyScraper
 
-[![PyPI version](https://img.shields.io/pypi/v/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
-[![CI](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml)
-[![Coverage Status](https://codecov.io/gh/AliAkhtari78/SpotifyScraper/branch/master/graph/badge.svg)](https://codecov.io/gh/AliAkhtari78/SpotifyScraper)
+[![PyPI version](https://badge.fury.io/py/spotifyscraper.svg)](https://badge.fury.io/py/spotifyscraper)
+[![Python Support](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![Documentation Status](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io/en/latest/?badge=latest)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![codecov](https://codecov.io/gh/AliAkhtari78/SpotifyScraper/branch/master/graph/badge.svg)](https://codecov.io/gh/AliAkhtari78/SpotifyScraper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Downloads](https://pepy.tech/badge/spotifyscraper)](https://pepy.tech/project/spotifyscraper)
 
-**SpotifyScraper** is a powerful, modern Python library that extracts rich metadata from Spotify's web interface without requiring API credentials. Built for developers who need reliable access to Spotify's public data, it offers a clean, type-safe API with comprehensive media download capabilities.
+A modern Python library for extracting data from Spotify without using the official API. Extract tracks, albums, artists, and playlists with ease!
 
-## 🌟 Why SpotifyScraper?
+## 🎵 Features
 
-- **No API Key Required**: Access Spotify data without dealing with API registration, rate limits, or quotas
-- **Rich Data Extraction**: Get comprehensive metadata including preview URLs, cover art, lyrics, and more
-- **Production Ready**: Battle-tested with robust error handling, retries, and fallback mechanisms
-- **Type Safe**: Full TypeScript-style type hints for excellent IDE support and fewer runtime errors
-- **Media Downloads**: Built-in high-quality audio preview and cover art downloading with metadata
-- **Flexible Architecture**: Choose between lightweight requests or powerful Selenium backends
-- **Modern Python**: Async support, context managers, and clean pythonic interfaces
-
-## 🚀 Quick Start
-
-```python
-from spotify_scraper import SpotifyClient
-
-# Create client (no authentication needed for basic usage)
-client = SpotifyClient()
-
-# Get track info
-track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-print(f"Track: {track['name']} by {track['artists'][0]['name']}")
-
-# Download preview
-file_path = client.download_preview_mp3("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-print(f"Downloaded preview to {file_path}")
-
-# Download cover image
-cover_path = client.download_cover("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-print(f"Downloaded cover to {cover_path}")
-```
-
-## ✨ Features
-
-### Core Capabilities
-- 🎵 **Track Extraction**: Complete track metadata including artists, album, duration, popularity, and preview URLs
-- 💿 **Album Support**: Full album details with track listings, release dates, and album art
-- 🎤 **Artist Profiles**: Artist information including top tracks, monthly listeners, and verified status
-- 📝 **Playlist Parsing**: Extract all tracks from public playlists with creator information
-- 🎼 **Lyrics Support**: Access song lyrics when available (requires authentication)
-
-### Media Management
-- 🎧 **Audio Downloads**: High-quality MP3 previews with embedded metadata (ID3 tags)
-- 🖼️ **Cover Art**: Multiple resolution options (300x300, 640x640, original)
-- 📊 **Metadata Embedding**: Automatic ID3 tagging with artist, title, album, and cover art
-- 🗂️ **Smart Filenames**: Configurable naming patterns with sanitization
-
-### Technical Excellence
-- 🔒 **Type Safety**: Comprehensive TypedDict definitions for all data structures
-- ⚡ **Performance**: Connection pooling, session reuse, and optional async support
-- 🛡️ **Reliability**: Automatic retries, graceful degradation, and detailed error messages
-- 🔧 **Flexibility**: Multiple browser backends, authentication options, and configuration
-- 📝 **Logging**: Configurable logging with structured output for debugging
-- 🌐 **Proxy Support**: Full proxy configuration for both HTTP and SOCKS
-- 🔄 **Backward Compatible**: Maintains compatibility with v1.x code
-
-## 📋 Requirements
-
-- **Python**: 3.8, 3.9, 3.10, 3.11, or 3.12
-- **Platform**: Windows, macOS, Linux, or any platform supporting Python
-- **Memory**: Minimum 512MB RAM (1GB recommended for Selenium backend)
-- **Network**: Stable internet connection
+- **No API Key Required**: Access Spotify data without authentication
+- **Multiple Data Types**: Extract tracks, albums, artists, and playlists
+- **Media Downloads**: Download cover images and 30-second preview MP3s
+- **Flexible Browsers**: Use lightweight requests or full Selenium automation
+- **CLI Interface**: Command-line tool for quick data extraction
+- **Type Safety**: Full type hints and TypedDict support
+- **Error Handling**: Comprehensive exception hierarchy
+- **Bulk Operations**: Process multiple URLs efficiently
+- **Data Analysis**: Built-in playlist analysis and comparison tools
 
 ## 📦 Installation
 
-### From PyPI (Recommended)
-
+### Basic Installation
 ```bash
-# Basic installation
 pip install spotifyscraper
+```
 
-# With Selenium support for JavaScript-heavy pages
+### With Selenium Support
+```bash
 pip install "spotifyscraper[selenium]"
+```
 
-# With development tools
+### Development Installation
+```bash
 pip install "spotifyscraper[dev]"
+```
 
-# Everything included
+### Full Installation (All Features)
+```bash
 pip install "spotifyscraper[all]"
 ```
 
-### From Source
+## 🚀 Quick Start
 
-```bash
-# Clone the repository
-git clone https://github.com/AliAkhtari78/SpotifyScraper.git
-cd SpotifyScraper
-
-# Install in development mode
-pip install -e ".[dev]"
-
-# Run tests to verify installation
-pytest
-```
-
-### Using Poetry
-
-```bash
-poetry add spotifyscraper
-
-# With optional dependencies
-poetry add "spotifyscraper[selenium]"
-```
-
-### Using Conda
-
-```bash
-# First install pip in conda environment
-conda install pip
-
-# Then install spotifyscraper
-pip install spotifyscraper
-```
-
-## 🎯 Usage Examples
-
-### Basic Usage
-
-#### Extract Track Information
+### Python Library Usage
 
 ```python
 from spotify_scraper import SpotifyClient
 
+# Initialize client
 client = SpotifyClient()
 
-# From URL
-track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+# Get track information
+track_url = "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh"
+track_info = client.get_track_info(track_url)
+print(f"Track: {track_info['name']} by {track_info['artists'][0]['name']}")
 
-# Access track data
-print(f"Title: {track['name']}")
-print(f"Artist: {track['artists'][0]['name']}")
-print(f"Album: {track['album']['name']}")
-print(f"Release date: {track['release_date']}")
-print(f"Preview URL: {track['preview_url']}")
-```
+# Get album with tracks
+album_url = "https://open.spotify.com/album/0JGOiO34nwfUdDrD612dOp"
+album_info = client.get_album_info(album_url)
+print(f"Album: {album_info['name']} ({album_info['total_tracks']} tracks)")
 
-#### Extract Album Information
+# Download cover art
+cover_path = client.download_cover(track_url, path="covers/")
+print(f"Cover saved to: {cover_path}")
 
-```python
-from spotify_scraper import SpotifyClient
-
-client = SpotifyClient()
-
-# Get album info
-album = client.get_album_info("https://open.spotify.com/album/1DFixLWuPkv3KT3TnV35m3")
-
-# Access album data
-print(f"Album: {album['name']}")
-print(f"Artist: {album['artists'][0]['name']}")
-print(f"Release date: {album['release_date']}")
-print(f"Total tracks: {album['total_tracks']}")
-
-# Get all tracks in album
-for track in album['tracks']:
-    print(f"- {track['name']}")
-```
-
-#### Extract Artist Information
-
-```python
-from spotify_scraper import SpotifyClient
-
-client = SpotifyClient()
-
-# Get artist info
-artist = client.get_artist_info("https://open.spotify.com/artist/4Z8W4fKeB5YxbusRsdQVPb")
-
-# Access artist data
-print(f"Artist: {artist['name']}")
-print(f"Followers: {artist.get('followers', 'N/A')}")
-print(f"Monthly listeners: {artist.get('monthly_listeners', 'N/A')}")
-
-# Get top tracks
-for track in artist.get('top_tracks', []):
-    print(f"- {track['name']}")
-```
-
-#### Extract Playlist Information
-
-```python
-from spotify_scraper import SpotifyClient
-
-client = SpotifyClient()
-
-# Get playlist info
-playlist = client.get_playlist_info("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
-
-# Access playlist data
-print(f"Playlist: {playlist['name']}")
-print(f"Creator: {playlist['owner']['name']}")
-print(f"Total tracks: {playlist.get('track_count', 0)}")
-
-# Get tracks in playlist
-for track in playlist.get('tracks', []):
-    print(f"- {track['name']} by {track['artists'][0]['name']}")
-```
-
-### Advanced Usage
-
-#### Download Preview MP3 with Metadata
-
-```python
-from spotify_scraper import SpotifyClient
-
-client = SpotifyClient()
-
-# Download with default settings
-path = client.download_preview_mp3("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-
-# With custom path and embed cover
-path = client.download_preview_mp3(
-    "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",
-    path="~/Music",
-    with_cover=True  # Embed cover art
-)
-```
-
-#### Download High-Resolution Cover Art
-
-```python
-from spotify_scraper import SpotifyClient
-
-client = SpotifyClient()
-
-# Download with default settings
-path = client.download_cover("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-
-# With custom filename and path
-path = client.download_cover(
-    "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",
-    filename="album_cover",
-    path="~/Pictures",
-    quality_preference=["large"]  # List of size preferences
-)
-```
-
-#### Authentication for Premium Features
-
-```python
-from spotify_scraper import SpotifyClient
-
-# Create authenticated client
-client = SpotifyClient(
-    auth_token="your_spotify_auth_token",
-    # or
-    cookie_file="path/to/cookies.txt",
-)
-
-# Get track with lyrics (requires authentication)
-track = client.get_track_info_with_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-if track.get('lyrics'):
-    print(track['lyrics'])
-
-# Access user-specific content (requires authentication)
-# Note: User playlist functionality may require additional implementation
-private_playlist = client.get_playlist_info("https://open.spotify.com/playlist/private_playlist_id")
-```
-
-#### Using Configuration Files
-
-```python
-from spotify_scraper import SpotifyClient, Config
-
-# Load configuration from file
-config = Config.from_file("config.json")
-client = SpotifyClient(config=config)
-
-# Or use environment variables
-client = SpotifyClient(
-    proxy=os.getenv("SPOTIFY_PROXY"),
-    timeout=int(os.getenv("SPOTIFY_TIMEOUT", "30")),
-)
-```
-
-#### Batch Operations
-
-```python
-from spotify_scraper import SpotifyClient
-import asyncio
-
-client = SpotifyClient()
-
-# Process multiple tracks
-track_urls = [
-    "https://open.spotify.com/track/track1",
-    "https://open.spotify.com/track/track2",
-    "https://open.spotify.com/track/track3",
-]
-
-# Synchronous batch processing
-tracks = [client.get_track_info(url) for url in track_urls]
-
-# Download all previews
-for url in track_urls:
-    track = client.get_track_info(url)
-    if track.get("preview_url"):
-        client.download_preview_mp3(url, path="downloads/")
+# Don't forget to close the client
+client.close()
 ```
 
 ### CLI Usage
 
 ```bash
-# Get track information
-spotifyscraper track https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6
+# Get track info
+spotify-scraper track https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh
 
-# Download album with previews
-spotifyscraper album https://open.spotify.com/album/1DFixLWuPkv3KT3TnV35m3 --download
+# Get album info with pretty output
+spotify-scraper album https://open.spotify.com/album/0JGOiO34nwfUdDrD612dOp --pretty
 
-# Get artist top tracks
-spotifyscraper artist https://open.spotify.com/artist/4Z8W4fKeB5YxbusRsdQVPb --top-tracks
+# Download track preview
+spotify-scraper download track https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh --with-cover
 
-# Download playlist
-spotifyscraper playlist https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M --download --output-dir ./music
-
-# With authentication
-spotifyscraper --auth-token YOUR_TOKEN track https://open.spotify.com/track/xyz --lyrics
+# Get playlist info in JSON format
+spotify-scraper playlist https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M --output playlist.json
 ```
 
-## 📚 API Reference
+## 📖 Detailed Usage
 
-### SpotifyClient
-
-The main interface for interacting with Spotify content.
+### Client Configuration
 
 ```python
-class SpotifyClient:
-    def __init__(
-        self,
-        auth_token: Optional[str] = None,
-        cookie_file: Optional[str] = None,
-        proxy: Optional[str] = None,
-        timeout: int = 30,
-        max_retries: int = 3,
-        config: Optional[Config] = None,
-    ) -> None:
-        """Initialize Spotify client with optional authentication and configuration."""
-```
-
-#### Key Methods
-
-| Method | Description | Returns |
-|--------|-------------|----------|
-| `get_track_info(url)` | Extract track metadata | `Dict[str, Any]` |
-| `get_track_info_with_lyrics(url)` | Extract track with lyrics | `Dict[str, Any]` |
-| `get_album_info(url)` | Extract album with all tracks | `Dict[str, Any]` |
-| `get_artist_info(url)` | Extract artist profile | `Dict[str, Any]` |
-| `get_playlist_info(url)` | Extract playlist tracks | `Dict[str, Any]` |
-| `get_track_lyrics(url)` | Get song lyrics (auth required) | `Optional[str]` |
-| `download_preview_mp3(url, **kwargs)` | Download track preview MP3 | `str` (file path) |
-| `download_cover(url, **kwargs)` | Download cover art | `Optional[str]` |
-| `get_all_info(url)` | Auto-detect URL type and extract | `Dict[str, Any]` |
-
-### Data Types
-
-All returned data uses TypedDict for type safety:
-
-```python
-from spotify_scraper.types import TrackDict, AlbumDict, ArtistDict
-
-# Type hints provide IDE support
-track: TrackDict = client.get_track("...")
-print(track["name"])  # IDE knows this is a string
-print(track["duration_ms"])  # IDE knows this is an int
-```
-
-## 🔄 Migration from v1.x
-
-If you're upgrading from version 1.x, here are the key changes:
-
-```python
-# Old way (1.x)
-from SpotifyScraper.scraper import Scraper, Request
-
-request = Request().request()
-track_info = Scraper(session=request).get_track_url_info(url='https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV')
-
-# New way (2.x)
 from spotify_scraper import SpotifyClient
 
-client = SpotifyClient()
-track_info = client.get_track('https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV')
+# Initialize with custom settings
+client = SpotifyClient(
+    browser_type="selenium",     # Use Selenium for JavaScript content
+    log_level="DEBUG",          # Set logging level
+    proxy={
+        "http": "http://proxy.example.com:8080",
+        "https": "https://proxy.example.com:8080"
+    }
+)
 ```
 
-For backward compatibility, the old API is still available:
+### Authentication (Optional)
+
+Some features like lyrics require authentication via cookies:
 
 ```python
-# Backward compatibility
-from spotify_scraper.compat import Scraper, Request
+# Using cookie file (exported from browser)
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
 
-request = Request().request()
-track_info = Scraper(session=request).get_track_url_info(url='https://open.spotify.com/track/7wqpAYuSk84f0JeqCIETRV')
+# Using cookie dictionary
+client = SpotifyClient(cookies={"sp_t": "your_token_here"})
 ```
 
-### Key Changes in v2.0
+### Error Handling
 
-1. **New API Structure**: Simplified client-based approach
-2. **Enhanced Type Safety**: Full type hints throughout
-3. **Better Error Handling**: Detailed exceptions with recovery hints
-4. **Improved Performance**: Connection pooling and caching
-5. **Media Download**: Built-in download capabilities
-6. **Async Support**: Optional async/await patterns
+```python
+from spotify_scraper import SpotifyClient, URLError, NetworkError, ExtractionError
 
-See the [CHANGELOG](CHANGELOG.md) for a complete list of changes.
+client = SpotifyClient()
 
-## 📖 Documentation
+try:
+    track_info = client.get_track_info("https://open.spotify.com/track/invalid")
+except URLError as e:
+    print(f"Invalid URL: {e}")
+except NetworkError as e:
+    print(f"Network error: {e}")
+except ExtractionError as e:
+    print(f"Extraction failed: {e}")
+finally:
+    client.close()
+```
 
-- 📚 **[Full Documentation](https://spotifyscraper.readthedocs.io/)** - Comprehensive guides and API reference
-- 💡 **[Examples](https://github.com/AliAkhtari78/SpotifyScraper/tree/main/examples)** - Real-world usage examples
-- 🔧 **[API Reference](https://spotifyscraper.readthedocs.io/en/latest/api/)** - Detailed method documentation
-- 📝 **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to the project
-- 🔄 **[Migration Guide](https://spotifyscraper.readthedocs.io/en/latest/migration/)** - Upgrading from v1.x
-- ❓ **[FAQ](https://spotifyscraper.readthedocs.io/en/latest/faq/)** - Common questions and solutions
+### Bulk Operations
 
-## ⚠️ Known Limitations
+```python
+from spotify_scraper.utils.common import SpotifyBulkOperations
 
-### Embed URL Limitations
+# Process multiple URLs
+urls = [
+    "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh",
+    "https://open.spotify.com/album/0JGOiO34nwfUdDrD612dOp",
+    "https://open.spotify.com/artist/00FQb4jTyendYWaN8pK0wa"
+]
 
-SpotifyScraper uses Spotify's embed URLs to avoid authentication requirements. While this provides reliable access to most data, there are some limitations:
+bulk = SpotifyBulkOperations()
+results = bulk.process_urls(urls, operation="all_info")
 
-1. **Track Album Names**: Track data from embed URLs doesn't include the album name, only album images.
-2. **Limited Artist Data**: Only basic artist information is available without authentication.
-3. **No Personal Data**: User playlists, saved tracks, and personal data require authentication.
-4. **Regional Restrictions**: Some content may not be available in all regions.
+# Export results
+bulk.export_to_json(results, "spotify_data.json")
+bulk.export_to_csv(results, "spotify_data.csv")
+```
 
-### Authentication Features
+### Data Analysis
 
-Features requiring authentication (via cookies):
-- Song lyrics
-- User profiles
-- Private playlists
-- Full artist discographies
-- Personal library access
+```python
+from spotify_scraper.utils.common import SpotifyDataAnalyzer
 
-## 🛠️ Development
+analyzer = SpotifyDataAnalyzer()
 
-### Setting Up Development Environment
+# Analyze playlist
+playlist_url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
+stats = analyzer.analyze_playlist(playlist_url)
+
+print(f"Total duration: {stats['total_duration_formatted']}")
+print(f"Average track length: {stats['average_duration_formatted']}")
+print(f"Most common artist: {stats['most_common_artists'][0]}")
+
+# Compare playlists
+playlist1 = "https://open.spotify.com/playlist/..."
+playlist2 = "https://open.spotify.com/playlist/..."
+comparison = analyzer.compare_playlists(playlist1, playlist2)
+
+print(f"Common tracks: {len(comparison['common_tracks'])}")
+print(f"Similarity score: {comparison['similarity_score']:.2%}")
+```
+
+## 📊 Data Structures
+
+### Track Data
+```python
+{
+    "id": "4iV5W9uYEdYUVa79Axb7Rh",
+    "name": "Harder Better Faster Stronger",
+    "uri": "spotify:track:4iV5W9uYEdYUVa79Axb7Rh",
+    "type": "track",
+    "duration_ms": 225400,
+    "artists": [
+        {
+            "name": "Daft Punk",
+            "uri": "spotify:artist:4tZwfgrHOc3mvqYlEYSvVi",
+            "id": "4tZwfgrHOc3mvqYlEYSvVi"
+        }
+    ],
+    "album": {
+        "name": "Discovery",
+        "uri": "spotify:album:2noRn2Aes5aoNVsU6iWThc",
+        "images": [...]
+    },
+    "preview_url": "https://p.scdn.co/mp3-preview/...",
+    "is_playable": true,
+    "is_explicit": false
+}
+```
+
+### Album Data
+```python
+{
+    "id": "0JGOiO34nwfUdDrD612dOp",
+    "name": "Discovery",
+    "uri": "spotify:album:0JGOiO34nwfUdDrD612dOp",
+    "type": "album",
+    "artists": [...],
+    "images": [...],
+    "release_date": "2001-03-07",
+    "total_tracks": 14,
+    "tracks": [...]
+}
+```
+
+## 🛠️ Advanced Features
+
+### Custom Browser Backend
+
+```python
+# Use Selenium for JavaScript-heavy content
+client = SpotifyClient(browser_type="selenium")
+
+# Selenium will be used automatically if requests fails
+client = SpotifyClient(browser_type="auto")
+```
+
+### Logging Configuration
+
+```python
+import logging
+
+# Configure logging
+client = SpotifyClient(
+    log_level="DEBUG",
+    log_file="spotify_scraper.log"
+)
+
+# Or configure globally
+logging.basicConfig(level=logging.DEBUG)
+```
+
+### Environment Variables
+
+Configure via environment variables (prefix with `SPOTIFY_SCRAPER_`):
 
 ```bash
-# Clone the repository
-git clone https://github.com/AliAkhtari78/SpotifyScraper.git
-cd SpotifyScraper
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install development dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest
-
-# Run with coverage
-pytest --cov=spotify_scraper
-
-# Run linting
-black src/ tests/
-isort src/ tests/
-flake8 src/ tests/
-mypy src/
+export SPOTIFY_SCRAPER_LOG_LEVEL=DEBUG
+export SPOTIFY_SCRAPER_BROWSER_TYPE=selenium
+export SPOTIFY_SCRAPER_COOKIE_FILE=/path/to/cookies.txt
 ```
 
-### Running Tests
+## 🎯 CLI Commands
 
+### Track Command
 ```bash
-# Run all tests
-pytest
+spotify-scraper track [URL] [OPTIONS]
 
-# Run specific test file
-pytest tests/unit/test_track_extractor.py
-
-# Run with verbose output
-pytest -v
-
-# Run integration tests only
-pytest tests/integration/
+Options:
+  -o, --output PATH      Output file path
+  -p, --pretty          Pretty print output
+  -f, --format FORMAT   Output format (json/yaml/table)
+  --with-lyrics         Include lyrics (requires auth)
 ```
+
+### Album Command
+```bash
+spotify-scraper album [URL] [OPTIONS]
+
+Options:
+  -o, --output PATH      Output file path
+  -p, --pretty          Pretty print output
+  -f, --format FORMAT   Output format (json/yaml/table)
+  --tracks-only         Only output track list
+```
+
+### Playlist Command
+```bash
+spotify-scraper playlist [URL] [OPTIONS]
+
+Options:
+  -o, --output PATH      Output file path
+  -p, --pretty          Pretty print output
+  -f, --format FORMAT   Output format (json/yaml/table)
+```
+
+### Download Command
+```bash
+# Download cover image
+spotify-scraper download cover [URL] --output cover.jpg
+
+# Download track preview with cover
+spotify-scraper download track [URL] --with-cover
+
+# Batch download from URL list
+spotify-scraper download batch urls.txt --output downloads/
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **No track preview available**
+   - Not all tracks have preview URLs
+   - Try using a different track
+
+2. **Authentication required for lyrics**
+   - Export cookies from your browser
+   - Use `--cookie-file` option
+
+3. **Selenium browser errors**
+   - Install Chrome/Chromium
+   - Install appropriate driver (chromedriver)
+
+4. **Rate limiting**
+   - Add delays between requests
+   - Use proxy rotation
 
 ## 🤝 Contributing
 
-We love your input! We want to make contributing to SpotifyScraper as easy and transparent as possible. Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) first.
 
-- Code of Conduct
-- Development process
-- How to propose changes
-- How to report bugs
-- How to request features
-
-## 🚀 Performance
-
-- **Fast**: Optimized parsing with minimal overhead
-- **Efficient**: Connection pooling reduces latency
-- **Scalable**: Process hundreds of tracks per minute
-- **Reliable**: Automatic retries with exponential backoff
-
-## 🔒 Security
-
-- **No API Keys**: No risk of key exposure or revocation
-- **Read-Only**: Only reads public data, no write operations
-- **Input Validation**: All inputs sanitized and validated
-- **Secure Connections**: SSL/TLS for all requests
-
-## ⚖️ License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## ⚠️ Disclaimer
 
-- Thanks to all [contributors](https://github.com/AliAkhtari78/SpotifyScraper/graphs/contributors) who have helped improve this library
-- Inspired by the need for accessible Spotify data extraction
-- Built with ❤️ by [Ali Akhtari](https://github.com/AliAkhtari78)
+This library is for educational and personal use only. Respect Spotify's Terms of Service and use responsibly.
 
-## 📞 Support
+## 🔗 Links
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/AliAkhtari78/SpotifyScraper/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/AliAkhtari78/SpotifyScraper/discussions)
-- 📖 **Documentation**: [Read the Docs](https://spotifyscraper.readthedocs.io/)
-- 💬 **Community**: [Discord Server](https://discord.gg/spotifyscraper)
-- 📧 **Email**: [ali@aliakhtari.com](mailto:ali@aliakhtari.com)
-
-## 📈 Project Status
-
-- ✅ **Active Development**: Regular updates and improvements
-- 📊 **Downloads**: 50K+ monthly downloads
-- ⭐ **Stars**: 1K+ GitHub stars
-- 🔧 **Version**: 2.0.0 (Stable)
-
----
-
-<p align="center">
-  Made with ❤️ by the open-source community
-</p>
+- [Documentation](https://spotifyscraper.readthedocs.io/)
+- [GitHub Repository](https://github.com/AliAkhtari78/SpotifyScraper)
+- [PyPI Package](https://pypi.org/project/spotifyscraper/)
+- [Issue Tracker](https://github.com/AliAkhtari78/SpotifyScraper/issues)

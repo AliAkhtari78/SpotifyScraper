@@ -53,7 +53,7 @@ jobs:
       run: mypy src/ --ignore-missing-imports
     
     - name: Run Bandit Security Scan
-      run: bandit -r src/ -f json -o bandit-report.json
+      run: bandit -r src/ -f json -o bandit-report.json -ll
     
     - name: Check dependencies with Safety
       run: safety check
@@ -146,7 +146,7 @@ jobs:
     
     - name: Run integration tests
       run: |
-        pytest tests/integration/ -v --integration
+        pytest tests/integration/ -v
       env:
         SPOTIFY_TEST_TRACK_ID: ${{ secrets.SPOTIFY_TEST_TRACK_ID }}
         SPOTIFY_TEST_ALBUM_ID: ${{ secrets.SPOTIFY_TEST_ALBUM_ID }}

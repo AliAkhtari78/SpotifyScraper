@@ -1,5 +1,4 @@
 # Documentation dependencies
-sphinx>=8.0
-sphinx-rtd-theme>=3.0
-recommonmark>=0.7.1
-myst-parser>=4.0.0
+mkdocs>=1.5.0
+markdown>=3.3
+pygments>=2.10

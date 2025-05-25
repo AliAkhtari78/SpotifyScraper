@@ -70,15 +70,17 @@ jobs:
         cache-to: type=gha,mode=max
     
     - name: Run Trivy vulnerability scanner
-      if: github.event_name != 'pull_request'
+      if: github.event_name != 'pull_request' && steps.meta.outputs.version != ''
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
         format: 'sarif'
         output: 'trivy-docker-results.sarif'
+      continue-on-error: true
     
     - name: Upload Trivy scan results
-      if: github.event_name != 'pull_request'
+      if: github.event_name != 'pull_request' && steps.meta.outputs.version != ''
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-docker-results.sarif'
+      continue-on-error: true

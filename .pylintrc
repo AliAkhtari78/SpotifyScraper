@@ -1,0 +1,50 @@
+[MESSAGES CONTROL]
+# Disable warnings that are not critical
+disable=
+    too-many-instance-attributes,
+    too-many-positional-arguments,
+    too-many-arguments,
+    too-many-locals,
+    too-many-branches,
+    too-many-statements,
+    too-many-public-methods,
+    broad-exception-caught,
+    import-outside-toplevel,
+    no-else-return,
+    no-else-raise,
+    too-few-public-methods,
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    logging-fstring-interpolation,
+    redefined-builtin,
+    duplicate-code,
+    redefined-outer-name,
+    reimported,
+    unused-variable,
+    unused-argument,
+    trailing-whitespace,
+    missing-timeout,
+    too-many-nested-blocks,
+    unspecified-encoding,
+    broad-exception-raised,
+    too-many-return-statements,
+    invalid-name
+
+[BASIC]
+# Good variable names which should always be accepted
+good-names=i,j,k,ex,Run,_,id,e,f,fp
+
+[FORMAT]
+# Maximum number of characters on a single line.
+max-line-length=120
+
+[DESIGN]
+# Maximum number of arguments for function / method
+max-args=10
+
+# Maximum number of attributes for a class (see R0902).
+max-attributes=15
+
+# Maximum number of public methods for a class (see R0904).
+max-public-methods=25

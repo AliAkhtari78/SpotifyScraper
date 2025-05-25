@@ -1,174 +1,416 @@
-# Client Module
+# SpotifyClient
 
-The `client` module provides the main `SpotifyClient` class for interacting with Spotify.
+The `SpotifyClient` class is the main interface for interacting with Spotify's web player. It provides methods for extracting data from tracks, albums, artists, and playlists, as well as downloading media files.
 
-## SpotifyClient
+## Constructor
+
+```python
+SpotifyClient(
+    cookie_file: Optional[str] = None,
+    cookies: Optional[Dict[str, str]] = None,
+    headers: Optional[Dict[str, str]] = None,
+    proxy: Optional[Dict[str, str]] = None,
+    browser_type: str = "requests",
+    log_level: str = "INFO",
+    log_file: Optional[str] = None
+)
+```
+
+### Parameters
+
+- **cookie_file** (*Optional[str]*): Path to a Netscape-format cookies.txt file containing Spotify authentication cookies. Used for accessing protected content like lyrics.
+- **cookies** (*Optional[Dict[str, str]]*): Dictionary of cookies to use instead of cookie_file. Keys should be cookie names, values should be cookie values.
+- **headers** (*Optional[Dict[str, str]]*): Custom HTTP headers to include in all requests.
+- **proxy** (*Optional[Dict[str, str]]*): Proxy server configuration for all requests.
+- **browser_type** (*str*): Backend browser implementation to use:
+  - `"requests"`: Lightweight, fast, no JavaScript support (default)
+  - `"selenium"`: Full browser, slower, full JavaScript support
+  - `"auto"`: Automatically choose based on requirements
+- **log_level** (*str*): Logging verbosity level. Options: "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"
+- **log_file** (*Optional[str]*): Path to write log messages to. If None, logs to console only.
+
+### Example
 
 ```python
 from spotify_scraper import SpotifyClient
-```
 
-The main client class that orchestrates all Spotify data extraction operations.
-
-### Constructor
-
-```python
-SpotifyClient(config: Optional[Config] = None)
-```
-
-**Parameters:**
-- `config` (Optional[Config]): Configuration object. If not provided, uses default configuration.
-
-**Example:**
-```python
-from spotify_scraper import SpotifyClient, Config
-
-# Default client
+# Basic client
 client = SpotifyClient()
 
-# Client with custom config
-config = Config(cache_enabled=True, request_timeout=60)
-client = SpotifyClient(config)
+# Client with authentication
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
+
+# Client with custom configuration
+client = SpotifyClient(
+    browser_type="selenium",
+    proxy={"https": "https://proxy.example.com:8080"},
+    log_level="DEBUG",
+    log_file="scraper.log"
+)
 ```
 
-### Methods
+## Methods
 
-#### get_track
+### get_track_info
+
+Extract comprehensive metadata for a single track.
 
 ```python
-get_track(track_id_or_url: str) -> Dict[str, Any]
+get_track_info(url: str) -> Dict[str, Any]
 ```
 
-Extract track information from Spotify.
+#### Parameters
 
-**Parameters:**
-- `track_id_or_url` (str): Spotify track ID or URL (including embed URLs)
+- **url** (*str*): Spotify track URL in any supported format
 
-**Returns:**
-- Dict containing track metadata**Example:**
+#### Returns
+
+Dictionary containing track information with the following structure:
+
 ```python
-track = client.get_track("4iV5W9uYEdYUVa79Axb7Rh")
-track = client.get_track("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
+{
+    "id": str,              # Spotify track ID
+    "name": str,            # Track title
+    "uri": str,             # Spotify URI (spotify:track:...)
+    "type": "track",        # Entity type
+    "duration_ms": int,     # Duration in milliseconds
+    "explicit": bool,       # Explicit content flag
+    "artists": List[Dict],  # List of artist objects
+    "album": Dict,          # Album object with images
+    "preview_url": str,     # 30-second preview MP3 URL
+    "popularity": int,      # Popularity score (0-100)
+    "track_number": int,    # Position in album
+    "disc_number": int,     # Disc number in album
+    "external_urls": Dict,  # External URLs
+    "is_playable": bool,    # Playability status
+}
 ```
 
-#### get_album
+#### Example
 
 ```python
-get_album(album_id_or_url: str) -> Dict[str, Any]
+track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+print(f"{track['name']} - {track['duration_ms'] / 1000:.1f}s")
 ```
 
-Extract album information including all tracks.
+### get_track_lyrics
 
-**Parameters:**
-- `album_id_or_url` (str): Spotify album ID or URL
+Get lyrics for a Spotify track (requires authentication).
 
-**Returns:**
-- Dict containing album metadata and track list
-
-**Example:**
 ```python
-album = client.get_album("4aawyAB9vmqN3uQ7FjRGTy")
-print(f"Album: {album['name']} by {album['artists'][0]['name']}")
-print(f"Tracks: {len(album['tracks'])}")
+get_track_lyrics(url: str, require_auth: bool = True) -> Optional[str]
 ```
 
-#### get_artist
+#### Parameters
+
+- **url** (*str*): Spotify track URL
+- **require_auth** (*bool*): Whether to require authentication for lyrics access
+
+#### Returns
+
+The complete lyrics text with line breaks preserved, or None if lyrics are not available.
+
+#### Example
 
 ```python
-get_artist(artist_id_or_url: str) -> Dict[str, Any]
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
+lyrics = client.get_track_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+if lyrics:
+    print(lyrics)
 ```
 
-Extract artist information.
+### get_track_info_with_lyrics
 
-**Parameters:**
-- `artist_id_or_url` (str): Spotify artist ID or URL
-
-**Returns:**
-- Dict containing artist metadata
-
-**Example:**
-```python
-artist = client.get_artist("0OdUWJ0sBjDrqHygGUXeCF")
-print(f"Artist: {artist['name']}")
-print(f"Genres: {', '.join(artist['genres'])}")
-```#### get_playlist
+Get track information and lyrics in a single call.
 
 ```python
-get_playlist(playlist_id_or_url: str) -> Dict[str, Any]
+get_track_info_with_lyrics(
+    url: str, 
+    require_lyrics_auth: bool = True
+) -> Dict[str, Any]
 ```
 
-Extract playlist information including all tracks.
+#### Parameters
 
-**Parameters:**
-- `playlist_id_or_url` (str): Spotify playlist ID or URL
+- **url** (*str*): Spotify track URL
+- **require_lyrics_auth** (*bool*): Whether to require authentication for lyrics
 
-**Returns:**
-- Dict containing playlist metadata and track list
+#### Returns
 
-**Example:**
+Track info dictionary with additional `lyrics` field.
+
+### get_album_info
+
+Extract comprehensive album information.
+
 ```python
-playlist = client.get_playlist("37i9dQZF1DXcBWIGoYBM5M")
-print(f"Playlist: {playlist['name']}")
-print(f"Owner: {playlist['owner']['name']}")
-print(f"Tracks: {playlist['total_tracks']}")
+get_album_info(url: str) -> Dict[str, Any]
 ```
 
-### Advanced Usage
+#### Parameters
 
-#### Error Handling
+- **url** (*str*): Spotify album URL
+
+#### Returns
+
+Dictionary containing:
 
 ```python
-from spotify_scraper import SpotifyClient, SpotifyScraperError
+{
+    "id": str,                    # Spotify album ID
+    "name": str,                  # Album name
+    "uri": str,                   # Spotify URI
+    "type": "album",              # Entity type
+    "artists": List[Dict],        # List of artists
+    "release_date": str,          # Release date (YYYY-MM-DD)
+    "release_date_precision": str,# Date precision
+    "label": str,                 # Record label
+    "total_tracks": int,          # Number of tracks
+    "duration_ms": int,           # Total album duration
+    "popularity": int,            # Popularity score
+    "images": List[Dict],         # Cover art in various sizes
+    "tracks": List[Dict],         # Track listing
+    "copyrights": List[Dict],     # Copyright information
+    "external_urls": Dict,        # External URLs
+}
+```
+
+### get_artist_info
+
+Extract comprehensive artist information.
+
+```python
+get_artist_info(url: str) -> Dict[str, Any]
+```
+
+#### Parameters
+
+- **url** (*str*): Spotify artist URL
+
+#### Returns
+
+Dictionary containing:
+
+```python
+{
+    "id": str,                    # Spotify artist ID
+    "name": str,                  # Artist name
+    "uri": str,                   # Spotify URI
+    "type": "artist",             # Entity type
+    "genres": List[str],          # Associated genres
+    "popularity": int,            # Popularity score
+    "followers": Dict[str, int],  # Follower count
+    "images": List[Dict],         # Artist images
+    "top_tracks": List[Dict],     # Popular tracks
+    "albums": List[Dict],         # Recent albums
+    "singles": List[Dict],        # Recent singles
+    "compilations": List[Dict],   # Compilation albums
+    "appears_on": List[Dict],     # Albums artist appears on
+    "related_artists": List[Dict],# Similar artists
+    "bio": str,                   # Artist biography
+    "monthly_listeners": int,     # Monthly listener count
+    "verified": bool,             # Verified artist status
+    "external_urls": Dict,        # External URLs
+}
+```
+
+### get_playlist_info
+
+Extract comprehensive playlist information.
+
+```python
+get_playlist_info(url: str) -> Dict[str, Any]
+```
+
+#### Parameters
+
+- **url** (*str*): Spotify playlist URL
+
+#### Returns
+
+Dictionary containing:
+
+```python
+{
+    "id": str,                    # Spotify playlist ID
+    "name": str,                  # Playlist name
+    "uri": str,                   # Spotify URI
+    "type": "playlist",           # Entity type
+    "description": str,           # Playlist description
+    "owner": Dict[str, Any],      # Playlist owner information
+    "collaborative": bool,        # Is collaborative playlist
+    "public": bool,               # Is public playlist
+    "followers": Dict[str, int],  # Follower count
+    "images": List[Dict],         # Playlist cover images
+    "tracks": {                   # Track information
+        "total": int,             # Total number of tracks
+        "items": List[Dict]       # List of track objects
+    },
+    "duration_ms": int,           # Total playlist duration
+    "snapshot_id": str,           # Playlist version identifier
+    "external_urls": Dict,        # External URLs
+}
+```
+
+### get_all_info
+
+Automatically detect URL type and extract appropriate information.
+
+```python
+get_all_info(url: str) -> Dict[str, Any]
+```
+
+#### Parameters
+
+- **url** (*str*): Any valid Spotify URL
+
+#### Returns
+
+Appropriate data based on URL type.
+
+### download_cover
+
+Download cover image from any Spotify entity.
+
+```python
+download_cover(
+    url: str,
+    path: Union[str, Path] = "",
+    filename: Optional[str] = None,
+    quality_preference: Optional[List[str]] = None
+) -> Optional[str]
+```
+
+#### Parameters
+
+- **url** (*str*): Spotify URL of any supported type
+- **path** (*Union[str, Path]*): Directory path where the image should be saved
+- **filename** (*Optional[str]*): Custom filename for the image (without extension)
+- **quality_preference** (*Optional[List[str]]*): List of size preferences in order
+
+#### Returns
+
+Full path to the downloaded image file, or None if download failed.
+
+### download_preview_mp3
+
+Download 30-second preview MP3 from a track.
+
+```python
+download_preview_mp3(
+    url: str, 
+    path: str = "", 
+    with_cover: bool = False
+) -> str
+```
+
+#### Parameters
+
+- **url** (*str*): Spotify track URL
+- **path** (*str*): Directory path where the MP3 should be saved
+- **with_cover** (*bool*): Whether to embed the album cover art in the MP3 metadata
+
+#### Returns
+
+Full path to the downloaded MP3 file.
+
+### close
+
+Close the client and release all resources.
+
+```python
+close() -> None
+```
+
+## Error Handling
+
+SpotifyScraper provides specific exception types for different error scenarios:
+
+```python
+from spotify_scraper import SpotifyClient
+from spotify_scraper.core.exceptions import (
+    URLError,
+    ScrapingError,
+    AuthenticationError,
+    MediaError
+)
 
 client = SpotifyClient()
 
 try:
-    track = client.get_track("invalid_id")
-except SpotifyScraperError as e:
-    print(f"Error: {e}")
+    track = client.get_track_info("invalid_url")
+except URLError as e:
+    print(f"Invalid URL: {e}")
+except ScrapingError as e:
+    print(f"Extraction failed: {e}")
+except AuthenticationError as e:
+    print(f"Authentication required: {e}")
+except MediaError as e:
+    print(f"Media download failed: {e}")
 ```
 
-#### Batch Processing
+## Best Practices
+
+### 1. Resource Management
+
+Always close the client when done:
 
 ```python
-# Process multiple items efficiently
-track_ids = ["id1", "id2", "id3"]
-tracks = []
+client = SpotifyClient()
+try:
+    # Use the client
+    track = client.get_track_info(track_url)
+finally:
+    client.close()
+```
 
-for track_id in track_ids:
+### 2. Batch Processing
+
+Reuse the same client instance for multiple requests:
+
+```python
+client = SpotifyClient()
+urls = [...]  # List of URLs
+
+for url in urls:
     try:
-        track = client.get_track(track_id)
-        tracks.append(track)
+        info = client.get_track_info(url)
+        # Process info
     except Exception as e:
-        print(f"Failed to get track {track_id}: {e}")
-```#### Custom Configuration
-
-```python
-from spotify_scraper import SpotifyClient, Config
-
-# Configure for production use
-config = Config(
-    cache_enabled=True,
-    cache_ttl=7200,  # 2 hours
-    request_timeout=30,
-    max_retries=5,
-    retry_delay=1.0,
-    use_selenium=False,
-    log_level="WARNING"
-)
-
-client = SpotifyClient(config)
+        print(f"Failed to process {url}: {e}")
+        
+client.close()
 ```
 
-### Performance Tips
+### 3. Rate Limiting
 
-1. **Enable caching** for repeated requests
-2. **Use connection pooling** by reusing the same client instance
-3. **Handle rate limiting** with appropriate delays
+Add delays between requests to avoid rate limiting:
+
+```python
+import time
+
+for url in urls:
+    info = client.get_track_info(url)
+    time.sleep(1)  # Wait 1 second between requests
+```
+
+### 4. Authentication
+
+For features requiring authentication (like lyrics), export cookies from your browser:
+
+1. Install a browser extension like "cookies.txt"
+2. Log in to Spotify Web Player
+3. Export cookies to a file
+4. Use with SpotifyClient
+
+```python
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
+```
 
 ## See Also
 
-- [Config](config.md) - Configuration options
+- [Exceptions](exceptions.md) - Error types and handling
 - [Extractors](extractors.md) - Data extraction components
-- [Exceptions](exceptions.md) - Error handling
+- [Media](media.md) - Media download handlers
+- [Utils](utils.md) - Utility functions
 - [Examples](../examples/index.md) - Practical examples

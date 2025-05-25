@@ -1,17 +1,25 @@
 # CLI Documentation
 
-SpotifyScraper provides a powerful command-line interface for quick operations without writing Python code.
+SpotifyScraper provides a command-line interface for quick operations without writing Python code.
+
+**Note**: The CLI commands shown in this documentation are planned features. Currently, SpotifyScraper is primarily used as a Python library. For actual usage, please refer to the [Python API documentation](../api/index.md).
 
 ## Installation
 
-After installing SpotifyScraper, the CLI is available as `spotify-scraper` or `spotifyscraper`:
+After installing SpotifyScraper, you can use it as a Python module:
 
 ```bash
-# Check installation
-spotify-scraper --version
+# Run as module (if CLI is implemented)
+python -m spotify_scraper --help
+```
 
-# Or use the alternative command
-spotifyscraper --help
+**Current Usage**: SpotifyScraper is used programmatically:
+
+```python
+from spotify_scraper import SpotifyClient
+
+client = SpotifyClient()
+track = client.get_track_info("URL_HERE")
 ```
 
 ## Basic Usage

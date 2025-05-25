@@ -1,0 +1,37 @@
+site_name: SpotifyScraper Documentation
+site_author: Ali Akhtari
+site_description: The Ultimate Python Library for Spotify Data Extraction - Version 2.0.0
+site_url: https://spotifyscraper.readthedocs.io/
+repo_url: https://github.com/AliAkhtari78/SpotifyScraper
+repo_name: AliAkhtari78/SpotifyScraper
+copyright: Copyright &copy; 2025 Ali Akhtari - Documentation Last Updated May 2025
+
+theme:
+  name: readthedocs
+  locale: en
+  highlightjs: true
+  hljs_languages:
+    - python
+    - bash
+    - yaml
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started/installation.md
+  - User Guide: guide/index.md
+  - API Reference: api/index.md
+  - Examples: examples/index.md
+  - FAQ: faq.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - tables
+
+extra:
+  version: 2.0.0
+  author: Ali Akhtari
+  year: 2025

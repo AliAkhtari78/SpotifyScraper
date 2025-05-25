@@ -106,7 +106,7 @@ cli.add_command(download.download)
 def main() -> None:
     """Main entry point for the CLI."""
     try:
-        cli()
+        cli()  # pylint: disable=no-value-for-parameter
     except Exception as e:
         logger.error("An error occurred: %s", e)
         sys.exit(1)

@@ -1,187 +1,157 @@
 # Installation Guide
 
-This guide will help you install SpotifyScraper on your system.
+## Prerequisites
 
-## 📋 Requirements
+Before installing SpotifyScraper, ensure you have:
 
-- Python 3.8 or higher
-- pip (Python package manager)
-- Internet connection
+- **Python 3.8 or higher** - [Download Python](https://www.python.org/downloads/)
+- **pip** (usually comes with Python)
+- **Internet connection** for downloading packages
 
-## 🚀 Quick Installation
-
-### Basic Installation
-
+You can verify your Python installation:
 ```bash
-pip install spotifyscraper
+python --version  # Should show Python 3.8+
+pip --version     # Should show pip version
 ```
 
-### Installation with Optional Features
-
-```bash
-# With Selenium support for complex scenarios
-pip install spotifyscraper[selenium]
-
-# With enhanced media handling
-pip install spotifyscraper[media]
-
-# All features
-pip install spotifyscraper[all]
-
-# Development dependencies
-pip install spotifyscraper[dev]
-```
-
-## 📦 Installation Methods
+## Installation Methods
 
 ### Method 1: Install from PyPI (Recommended)
 
+The easiest way to install SpotifyScraper is via pip:
+
 ```bash
 pip install spotifyscraper
+```
+
+To upgrade to the latest version:
+```bash
+pip install --upgrade spotifyscraper
 ```
 
 ### Method 2: Install from GitHub
 
-```bash
-pip install git+https://github.com/AliAkhtari78/SpotifyScraper.git
-```
-
-### Method 3: Install from Source
+For the latest development version:
 
 ```bash
+# Clone the repository
 git clone https://github.com/AliAkhtari78/SpotifyScraper.git
 cd SpotifyScraper
+
+# Install in development mode
 pip install -e .
 ```
 
-## 🐳 Docker Installation
-
-### Using Docker Hub
+### Method 3: Install from Source Distribution
 
 ```bash
-docker pull aliakhtari78/spotifyscraper:latest
+# Download and extract the source
+wget https://github.com/AliAkhtari78/SpotifyScraper/archive/master.zip
+unzip master.zip
+cd SpotifyScraper-master
+
+# Install
+python setup.py install
 ```
 
-### Building from Source
+## Optional Dependencies
+
+### For Selenium Support
+
+If you need JavaScript rendering (for some dynamic content):
 
 ```bash
-git clone https://github.com/AliAkhtari78/SpotifyScraper.git
-cd SpotifyScraper
-docker build -t spotifyscraper .
+pip install spotifyscraper[selenium]
 ```
 
-### Running with Docker
+You'll also need a WebDriver:
+- **Chrome**: [ChromeDriver](https://chromedriver.chromium.org/)
+- **Firefox**: [GeckoDriver](https://github.com/mozilla/geckodriver/releases)
+
+### For MP3 Metadata Support
+
+To embed cover art in downloaded MP3 files:
 
 ```bash
-# Interactive shell
-docker run -it spotifyscraper python
-
-# Run a script
-docker run -v $(pwd):/app spotifyscraper python /app/your_script.py
+pip install eyeD3
 ```
 
-## 🔧 Virtual Environment Setup
+### For Development
+
+If you're contributing to SpotifyScraper:
+
+```bash
+pip install spotifyscraper[dev]
+# or
+pip install -r requirements-dev.txt
+```
+
+## Verification
+
+After installation, verify everything is working:
+
+```python
+>>> import spotify_scraper
+>>> spotify_scraper.__version__
+'2.0.0'
+
+>>> from spotify_scraper import SpotifyClient
+>>> client = SpotifyClient()
+>>> print("Installation successful!")
+```
+
+## Virtual Environment (Recommended)
 
 It's recommended to use a virtual environment:
 
-### Creating a Virtual Environment
-
 ```bash
 # Create virtual environment
-python -m venv venv
+python -m venv spotify_env
 
-# Activate on Windows
-venv\Scripts\activate
-
-# Activate on macOS/Linux
-source venv/bin/activate
+# Activate it
+# On Windows:
+spotify_env\Scripts\activate
+# On macOS/Linux:
+source spotify_env/bin/activate
 
 # Install SpotifyScraper
 pip install spotifyscraper
 ```
 
-## ✅ Verify Installation
-
-```python
-# Test installation
-python -c "import spotify_scraper; print(spotify_scraper.__version__)"
-
-# Should output: 2.0.0
-```
-
-## 🛠️ Platform-Specific Instructions
-
-### Windows
-
-1. Install Python from [python.org](https://python.org)
-2. Open Command Prompt or PowerShell
-3. Run: `pip install spotifyscraper`
-
-### macOS
-
-1. Install Python using Homebrew: `brew install python`
-2. Open Terminal
-3. Run: `pip3 install spotifyscraper`
-
-### Linux
-
-```bash
-# Ubuntu/Debian
-sudo apt update
-sudo apt install python3 python3-pip
-pip3 install spotifyscraper
-
-# Fedora
-sudo dnf install python3 python3-pip
-pip3 install spotifyscraper
-
-# Arch Linux
-sudo pacman -S python python-pip
-pip install spotifyscraper
-```
-
-## 🔄 Upgrading
-
-To upgrade to the latest version:
-
-```bash
-pip install --upgrade spotifyscraper
-```
-
-## 🗑️ Uninstalling
-
-To remove SpotifyScraper:
-
-```bash
-pip uninstall spotifyscraper
-```
-
-## ❓ Troubleshooting Installation
+## Troubleshooting
 
 ### Common Issues
 
-1. **Permission Denied**
-   ```bash
-   pip install --user spotifyscraper
-   ```
+1. **ImportError: No module named 'spotify_scraper'**
+   - Ensure you've installed the package: `pip install spotifyscraper`
+   - Check you're in the right environment: `pip list | grep spotify`
 
-2. **SSL Certificate Error**
-   ```bash
-   pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org spotifyscraper
-   ```
+2. **SSL Certificate errors**
+   - Update certificates: `pip install --upgrade certifi`
+   - Or use: `pip install --trusted-host pypi.org spotifyscraper`
 
-3. **Outdated pip**
-   ```bash
-   python -m pip install --upgrade pip
-   ```
+3. **Permission denied errors**
+   - Use `pip install --user spotifyscraper`
+   - Or use sudo (Linux/macOS): `sudo pip install spotifyscraper`
 
-4. **Missing Dependencies**
-   ```bash
-   pip install --upgrade setuptools wheel
-   ```
+4. **Version conflicts**
+   - Create a fresh virtual environment
+   - Or use: `pip install --force-reinstall spotifyscraper`
 
-## 📚 Next Steps
+### Getting Help
 
-- Read the [Quick Start Guide](Quick-Start)
-- Explore [Basic Examples](Examples)
-- Check the [API Reference](API-Reference)
+If you encounter issues:
+1. Check the [FAQ](FAQ)
+2. Search [existing issues](https://github.com/AliAkhtari78/SpotifyScraper/issues)
+3. Create a [new issue](https://github.com/AliAkhtari78/SpotifyScraper/issues/new) with:
+   - Python version (`python --version`)
+   - SpotifyScraper version (`pip show spotifyscraper`)
+   - Full error message
+   - Steps to reproduce
+
+## Next Steps
+
+Once installed, check out:
+- [Quick Start Guide](Quick-Start) - Get up and running quickly
+- [API Reference](API-Reference) - Detailed API documentation
+- [Examples](Examples) - Code examples and use cases

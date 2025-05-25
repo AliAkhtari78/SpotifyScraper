@@ -35,29 +35,19 @@ To get cookies from your browser:
 3. Export cookies to a file
 4. Use the file with SpotifyScraper
 
-### Custom Headers and Proxy
+### Cookie Authentication
 
 ```python
 from spotify_scraper import SpotifyClient
 
-# Custom headers
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'DNT': '1'
-}
+# Use cookie file for authenticated features
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
 
-# Proxy configuration
-proxy = {
-    'http': 'http://proxy.example.com:8080',
-    'https': 'https://proxy.example.com:8080'
-}
-
-client = SpotifyClient(
-    headers=headers,
-    proxy=proxy,
-    cookie_file="cookies.txt"
-)
+# Now you can access lyrics
+track = client.get_track_info_with_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+if track.get('lyrics'):
+    print("Lyrics available!")
+    print(track['lyrics'])
 ```
 
 ## Using Selenium Browser
@@ -90,54 +80,43 @@ class LyricsExtractor:
     def __init__(self, cookie_file):
         self.client = SpotifyClient(cookie_file=cookie_file)
     
-    def get_synced_lyrics(self, track_url):
-        """Extract lyrics with millisecond-precision timing."""
+    def get_lyrics_formatted(self, track_url):
+        """Extract and format lyrics."""
         track_data = self.client.get_track_info_with_lyrics(track_url)
         
-        if 'lyrics' not in track_data:
+        if not track_data.get('lyrics'):
             return None
         
-        lyrics = track_data['lyrics']
-        synced_lines = []
-        
-        for line in lyrics['lines']:
-            synced_lines.append({
-                'time': line['start_time_ms'] / 1000,  # Convert to seconds
-                'text': line['words'],
-                'duration': (line['end_time_ms'] - line['start_time_ms']) / 1000
-            })
+        # Lyrics are returned as plain text
+        lyrics_text = track_data['lyrics']
         
         return {
             'track': track_data['name'],
             'artist': track_data['artists'][0]['name'],
-            'language': lyrics.get('language', 'unknown'),
-            'lines': synced_lines
+            'lyrics': lyrics_text
         }
     
-    def export_to_lrc(self, track_url, output_file):
-        """Export lyrics to LRC format."""
-        lyrics_data = self.get_synced_lyrics(track_url)
+    def export_to_txt(self, track_url, output_file):
+        """Export lyrics to text file."""
+        lyrics_data = self.get_lyrics_formatted(track_url)
         if not lyrics_data:
             return False
         
         with open(output_file, 'w', encoding='utf-8') as f:
             # Write metadata
-            f.write(f"[ti:{lyrics_data['track']}]\n")
-            f.write(f"[ar:{lyrics_data['artist']}]\n\n")
+            f.write(f"{lyrics_data['track']}\n")
+            f.write(f"by {lyrics_data['artist']}\n\n")
             
-            # Write lyrics lines
-            for line in lyrics_data['lines']:
-                minutes = int(line['time'] // 60)
-                seconds = line['time'] % 60
-                f.write(f"[{minutes:02d}:{seconds:05.2f}]{line['text']}\n")
+            # Write lyrics
+            f.write(lyrics_data['lyrics'])
         
         return True
 
 # Usage
 extractor = LyricsExtractor(cookie_file="spotify_cookies.txt")
-extractor.export_to_lrc(
+extractor.export_to_txt(
     "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",
-    "bohemian_rhapsody.lrc"
+    "bohemian_rhapsody.txt"
 )
 ```
 
@@ -223,16 +202,13 @@ class ParallelExtractor:
         results = []
         
         def extract_single(url):
-            browser = RequestsBrowser()
-            client = SpotifyClient(browser=browser)
+            client = SpotifyClient()
             try:
-                data = client.get_track(url)
+                data = client.get_track_info(url)
                 time.sleep(0.5)  # Rate limiting
                 return {'url': url, 'success': True, 'data': data}
             except Exception as e:
                 return {'url': url, 'success': False, 'error': str(e)}
-            finally:
-                client.close()
         
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             future_to_url = {executor.submit(extract_single, url): url for url in urls}
@@ -285,7 +261,7 @@ class AsyncDownloader:
         tracks_data = []
         for url in track_urls:
             try:
-                data = self.client.get_track(url)
+                data = self.client.get_track_info(url)
                 if data.get('preview_url'):
                     tracks_data.append(data)
             except Exception as e:
@@ -326,8 +302,8 @@ results = loop.run_until_complete(downloader.batch_download_previews(urls))
 from typing import Dict, Any
 from spotify_scraper.browsers import Browser
 from spotify_scraper.parsers import JSONParser
-from spotify_scraper.core.exceptions import ExtractionError
-from spotify_scraper.utils.url import validate_url, extract_id
+from spotify_scraper import ExtractionError
+from spotify_scraper.utils import is_spotify_url, extract_id
 
 class PodcastExtractor:
     """Custom extractor for Spotify podcasts."""
@@ -340,7 +316,7 @@ class PodcastExtractor:
         """Extract podcast episode information."""
         # Validate URL
         if not self._is_podcast_url(url):
-            raise ExtractionError("Not a valid podcast URL", entity_type="podcast")
+            raise ExtractionError("Not a valid podcast URL")
         
         # Get episode ID
         episode_id = extract_id(url)
@@ -399,7 +375,7 @@ class DataExporter:
     
     def export_playlist(self, playlist_url, format='json'):
         """Export playlist data in various formats."""
-        playlist_data = self.client.get_playlist(playlist_url)
+        playlist_data = self.client.get_playlist_info(playlist_url)
         
         if format == 'json':
             return self._export_json(playlist_data)
@@ -551,7 +527,7 @@ class CachedSpotifyClient:
         
         # Fetch fresh data
         print(f"Cache miss, fetching: {url}")
-        track_data = self.client.get_track(url)
+        track_data = self.client.get_track_info(url)
         
         # Update cache
         self.cache[url] = (track_data, time.time())
@@ -614,7 +590,7 @@ import time
 from typing import List, Dict, Any
 from spotify_scraper import SpotifyClient
 from spotify_scraper.browsers import RequestsBrowser
-from spotify_scraper.core.exceptions import NetworkError, ExtractionError
+from spotify_scraper import NetworkError, ExtractionError
 
 class ResilientExtractor:
     def __init__(self, max_retries=3, backoff_factor=2):
@@ -629,7 +605,7 @@ class ResilientExtractor:
         
         for attempt in range(self.max_retries):
             try:
-                return self.client.get_track(url)
+                return self.client.get_track_info(url)
             except NetworkError as e:
                 last_error = e
                 if attempt < self.max_retries - 1:
@@ -722,7 +698,7 @@ class SpotifyBot(discord.Client):
     async def send_track_embed(self, channel, url):
         """Send track information as Discord embed."""
         try:
-            track_data = self.spotify_client.get_track(url)
+            track_data = self.spotify_client.get_track_info(url)
             
             embed = discord.Embed(
                 title=track_data['name'],
@@ -776,7 +752,7 @@ def get_track(track_id):
     """Get track information by ID."""
     try:
         url = f"https://open.spotify.com/track/{track_id}"
-        track_data = spotify_client.get_track(url)
+        track_data = spotify_client.get_track_info(url)
         
         # Simplify response
         return jsonify({
@@ -803,13 +779,13 @@ def analyze_url():
     
     try:
         if url_type == 'track':
-            result = spotify_client.get_track(url)
+            result = spotify_client.get_track_info(url)
         elif url_type == 'album':
-            result = spotify_client.get_album(url)
+            result = spotify_client.get_album_info(url)
         elif url_type == 'artist':
-            result = spotify_client.get_artist(url)
+            result = spotify_client.get_artist_info(url)
         elif url_type == 'playlist':
-            result = spotify_client.get_playlist(url)
+            result = spotify_client.get_playlist_info(url)
         else:
             return jsonify({'error': f'Unsupported URL type: {url_type}'}), 400
         

@@ -113,16 +113,21 @@ python -c "import spotify_scraper; print(spotify_scraper.__version__)"
 
 ### ImportError: cannot import name 'Config'
 
-**Problem**: Trying to import non-existent class
+**Problem**: Config is not directly exported from main module
 
 **Solution**:
 ```python
 # Correct imports
 from spotify_scraper import SpotifyClient  # ✓
-from spotify_scraper.core.config import Config  # ✓ If you need Config
 
-# Not directly exported
-# from spotify_scraper import Config  # ✗
+# If you need to configure the client, use constructor parameters:
+client = SpotifyClient(
+    browser_type="selenium",
+    log_level="DEBUG",
+    cookie_file="cookies.txt"
+)
+
+# Note: The Config class mentioned in some examples is internal
 ```
 
 ---
@@ -139,7 +144,8 @@ from spotify_scraper.core.config import Config  # ✓ If you need Config
 
 **Diagnostic Script**:
 ```python
-from spotify_scraper import SpotifyClient, is_spotify_url
+from spotify_scraper import SpotifyClient
+from spotify_scraper.utils import is_spotify_url
 
 def diagnose_url(url):
     """Diagnose URL issues."""
@@ -252,13 +258,13 @@ except Exception as e:
     print(f"❌ Connection failed: {e}")
 ```
 
-2. **Use proxy**:
+2. **Use proxy with requests**:
 ```python
-proxy = {
-    'http': 'http://proxy.example.com:8080',
-    'https': 'https://proxy.example.com:8080'
-}
-client = SpotifyClient(proxy=proxy)
+# Note: Proxy configuration depends on browser type
+# For requests browser, you would need to configure the session
+# For selenium browser, you would configure the driver options
+client = SpotifyClient(browser_type="requests")
+# Proxy configuration is browser-specific
 ```
 
 3. **Increase timeout**:
@@ -338,9 +344,9 @@ def safe_download(url, directory="downloads"):
 **Solution**:
 ```bash
 # Install media dependencies
-pip install spotifyscraper[media]
+pip install "spotifyscraper[media]"
 # or
-pip install eyeD3
+pip install eyeD3 mutagen
 ```
 
 ---
@@ -581,10 +587,38 @@ What actually happens
 
 ---
 
+## Common Import Fixes
+
+```python
+# Correct imports
+from spotify_scraper import (
+    SpotifyClient,
+    SpotifyScraperError,
+    URLError,
+    NetworkError,
+    ExtractionError,
+    AuthenticationError,
+    MediaError
+)
+
+# Utility imports
+from spotify_scraper.utils import (
+    is_spotify_url,
+    extract_id,
+    convert_to_embed_url,
+    get_url_type
+)
+
+# For bulk operations
+from spotify_scraper.utils import (
+    SpotifyBulkOperations,
+    SpotifyDataAnalyzer
+)
+```
+
 ## Quick Fixes Reference
 
 | Problem | Quick Fix |
-|---------|-----------|
 | Import error | `pip install --upgrade spotifyscraper` |
 | No preview URL | Check if track has preview: `track.get('preview_url')` |
 | Empty album name | Known limitation, not a bug |

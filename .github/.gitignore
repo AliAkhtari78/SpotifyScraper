@@ -1,0 +1,5 @@
+# Ignore everything for GitHub Pages except what we need
+*
+!.gitignore
+!/.nojekyll
+!/index.html

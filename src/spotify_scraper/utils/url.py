@@ -258,8 +258,8 @@ def convert_to_embed_url(url: str) -> str:
             raise URLError(f"Cannot convert URI of unknown type to embed URL: {url}")
         try:
             id_value = extract_id(url)
-        except URLError:
-            raise URLError(f"Could not extract ID for embed URL conversion: {url}")
+        except URLError as e:
+            raise URLError(f"Could not extract ID for embed URL conversion: {url}") from e
         return f"{SPOTIFY_EMBED_URL}/embed/{url_type}/{id_value}"
 
     # If it's already an embed URL, return it
@@ -276,8 +276,8 @@ def convert_to_embed_url(url: str) -> str:
 
     try:
         id_value = extract_id(url)
-    except URLError:
-        raise URLError(f"Could not extract ID for embed URL conversion: {url}")
+    except URLError as e:
+        raise URLError(f"Could not extract ID for embed URL conversion: {url}") from e
 
     # Construct embed URL
     embed_path = f"/embed/{url_type}/{id_value}"
@@ -374,8 +374,8 @@ def convert_url_to_spotify_uri(url: str) -> str:
 
     try:
         id_value = extract_id(url)
-    except URLError:
-        raise URLError(f"Could not extract ID for URI conversion: {url}")
+    except URLError as e:
+        raise URLError(f"Could not extract ID for URI conversion: {url}") from e
 
     return f"spotify:{url_type}:{id_value}"
 
@@ -520,8 +520,8 @@ def extract_url_components(url: str) -> Tuple[URLType, str, Dict[str, str]]:
     # Get resource ID
     try:
         resource_id = extract_id(url)
-    except URLError:
-        raise URLError(f"Could not extract resource ID from URL: {url}")
+    except URLError as e:
+        raise URLError(f"Could not extract resource ID from URL: {url}") from e
 
     # Get query parameters
     parsed_url = urlparse(url)

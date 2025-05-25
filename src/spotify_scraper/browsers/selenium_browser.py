@@ -65,7 +65,7 @@ class SeleniumBrowser(Browser):
 
         logger.debug("Initialized SeleniumBrowser")
 
-    def get(self, url: str) -> str:
+    def get_page_content(self, url: str) -> str:
         """
         Get page content from URL.
 
@@ -82,6 +82,63 @@ class SeleniumBrowser(Browser):
         except WebDriverException as e:
             logger.error("Failed to navigate to %s: %s", url, e)
             raise BrowserError(f"Failed to navigate to {url}: {e}") from e
+
+    def get_json(self, url: str) -> Dict[str, Any]:
+        """
+        Get JSON data from a URL.
+
+        Args:
+            url: URL that returns JSON data
+
+        Returns:
+            Parsed JSON data as a dictionary
+        """
+        try:
+            content = self.get_page_content(url)
+            return json.loads(content)
+        except json.JSONDecodeError as e:
+            logger.error("Failed to parse JSON data: %s", e)
+            raise ParsingError(f"Failed to parse JSON data: {e}") from e
+
+    def download_file(self, url: str, path: str) -> str:
+        """
+        Download a file from a URL.
+
+        Args:
+            url: URL to download
+            path: Local path to save file
+
+        Returns:
+            Path where file was saved
+        """
+        import os
+
+        import requests
+
+        try:
+            response = requests.get(url, stream=True, timeout=30)
+            response.raise_for_status()
+
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+
+            with open(path, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+
+            return path
+        except Exception as e:
+            logger.error("Failed to download file: %s", e)
+            raise BrowserError(f"Failed to download file: {e}") from e
+
+    def get_auth_token(self) -> Optional[str]:
+        """
+        Get authentication token.
+
+        Returns:
+            Authentication token if available
+        """
+        # Selenium browser doesn't have built-in auth
+        return None
 
     def extract_json(self, selector: str) -> Dict[str, Any]:
         """

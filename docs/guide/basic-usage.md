@@ -12,11 +12,12 @@ from spotify_scraper import SpotifyClient
 # Create a client instance
 client = SpotifyClient()
 
-# Or with custom configuration
-from spotify_scraper import Config
-
-config = Config(cache_enabled=True, request_timeout=30)
-client = SpotifyClient(config)
+# Or with custom settings
+client = SpotifyClient(
+    browser_type="selenium",  # Use Selenium browser
+    log_level="DEBUG",        # Set logging level
+    cookie_file="cookies.txt" # For authenticated features
+)
 ```
 
 ## Extracting Data
@@ -25,10 +26,9 @@ client = SpotifyClient(config)
 
 ```python
 # Extract by URL
-track = client.get_track("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
+track = client.get_track_info("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
 
-# Extract by ID
-track = client.get_track("4iV5W9uYEdYUVa79Axb7Rh")
+# Note: Direct ID extraction is not supported - use full URL
 
 # Access track data
 print(f"Track: {track['name']}")
@@ -40,34 +40,37 @@ print(f"Duration: {track['duration_ms'] / 1000:.0f} seconds")
 
 ```python
 # Extract album with all tracks
-album = client.get_album("https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy")
+album = client.get_album_info("https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy")
 
 print(f"Album: {album['name']}")
 print(f"Release Date: {album['release_date']}")
 
 # List all tracks
-for track in album['tracks']:
-    print(f"  {track['track_number']}. {track['name']}")### Artists
+for i, track in enumerate(album['tracks'], 1):
+    print(f"  {i}. {track['name']}")
+
+# Don't forget to close the client
+client.close()### Artists
 
 ```python
 # Extract artist information
-artist = client.get_artist("0OdUWJ0sBjDrqHygGUXeCF")
+artist = client.get_artist_info("https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF")
 
 print(f"Artist: {artist['name']}")
-print(f"Genres: {', '.join(artist['genres'])}")
-print(f"Followers: {artist['followers']['total']:,}")
+if 'stats' in artist:
+    print(f"Monthly Listeners: {artist['stats'].get('monthly_listeners', 'N/A'):,}")
 ```
 
 ### Playlists
 
 ```python
 # Extract playlist with all tracks
-playlist = client.get_playlist("37i9dQZF1DXcBWIGoYBM5M")
+playlist = client.get_playlist_info("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
 
 print(f"Playlist: {playlist['name']}")
 print(f"Owner: {playlist['owner']['name']}")
 print(f"Description: {playlist['description']}")
-print(f"Total Tracks: {playlist['total_tracks']}")
+print(f"Total Tracks: {playlist['track_count']}")
 
 # List first 10 tracks
 for i, track in enumerate(playlist['tracks'][:10], 1):
@@ -80,18 +83,15 @@ SpotifyScraper accepts various URL formats:
 
 ```python
 # Regular URLs
-client.get_track("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
+client.get_track_info("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
 
-# Embed URLs
-client.get_track("https://open.spotify.com/embed/track/4iV5W9uYEdYUVa79Axb7Rh")
+# Auto-detect URL type
+client.get_all_info("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
+client.get_all_info("https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy")
+client.get_all_info("https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF")
+client.get_all_info("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
 
-# Just the ID
-client.get_track("4iV5W9uYEdYUVa79Axb7Rh")
-
-# Works for all entity types
-client.get_album("album_id_or_url")
-client.get_artist("artist_id_or_url")
-client.get_playlist("playlist_id_or_url")
+# Note: Direct ID extraction is not supported - always use full URLs
 ```
 
 ## Next Steps

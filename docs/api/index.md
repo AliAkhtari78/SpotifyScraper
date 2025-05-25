@@ -29,10 +29,10 @@ cover = client.download_cover(url)
 
 ### 🎯 Main Client
 - [**SpotifyClient**](client.md) - Primary interface for all operations
-  - Data extraction methods
-  - Media download capabilities
-  - Authentication handling
-  - Resource management
+  - Data extraction methods (`get_track_info`, `get_album_info`, etc.)
+  - Media download capabilities (`download_preview_mp3`, `download_cover`)
+  - Authentication handling (cookie-based for lyrics)
+  - Resource management (automatic cleanup)
 
 ### 🔍 Data Extractors
 - [**TrackExtractor**](extractors.md#trackextractor) - Extract track metadata
@@ -47,6 +47,8 @@ cover = client.download_cover(url)
 ### 🛠️ Utilities
 - [**URL Utilities**](utils.md#url-utilities) - URL validation and manipulation
 - [**Common Utilities**](utils.md#common-utilities) - Helper functions
+- [**SpotifyBulkOperations**](utils.md#spotifybulkoperations) - Batch operations
+- [**SpotifyDataAnalyzer**](utils.md#spotifydataanalyzer) - Data analysis
 - [**Logger**](utils.md#logger) - Logging configuration
 
 ### ⚠️ Exceptions
@@ -239,6 +241,10 @@ def analyze_track(url: str) -> Dict[str, Any]:
 client = SpotifyClient()
 for url in urls:
     data = client.get_track_info(url)
+    
+# Don't forget to close if using Selenium
+if client.browser_type == "selenium":
+    client.close()
 
 # Bad - creating new client each time
 for url in urls:
@@ -276,9 +282,14 @@ def get_playlist_tracks(url: str) -> List[Dict[str, Any]]:
 client = SpotifyClient(browser_type="selenium")
 try:
     # Your operations
-    pass
+    track = client.get_track_info(url)
+    album = client.get_album_info(album_url)
 finally:
     client.close()
+    
+# Requests backend doesn't require explicit cleanup
+client = SpotifyClient(browser_type="requests")
+track = client.get_track_info(url)  # No close() needed
 ```
 
 ---
@@ -295,6 +306,7 @@ finally:
 ## See Also
 
 - [Installation Guide](../getting-started/installation.md)
-- [Configuration Options](../getting-started/configuration.md)
+- [Basic Usage Guide](../guide/basic-usage.md)
 - [Examples](../examples/index.md)
 - [Troubleshooting](../troubleshooting.md)
+- [FAQ](../faq.md)

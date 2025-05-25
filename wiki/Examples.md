@@ -1,285 +1,287 @@
 # Examples
 
-Real-world examples and code snippets for SpotifyScraper.
+This page contains comprehensive examples demonstrating various SpotifyScraper use cases.
 
-## 📚 Table of Contents
+## Table of Contents
 
-- [Basic Examples](#basic-examples)
-- [Advanced Examples](#advanced-examples)
-- [Integration Examples](#integration-examples)
-- [Error Handling](#error-handling)
-- [Performance Optimization](#performance-optimization)
+1. [Basic Examples](#basic-examples)
+2. [Authentication Examples](#authentication-examples)
+3. [Batch Processing](#batch-processing)
+4. [Error Handling](#error-handling)
+5. [Media Downloads](#media-downloads)
+6. [Advanced Use Cases](#advanced-use-cases)
+7. [CLI Examples](#cli-examples)
 
 ## Basic Examples
 
-### Extract Track Information
+### Simple Track Extraction
 
 ```python
 from spotify_scraper import SpotifyClient
 
+# Create client
 client = SpotifyClient()
 
-# Single track
+# Extract track info
 track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
 track = client.get_track_info(track_url)
 
+# Display information
 print(f"Track: {track['name']}")
-print(f"Artist: {', '.join(artist['name'] for artist in track['artists'])}")
+print(f"Artist: {', '.join([a['name'] for a in track['artists']])}")
 print(f"Album: {track['album']['name']}")
-print(f"Duration: {track['duration_ms'] / 1000 / 60:.1f} minutes")
+print(f"Duration: {track['duration_ms'] / 60000:.2f} minutes")
+print(f"Popularity: {track['popularity']}/100")
+print(f"Preview URL: {track.get('preview_url', 'Not available')}")
+
+# Clean up
+client.close()
 ```
 
-### Download Track Preview and Cover
+### Working with Albums
 
 ```python
-# Download preview MP3
-preview_path = client.download_preview_mp3(
-    track_url,
-    path="downloads/previews/",
-    filename="song_preview"
-)
+from spotify_scraper import SpotifyClient
 
-# Download cover art
-cover_path = client.download_cover(
-    track_url,
-    path="downloads/covers/",
-    size=640  # 640x640 pixels
-)
+client = SpotifyClient()
 
-print(f"Preview: {preview_path}")
-print(f"Cover: {cover_path}")
-```
-
-### Process an Entire Album
-
-```python
-album_url = "https://open.spotify.com/album/3yyMKUSiCVByiZGLNQpS1G"
+# Get album information
+album_url = "https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv"
 album = client.get_album_info(album_url)
 
-print(f"Album: {album['name']} by {album['artists'][0]['name']}")
-print(f"Released: {album['release_date']}")
-print(f"Tracks: {album['total_tracks']}")
+print(f"Album: {album['name']}")
+print(f"Artist: {album['artists'][0]['name']}")
+print(f"Release Date: {album['release_date']}")
+print(f"Label: {album.get('label', 'Unknown')}")
+print(f"\nTracklist ({album['total_tracks']} tracks):")
 
-# Process each track
-for i, track in enumerate(album['tracks'], 1):
-    print(f"{i:2d}. {track['name']} ({track['duration_ms'] / 1000:.0f}s)")
+# List all tracks with duration
+total_duration = 0
+for i, track in enumerate(album['tracks']['items'], 1):
+    duration_sec = track['duration_ms'] / 1000
+    total_duration += duration_sec
+    print(f"{i:2d}. {track['name']} - {duration_sec // 60:.0f}:{duration_sec % 60:02.0f}")
+
+print(f"\nTotal Duration: {total_duration // 60:.0f}:{total_duration % 60:02.0f}")
+
+client.close()
 ```
 
-### Extract Artist Information
+### Artist Analysis
 
 ```python
-artist_url = "https://open.spotify.com/artist/0TnOYISbd1XYRBk9myaseg"
+from spotify_scraper import SpotifyClient
+
+client = SpotifyClient()
+
+# Get artist information
+artist_url = "https://open.spotify.com/artist/1dfeR4HaWDbWqFHLkxsg1d"
 artist = client.get_artist_info(artist_url)
 
 print(f"Artist: {artist['name']}")
-print(f"Followers: {artist['followers']:,}")
-print(f"Monthly Listeners: {artist['monthly_listeners']:,}")
-print(f"Genres: {', '.join(artist['genres'])}")
+print(f"Genres: {', '.join(artist.get('genres', []))}")
+print(f"Followers: {artist['followers']['total']:,}")
+print(f"Popularity: {artist['popularity']}/100")
 
 # Top tracks
-print("\nTop Tracks:")
-for i, track in enumerate(artist['top_tracks'][:5], 1):
-    print(f"{i}. {track['name']}")
+if 'top_tracks' in artist:
+    print(f"\nTop Tracks:")
+    for i, track in enumerate(artist['top_tracks'][:5], 1):
+        print(f"{i}. {track['name']}")
+
+# Related artists
+if 'related_artists' in artist:
+    print(f"\nRelated Artists:")
+    for related in artist['related_artists'][:5]:
+        print(f"- {related['name']}")
+
+client.close()
 ```
 
-### Process Playlist
+### Playlist Explorer
 
 ```python
+from spotify_scraper import SpotifyClient
+
+client = SpotifyClient()
+
+# Get playlist information
 playlist_url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
-playlist = client.get_playlist_info(playlist_url, tracks_limit=50)
+playlist = client.get_playlist_info(playlist_url)
 
 print(f"Playlist: {playlist['name']}")
-print(f"By: {playlist['owner']['display_name']}")
-print(f"Tracks: {playlist['total_tracks']}")
+print(f"Created by: {playlist['owner']['display_name']}")
+print(f"Description: {playlist.get('description', 'No description')}")
+print(f"Total Tracks: {playlist['tracks']['total']}")
 
-# Save playlist to file
-import json
-with open("playlist.json", "w") as f:
-    json.dump(playlist, f, indent=2)
+# Calculate total duration
+total_ms = sum(track['track']['duration_ms'] for track in playlist['tracks']['items'])
+hours = total_ms // 3600000
+minutes = (total_ms % 3600000) // 60000
+
+print(f"Total Duration: {hours}h {minutes}m")
+
+# Show first 10 tracks
+print("\nFirst 10 tracks:")
+for i, item in enumerate(playlist['tracks']['items'][:10], 1):
+    track = item['track']
+    artists = ', '.join([a['name'] for a in track['artists']])
+    print(f"{i:2d}. {track['name']} - {artists}")
+
+client.close()
 ```
 
-## Advanced Examples
+## Authentication Examples
 
-### Authenticated Features (Lyrics)
+### Using Cookie File
 
 ```python
-# Initialize with cookies
+from spotify_scraper import SpotifyClient
+from spotify_scraper.core.exceptions import AuthenticationError
+
+# Create authenticated client
 client = SpotifyClient(cookie_file="spotify_cookies.txt")
 
-# Get track with lyrics
-track = client.get_track_info_with_lyrics(track_url)
+track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
 
-if track.get('lyrics'):
-    print(f"Lyrics for {track['name']}:")
-    print(track['lyrics']['text'])
-else:
-    print("Lyrics not available")
+try:
+    # Get track with lyrics
+    track = client.get_track_info_with_lyrics(track_url)
+    
+    print(f"Track: {track['name']}")
+    print(f"Artist: {track['artists'][0]['name']}")
+    
+    if track.get('lyrics'):
+        print("\nLyrics:")
+        print("-" * 50)
+        print(track['lyrics'])
+    else:
+        print("\nNo lyrics available for this track")
+        
+except AuthenticationError as e:
+    print(f"Authentication failed: {e}")
+    print("Please check your cookie file")
+
+client.close()
 ```
 
-### Batch Processing with Progress
+### Using Cookie Dictionary
 
 ```python
-from tqdm import tqdm
+from spotify_scraper import SpotifyClient
 
-urls = [
-    "https://open.spotify.com/track/...",
-    "https://open.spotify.com/track/...",
-    # ... more URLs
+# Using cookies directly
+cookies = {
+    "sp_t": "your_auth_token_here",
+    "sp_dc": "your_dc_token_here"
+}
+
+client = SpotifyClient(cookies=cookies)
+
+# Now you can access lyrics
+track = client.get_track_info_with_lyrics(track_url)
+```
+
+## Batch Processing
+
+### Process Multiple Tracks
+
+```python
+from spotify_scraper import SpotifyClient
+import time
+import csv
+
+# List of track URLs
+track_urls = [
+    "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",
+    "https://open.spotify.com/track/3n3Ppam7vgaVa1iaRUc9Lp",
+    "https://open.spotify.com/track/1h2xVEoJORqrg71HocgqXd",
 ]
 
+client = SpotifyClient()
 results = []
-for url in tqdm(urls, desc="Processing tracks"):
+
+print("Processing tracks...")
+for i, url in enumerate(track_urls, 1):
+    print(f"[{i}/{len(track_urls)}] Processing: {url}")
+    
     try:
         track = client.get_track_info(url)
         results.append({
-            'url': url,
             'name': track['name'],
-            'artists': [a['name'] for a in track['artists']],
-            'duration': track['duration_ms']
+            'artists': ', '.join([a['name'] for a in track['artists']]),
+            'album': track['album']['name'],
+            'duration_ms': track['duration_ms'],
+            'popularity': track['popularity'],
+            'preview_url': track.get('preview_url', '')
         })
+        print(f"  ✓ {track['name']} - {results[-1]['artists']}")
     except Exception as e:
-        print(f"Failed to process {url}: {e}")
+        print(f"  ✗ Error: {e}")
+        results.append({'url': url, 'error': str(e)})
+    
+    # Be nice to Spotify's servers
+    time.sleep(0.5)
+
+# Save to CSV
+with open('tracks.csv', 'w', newline='', encoding='utf-8') as f:
+    writer = csv.DictWriter(f, fieldnames=['name', 'artists', 'album', 'duration_ms', 'popularity', 'preview_url'])
+    writer.writeheader()
+    writer.writerows(results)
+
+print(f"\nProcessed {len(results)} tracks. Results saved to tracks.csv")
+client.close()
 ```
 
-### Caching and Performance
+### Process Artist Discography
 
 ```python
-import time
-
-# Enable caching
-client = SpotifyClient(
-    cache_enabled=True,
-    cache_dir=".spotify_cache"
-)
-
-# First call - fetches from Spotify
-start = time.time()
-track1 = client.get_track_info(track_url)
-print(f"First call: {time.time() - start:.2f}s")
-
-# Second call - uses cache
-start = time.time()
-track2 = client.get_track_info(track_url)
-print(f"Cached call: {time.time() - start:.2f}s")
-```
-
-### Custom Session Configuration
-
-```python
-import requests
-
-# Create custom session with headers
-session = requests.Session()
-session.headers.update({
-    'User-Agent': 'MyApp/1.0',
-    'Accept-Language': 'en-US,en;q=0.9'
-})
-
-# Use proxy
-proxy = "http://proxy.example.com:8080"
-
-client = SpotifyClient(
-    session=session,
-    proxy=proxy,
-    timeout=60,
-    max_retries=5
-)
-```
-
-## Integration Examples
-
-### Flask Web Application
-
-```python
-from flask import Flask, jsonify, request
 from spotify_scraper import SpotifyClient
+import json
 
-app = Flask(__name__)
+def get_artist_discography(client, artist_url):
+    """Get all albums for an artist."""
+    artist = client.get_artist_info(artist_url)
+    
+    discography = {
+        'artist': artist['name'],
+        'artist_id': artist['id'],
+        'albums': [],
+        'singles': [],
+        'compilations': []
+    }
+    
+    # Process different album types
+    for album_type, key in [('albums', 'albums'), ('singles', 'singles'), ('compilations', 'compilations')]:
+        if key in artist:
+            for album in artist[key]:
+                album_data = {
+                    'name': album['name'],
+                    'id': album['id'],
+                    'release_date': album.get('release_date', ''),
+                    'total_tracks': album.get('total_tracks', 0)
+                }
+                discography[album_type].append(album_data)
+    
+    return discography
+
+# Example usage
 client = SpotifyClient()
+artist_url = "https://open.spotify.com/artist/1dfeR4HaWDbWqFHLkxsg1d"
 
-@app.route('/api/track')
-def get_track():
-    url = request.args.get('url')
-    try:
-        track = client.get_track_info(url)
-        return jsonify(track)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+print("Fetching artist discography...")
+discography = get_artist_discography(client, artist_url)
 
-@app.route('/api/download/preview')
-def download_preview():
-    url = request.args.get('url')
-    try:
-        path = client.download_preview_mp3(url)
-        return jsonify({'path': path})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+print(f"\nDiscography for {discography['artist']}:")
+print(f"Albums: {len(discography['albums'])}")
+print(f"Singles: {len(discography['singles'])}")
+print(f"Compilations: {len(discography['compilations'])}")
 
-if __name__ == '__main__':
-    app.run(debug=True)
-```
+# Save to JSON
+with open(f"{discography['artist']}_discography.json", 'w', encoding='utf-8') as f:
+    json.dump(discography, f, indent=2, ensure_ascii=False)
 
-### Discord Bot Integration
-
-```python
-import discord
-from discord.ext import commands
-from spotify_scraper import SpotifyClient
-
-bot = commands.Bot(command_prefix='!')
-spotify = SpotifyClient()
-
-@bot.command()
-async def track(ctx, url: str):
-    """Get track information"""
-    try:
-        track = spotify.get_track_info(url)
-        embed = discord.Embed(
-            title=track['name'],
-            description=f"by {', '.join(a['name'] for a in track['artists'])}",
-            color=0x1DB954
-        )
-        embed.add_field(name="Album", value=track['album']['name'])
-        embed.add_field(name="Duration", value=f"{track['duration_ms'] / 1000:.0f}s")
-        if track['album']['images']:
-            embed.set_thumbnail(url=track['album']['images'][0]['url'])
-        await ctx.send(embed=embed)
-    except Exception as e:
-        await ctx.send(f"Error: {e}")
-
-bot.run('YOUR_BOT_TOKEN')
-```
-
-### Data Analysis with Pandas
-
-```python
-import pandas as pd
-from spotify_scraper import SpotifyClient
-
-client = SpotifyClient()
-
-# Analyze playlist
-playlist_url = "https://open.spotify.com/playlist/..."
-playlist = client.get_playlist_info(playlist_url)
-
-# Convert to DataFrame
-tracks_data = []
-for track in playlist['tracks']:
-    tracks_data.append({
-        'name': track['name'],
-        'artist': track['artists'][0]['name'],
-        'duration_ms': track['duration_ms'],
-        'popularity': track.get('popularity', 0),
-        'explicit': track.get('explicit', False)
-    })
-
-df = pd.DataFrame(tracks_data)
-
-# Analysis
-print(f"Total duration: {df['duration_ms'].sum() / 1000 / 60:.1f} minutes")
-print(f"Average track length: {df['duration_ms'].mean() / 1000:.1f} seconds")
-print(f"Most common artist: {df['artist'].value_counts().iloc[0]}")
-print(f"Explicit tracks: {df['explicit'].sum()} ({df['explicit'].mean() * 100:.1f}%)")
+client.close()
 ```
 
 ## Error Handling
@@ -287,137 +289,458 @@ print(f"Explicit tracks: {df['explicit'].sum()} ({df['explicit'].mean() * 100:.1
 ### Comprehensive Error Handling
 
 ```python
-from spotify_scraper import (
-    SpotifyClient, URLError, NetworkError,
-    AuthenticationError, ExtractionError
+from spotify_scraper import SpotifyClient
+from spotify_scraper.core.exceptions import (
+    URLError, ScrapingError, AuthenticationError, MediaError
 )
+import logging
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def safe_extract(client, url):
+    """Safely extract information with comprehensive error handling."""
+    try:
+        # Validate URL first
+        if not url.startswith(('https://open.spotify.com', 'spotify:')):
+            raise URLError(f"Invalid URL format: {url}")
+        
+        # Extract information
+        info = client.get_all_info(url)
+        
+        # Check for API errors
+        if 'error' in info:
+            raise ScrapingError(f"API Error: {info['error']}")
+        
+        logger.info(f"Successfully extracted: {info['name']}")
+        return info
+        
+    except URLError as e:
+        logger.error(f"URL Error: {e}")
+        return {'error': 'invalid_url', 'message': str(e)}
+        
+    except ScrapingError as e:
+        logger.error(f"Scraping Error: {e}")
+        return {'error': 'scraping_failed', 'message': str(e)}
+        
+    except AuthenticationError as e:
+        logger.error(f"Authentication Error: {e}")
+        return {'error': 'auth_required', 'message': str(e)}
+        
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}", exc_info=True)
+        return {'error': 'unknown', 'message': str(e)}
+
+# Example usage
 client = SpotifyClient()
 
-def safe_extract(url):
-    """Safely extract data with proper error handling"""
-    try:
-        return client.get_all_info(url)
-    except URLError as e:
-        print(f"Invalid URL: {e}")
-        return None
-    except NetworkError as e:
-        print(f"Network issue: {e}")
-        # Retry logic here
-        return None
-    except AuthenticationError as e:
-        print(f"Authentication required: {e}")
-        return None
-    except ExtractionError as e:
-        print(f"Failed to extract data: {e}")
-        return None
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        return None
-```
+test_urls = [
+    "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",  # Valid
+    "https://open.spotify.com/invalid/123",  # Invalid
+    "not_a_url",  # Invalid format
+]
 
-### Retry with Exponential Backoff
-
-```python
-import time
-
-def extract_with_retry(client, url, max_retries=3):
-    """Extract data with exponential backoff retry"""
-    for attempt in range(max_retries):
-        try:
-            return client.get_track_info(url)
-        except NetworkError as e:
-            if attempt == max_retries - 1:
-                raise
-            wait_time = 2 ** attempt
-            print(f"Retry {attempt + 1}/{max_retries} after {wait_time}s")
-            time.sleep(wait_time)
-```
-
-## Performance Optimization
-
-### Parallel Processing
-
-```python
-from concurrent.futures import ThreadPoolExecutor
-import time
-
-urls = ["https://open.spotify.com/track/..." for _ in range(10)]
-
-# Sequential processing
-start = time.time()
-results_seq = []
-for url in urls:
-    results_seq.append(client.get_track_info(url))
-print(f"Sequential: {time.time() - start:.2f}s")
-
-# Parallel processing
-start = time.time()
-with ThreadPoolExecutor(max_workers=5) as executor:
-    results_par = list(executor.map(client.get_track_info, urls))
-print(f"Parallel: {time.time() - start:.2f}s")
-```
-
-### Memory-Efficient Playlist Processing
-
-```python
-def process_large_playlist(playlist_url, batch_size=50):
-    """Process large playlist in batches"""
-    offset = 0
-    all_tracks = []
+for url in test_urls:
+    print(f"\nProcessing: {url}")
+    result = safe_extract(client, url)
     
-    while True:
-        # Note: This is pseudo-code, actual implementation may vary
-        playlist = client.get_playlist_info(
-            playlist_url,
-            tracks_limit=batch_size,
-            offset=offset
-        )
-        
-        tracks = playlist.get('tracks', [])
-        if not tracks:
-            break
-            
-        all_tracks.extend(tracks)
-        offset += batch_size
-        
-        # Process batch
-        for track in tracks:
-            # Process each track
-            pass
-            
-    return all_tracks
+    if 'error' in result:
+        print(f"  Failed: {result['message']}")
+    else:
+        print(f"  Success: {result.get('name', 'Unknown')}")
+
+client.close()
 ```
 
-### Custom Cache Implementation
+## Media Downloads
+
+### Download Album Covers
 
 ```python
-import pickle
-import hashlib
+from spotify_scraper import SpotifyClient
 from pathlib import Path
 
-class CachedSpotifyClient(SpotifyClient):
-    def __init__(self, cache_dir=".cache", **kwargs):
-        super().__init__(**kwargs)
-        self.cache_dir = Path(cache_dir)
-        self.cache_dir.mkdir(exist_ok=True)
+def download_album_covers(album_urls, output_dir="album_covers"):
+    """Download covers for multiple albums."""
+    # Create output directory
+    output_path = Path(output_dir)
+    output_path.mkdir(exist_ok=True)
     
-    def _get_cache_key(self, url):
-        return hashlib.md5(url.encode()).hexdigest()
+    client = SpotifyClient()
+    downloaded = []
     
-    def get_track_info(self, url):
-        cache_key = self._get_cache_key(url)
-        cache_file = self.cache_dir / f"{cache_key}.pkl"
-        
-        # Check cache
-        if cache_file.exists():
-            with open(cache_file, 'rb') as f:
-                return pickle.load(f)
-        
-        # Fetch and cache
-        data = super().get_track_info(url)
-        with open(cache_file, 'wb') as f:
-            pickle.dump(data, f)
-        
-        return data
+    for url in album_urls:
+        try:
+            # Get album info
+            album = client.get_album_info(url)
+            album_name = album['name'].replace('/', '_')  # Safe filename
+            
+            # Download cover
+            cover_path = client.download_cover(
+                url,
+                path=str(output_path),
+                filename=f"{album_name}_cover"
+            )
+            
+            if cover_path:
+                downloaded.append({
+                    'album': album['name'],
+                    'artist': album['artists'][0]['name'],
+                    'path': cover_path
+                })
+                print(f"✓ Downloaded: {album['name']}")
+            
+        except Exception as e:
+            print(f"✗ Failed: {url} - {e}")
+    
+    client.close()
+    return downloaded
+
+# Example usage
+album_urls = [
+    "https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv",
+    "https://open.spotify.com/album/6dVIqQ8qmQ5GBnJ9shOYGE",
+]
+
+covers = download_album_covers(album_urls)
+print(f"\nDownloaded {len(covers)} album covers")
 ```
+
+### Download Track Previews with Metadata
+
+```python
+from spotify_scraper import SpotifyClient
+from pathlib import Path
+import json
+
+def download_track_preview_with_metadata(track_url, output_dir="previews"):
+    """Download preview MP3 and save metadata."""
+    output_path = Path(output_dir)
+    output_path.mkdir(exist_ok=True)
+    
+    client = SpotifyClient()
+    
+    try:
+        # Get track info
+        track = client.get_track_info(track_url)
+        
+        # Create safe filename
+        artist_name = track['artists'][0]['name'].replace('/', '_')
+        track_name = track['name'].replace('/', '_')
+        base_filename = f"{artist_name} - {track_name}"
+        
+        # Download preview with cover
+        if track.get('preview_url'):
+            mp3_path = client.download_preview_mp3(
+                track_url,
+                path=str(output_path),
+                with_cover=True
+            )
+            print(f"✓ Downloaded preview: {mp3_path}")
+            
+            # Save metadata
+            metadata = {
+                'track_id': track['id'],
+                'name': track['name'],
+                'artists': [a['name'] for a in track['artists']],
+                'album': track['album']['name'],
+                'duration_ms': track['duration_ms'],
+                'preview_duration_ms': 30000,  # Usually 30 seconds
+                'popularity': track['popularity'],
+                'explicit': track.get('explicit', False),
+                'preview_path': mp3_path
+            }
+            
+            metadata_path = output_path / f"{base_filename}.json"
+            with open(metadata_path, 'w', encoding='utf-8') as f:
+                json.dump(metadata, f, indent=2, ensure_ascii=False)
+            
+            print(f"✓ Saved metadata: {metadata_path}")
+            return metadata
+        else:
+            print("✗ No preview available for this track")
+            return None
+            
+    except Exception as e:
+        print(f"✗ Error: {e}")
+        return None
+    finally:
+        client.close()
+
+# Example usage
+track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
+metadata = download_track_preview_with_metadata(track_url)
+```
+
+## Advanced Use Cases
+
+### Playlist Analyzer
+
+```python
+from spotify_scraper import SpotifyClient
+from collections import Counter
+import statistics
+
+def analyze_playlist(playlist_url):
+    """Analyze a playlist's characteristics."""
+    client = SpotifyClient()
+    
+    try:
+        playlist = client.get_playlist_info(playlist_url)
+        
+        # Extract data
+        artists = []
+        albums = []
+        durations = []
+        popularities = []
+        
+        for item in playlist['tracks']['items']:
+            track = item['track']
+            artists.extend([a['name'] for a in track['artists']])
+            albums.append(track['album']['name'])
+            durations.append(track['duration_ms'])
+            popularities.append(track.get('popularity', 0))
+        
+        # Analyze
+        analysis = {
+            'name': playlist['name'],
+            'owner': playlist['owner']['display_name'],
+            'total_tracks': len(playlist['tracks']['items']),
+            'total_duration_hours': sum(durations) / 3600000,
+            'avg_track_duration_min': statistics.mean(durations) / 60000,
+            'avg_popularity': statistics.mean(popularities) if popularities else 0,
+            'unique_artists': len(set(artists)),
+            'unique_albums': len(set(albums)),
+            'top_artists': Counter(artists).most_common(10),
+            'top_albums': Counter(albums).most_common(5)
+        }
+        
+        return analysis
+        
+    finally:
+        client.close()
+
+# Example usage
+playlist_url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
+analysis = analyze_playlist(playlist_url)
+
+print(f"Playlist: {analysis['name']}")
+print(f"Owner: {analysis['owner']}")
+print(f"Total Tracks: {analysis['total_tracks']}")
+print(f"Duration: {analysis['total_duration_hours']:.1f} hours")
+print(f"Average Track Duration: {analysis['avg_track_duration_min']:.1f} minutes")
+print(f"Average Popularity: {analysis['avg_popularity']:.0f}/100")
+print(f"Unique Artists: {analysis['unique_artists']}")
+print(f"Unique Albums: {analysis['unique_albums']}")
+
+print("\nTop Artists:")
+for artist, count in analysis['top_artists'][:5]:
+    print(f"  {artist}: {count} tracks")
+```
+
+### Track Comparison
+
+```python
+from spotify_scraper import SpotifyClient
+
+def compare_tracks(track_urls):
+    """Compare multiple tracks."""
+    client = SpotifyClient()
+    tracks_data = []
+    
+    try:
+        # Fetch all track data
+        for url in track_urls:
+            track = client.get_track_info(url)
+            tracks_data.append(track)
+        
+        # Compare
+        print("Track Comparison")
+        print("=" * 80)
+        
+        # Basic info
+        for track in tracks_data:
+            artists = ', '.join([a['name'] for a in track['artists']])
+            print(f"\n{track['name']} by {artists}")
+            print(f"  Album: {track['album']['name']}")
+            print(f"  Duration: {track['duration_ms'] / 60000:.2f} min")
+            print(f"  Popularity: {track['popularity']}/100")
+            print(f"  Explicit: {'Yes' if track.get('explicit') else 'No'}")
+            print(f"  Preview: {'Available' if track.get('preview_url') else 'Not available'}")
+        
+        # Find most/least popular
+        sorted_by_popularity = sorted(tracks_data, key=lambda x: x['popularity'], reverse=True)
+        print(f"\nMost Popular: {sorted_by_popularity[0]['name']} ({sorted_by_popularity[0]['popularity']}/100)")
+        print(f"Least Popular: {sorted_by_popularity[-1]['name']} ({sorted_by_popularity[-1]['popularity']}/100)")
+        
+        # Find longest/shortest
+        sorted_by_duration = sorted(tracks_data, key=lambda x: x['duration_ms'], reverse=True)
+        print(f"\nLongest: {sorted_by_duration[0]['name']} ({sorted_by_duration[0]['duration_ms'] / 60000:.2f} min)")
+        print(f"Shortest: {sorted_by_duration[-1]['name']} ({sorted_by_duration[-1]['duration_ms'] / 60000:.2f} min)")
+        
+    finally:
+        client.close()
+
+# Example usage
+track_urls = [
+    "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6",  # Bohemian Rhapsody
+    "https://open.spotify.com/track/3n3Ppam7vgaVa1iaRUc9Lp",  # Mr. Blue Sky
+    "https://open.spotify.com/track/1h2xVEoJORqrg71HocgqXd",  # Stairway to Heaven
+]
+
+compare_tracks(track_urls)
+```
+
+### Create M3U Playlist
+
+```python
+from spotify_scraper import SpotifyClient
+from pathlib import Path
+
+def create_m3u_from_spotify_playlist(playlist_url, output_file="playlist.m3u"):
+    """Create M3U playlist file from Spotify playlist."""
+    client = SpotifyClient()
+    
+    try:
+        playlist = client.get_playlist_info(playlist_url)
+        
+        with open(output_file, 'w', encoding='utf-8') as f:
+            # Write extended M3U header
+            f.write("#EXTM3U\n")
+            f.write(f"#PLAYLIST:{playlist['name']}\n\n")
+            
+            for item in playlist['tracks']['items']:
+                track = item['track']
+                artists = ', '.join([a['name'] for a in track['artists']])
+                duration_sec = track['duration_ms'] // 1000
+                
+                # Write track info
+                f.write(f"#EXTINF:{duration_sec},{artists} - {track['name']}\n")
+                
+                # Write preview URL if available
+                if track.get('preview_url'):
+                    f.write(f"{track['preview_url']}\n")
+                else:
+                    f.write(f"# No preview available\n")
+                
+                f.write("\n")
+        
+        print(f"Created M3U playlist: {output_file}")
+        print(f"Total tracks: {len(playlist['tracks']['items'])}")
+        
+    finally:
+        client.close()
+
+# Example usage
+playlist_url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
+create_m3u_from_spotify_playlist(playlist_url, "top_hits.m3u")
+```
+
+## CLI Examples
+
+### Command Line Usage
+
+```bash
+# Get track information
+spotify-scraper track https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6
+
+# Get album information with JSON output
+spotify-scraper album https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv --format json
+
+# Get artist information
+spotify-scraper artist https://open.spotify.com/artist/1dfeR4HaWDbWqFHLkxsg1d
+
+# Get playlist information
+spotify-scraper playlist https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M
+
+# Download track preview
+spotify-scraper download track https://open.spotify.com/track/... --output-dir ./previews
+
+# Download album cover
+spotify-scraper download album https://open.spotify.com/album/... --output-dir ./covers
+
+# Batch process from file
+spotify-scraper batch tracks.txt --output results.json
+
+# With authentication for lyrics
+spotify-scraper track https://open.spotify.com/track/... --cookie-file cookies.txt --with-lyrics
+```
+
+### Shell Script Example
+
+```bash
+#!/bin/bash
+# Download previews for a playlist
+
+PLAYLIST_URL="https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
+OUTPUT_DIR="playlist_previews"
+
+# Create output directory
+mkdir -p "$OUTPUT_DIR"
+
+# Get playlist tracks
+echo "Fetching playlist tracks..."
+spotify-scraper playlist "$PLAYLIST_URL" --format json > playlist.json
+
+# Extract track URLs using jq
+TRACK_URLS=$(jq -r '.tracks.items[].track.external_urls.spotify' playlist.json)
+
+# Download each preview
+echo "Downloading previews..."
+for url in $TRACK_URLS; do
+    echo "Processing: $url"
+    spotify-scraper download track "$url" --output-dir "$OUTPUT_DIR" || echo "Failed: $url"
+    sleep 1  # Be nice to the server
+done
+
+echo "Done! Downloaded to $OUTPUT_DIR"
+```
+
+## Performance Tips
+
+1. **Use connection pooling for batch operations:**
+   ```python
+   client = SpotifyClient()
+   # Process multiple URLs with same client
+   for url in urls:
+       # ...
+   client.close()  # Close once at the end
+   ```
+
+2. **Add delays between requests:**
+   ```python
+   import time
+   time.sleep(0.5)  # 500ms delay
+   ```
+
+3. **Use browser_type="requests" for better performance:**
+   ```python
+   client = SpotifyClient(browser_type="requests")
+   ```
+
+4. **Cache results when possible:**
+   ```python
+   from functools import lru_cache
+   
+   @lru_cache(maxsize=100)
+   def get_cached_track(url):
+       return client.get_track_info(url)
+   ```
+
+5. **Handle rate limiting gracefully:**
+   ```python
+   import time
+   from random import uniform
+   
+   def respectful_fetch(urls):
+       for url in urls:
+           try:
+               yield client.get_track_info(url)
+               time.sleep(uniform(0.5, 1.5))  # Random delay
+           except Exception as e:
+               if "rate" in str(e).lower():
+                   time.sleep(30)  # Back off on rate limit
+               else:
+                   raise
+   ```

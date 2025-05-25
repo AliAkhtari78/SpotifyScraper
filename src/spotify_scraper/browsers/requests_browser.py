@@ -12,7 +12,11 @@ from typing import Any, Dict, Optional
 
 import requests
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+
+try:
+    from requests.packages.urllib3.util.retry import Retry
+except ImportError:
+    from urllib3.util.retry import Retry
 
 from spotify_scraper.auth.session import Session
 from spotify_scraper.browsers.base import Browser

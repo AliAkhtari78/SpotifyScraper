@@ -1,0 +1,44 @@
+/* Custom styles for SpotifyScraper documentation */
+
+/* Version highlight */
+.md-header__title {
+    font-size: 1.2rem;
+}
+
+/* Footer styling */
+.md-footer-meta {
+    background-color: var(--md-footer-bg-color);
+}
+
+/* Grid layout for cards */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.card {
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 4px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+.button:hover {
+    opacity: 0.8;
+}

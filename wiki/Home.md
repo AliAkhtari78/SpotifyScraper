@@ -1,50 +1,76 @@
 # SpotifyScraper Wiki
 
-Welcome to the SpotifyScraper Wiki! This is your comprehensive guide to using SpotifyScraper v2.0.0.
+## Overview
 
-## 🚀 Quick Links
+SpotifyScraper is a powerful Python library for extracting data from Spotify's web player. Built for speed and reliability, it provides a clean API for accessing track, album, artist, and playlist information without requiring Spotify API credentials.
 
-- [Installation Guide](Installation) - Get started in minutes
-- [Basic Usage](Basic-Usage) - Learn the fundamentals
-- [API Reference](API-Reference) - Detailed documentation
-- [Examples](Examples) - Real-world code samples
-- [FAQ](FAQ) - Common questions answered
-- [Troubleshooting](Troubleshooting) - Solve common issues
+### Key Features
 
-## 📚 Documentation
+- 🚀 **Fast and Efficient**: Uses optimized web scraping techniques for quick data extraction
+- 🔐 **No API Key Required**: Works without Spotify Developer credentials
+- 📊 **Comprehensive Data**: Extract detailed metadata, lyrics, and media files
+- 🎵 **Media Downloads**: Download preview MP3s and cover images
+- 🌐 **Flexible Browser Backends**: Choose between lightweight requests or full Selenium support
+- 🔧 **Modern Python**: Type hints, async support, and clean API design
+- 📦 **Easy Installation**: Available on PyPI with minimal dependencies
 
-### For New Users
-1. Start with the [Installation Guide](Installation)
-2. Follow the [Quick Start Tutorial](Quick-Start)
-3. Explore [Basic Examples](Examples#basic-examples)
+## Quick Example
 
-### For Developers
-1. Check the [API Reference](API-Reference)
-2. Learn about [Advanced Features](Advanced-Features)
-3. See [Integration Examples](Examples#integration-examples)
+```python
+from spotify_scraper import SpotifyClient
 
-## 🌟 Key Features
+# Create a client
+client = SpotifyClient()
 
-- **No Authentication Required**: Extract data without API keys
-- **Comprehensive Data**: Tracks, albums, artists, playlists, and lyrics
-- **Media Downloads**: Audio previews and cover art
-- **High Performance**: Optimized with caching and parallel processing
-- **Type Safe**: Full type hints for better IDE support
-- **Cross-Platform**: Works on Windows, macOS, and Linux
+# Extract track information
+track = client.get_track_info("https://open.spotify.com/track/...")
+print(f"{track['name']} by {track['artists'][0]['name']}")
 
-## 📋 Version Information
+# Download preview and cover
+client.download_preview_mp3(track_url, path="previews/")
+client.download_cover(track_url, path="covers/")
+```
 
-- **Current Version**: 2.0.0
-- **Python Support**: 3.8, 3.9, 3.10, 3.11, 3.12
-- **License**: MIT
+## Supported Data Types
 
-## 🆘 Getting Help
+- **Tracks**: Name, artists, album, duration, preview URL, lyrics (with auth)
+- **Albums**: Track listing, release date, label, cover art
+- **Artists**: Biography, top tracks, discography, monthly listeners
+- **Playlists**: Track list, description, owner, collaborative status
 
-- 📖 Read the [Documentation](https://spotifyscraper.readthedocs.io)
-- 💬 Join [GitHub Discussions](https://github.com/AliAkhtari78/SpotifyScraper/discussions)
-- 🐛 Report [Issues](https://github.com/AliAkhtari78/SpotifyScraper/issues)
-- 🤝 See [Contributing Guide](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CONTRIBUTING.md)
+## Requirements
 
-## ⚖️ Legal Notice
+- Python 3.8+
+- Works on Windows, macOS, Linux, BSD
+- Internet connection
 
-This library is for educational and personal use only. Always respect Spotify's Terms of Service and copyright laws when using this library.
+## Documentation
+
+- [Installation Guide](Installation)
+- [Quick Start](Quick-Start)
+- [API Reference](API-Reference)
+- [Examples](Examples)
+- [FAQ](FAQ)
+
+## Why SpotifyScraper?
+
+Unlike the official Spotify API, SpotifyScraper:
+- Requires no registration or API keys
+- Has no rate limits or quotas
+- Can download preview MP3s and cover images
+- Provides a simpler, more intuitive API
+- Works with any Spotify URL format
+
+## License
+
+SpotifyScraper is released under the MIT License. See [LICENSE](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE) for details.
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/AliAkhtari78/SpotifyScraper/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/AliAkhtari78/SpotifyScraper/discussions)
+- **Documentation**: [Read the Docs](https://spotifyscraper.readthedocs.io/)
+
+---
+
+*SpotifyScraper v2.0.0 - Last updated: January 2025*

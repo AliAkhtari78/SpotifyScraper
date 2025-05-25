@@ -38,17 +38,15 @@ jobs:
         pip install -r docs/requirements.txt
         pip install -e .
     
-    - name: Build Sphinx documentation
+    - name: Build MkDocs documentation
       run: |
-        cd docs
-        make clean
-        make html
+        mkdocs build
     
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v4
       with:
         name: docs-html
-        path: docs/_build/html/
+        path: site/
     
     - name: Check for broken links
       if: failure()
@@ -61,7 +59,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/_build/html
+        publish_dir: ./site
         destination_dir: pr-${{ github.event.pull_request.number }}
     
     - name: Comment PR with preview link
