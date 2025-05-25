@@ -182,3 +182,7 @@ fix_logging.py
 *_INVENTORY.md
 *_SUMMARY.md
 venv_security/
+
+venv_docs/
+wiki-repo/
+wiki_update/
