@@ -8,6 +8,12 @@ copyright: Copyright &copy; 2025 Ali Akhtari - Documentation Last Updated May 20
 
 theme:
   name: readthedocs
+  locale: en
+  highlightjs: true
+  hljs_languages:
+    - python
+    - bash
+    - yaml
 
 nav:
   - Home: index.md
@@ -16,6 +22,14 @@ nav:
   - API Reference: api/index.md
   - Examples: examples/index.md
   - FAQ: faq.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - tables
 
 extra:
   version: 2.0.0

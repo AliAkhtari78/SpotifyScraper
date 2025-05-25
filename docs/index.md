@@ -173,10 +173,10 @@ print(f"🖼️ Cover saved to: {cover_path}")
 
 ## 💻 Supported Platforms
 
-- ✅ **Windows** (10, 11)
-- ✅ **macOS** (10.15+)
-- ✅ **Linux** (Ubuntu, Debian, Fedora, etc.)
-- ✅ **Python** (3.8, 3.9, 3.10, 3.11, 3.12)
+- ✓ **Windows** (10, 11)
+- ✓ **macOS** (10.15+)
+- ✓ **Linux** (Ubuntu, Debian, Fedora, etc.)
+- ✓ **Python** (3.8, 3.9, 3.10, 3.11, 3.12)
 
 ---
 
