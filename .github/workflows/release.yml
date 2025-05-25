@@ -44,12 +44,18 @@ jobs:
         fi
     
     - name: Build distribution
-      run: python -m build
+      run: |
+        # Clean any existing build artifacts
+        rm -rf build/ dist/ *.egg-info src/*.egg-info
+        find . -type d -name "*.egg-info" -exec rm -rf {} + || true
+        # Build fresh packages
+        python -m build
     
     - name: Check distribution
       run: twine check dist/*
     
     - name: Publish to Test PyPI
+      if: ${{ secrets.TEST_PYPI_TOKEN != '' }}
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
@@ -57,6 +63,7 @@ jobs:
         twine upload --repository testpypi dist/*
     
     - name: Test installation from Test PyPI
+      if: ${{ secrets.TEST_PYPI_TOKEN != '' }}
       run: |
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ spotifyscraper==${{ steps.get_version.outputs.VERSION }}
         python -c "import spotify_scraper; print(spotify_scraper.__version__)"
@@ -64,7 +71,7 @@ jobs:
     - name: Publish to PyPI
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         twine upload dist/*
     

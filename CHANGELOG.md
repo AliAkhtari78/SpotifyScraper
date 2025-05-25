@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.4] - 2025-05-25
+
+### Fixed
+- Fixed GitHub Actions workflows to ensure clean builds
+- Added build artifact cleanup step to Release workflow
+- Made Test PyPI upload optional when TEST_PYPI_TOKEN is not available
+- Fixed PyPI token reference from PYPI_TOKEN to PYPI_API_TOKEN in Release workflow
+- Ensured all workflows use consistent build process
+
 ## [2.0.3] - 2025-05-25
 
 ### Fixed
