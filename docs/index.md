@@ -1,21 +1,17 @@
 # SpotifyScraper Documentation
 
-<div align="center">
-
-![SpotifyScraper Logo](https://raw.githubusercontent.com/AliAkhtari78/SpotifyScraper/master/docs/_static/logo.png)
-
 **The Ultimate Python Library for Spotify Data Extraction**
 
 **Version 2.0.0 | © 2025 Ali Akhtari**
+
+---
 
 [![PyPI version](https://badge.fury.io/py/spotifyscraper.svg)](https://badge.fury.io/py/spotifyscraper)
 [![Python Support](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![Documentation Status](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io/en/latest/?badge=latest)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-[**Installation**](#installation) • [**Quick Start**](examples/quickstart.md) • [**API Reference**](api/index.md) • [**Examples**](examples/index.md) • [**FAQ**](faq.md)
-
-</div>
+**[Installation](getting-started/installation.md)** | **[Quick Start](examples/quickstart.md)** | **[API Reference](api/index.md)** | **[Examples](examples/index.md)** | **[FAQ](faq.md)**
 
 ---
 
