@@ -91,20 +91,21 @@ jobs:
         name: python-packages
         path: dist/
     
-    - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        verbose: true
-        print-hash: true
+    # Temporarily use token-based authentication until trusted publishing is configured
+    - name: Publish to PyPI using token
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        pip install twine
+        twine upload --non-interactive --skip-existing dist/*
     
-    # Alternative method using API token (if trusted publishing is not set up)
-    # - name: Publish to PyPI using token
-    #   env:
-    #     TWINE_USERNAME: __token__
-    #     TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-    #   run: |
-    #     pip install twine
-    #     twine upload --non-interactive --skip-existing dist/*
+    # Alternative: Use trusted publishing (requires PyPI configuration)
+    # - name: Publish to PyPI
+    #   uses: pypa/gh-action-pypi-publish@release/v1
+    #   with:
+    #     verbose: true
+    #     print-hash: true
 
   verify:
     needs: publish
