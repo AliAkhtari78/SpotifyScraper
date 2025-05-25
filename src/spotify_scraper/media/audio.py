@@ -211,9 +211,7 @@ class AudioDownloader:
         except Exception as e:
             logger.error("Failed to download preview audio: %s", e)
             raise DownloadError(
-                message=f"Failed to download preview audio: {e}", 
-                url=preview_url, 
-                path=file_path
+                message=f"Failed to download preview audio: {e}", url=preview_url, path=file_path
             ) from e
 
     def _embed_cover(self, file_path: str, track_data: TrackData) -> None:
