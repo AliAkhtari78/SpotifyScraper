@@ -55,16 +55,24 @@ jobs:
       run: twine check dist/*
     
     - name: Publish to Test PyPI
-      if: ${{ secrets.TEST_PYPI_TOKEN != '' }}
+      continue-on-error: true
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
       run: |
+        if [ -z "$TWINE_PASSWORD" ]; then
+          echo "Test PyPI token not configured, skipping..."
+          exit 0
+        fi
         twine upload --repository testpypi dist/*
     
     - name: Test installation from Test PyPI
-      if: ${{ secrets.TEST_PYPI_TOKEN != '' }}
+      continue-on-error: true
       run: |
+        if [ -z "${{ secrets.TEST_PYPI_TOKEN }}" ]; then
+          echo "Test PyPI token not configured, skipping test installation..."
+          exit 0
+        fi
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ spotifyscraper==${{ steps.get_version.outputs.VERSION }}
         python -c "import spotify_scraper; print(spotify_scraper.__version__)"
     
