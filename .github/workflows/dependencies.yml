@@ -30,13 +30,13 @@ jobs:
     - name: Update requirements files
       run: |
         # Update main requirements
-        pip-upgrade requirements.txt --skip-package-check
+        pip-upgrade requirements.txt --skip-virtualenv-check --skip-package-installation
         
         # Update dev requirements
-        pip-upgrade requirements-dev.txt --skip-package-check
+        pip-upgrade requirements-dev.txt --skip-virtualenv-check --skip-package-installation
         
         # Update docs requirements
-        pip-upgrade docs/requirements.txt --skip-package-check
+        pip-upgrade docs/requirements.txt --skip-virtualenv-check --skip-package-installation
     
     - name: Check for security issues
       run: |
