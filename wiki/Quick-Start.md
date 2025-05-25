@@ -1,10 +1,16 @@
 # Quick Start Guide
 
-Get up and running with SpotifyScraper in 5 minutes!
+Get up and running with SpotifyScraper in just a few minutes!
 
-## 🎯 Your First Script
+## Installation
 
-### Step 1: Import and Initialize
+```bash
+pip install spotifyscraper
+```
+
+## Basic Usage
+
+### 1. Import and Initialize
 
 ```python
 from spotify_scraper import SpotifyClient
@@ -13,189 +19,122 @@ from spotify_scraper import SpotifyClient
 client = SpotifyClient()
 ```
 
-### Step 2: Extract Track Information
+### 2. Extract Track Information
 
 ```python
-# Spotify track URL
-track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
+# Get track info
+track_url = "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh"
+track_info = client.get_track_info(track_url)
 
-# Get track metadata
-track = client.get_track_info(track_url)
-
-# Display information
-print(f"Track: {track['name']}")
-print(f"Artist: {track['artists'][0]['name']}")
-print(f"Album: {track['album']['name']}")
-print(f"Duration: {track['duration_ms'] / 1000:.0f} seconds")
+print(f"Track: {track_info['name']}")
+print(f"Artist: {track_info['artists'][0]['name']}")
+print(f"Duration: {track_info['duration_ms']} ms")
 ```
 
-### Step 3: Download Media
+### 3. Extract Album Information
 
 ```python
-# Download 30-second preview
-preview_path = client.download_preview_mp3(track_url, path="downloads/")
-print(f"Preview saved to: {preview_path}")
+# Get album info
+album_url = "https://open.spotify.com/album/0JGOiO34nwfUdDrD612dOp"
+album_info = client.get_album_info(album_url)
 
-# Download cover art
+print(f"Album: {album_info['name']}")
+print(f"Total Tracks: {album_info['total_tracks']}")
+```
+
+### 4. Extract Playlist Information
+
+```python
+# Get playlist info
+playlist_url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
+playlist_info = client.get_playlist_info(playlist_url)
+
+print(f"Playlist: {playlist_info['name']}")
+print(f"Total Tracks: {playlist_info['track_count']}")
+```
+
+### 5. Download Media
+
+```python
+# Download cover image
 cover_path = client.download_cover(track_url, path="covers/")
 print(f"Cover saved to: {cover_path}")
+
+# Download track preview (30 seconds)
+preview_path = client.download_preview_mp3(track_url, path="previews/")
+print(f"Preview saved to: {preview_path}")
 ```
 
-## 📊 Working with Different Content Types
-
-### Albums
+### 6. Clean Up
 
 ```python
-album_url = "https://open.spotify.com/album/3yyMKUSiCVByiZGLNQpS1G"
-album = client.get_album_info(album_url)
-
-print(f"Album: {album['name']}")
-print(f"Artist: {album['artists'][0]['name']}")
-print(f"Tracks: {album['total_tracks']}")
-
-# List all tracks
-for track in album['tracks']:
-    print(f"  - {track['name']} ({track['duration_ms'] / 1000:.0f}s)")
+# Always close the client when done
+client.close()
 ```
 
-### Artists
+## Using Context Manager
+
+For automatic cleanup, use the client as a context manager:
 
 ```python
-artist_url = "https://open.spotify.com/artist/0TnOYISbd1XYRBk9myaseg"
-artist = client.get_artist_info(artist_url)
+from spotify_scraper import SpotifyClient
 
-print(f"Artist: {artist['name']}")
-print(f"Followers: {artist['followers']:,}")
-print(f"Monthly Listeners: {artist['monthly_listeners']:,}")
-
-# Top tracks
-for track in artist['top_tracks'][:5]:
-    print(f"  - {track['name']}")
+with SpotifyClient() as client:
+    track_info = client.get_track_info("https://open.spotify.com/track/...")
+    print(track_info['name'])
+# Client is automatically closed
 ```
 
-### Playlists
+**Note**: The context manager is a convenience wrapper, not all features may be available in this mode.
 
-```python
-playlist_url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
-playlist = client.get_playlist_info(playlist_url)
+## CLI Usage
 
-print(f"Playlist: {playlist['name']}")
-print(f"Description: {playlist['description']}")
-print(f"Tracks: {playlist['total_tracks']}")
-print(f"Owner: {playlist['owner']['display_name']}")
+SpotifyScraper also provides a command-line interface:
+
+```bash
+# Get track info
+spotify-scraper track https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh
+
+# Get album info with pretty output
+spotify-scraper album https://open.spotify.com/album/0JGOiO34nwfUdDrD612dOp --pretty
+
+# Download track preview
+spotify-scraper download track https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh
+
+# Save playlist info to file
+spotify-scraper playlist https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M -o playlist.json
 ```
 
-## 🔐 Authenticated Features
+## Error Handling
 
-Some features require authentication via cookies:
-
-### Getting Spotify Cookies
-
-1. Open Spotify Web Player in your browser
-2. Log in to your account
-3. Export cookies using a browser extension
-4. Save as `cookies.txt`
-
-### Using Authenticated Client
+Always wrap your code in try-except blocks:
 
 ```python
-# Initialize with cookies
-client = SpotifyClient(cookie_file="cookies.txt")
+from spotify_scraper import SpotifyClient, URLError, NetworkError
 
-# Now you can access lyrics
-track_with_lyrics = client.get_track_info_with_lyrics(track_url)
-if track_with_lyrics.get('lyrics'):
-    print(f"Lyrics:\n{track_with_lyrics['lyrics']['text']}")
-```
-
-## 🛡️ Error Handling
-
-```python
-from spotify_scraper import URLError, NetworkError
+client = SpotifyClient()
 
 try:
-    track = client.get_track_info(track_url)
+    track_info = client.get_track_info("https://open.spotify.com/track/invalid")
 except URLError as e:
     print(f"Invalid URL: {e}")
 except NetworkError as e:
     print(f"Network error: {e}")
-except Exception as e:
-    print(f"Unexpected error: {e}")
+finally:
+    client.close()
 ```
 
-## ⚡ Performance Tips
+## Next Steps
 
-### Enable Caching
+- Learn about [Authentication](API-Reference#authentication) for accessing lyrics
+- Explore [Advanced Features](API-Reference#advanced-features)
+- See more [Examples](Examples)
+- Check the [API Reference](API-Reference) for detailed documentation
 
-```python
-# Client with caching enabled
-client = SpotifyClient(cache_enabled=True)
+## Common Issues
 
-# First call fetches from Spotify
-track1 = client.get_track_info(track_url)  # Network request
+1. **No preview available**: Not all tracks have preview URLs
+2. **Authentication required**: Some features like lyrics require cookies
+3. **Rate limiting**: Add delays between requests if processing many URLs
 
-# Second call uses cache
-track2 = client.get_track_info(track_url)  # From cache
-```
-
-### Batch Operations
-
-```python
-urls = [
-    "https://open.spotify.com/track/...",
-    "https://open.spotify.com/track/...",
-    "https://open.spotify.com/track/..."
-]
-
-# Process multiple URLs
-results = []
-for url in urls:
-    try:
-        track = client.get_track_info(url)
-        results.append(track)
-    except Exception as e:
-        print(f"Failed to process {url}: {e}")
-```
-
-## 💻 Command Line Usage
-
-SpotifyScraper includes a CLI interface:
-
-```bash
-# Get track info
-spotify-scraper track https://open.spotify.com/track/... --format json
-
-# Download media
-spotify-scraper download track https://open.spotify.com/track/... --audio --cover
-
-# Get playlist tracks
-spotify-scraper playlist https://open.spotify.com/playlist/... --tracks-only
-```
-
-## 🎨 Output Formats
-
-### JSON Output
-
-```python
-import json
-
-track = client.get_track_info(track_url)
-print(json.dumps(track, indent=2))
-```
-
-### Custom Formatting
-
-```python
-def format_track(track):
-    return f"{track['name']} - {', '.join(a['name'] for a in track['artists'])}"
-
-track = client.get_track_info(track_url)
-print(format_track(track))
-```
-
-## 📚 Next Steps
-
-- Explore [Advanced Examples](Examples)
-- Read the [API Reference](API-Reference)
-- Learn about [Error Handling](Error-Handling)
-- Check out [Performance Optimization](Performance)
+For more help, see the [FAQ](FAQ) or [Troubleshooting](FAQ#troubleshooting) guide.

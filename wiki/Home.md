@@ -5,11 +5,10 @@ Welcome to the SpotifyScraper Wiki! This is your comprehensive guide to using Sp
 ## 🚀 Quick Links
 
 - [Installation Guide](Installation) - Get started in minutes
-- [Basic Usage](Basic-Usage) - Learn the fundamentals
+- [Quick Start Tutorial](Quick-Start) - Learn the fundamentals
 - [API Reference](API-Reference) - Detailed documentation
 - [Examples](Examples) - Real-world code samples
 - [FAQ](FAQ) - Common questions answered
-- [Troubleshooting](Troubleshooting) - Solve common issues
 
 ## 📚 Documentation
 
@@ -20,16 +19,19 @@ Welcome to the SpotifyScraper Wiki! This is your comprehensive guide to using Sp
 
 ### For Developers
 1. Check the [API Reference](API-Reference)
-2. Learn about [Advanced Features](Advanced-Features)
-3. See [Integration Examples](Examples#integration-examples)
+2. See [Integration Examples](Examples#integration-examples)
+3. Learn about [Bulk Operations](Examples#bulk-operations)
 
 ## 🌟 Key Features
 
 - **No Authentication Required**: Extract data without API keys
-- **Comprehensive Data**: Tracks, albums, artists, playlists, and lyrics
-- **Media Downloads**: Audio previews and cover art
-- **High Performance**: Optimized with caching and parallel processing
-- **Type Safe**: Full type hints for better IDE support
+- **Comprehensive Data**: Tracks, albums, artists, and playlists
+- **Media Downloads**: 30-second audio previews and cover art
+- **Browser Flexibility**: Use lightweight requests or full Selenium
+- **Type Safe**: Full type hints and TypedDict support
+- **CLI Interface**: Command-line tool for quick extraction
+- **Bulk Operations**: Process multiple URLs efficiently
+- **Data Analysis**: Built-in playlist analysis tools
 - **Cross-Platform**: Works on Windows, macOS, and Linux
 
 ## 📋 Version Information

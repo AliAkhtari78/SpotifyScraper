@@ -155,7 +155,7 @@ This installs:
 ### All Features
 Install everything:
 ```bash
-pip install spotifyscraper[all]
+pip install "spotifyscraper[all]"
 ```
 
 ---

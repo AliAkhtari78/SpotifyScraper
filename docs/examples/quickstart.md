@@ -11,7 +11,7 @@ Get started with SpotifyScraper in minutes! This guide will walk you through ins
 pip install spotifyscraper
 
 # Or install with optional dependencies
-pip install spotifyscraper[selenium,media]
+pip install "spotifyscraper[selenium,media]"
 ```
 
 ### Development Installation
@@ -42,8 +42,7 @@ track_data = client.get_track_info(track_url)
 # Display results
 print(f"Track: {track_data['name']}")
 print(f"Artist: {track_data['artists'][0]['name']}")
-if 'album' in track_data and track_data['album']:
-    print(f"Album: {track_data['album']['name']}")
+print(f"Album: {track_data['album']['name']}")
 print(f"Duration: {track_data['duration_ms'] / 1000:.2f} seconds")
 ```
 
@@ -197,7 +196,7 @@ analyze_playlist("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
 ### URL Validation and Parsing
 
 ```python
-from spotify_scraper import is_spotify_url, extract_id
+from spotify_scraper.utils import is_spotify_url, extract_id
 
 def analyze_url(url):
     # Check if it's valid
@@ -218,14 +217,14 @@ analyze_url("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6?si=abcd123")
 ### Convert Between URL Formats
 
 ```python
-from spotify_scraper import convert_to_embed_url
+from spotify_scraper.utils import convert_to_embed_url
 
 # Regular URL to embed URL
 regular_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
 embed_url = convert_to_embed_url(regular_url)
 print(f"Embed URL: {embed_url}")
 
-# Note: SpotifyScraper primarily uses embed URLs internally for better reliability
+# Note: SpotifyScraper uses embed URLs internally for better reliability
 ```
 
 ## Error Handling
@@ -233,8 +232,8 @@ print(f"Embed URL: {embed_url}")
 Always handle potential errors:
 
 ```python
-from spotify_scraper import SpotifyClient
-from spotify_scraper.core.exceptions import (
+from spotify_scraper import (
+    SpotifyClient,
     SpotifyScraperError,
     URLError,
     NetworkError,
@@ -275,7 +274,9 @@ def safe_extract_track(url):
             "details": str(e)
         }
     finally:
-        client.close()
+        # Clean up resources if using Selenium
+        if hasattr(client, 'browser_type') and client.browser_type == "selenium":
+            client.close()
 
 # Example usage
 result = safe_extract_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
@@ -285,16 +286,23 @@ else:
     print(f"Error: {result['error']} - {result['details']}")
 ```
 
-## Using Context Managers
+## Resource Management
 
-For automatic resource cleanup:
+Always clean up resources when using Selenium backend:
 
 ```python
 from spotify_scraper import SpotifyClient
 
-# Note: SpotifyClient doesn't currently support context manager protocol
-# You can manually close it when done
+# Requests backend (default) - no cleanup needed
 client = SpotifyClient()
+track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+album = client.get_album_info("https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv")
+
+print(f"Track: {track['name']}")
+print(f"Album: {album['name']}")
+
+# Selenium backend - cleanup required
+client = SpotifyClient(browser_type="selenium")
 try:
     track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
     album = client.get_album_info("https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv")
@@ -339,7 +347,9 @@ def batch_extract_tracks(urls):
                 "error": str(e)
             })
     
-    client.close()
+    # Clean up if using Selenium
+    if hasattr(client, 'browser_type') and client.browser_type == "selenium":
+        client.close()
     return results
 
 # Example usage
@@ -428,7 +438,9 @@ class TrackAnalyzer:
             return {"error": str(e)}
     
     def close(self):
-        self.client.close()
+        # Clean up if using Selenium
+        if hasattr(self.client, 'browser_type') and self.client.browser_type == "selenium":
+            self.client.close()
 
 # Usage
 analyzer = TrackAnalyzer()

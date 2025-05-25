@@ -52,13 +52,13 @@ pip install spotifyscraper
 
 ```bash
 # With Selenium support for complex scenarios
-pip install spotifyscraper[selenium]
+pip install "spotifyscraper[selenium]"
 
 # With enhanced media handling
-pip install spotifyscraper[media]
+pip install "spotifyscraper[media]"
 
 # All features
-pip install spotifyscraper[all]
+pip install "spotifyscraper[all]"
 ```
 
 ### Development Installation
@@ -83,11 +83,14 @@ client = SpotifyClient()
 
 # Extract track information
 track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
-track = client.get_track(track_url)
+track = client.get_track_info(track_url)
 
 print(f"🎵 {track['name']}")
 print(f"👤 {track['artists'][0]['name']}")
 print(f"⏱️ {track['duration_ms'] / 1000:.0f} seconds")
+
+# Always close when done
+client.close()
 ```
 
 ### Download Media
