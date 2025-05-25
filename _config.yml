@@ -1,0 +1,51 @@
+# Jekyll configuration for GitHub Pages
+# This tells Jekyll to exclude all files except the ones we want
+
+# Disable Jekyll plugins
+plugins: []
+
+# Exclude everything by default
+exclude:
+  - "*.py"
+  - "*.pyc" 
+  - "*.yml"
+  - "*.yaml"
+  - "*.ini"
+  - "*.cfg"
+  - "*.toml"
+  - "*.txt"
+  - "*.json"
+  - "*.sh"
+  - "*.bat"
+  - "*.ps1"
+  - "Dockerfile"
+  - "Makefile"
+  - "LICENSE"
+  - "README.md"
+  - "CHANGELOG.md"
+  - "CODE_OF_CONDUCT.md"
+  - "CONTRIBUTING.md"
+  - "SECURITY.md"
+  - "MANIFEST.in"
+  - ".github/"
+  - "src/"
+  - "tests/"
+  - "docs/"
+  - "examples/"
+  - "scripts/"
+  - "venv/"
+  - "venv_security/"
+  - "wiki/"
+  - "dist/"
+  - "build/"
+  - "htmlcov/"
+  - "__pycache__/"
+  - ".pytest_cache/"
+  - ".tox/"
+  - "*.egg-info/"
+  - ".*"
+  
+# Only include the index.html
+include:
+  - index.html
+  - .nojekyll

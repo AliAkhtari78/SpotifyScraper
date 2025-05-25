@@ -1,0 +1,19 @@
+# Exclude Python files from GitHub Pages Jekyll processing
+*.py linguist-vendored
+*.pyc linguist-vendored
+__pycache__/ linguist-vendored
+*.egg-info/ linguist-vendored
+src/ linguist-vendored
+tests/ linguist-vendored
+venv/ linguist-vendored
+venv_security/ linguist-vendored
+scripts/ linguist-vendored
+examples/*.py linguist-vendored
+
+# Documentation files
+*.md linguist-documentation
+*.rst linguist-documentation
+docs/ linguist-documentation
+
+# Mark HTML as documentation
+*.html linguist-documentation
