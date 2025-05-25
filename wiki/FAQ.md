@@ -1,213 +1,338 @@
 # Frequently Asked Questions (FAQ)
 
-Common questions and answers about SpotifyScraper.
-
-## 📋 Table of Contents
-
-- [General Questions](#general-questions)
-- [Installation Issues](#installation-issues)
-- [Usage Questions](#usage-questions)
-- [Error Solutions](#error-solutions)
-- [Legal & Ethical](#legal--ethical)
-
 ## General Questions
 
 ### What is SpotifyScraper?
 
-SpotifyScraper is a Python library that extracts data from Spotify's web player without requiring API credentials. It can fetch metadata for tracks, albums, artists, and playlists, as well as download preview audio and cover images.
+SpotifyScraper is a Python library that extracts data from Spotify's web player without requiring API credentials. It can retrieve information about tracks, albums, artists, and playlists, as well as download preview MP3s and cover images.
 
-### Do I need a Spotify API key?
+### How is this different from the official Spotify API?
 
-No! SpotifyScraper works without any API keys or OAuth authentication. It uses Spotify's public embed API to extract data.
+| Feature | SpotifyScraper | Official Spotify API |
+|---------|----------------|---------------------|
+| Registration Required | No | Yes |
+| API Key Required | No | Yes |
+| Rate Limits | No formal limits | 180 requests/min |
+| Preview Downloads | Yes | No |
+| Cover Downloads | Yes | Limited |
+| Lyrics Access | Yes (with auth) | No |
+| Setup Complexity | Simple | Complex |
 
-### What data can I extract?
+### Is SpotifyScraper legal to use?
 
-- **Tracks**: Name, artists, album, duration, preview URL, explicit flag
-- **Albums**: Name, artists, release date, track listing, cover art
-- **Artists**: Name, followers, monthly listeners, top tracks, genres
-- **Playlists**: Name, description, owner, track listing
-- **Lyrics**: Available with authentication (cookies)
+SpotifyScraper accesses publicly available web content. However, you should:
+- Respect Spotify's Terms of Service
+- Not use it for commercial purposes without permission
+- Be respectful with request frequency
+- Only use downloaded content for personal use
 
-### What are the limitations?
+### What Python versions are supported?
 
-- **30-second previews**: Full tracks are not available
-- **Rate limits**: Spotify may limit excessive requests
-- **Authentication**: Some features (lyrics) require cookies
-- **Regional restrictions**: Some content may be geo-blocked
-
-### Is it faster than the official API?
-
-For basic metadata extraction, SpotifyScraper is comparable in speed. With caching enabled, subsequent requests are much faster since they don't require network calls.
+SpotifyScraper supports Python 3.8 and above. We recommend using the latest stable Python version for best performance.
 
 ## Installation Issues
 
-### pip install fails with "No matching distribution"
-
-Update pip and try again:
-```bash
-python -m pip install --upgrade pip
-pip install spotifyscraper
-```
-
 ### ImportError: No module named 'spotify_scraper'
 
-Make sure you installed the package:
+**Problem:** Python can't find the installed package.
+
+**Solutions:**
+1. Ensure you installed it: `pip install spotifyscraper`
+2. Check you're in the right environment: `pip list | grep spotify`
+3. Try reinstalling: `pip install --force-reinstall spotifyscraper`
+
+### SSL Certificate errors during installation
+
+**Problem:** SSL verification fails when downloading packages.
+
+**Solutions:**
 ```bash
-pip install spotifyscraper
-```
+# Update certificates
+pip install --upgrade certifi
 
-Note: The package name is `spotifyscraper` (no underscore), but you import it as `spotify_scraper` (with underscore).
-
-### SSL Certificate errors
-
-Try installing with trusted hosts:
-```bash
+# Or temporarily bypass (not recommended for production)
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org spotifyscraper
 ```
 
-### Permission denied during installation
+### Permission denied errors
 
-Install with user flag:
+**Problem:** No permission to install packages globally.
+
+**Solutions:**
 ```bash
+# Install for current user only
 pip install --user spotifyscraper
+
+# Or use a virtual environment (recommended)
+python -m venv myenv
+source myenv/bin/activate  # On Windows: myenv\Scripts\activate
+pip install spotifyscraper
 ```
 
 ## Usage Questions
 
-### How do I get lyrics?
+### How do I get lyrics for tracks?
 
-Lyrics require authentication. You need to export cookies from your browser:
-
-1. Log in to Spotify Web Player
-2. Export cookies using a browser extension
-3. Save as `cookies.txt`
-4. Use authenticated client:
+Lyrics require authentication via Spotify cookies:
 
 ```python
-client = SpotifyClient(cookie_file="cookies.txt")
-track = client.get_track_info_with_lyrics(url)
+# 1. Export cookies from your browser using a "cookies.txt" extension
+# 2. Use the cookie file with SpotifyClient
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
+track = client.get_track_info_with_lyrics(track_url)
+print(track['lyrics'])
 ```
 
-### How do I download all tracks from a playlist?
+### Why am I getting "No preview available"?
+
+Not all tracks on Spotify have preview URLs. This is a Spotify limitation, not a SpotifyScraper issue. Previews are typically available for:
+- Popular tracks
+- Tracks available in your region
+- Non-restricted content
+
+### How do I handle rate limiting?
+
+While SpotifyScraper doesn't enforce rate limits, Spotify might block excessive requests:
 
 ```python
-playlist = client.get_playlist_info(playlist_url)
-for track in playlist['tracks']:
-    try:
-        preview_path = client.download_preview_mp3(
-            track['external_urls']['spotify']
-        )
-        print(f"Downloaded: {track['name']}")
-    except Exception as e:
-        print(f"Failed: {track['name']} - {e}")
+import time
+
+# Add delays between requests
+for url in urls:
+    data = client.get_track_info(url)
+    time.sleep(1)  # Wait 1 second between requests
 ```
 
-### Can I get full songs instead of previews?
+### Can I download full songs?
 
-No, SpotifyScraper only provides access to 30-second preview clips. Full tracks are protected by DRM and not accessible through the web player.
+No. SpotifyScraper can only download 30-second preview clips that Spotify makes publicly available. Full song downloads would violate copyright laws and Spotify's terms of service.
 
-### How do I use a proxy?
+### How do I get high-quality cover images?
 
 ```python
-client = SpotifyClient(proxy="http://proxy.example.com:8080")
+# Download largest available cover
+client.download_cover(
+    url,
+    quality_preference=["large", "medium", "small"]
+)
+
+# The actual resolution depends on what Spotify provides
+# Typically: large = 640x640, medium = 300x300, small = 64x64
 ```
 
-### How do I increase timeout for slow connections?
+## Authentication Questions
 
-```python
-client = SpotifyClient(timeout=60)  # 60 seconds
-```
+### How do I export Spotify cookies?
 
-### Can I disable caching?
+1. Install a browser extension like "cookies.txt" or "Get cookies.txt"
+2. Log in to [Spotify Web Player](https://open.spotify.com)
+3. Click the extension and export cookies
+4. Save as `spotify_cookies.txt`
+5. Use with SpotifyClient: `client = SpotifyClient(cookie_file="spotify_cookies.txt")`
 
-```python
-client = SpotifyClient(cache_enabled=False)
-```
+### Which cookies are required?
 
-## Error Solutions
+The most important cookie is `sp_t` (authentication token). Other useful cookies:
+- `sp_dc`: Device credentials
+- `sp_key`: Session key
+
+### My cookies aren't working
+
+Common issues:
+1. **Expired cookies**: Re-export from browser
+2. **Wrong format**: Ensure Netscape format (not JSON)
+3. **Incomplete export**: Make sure you're logged in when exporting
+4. **Region restrictions**: Some content is region-locked
+
+## Error Handling
 
 ### URLError: Invalid Spotify URL
 
-Make sure the URL is a valid Spotify link:
-- ✅ `https://open.spotify.com/track/...`
-- ❌ `spotify:track:...` (URI format not supported)
-- ❌ `https://spotify.com/...` (wrong domain)
+**Problem:** The URL format is not recognized.
 
-### NetworkError: Connection timeout
-
-1. Check your internet connection
-2. Increase timeout: `client = SpotifyClient(timeout=60)`
-3. Try using a proxy
-4. Check if Spotify is accessible in your region
-
-### AuthenticationError: Cookies required
-
-Some features need authentication:
+**Solution:** Ensure you're using valid Spotify URLs:
 ```python
-client = SpotifyClient(cookie_file="spotify_cookies.txt")
+# Valid formats:
+"https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
+"https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv"
+"spotify:track:6rqhFgbbKwnb9MLmUQDhG6"
+
+# Invalid:
+"open.spotify.com/track/..."  # Missing https://
+"https://spotify.com/..."      # Wrong domain
 ```
 
-### ExtractionError: Failed to extract data
+### ScrapingError: Failed to extract data
 
-This can happen if:
-- Content is not available in your region
-- Spotify changed their web player structure
-- The content was removed
+**Possible causes:**
+1. **Network issues**: Check your internet connection
+2. **Spotify changes**: The website structure might have changed
+3. **Rate limiting**: You're making too many requests
+4. **Region blocking**: Content not available in your region
 
-Try updating to the latest version:
-```bash
-pip install --upgrade spotifyscraper
+**Solutions:**
+```python
+# Use Selenium for dynamic content
+client = SpotifyClient(browser_type="selenium")
+
+# Add retry logic
+import time
+for attempt in range(3):
+    try:
+        data = client.get_track_info(url)
+        break
+    except ScrapingError:
+        if attempt < 2:
+            time.sleep(2)
+        else:
+            raise
 ```
 
-### Rate limit errors
+### MediaError: Failed to download
 
-If you're getting rate limited:
-1. Add delays between requests: `time.sleep(1)`
-2. Use caching to avoid repeated requests
-3. Reduce parallel requests
-4. Use a proxy to distribute requests
+**Common issues:**
+1. **No preview URL**: Track doesn't have a preview
+2. **Network timeout**: Slow connection
+3. **Disk space**: Insufficient storage
+4. **Permissions**: Can't write to directory
 
-## Legal & Ethical
+**Solutions:**
+```python
+# Check for preview before downloading
+track = client.get_track_info(url)
+if track.get('preview_url'):
+    client.download_preview_mp3(url)
+else:
+    print("No preview available")
 
-### Is this legal?
+# Ensure directory exists and is writable
+import os
+os.makedirs("downloads", exist_ok=True)
+```
 
-SpotifyScraper accesses publicly available data from Spotify's web player. However:
-- Always respect Spotify's Terms of Service
-- Don't use it for commercial purposes without permission
-- Respect rate limits and don't overload servers
-- Give credit to artists and Spotify
+## Performance Questions
 
-### Can I use this for my commercial app?
+### How can I make SpotifyScraper faster?
 
-You should:
-1. Review Spotify's Terms of Service
-2. Consider using the official Spotify API instead
-3. Contact Spotify for commercial licensing
-4. Consult with a legal professional
+1. **Use requests backend** (default):
+   ```python
+   client = SpotifyClient(browser_type="requests")
+   ```
 
-### Is this ethical?
+2. **Reuse client instances**:
+   ```python
+   client = SpotifyClient()
+   for url in urls:
+       # Process multiple URLs with same client
+   client.close()
+   ```
 
-Consider these guidelines:
-- Use responsibly and don't abuse the service
-- Support artists by using official Spotify apps
-- Don't redistribute copyrighted content
-- Use for personal/educational purposes
+3. **Parallel processing** (be careful with rate limits):
+   ```python
+   from concurrent.futures import ThreadPoolExecutor
+   
+   def fetch_track(url):
+       return client.get_track_info(url)
+   
+   with ThreadPoolExecutor(max_workers=3) as executor:
+       results = list(executor.map(fetch_track, urls))
+   ```
 
-### Will my IP get banned?
+### Why is Selenium slower than requests?
 
-To avoid issues:
-- Don't make excessive requests
-- Use reasonable delays between requests
-- Enable caching to reduce requests
-- Respect rate limits
+Selenium launches a full browser, which includes:
+- Loading all page resources (CSS, JS, images)
+- Executing JavaScript
+- Rendering the page
 
-### Can I sell data extracted with this?
+Use Selenium only when necessary (for dynamic content).
 
-No. The data belongs to Spotify and the content creators. You should not sell or commercially distribute data extracted using this library.
+## Advanced Questions
 
-## 🤔 Still Have Questions?
+### Can I use SpotifyScraper in my web application?
 
-- 📖 Check the [Documentation](https://spotifyscraper.readthedocs.io)
-- 💬 Ask in [GitHub Discussions](https://github.com/AliAkhtari78/SpotifyScraper/discussions)
-- 🐛 Report bugs in [Issues](https://github.com/AliAkhtari78/SpotifyScraper/issues)
-- 📧 Contact: aliakhtari78@hotmail.com
+Yes, but consider:
+1. **Performance**: Web apps need fast response times
+2. **Caching**: Cache results to reduce Spotify requests
+3. **Rate limiting**: Implement your own rate limiting
+4. **Error handling**: Gracefully handle failures
+
+Example with Flask:
+```python
+from flask import Flask, jsonify
+from spotify_scraper import SpotifyClient
+import redis
+import json
+
+app = Flask(__name__)
+cache = redis.Redis()
+client = SpotifyClient()
+
+@app.route('/track/<track_id>')
+def get_track(track_id):
+    # Check cache first
+    cached = cache.get(f"track:{track_id}")
+    if cached:
+        return json.loads(cached)
+    
+    # Fetch from Spotify
+    try:
+        url = f"https://open.spotify.com/track/{track_id}"
+        data = client.get_track_info(url)
+        
+        # Cache for 1 hour
+        cache.setex(f"track:{track_id}", 3600, json.dumps(data))
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+```
+
+### Can I contribute to SpotifyScraper?
+
+Yes! We welcome contributions:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+See [CONTRIBUTING.md](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CONTRIBUTING.md) for details.
+
+### How do I report bugs?
+
+1. Check if it's already reported: [GitHub Issues](https://github.com/AliAkhtari78/SpotifyScraper/issues)
+2. Create a new issue with:
+   - Python version
+   - SpotifyScraper version
+   - Full error traceback
+   - Minimal code to reproduce
+   - Expected vs actual behavior
+
+## Troubleshooting Checklist
+
+When something doesn't work, check:
+
+- [ ] Latest version installed: `pip install --upgrade spotifyscraper`
+- [ ] Valid Spotify URL format
+- [ ] Internet connection working
+- [ ] Not being rate limited (add delays)
+- [ ] Cookies valid and not expired (for features requiring auth)
+- [ ] Content available in your region
+- [ ] Sufficient disk space for downloads
+- [ ] Write permissions for download directory
+- [ ] No firewall/proxy blocking requests
+
+## Getting Help
+
+If you can't find an answer here:
+
+1. **Documentation**: [Read the Docs](https://spotifyscraper.readthedocs.io/)
+2. **Examples**: Check the [Examples page](Examples)
+3. **Issues**: Search [GitHub Issues](https://github.com/AliAkhtari78/SpotifyScraper/issues)
+4. **Discussions**: Join [GitHub Discussions](https://github.com/AliAkhtari78/SpotifyScraper/discussions)
+
+Remember to provide:
+- Clear description of the problem
+- Code that reproduces the issue
+- Full error messages
+- Your environment details

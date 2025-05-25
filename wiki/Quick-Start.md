@@ -1,21 +1,15 @@
 # Quick Start Guide
 
-Get up and running with SpotifyScraper in just a few minutes!
-
-## Installation
-
-```bash
-pip install spotifyscraper
-```
+This guide will get you up and running with SpotifyScraper in just a few minutes.
 
 ## Basic Usage
 
-### 1. Import and Initialize
+### 1. Import and Create Client
 
 ```python
 from spotify_scraper import SpotifyClient
 
-# Create a client instance
+# Create a basic client
 client = SpotifyClient()
 ```
 
@@ -23,118 +17,184 @@ client = SpotifyClient()
 
 ```python
 # Get track info
-track_url = "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh"
-track_info = client.get_track_info(track_url)
+track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
+track = client.get_track_info(track_url)
 
-print(f"Track: {track_info['name']}")
-print(f"Artist: {track_info['artists'][0]['name']}")
-print(f"Duration: {track_info['duration_ms']} ms")
+# Access track data
+print(f"Track: {track['name']}")
+print(f"Artist: {track['artists'][0]['name']}")
+print(f"Album: {track['album']['name']}")
+print(f"Duration: {track['duration_ms'] / 1000:.1f} seconds")
 ```
 
-### 3. Extract Album Information
+### 3. Download Media Files
 
 ```python
-# Get album info
-album_url = "https://open.spotify.com/album/0JGOiO34nwfUdDrD612dOp"
-album_info = client.get_album_info(album_url)
+# Download 30-second preview MP3
+mp3_path = client.download_preview_mp3(track_url, path="downloads/")
+print(f"Preview downloaded to: {mp3_path}")
 
-print(f"Album: {album_info['name']}")
-print(f"Total Tracks: {album_info['total_tracks']}")
-```
-
-### 4. Extract Playlist Information
-
-```python
-# Get playlist info
-playlist_url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
-playlist_info = client.get_playlist_info(playlist_url)
-
-print(f"Playlist: {playlist_info['name']}")
-print(f"Total Tracks: {playlist_info['track_count']}")
-```
-
-### 5. Download Media
-
-```python
-# Download cover image
+# Download album cover
 cover_path = client.download_cover(track_url, path="covers/")
-print(f"Cover saved to: {cover_path}")
-
-# Download track preview (30 seconds)
-preview_path = client.download_preview_mp3(track_url, path="previews/")
-print(f"Preview saved to: {preview_path}")
+print(f"Cover downloaded to: {cover_path}")
 ```
 
-### 6. Clean Up
+## Working with Different Content Types
+
+### Albums
 
 ```python
-# Always close the client when done
-client.close()
+album_url = "https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv"
+album = client.get_album_info(album_url)
+
+print(f"Album: {album['name']}")
+print(f"Artist: {album['artists'][0]['name']}")
+print(f"Release Date: {album['release_date']}")
+print(f"Total Tracks: {album['total_tracks']}")
+
+# List all tracks
+for i, track in enumerate(album['tracks']['items'], 1):
+    print(f"{i}. {track['name']} ({track['duration_ms'] / 1000:.1f}s)")
 ```
 
-## Using Context Manager
-
-For automatic cleanup, use the client as a context manager:
+### Artists
 
 ```python
-from spotify_scraper import SpotifyClient
+artist_url = "https://open.spotify.com/artist/1dfeR4HaWDbWqFHLkxsg1d"
+artist = client.get_artist_info(artist_url)
 
-with SpotifyClient() as client:
-    track_info = client.get_track_info("https://open.spotify.com/track/...")
-    print(track_info['name'])
-# Client is automatically closed
+print(f"Artist: {artist['name']}")
+print(f"Genres: {', '.join(artist['genres'])}")
+print(f"Followers: {artist['followers']['total']:,}")
+print(f"Popularity: {artist['popularity']}/100")
 ```
 
-**Note**: The context manager is a convenience wrapper, not all features may be available in this mode.
+### Playlists
 
-## CLI Usage
+```python
+playlist_url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
+playlist = client.get_playlist_info(playlist_url)
 
-SpotifyScraper also provides a command-line interface:
+print(f"Playlist: {playlist['name']}")
+print(f"Owner: {playlist['owner']['display_name']}")
+print(f"Tracks: {playlist['tracks']['total']}")
+print(f"Description: {playlist['description']}")
+```
 
-```bash
-# Get track info
-spotify-scraper track https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh
+## Advanced Features
 
-# Get album info with pretty output
-spotify-scraper album https://open.spotify.com/album/0JGOiO34nwfUdDrD612dOp --pretty
+### Authentication for Lyrics
 
-# Download track preview
-spotify-scraper download track https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh
+Some features like lyrics require authentication:
 
-# Save playlist info to file
-spotify-scraper playlist https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M -o playlist.json
+```python
+# Option 1: Use cookies.txt file
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
+
+# Option 2: Use cookie dictionary
+client = SpotifyClient(cookies={"sp_t": "your_auth_token"})
+
+# Get track with lyrics
+track = client.get_track_info_with_lyrics(track_url)
+if track['lyrics']:
+    print(f"Lyrics:\n{track['lyrics']}")
+```
+
+### Custom Configuration
+
+```python
+# Configure client with options
+client = SpotifyClient(
+    browser_type="selenium",  # Use Selenium for JS support
+    log_level="DEBUG",        # Enable debug logging
+    proxy={                   # Use proxy server
+        "http": "http://proxy.example.com:8080",
+        "https": "https://proxy.example.com:8080"
+    }
+)
+```
+
+### Automatic URL Detection
+
+```python
+# Works with any Spotify URL type
+mixed_urls = [
+    "https://open.spotify.com/track/...",
+    "https://open.spotify.com/album/...",
+    "https://open.spotify.com/artist/...",
+    "https://open.spotify.com/playlist/..."
+]
+
+for url in mixed_urls:
+    info = client.get_all_info(url)
+    print(f"{info['type']}: {info['name']}")
+```
+
+## Utility Functions
+
+```python
+from spotify_scraper import is_spotify_url, extract_id, get_url_type
+
+# Validate URLs
+url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
+print(f"Valid URL: {is_spotify_url(url)}")  # True
+
+# Extract Spotify ID
+track_id = extract_id(url)
+print(f"Track ID: {track_id}")  # 6rqhFgbbKwnb9MLmUQDhG6
+
+# Determine URL type
+url_type = get_url_type(url)
+print(f"URL Type: {url_type}")  # track
 ```
 
 ## Error Handling
 
-Always wrap your code in try-except blocks:
-
 ```python
-from spotify_scraper import SpotifyClient, URLError, NetworkError
-
-client = SpotifyClient()
+from spotify_scraper.core.exceptions import URLError, ScrapingError
 
 try:
-    track_info = client.get_track_info("https://open.spotify.com/track/invalid")
+    track = client.get_track_info("invalid_url")
 except URLError as e:
     print(f"Invalid URL: {e}")
-except NetworkError as e:
-    print(f"Network error: {e}")
-finally:
-    client.close()
+except ScrapingError as e:
+    print(f"Scraping failed: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")
 ```
+
+## Best Practices
+
+1. **Always close the client when done:**
+   ```python
+   client.close()
+   ```
+
+2. **Use context managers (if available):**
+   ```python
+   with SpotifyClient() as client:
+       track = client.get_track_info(url)
+   ```
+
+3. **Handle missing preview URLs:**
+   ```python
+   if track.get('preview_url'):
+       client.download_preview_mp3(track_url)
+   else:
+       print("No preview available for this track")
+   ```
+
+4. **Check for errors in responses:**
+   ```python
+   info = client.get_track_info(url)
+   if 'error' not in info:
+       # Process data
+       pass
+   ```
 
 ## Next Steps
 
-- Learn about [Authentication](API-Reference#authentication) for accessing lyrics
-- Explore [Advanced Features](API-Reference#advanced-features)
-- See more [Examples](Examples)
+- Explore [Advanced Examples](Examples) for more use cases
 - Check the [API Reference](API-Reference) for detailed documentation
-
-## Common Issues
-
-1. **No preview available**: Not all tracks have preview URLs
-2. **Authentication required**: Some features like lyrics require cookies
-3. **Rate limiting**: Add delays between requests if processing many URLs
-
-For more help, see the [FAQ](FAQ) or [Troubleshooting](FAQ#troubleshooting) guide.
+- Learn about [authentication](API-Reference#authentication) for protected content
+- See [FAQ](FAQ) for common questions

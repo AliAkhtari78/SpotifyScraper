@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../src'))
 # -- Project information -----------------------------------------------------
 
 project = 'SpotifyScraper'
-copyright = '2024, Ali Akhtari'
+copyright = '2025, Ali Akhtari'
 author = 'Ali Akhtari'
 
 # The full version, including alpha/beta/rc tags
@@ -37,7 +37,6 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.ifconfig',
-    'recommonmark',
     'sphinx_rtd_theme',
 ]
 
@@ -80,7 +79,6 @@ templates_path = ['_templates']
 # Source file suffixes
 source_suffix = {
     '.rst': 'restructuredtext',
-    '.md': 'markdown',
 }
 
 # Master document
