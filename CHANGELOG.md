@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.3] - 2025-05-25
+
+### Fixed
+- Fixed license field format in pyproject.toml to comply with PEP 621 specification
+- License field now uses {text = "MIT"} format instead of plain string
+- Resolved CI/CD pipeline failures on all platforms (Windows, macOS, Linux)
+- Fixed "configuration error: project.license must be valid exactly by one definition" error
+
 ## [2.0.2] - 2025-05-25
 
 ### Fixed
