@@ -36,6 +36,10 @@ jobs:
     
     - name: Build distribution packages
       run: |
+        # Clean any existing build artifacts
+        rm -rf build/ dist/ *.egg-info src/*.egg-info
+        find . -type d -name "*.egg-info" -exec rm -rf {} + || true
+        # Build fresh packages
         python -m build
         ls -la dist/
     
