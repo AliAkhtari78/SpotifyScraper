@@ -361,6 +361,14 @@ class AlbumExtractor:
             if "popularity" in album_data:
                 result["popularity"] = album_data["popularity"]
 
+            # Ensure total_tracks is set
+            if "total_tracks" not in result:
+                if "tracks" in result:
+                    result["total_tracks"] = len(result["tracks"])
+                else:
+                    # Default to 0 if we can't determine track count
+                    result["total_tracks"] = 0
+
             return result
 
         except Exception as e:

@@ -1,26 +1,16 @@
 # Changelog
 
-## [v2.0.0] - 2025-05-23
-
-- Initial release
-
-
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
-- Nothing yet
-
-### Changed
-- Nothing yet
+## [2.0.1] - 2025-05-25
 
 ### Fixed
-- Nothing yet
+- Fixed KeyError when accessing 'total_tracks' in album data
+- Ensured 'total_tracks' field is always present in AlbumData (defaults to 0 if tracks unavailable)
+- Improved album data extraction robustness
 
 ## [2.0.0] - 2025-05-23
 
