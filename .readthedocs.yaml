@@ -12,23 +12,20 @@ build:
   commands:
     # Install the package
     - pip install -e .
-    # Build the documentation
-    - cd docs && make html
 
 # Build documentation in the docs/ directory with Sphinx
-sphinx:
-  configuration: docs/conf.py
-  builder: html
-  fail_on_warning: false
+#sphinx:
+#  configuration: docs/conf.py
+#  builder: html
+#  fail_on_warning: false
 
 # Build documentation with MkDocs
-#mkdocs:
-#  configuration: mkdocs.yml
+mkdocs:
+  configuration: mkdocs.yml
 
 # Optionally build your docs in additional formats such as PDF
-formats:
-  - pdf
-  - epub
+# Note: MkDocs doesn't support PDF/EPUB formats
+formats: []
 
 # Optionally declare the Python requirements required to build your docs
 python:

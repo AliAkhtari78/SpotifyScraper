@@ -6,6 +6,8 @@
 
 **The Ultimate Python Library for Spotify Data Extraction**
 
+**Version 2.0.0 | © 2025 Ali Akhtari**
+
 [![PyPI version](https://badge.fury.io/py/spotifyscraper.svg)](https://badge.fury.io/py/spotifyscraper)
 [![Python Support](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![Documentation Status](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io/en/latest/?badge=latest)
@@ -231,10 +233,12 @@ This library is for educational and personal use. Always respect Spotify's Terms
 ---
 
 <div align="center">
+  <p><strong>SpotifyScraper v2.0.0 - Documentation Last Updated: May 2025</strong></p>
   <p>Built with ❤️ by <a href="https://github.com/AliAkhtari78">Ali Akhtari</a> and contributors</p>
   <p>
     <a href="https://github.com/AliAkhtari78/SpotifyScraper">GitHub</a> •
     <a href="https://pypi.org/project/spotifyscraper/">PyPI</a> •
     <a href="https://spotifyscraper.readthedocs.io">Documentation</a>
   </p>
+  <p><small>© 2025 Ali Akhtari. Licensed under MIT.</small></p>
 </div>

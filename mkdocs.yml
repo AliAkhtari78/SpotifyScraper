@@ -1,0 +1,110 @@
+site_name: SpotifyScraper Documentation
+site_author: Ali Akhtari
+site_description: The Ultimate Python Library for Spotify Data Extraction
+site_url: https://spotifyscraper.readthedocs.io/
+repo_url: https://github.com/AliAkhtari78/SpotifyScraper
+repo_name: AliAkhtari78/SpotifyScraper
+copyright: Copyright &copy; 2025 Ali Akhtari
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: green
+      accent: light-green
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: green
+      accent: light-green
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: en
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            show_root_heading: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Quick Start: guide/basic-usage.md
+  - User Guide:
+      - Overview: guide/index.md
+      - Examples:
+          - Overview: examples/index.md
+          - Quick Start Examples: examples/quickstart.md
+          - CLI Examples: examples/cli.md
+          - Advanced Usage: examples/advanced.md
+  - API Reference:
+      - Overview: api/index.md
+      - Client: api/client.md
+      - Extractors: api/extractors.md
+      - Exceptions: api/exceptions.md
+      - Media: api/media.md
+      - Utils: api/utils.md
+  - Advanced Topics:
+      - Architecture: advanced/architecture.md
+      - Custom Extractors: advanced/custom-extractors.md
+      - Performance: advanced/performance.md
+      - Scaling: advanced/scaling.md
+  - Additional Resources:
+      - Features: features.md
+      - FAQ: faq.md
+      - Troubleshooting: troubleshooting.md
+      - Migration Guide: migration.md
+      - Changelog: changelog.md
+
+extra:
+  version:
+    provider: mike
+    default: latest
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/AliAkhtari78/SpotifyScraper
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/spotifyscraper/
+  generator: false
+
+extra_css:
+  - stylesheets/extra.css
