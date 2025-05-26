@@ -39,7 +39,7 @@ Note:
     Spotify's Terms of Service and robots.txt when using this library.
 """
 
-__version__ = "2.0.14"
+__version__ = "2.0.15"
 __author__ = "Ali Akhtari"
 __email__ = "aliakhtari78@hotmail.com"
 __license__ = "MIT"

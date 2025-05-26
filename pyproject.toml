@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "spotifyscraper"
-version = "2.0.14"
+version = "2.0.15"
 description = "Python library for extracting data from Spotify without authentication"
 readme = "README.md"
 authors = [
@@ -68,6 +68,7 @@ dev = [
     "pytest-xdist>=3.5.0",
     "pytest-timeout>=2.2.0",
     "pytest-mock>=3.12.0",
+    "pytest-asyncio>=0.23.0",
     "black>=24.2.0",
     "isort>=5.13.0",
     "flake8>=7.0.0",
@@ -82,6 +83,7 @@ test = [
     "pytest-xdist>=3.5.0",
     "pytest-timeout>=2.2.0",
     "pytest-mock>=3.12.0",
+    "pytest-asyncio>=0.23.0",
 ]
 docs = [
     "sphinx>=7.2.0",
@@ -157,7 +159,7 @@ precision = 2
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "2.0.14"
+version = "2.0.15"
 version_files = [
     "pyproject.toml:version",
     "src/spotify_scraper/__init__.py:__version__",
