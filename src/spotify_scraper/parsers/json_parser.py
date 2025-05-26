@@ -214,6 +214,14 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
         else:
             result["is_explicit"] = False  # Default to not explicit
 
+        # Extract playable flag
+        if "isPlayable" in track_data:
+            result["is_playable"] = track_data["isPlayable"]
+        elif "playable" in track_data:
+            result["is_playable"] = track_data["playable"]
+        else:
+            result["is_playable"] = True  # Default to playable
+
         # Extract album - handle both "album" and "albumOfTrack" fields
         album_data = track_data.get("album") or track_data.get("albumOfTrack")
         if album_data:
@@ -255,6 +263,21 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                     album["release_date"] = album_data["releaseDate"]
             elif "release_date" in album_data:
                 album["release_date"] = album_data["release_date"]
+            elif "date" in album_data:
+                # Handle the "date" field format used in some responses
+                if isinstance(album_data["date"], dict):
+                    date_obj = album_data["date"]
+                    year = date_obj.get("year", "")
+                    month = str(date_obj.get("month", "")).zfill(2) if date_obj.get("month") else ""
+                    day = str(date_obj.get("day", "")).zfill(2) if date_obj.get("day") else ""
+                    if year and month and day:
+                        album["release_date"] = f"{year}-{month}-{day}"
+                    elif year and month:
+                        album["release_date"] = f"{year}-{month}"
+                    elif year:
+                        album["release_date"] = str(year)
+                else:
+                    album["release_date"] = album_data["date"]
 
             result["album"] = album
         else:
