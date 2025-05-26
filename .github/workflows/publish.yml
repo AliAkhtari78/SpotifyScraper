@@ -62,6 +62,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.test_pypi == 'true'
     environment: test-pypi
+    permissions:
+      id-token: write
+      deployments: write
     
     steps:
     - name: Download packages
