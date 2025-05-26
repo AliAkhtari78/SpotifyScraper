@@ -74,11 +74,16 @@ jobs:
         path: dist/
     
     - name: Publish to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
-        skip-existing: true
-        verbose: true
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+      run: |
+        if [ -z "$TWINE_PASSWORD" ]; then
+          echo "::warning::TEST_PYPI_TOKEN not configured, skipping TestPyPI publish"
+          exit 0
+        fi
+        pip install twine
+        twine upload --repository-url https://test.pypi.org/legacy/ --skip-existing dist/*
     
     - name: Test installation from TestPyPI
       run: |

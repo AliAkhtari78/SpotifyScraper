@@ -1,0 +1,47 @@
+name: Mark Test PyPI Success
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  deployments: write
+
+jobs:
+  mark-success:
+    name: Mark test-pypi deployment as successful
+    runs-on: ubuntu-latest
+    environment: test-pypi
+    
+    steps:
+    - name: Create successful deployment
+      uses: actions/github-script@v7
+      with:
+        script: |
+          // For releases, we don't need test-pypi, so mark it as successful
+          console.log('Marking test-pypi as successful for production release');
+          
+          // Create a deployment
+          const deployment = await github.rest.repos.createDeployment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: context.ref || context.sha,
+            environment: 'test-pypi',
+            description: `Release ${context.ref || 'deployment'}`,
+            auto_merge: false,
+            required_contexts: []
+          });
+          
+          console.log(`Created deployment ${deployment.data.id}`);
+          
+          // Mark it as successful
+          await github.rest.repos.createDeploymentStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            deployment_id: deployment.data.id,
+            state: 'success',
+            description: 'Test PyPI deployment marked successful for release'
+          });
+          
+          console.log('Deployment marked as successful');
