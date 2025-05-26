@@ -1,0 +1,106 @@
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
+    
+    permissions:
+      contents: read
+
+    env:
+      # Allow Spotify embeds and other custom hosts
+      COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS: |
+        open.spotify.com,
+        spotify.com,
+        google.com,
+        github.com,
+        githubusercontent.com,
+        raw.githubusercontent.com,
+        gist.githubusercontent.com,
+        assets-cdn.github.com,
+        avatars.githubusercontent.com,
+        cloud.githubusercontent.com,
+        api.github.com,
+        copilot-telemetry.githubusercontent.com
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get full-upgrade -y
+          sudo apt-get install -y \
+            libxml2-dev \
+            libxslt1-dev \
+            python3-dev \
+            build-essential \
+            zlib1g-dev \
+            libjpeg-dev \
+            libffi-dev \
+            libssl-dev \
+            python3-lxml
+
+      - name: Upgrade pip and install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install wheel setuptools build
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          # Install the package in development mode
+          pip install -e .
+
+      - name: Verify installation
+        run: |
+          python -c "import lxml; print(f'lxml version: {lxml.__version__}')"
+          python -c "import bs4; print(f'beautifulsoup4 version: {bs4.__version__}')"
+          python -c "import requests; print(f'requests version: {requests.__version__}')"
+          python -c "import urllib3; print(f'urllib3 version: {urllib3.__version__}')"
+
+      - name: Run embed URL test
+        run: |
+          if [ -f test_embed_url.py ]; then
+            python test_embed_url.py
+          else
+            echo "test_embed_url.py not found, skipping test"
+          fi
+
+      - name: Run basic import tests
+        run: |
+          python -c "
+          try:
+              from spotify_scraper import SpotifyClient
+              print('✅ SpotifyClient import successful')
+          except ImportError as e:
+              print(f'❌ SpotifyClient import failed: {e}')
+              exit(1)
+          "
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-logs-python-${{ matrix.python-version }}
+          path: |
+            *.log
+            /tmp/*.log
+          retention-days: 5

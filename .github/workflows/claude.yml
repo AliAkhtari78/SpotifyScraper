@@ -1,0 +1,425 @@
+# Claude AI Assistant for SpotifyScraper
+# Intelligent issue resolution and code analysis assistant
+# Integrates with existing CI/CD infrastructure for comprehensive support
+
+name: Claude AI Assistant
+
+on:
+  # Primary use case: Issue resolution via @claude mentions
+  issue_comment:
+    types: [ created, edited ]
+  pull_request_review_comment:
+    types: [ created, edited ]
+  issues:
+    types: [ opened, assigned, reopened ]
+  pull_request_review:
+    types: [ submitted ]
+  
+  # Automated analysis for critical paths
+  pull_request:
+    types: [ opened, synchronize, ready_for_review ]
+    paths:
+      - 'src/spotify_scraper/**/*.py'
+      - 'tests/**/*.py'
+      - 'pyproject.toml'
+      - 'requirements*.txt'
+      - '.github/workflows/**'
+  
+  # Manual analysis triggers
+  workflow_dispatch:
+    inputs:
+      analysis_type:
+        description: 'Type of analysis to perform'
+        required: true
+        default: 'comprehensive'
+        type: choice
+        options:
+          - comprehensive
+          - security_audit
+          - performance_analysis
+          - scraping_optimization
+          - dependency_review
+          - code_quality_deep_dive
+      focus_area:
+        description: 'Specific module or area to focus on (optional)'
+        required: false
+        type: string
+        default: ''
+
+# Comprehensive permissions for full analysis capabilities
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  checks: read
+  actions: read
+  security-events: read
+
+env:
+  PYTHON_VERSION: "3.11"
+  PYTHONPATH: src
+
+jobs:
+  claude-assistant:
+    name: Claude AI Assistant
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    # Only run if not triggered by bot to prevent loops
+    if: github.actor != 'dependabot[bot]' && github.actor != 'github-actions[bot]'
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Set up environment to match existing CI/CD pipeline
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-claude-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-claude-
+            ${{ runner.os }}-pip-
+      
+      # Install comprehensive development environment
+      - name: Install Development Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,test,selenium]"
+          pip install safety pip-audit vulners
+      
+      # Interactive Claude Assistant - Primary Use Case
+      - name: Claude Interactive Issue Assistant
+        if: contains(github.event_name, 'issue') || contains(github.event_name, 'pull_request')
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_model: "claude-sonnet-4-20250514"
+          timeout_minutes: 25
+          trigger_phrase: "@claude"
+          
+          # Comprehensive toolset for SpotifyScraper development
+          allowed_tools: |
+            Bash(git:*),
+            Bash(python -m pytest tests/ -v --tb=short),
+            Bash(python -m pytest tests/unit/ -v),
+            Bash(python -m pytest tests/integration/ -v),
+            Bash(python -m black --check --diff src/ tests/),
+            Bash(python -m isort --check-only --diff src/ tests/),
+            Bash(python -m flake8 src/ tests/ --format=json),
+            Bash(python -m pylint src/ --output-format=json),
+            Bash(python -m mypy src/ --ignore-missing-imports --json-report /tmp/mypy-report),
+            Bash(python -m bandit -r src/ -f json),
+            Bash(python -m safety check --json),
+            Bash(pip-audit --desc --format json),
+            Bash(python -c "import spotify_scraper; print('✓ Import successful')"),
+            Bash(find src/ -name "*.py" -exec wc -l {} + | tail -1),
+            Bash(grep -r "TODO\|FIXME\|XXX\|BUG\|HACK" src/ tests/ --include="*.py" | head -20 || echo "No TODOs found"),
+            Bash(python -m spotify_scraper --help),
+            View,
+            Edit,
+            Replace,
+            GlobTool,
+            GrepTool,
+            BatchTool
+          
+          # SpotifyScraper-specific AI instructions
+          custom_instructions: |
+            You are an expert AI assistant specialized in the SpotifyScraper project - a sophisticated Python library for web scraping Spotify data. Your role is to provide intelligent analysis and solutions for issues reported in this repository.
+            
+            ## Project Context & Architecture:
+            **SpotifyScraper v2.0.12** is a production-ready Python library with the following architecture:
+            - **Core Modules**: client.py, config_manager.py, constants.py  
+            - **Specialized Components**: auth/, browsers/, cli/, extractors/, media/, parsers/, utils/
+            - **Multi-backend Support**: Requests-based scraping + Selenium fallback for JavaScript content
+            - **CLI Interface**: Full command-line tool with multiple output formats
+            - **Type Safety**: Complete type hints with py.typed marker
+            - **Python Support**: 3.8-3.12 across Windows/macOS/Linux
+            
+            ## Web Scraping Expertise Required:
+            **Anti-Detection & Rate Limiting:**
+            - Spotify employs sophisticated bot detection mechanisms
+            - Rate limiting strategies and request throttling
+            - User-agent rotation and header manipulation
+            - Cookie and session management for authenticated features
+            
+            **Data Extraction Challenges:**
+            - Dynamic content loading via JavaScript (requires Selenium)
+            - Complex nested JSON structures in Spotify's API responses
+            - Image and audio file downloading with proper error handling
+            - Playlist parsing with pagination and lazy loading
+            
+            **Performance Optimization:**
+            - Efficient parsing of large playlists and albums
+            - Memory management for batch operations
+            - Concurrent request handling without triggering rate limits
+            - Caching strategies for repeated requests
+            
+            ## Existing CI/CD Integration:
+            This project has comprehensive automated testing and quality assurance:
+            - **Testing**: pytest with coverage, integration tests, multi-platform testing
+            - **Code Quality**: black, isort, flake8, pylint, mypy
+            - **Security**: bandit, safety, CodeQL, Trivy scans
+            - **Documentation**: Sphinx with RTD theme
+            
+            ## Analysis Priorities for Issue Resolution:
+            
+            **1. Web Scraping Issues (High Priority):**
+            - Spotify URL parsing failures or format changes
+            - Rate limiting / 429 errors and anti-bot detection
+            - JavaScript rendering issues requiring Selenium
+            - Data extraction failures due to Spotify UI changes
+            - Preview URL unavailability or format changes
+            
+            **2. Code Quality & Architecture:**
+            - Type hint coverage and mypy compliance
+            - Error handling robustness for network operations
+            - Code organization and module separation
+            - Configuration management and environment variables
+            
+            **3. Performance & Scalability:**
+            - Memory usage in bulk operations
+            - Request efficiency and concurrent processing
+            - File I/O optimization for media downloads
+            - Database/caching integration patterns
+            
+            **4. Cross-Platform Compatibility:**
+            - Windows/macOS/Linux path handling
+            - Selenium WebDriver configuration across platforms
+            - Dependency compatibility issues
+            - CLI tool functionality across different shells
+            
+            ## Response Guidelines:
+            
+            **For Bug Reports:**
+            1. Analyze the issue with SpotifyScraper-specific context
+            2. Run diagnostic commands to reproduce the problem
+            3. Check recent Spotify UI changes that might affect scraping
+            4. Provide specific code fixes with proper error handling
+            5. Suggest test cases to prevent regression
+            
+            **For Feature Requests:**
+            1. Evaluate feasibility within Spotify's scraping constraints
+            2. Consider rate limiting and anti-detection implications
+            3. Propose implementation approach with code examples
+            4. Identify integration points with existing architecture
+            5. Suggest documentation and testing requirements
+            
+            **For Performance Issues:**
+            1. Profile the specific operation causing problems
+            2. Analyze memory usage and request patterns
+            3. Suggest optimization strategies specific to web scraping
+            4. Consider batch processing and caching improvements
+            5. Provide benchmarking approaches
+            
+            **Communication Style:**
+            - Use technical language appropriate for experienced Python developers
+            - Reference specific modules, classes, and functions by name
+            - Provide working code examples with proper imports
+            - Include relevant configuration options and environment variables
+            - Suggest thorough testing approaches including edge cases
+            - Consider backward compatibility and semantic versioning
+            
+            **Always consider these SpotifyScraper-specific factors:**
+            - Spotify's terms of service and ethical scraping practices
+            - Rate limiting to avoid IP blocking
+            - Graceful degradation when features become unavailable
+            - Proper user-agent and header management
+            - Error handling for network timeouts and connection issues
+            - Cross-platform compatibility for file operations
+            
+            Your goal is to provide expert-level assistance that helps maintain SpotifyScraper as a robust, reliable, and ethically-responsible web scraping library.
+      
+      # Automated Code Analysis for Pull Requests
+      - name: Automated PR Analysis
+        if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize')
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_model: "claude-sonnet-4-20250514"
+          timeout_minutes: 20
+          max_turns: 6
+          
+          allowed_tools: |
+            Bash(git diff HEAD~1 --name-only),
+            Bash(git diff HEAD~1 --stat),
+            Bash(git diff HEAD~1 src/ tests/),
+            Bash(python -m pytest tests/ -v --tb=short -x),
+            Bash(python -m black --check --diff src/ tests/),
+            Bash(python -m mypy src/ --ignore-missing-imports),
+            Bash(python -m bandit -r src/ -f json -ll),
+            Bash(python -c "import spotify_scraper; print('Import check passed')"),
+            View,
+            GlobTool,
+            GrepTool
+          
+          prompt: |
+            Analyze this pull request for the SpotifyScraper project with focus on web scraping reliability and code quality.
+            
+            **PR Analysis Checklist:**
+            
+            1. **Changed Files Review**: Examine what files were modified and assess impact
+            
+            2. **Web Scraping Impact Assessment**: 
+               - Check for changes that could affect Spotify data extraction
+               - Verify rate limiting and anti-detection measures remain intact
+               - Assess error handling for network operations
+            
+            3. **Code Quality Verification**:
+               - Run existing test suite to ensure no regressions
+               - Check code formatting and style compliance
+               - Verify type hints and static analysis
+               - Review for potential security vulnerabilities
+            
+            4. **Architecture Compliance**:
+               - Ensure changes align with existing module structure
+               - Check for proper separation of concerns
+               - Verify configuration management patterns
+            
+            5. **Testing Coverage**:
+               - Identify if new tests are needed for changes
+               - Check for edge cases in web scraping scenarios
+               - Verify cross-platform compatibility considerations
+            
+            Provide specific, actionable feedback with code examples where appropriate.
+            Focus on maintaining SpotifyScraper's reliability as a web scraping tool.
+      
+      # On-Demand Specialized Analysis
+      - name: Specialized Analysis
+        if: github.event_name == 'workflow_dispatch'
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_model: "claude-sonnet-4-20250514"
+          timeout_minutes: 25
+          max_turns: 8
+          
+          allowed_tools: |
+            Bash(git:*),
+            Bash(python -m pytest tests/ -v --cov=src/spotify_scraper --cov-report=term-missing),
+            Bash(python -m bandit -r src/ -f json),
+            Bash(python -m safety check --json),
+            Bash(pip-audit --desc --format json),
+            Bash(python -m vulners check),
+            Bash(python -m mypy src/ --ignore-missing-imports --strict),
+            Bash(python -m pylint src/ --output-format=json),
+            Bash(find src/ -name "*.py" -exec grep -l "requests\." {} \;),
+            Bash(find src/ -name "*.py" -exec grep -l "selenium" {} \;),
+            Bash(grep -r "rate.limit\|sleep\|delay" src/ --include="*.py"),
+            Bash(grep -r "user.agent\|headers" src/ --include="*.py"),
+            View,
+            Edit,
+            GlobTool,
+            GrepTool,
+            BatchTool
+          
+          prompt: |
+            Perform specialized analysis for SpotifyScraper: **${{ github.event.inputs.analysis_type }}**
+            ${{ github.event.inputs.focus_area && format('Focus Area: {0}', github.event.inputs.focus_area) || '' }}
+            
+            **Analysis Type Specifications:**
+            
+            **comprehensive**: Full codebase health assessment including code quality, security, performance, and scraping reliability
+            
+            **security_audit**: Deep security analysis focusing on web scraping vulnerabilities, dependency security, and data handling
+            
+            **performance_analysis**: Performance profiling with focus on scraping efficiency, memory usage, and request optimization
+            
+            **scraping_optimization**: Analysis of web scraping patterns, rate limiting implementation, and anti-detection measures
+            
+            **dependency_review**: Comprehensive dependency analysis, security vulnerabilities, and update recommendations
+            
+            **code_quality_deep_dive**: Detailed code quality assessment with refactoring recommendations and architectural improvements
+            
+            Provide detailed findings with specific recommendations and implementation examples where appropriate.
+      
+      # Summary Comment for PRs
+      - name: Post Analysis Summary
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+            
+            // Get workflow run status
+            const runConclusion = '${{ job.status }}';
+            
+            let summary = `## 🤖 Claude AI Analysis Summary\n\n`;
+            
+            if (runConclusion === 'success') {
+              summary += `✅ **Analysis completed successfully**\n\n`;
+              summary += `Claude has analyzed this PR for:\n`;
+              summary += `- Web scraping impact and reliability\n`;
+              summary += `- Code quality and style compliance\n`;
+              summary += `- Security vulnerabilities\n`;
+              summary += `- Architectural consistency\n\n`;
+              summary += `Check the workflow logs above for detailed findings and recommendations.\n\n`;
+              summary += `💡 **Need specific help?** Comment \`@claude [your question]\` for targeted assistance!`;
+            } else {
+              summary += `⚠️ **Analysis encountered issues**\n\n`;
+              summary += `Please check the workflow logs for details. You can:\n`;
+              summary += `- Comment \`@claude help debug this issue\` for assistance\n`;
+              summary += `- Re-run the workflow if it was a transient error\n`;
+              summary += `- Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details`;
+            }
+            
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: pull_number,
+              body: summary
+            });
+
+  # Notification for failed analysis
+  notify-failure:
+    needs: claude-assistant
+    runs-on: ubuntu-latest
+    if: failure() && github.event_name != 'pull_request'
+    
+    steps:
+      - name: Create Issue on Failure
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue_body = `## 🚨 Claude AI Assistant Workflow Failed
+            
+            **Event**: ${{ github.event_name }}
+            **Timestamp**: ${new Date().toISOString()}
+            **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            The Claude AI assistant encountered an error during execution.
+            
+            **Possible causes:**
+            - Anthropic API rate limiting or authentication issues
+            - Repository permissions or access problems
+            - Tool execution timeout or resource constraints
+            - Invalid trigger or configuration issues
+            
+            **Recommended actions:**
+            1. Check the workflow logs for specific error details
+            2. Verify ANTHROPIC_API_KEY secret is correctly configured
+            3. Ensure repository has necessary permissions
+            4. Consider adjusting timeout limits if analysis is too complex
+            
+            /label bug,infrastructure,claude-assistant
+            /cc @${{ github.repository_owner }}`;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Claude AI Assistant Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: issue_body,
+              labels: ['bug', 'infrastructure', 'claude-assistant']
+            });
