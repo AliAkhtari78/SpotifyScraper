@@ -71,13 +71,22 @@ jobs:
         echo "All checks passed!"
     
     - name: Trigger ReadTheDocs build
-      if: success()
+      if: success() && env.READTHEDOCS_TOKEN != ''
+      env:
+        READTHEDOCS_TOKEN: ${{ secrets.READTHEDOCS_TOKEN }}
       run: |
         curl -X POST \
           -H "Authorization: Token ${{ secrets.READTHEDOCS_TOKEN }}" \
           -H "Content-Type: application/json" \
           https://readthedocs.org/api/v3/projects/spotifyscraper/versions/latest/builds/ \
           -d '{}'
+      continue-on-error: true
+    
+    - name: Skip ReadTheDocs (no token)
+      if: success() && env.READTHEDOCS_TOKEN == ''
+      env:
+        READTHEDOCS_TOKEN: ${{ secrets.READTHEDOCS_TOKEN }}
+      run: echo "::warning::ReadTheDocs token not configured, skipping documentation trigger"
     
     - name: Update GitHub Pages
       if: success()

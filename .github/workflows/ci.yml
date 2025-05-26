@@ -112,6 +112,7 @@ jobs:
         file: ./coverage.xml
         fail_ci_if_error: false
         verbose: true
+      continue-on-error: true
     
     - name: Upload coverage reports
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
@@ -145,6 +146,13 @@ jobs:
     
     - name: Run integration tests
       run: |
+        if [ -z "$SPOTIFY_TEST_TRACK_ID" ]; then
+          echo "::warning::Spotify test IDs not configured, using default test data"
+          export SPOTIFY_TEST_TRACK_ID="3n3Ppam7vgaVa1iaRUc9Lp"  # Mr. Brightside
+          export SPOTIFY_TEST_ALBUM_ID="1mSCXPEknPLQ8yuhM3SYxH"  # Hot Fuss
+          export SPOTIFY_TEST_ARTIST_ID="0C0XlULifJtAgn6ZNCW2eu"  # The Killers
+          export SPOTIFY_TEST_PLAYLIST_ID="37i9dQZF1DXcBWIGoYBM5M"  # Today's Top Hits
+        fi
         pytest tests/integration/ -v
       env:
         SPOTIFY_TEST_TRACK_ID: ${{ secrets.SPOTIFY_TEST_TRACK_ID }}
