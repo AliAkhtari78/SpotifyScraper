@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.7] - 2025-05-26
+
+### Fixed
+- Fixed missing `album` field in `get_track_info()` response
+- Added JSON-LD fallback extraction for album data when missing from primary track data
+- Improved track data extraction to be compatible with Spotify Web API structure
+
 ## [2.0.6] - 2025-05-25
 
 ### Fixed
