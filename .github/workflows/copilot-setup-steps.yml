@@ -18,6 +18,8 @@ jobs:
       contents: read
 
     env:
+      # Disable Copilot firewall to allow all external connections
+      COPILOT_AGENT_FIREWALL_ENABLED: false
       # Allow Spotify embeds and other custom hosts
       COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS: |
         open.spotify.com,
