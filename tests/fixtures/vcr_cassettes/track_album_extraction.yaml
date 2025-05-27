@@ -1,0 +1,133 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://open.spotify.com/embed/track/4u7EnebtmKWzUH433cf5Qv
+  response:
+    body:
+      string: '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Bohemian
+        Rhapsody - A Night At The Opera (2011 Remaster)</title><meta name="description"
+        content="Listen to Bohemian Rhapsody by Queen on Spotify"><meta property="og:title"
+        content="Bohemian Rhapsody"><meta property="og:description" content="Queen ·
+        Song · 1975"><meta property="og:url" content="https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv"><meta
+        property="og:image" content="https://i.scdn.co/image/ab67616d0000b2734c8ecc09a9f5e3ab10d550f8"><meta
+        property="og:site_name" content="Spotify"><meta property="og:type" content="music.song"><meta
+        property="og:restrictions:country" content="AD,AE,AG,AL,AM,AO,AR,AT,AU,AZ,BA,BB,BD,BE,BF,BG,BH,BI,BJ,BN,BO,BR,BS,BT,BW,BY,BZ,CA,CD,CG,CH,CI,CL,CM,CO,CR,CV,CW,CY,CZ,DE,DJ,DK,DM,DO,DZ,EC,EE,EG,ES,FI,FJ,FM,FR,GA,GB,GD,GE,GH,GM,GN,GQ,GR,GT,GW,GY,HK,HN,HR,HT,HU,ID,IE,IL,IN,IQ,IS,IT,JM,JO,JP,KE,KG,KH,KI,KM,KN,KR,KW,KZ,LA,LB,LC,LI,LK,LR,LS,LT,LU,LV,LY,MA,MC,MD,ME,MG,MH,MK,ML,MN,MO,MR,MT,MU,MV,MW,MX,MY,MZ,NA,NE,NG,NI,NL,NO,NP,NR,NZ,OM,PA,PE,PG,PH,PK,PL,PS,PT,PW,PY,QA,RO,RS,RW,SA,SB,SC,SE,SG,SI,SK,SL,SM,SN,SR,ST,SV,SZ,TD,TG,TH,TJ,TL,TN,TO,TR,TT,TV,TW,TZ,UA,UG,US,UY,UZ,VC,VE,VN,VU,WS,XK,ZA,ZM,ZW"><meta
+        property="music:duration" content="354"><meta property="music:album" content="https://open.spotify.com/album/1GbtB4zTqAsyfZEsm1RZfx"><meta
+        property="music:album:track" content="11"><meta property="music:musician"
+        content="https://open.spotify.com/artist/1dfeR4HaWDbWqFHLkxsg1d"><meta property="fb:app_id"
+        content="174829003346"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><link
+        rel="icon" href="https://open.scdn.co/cdn/images/favicon32.8e66b099.png"><link
+        rel="preload" href="https://open.scdn.co/cdn/build/embed/embed.b4322278.js"
+        as="script"><style>@font-face{font-family:spotify-circular;src:url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Light.afd9ab26.woff2)format("woff2"),url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Light.53c5239a.woff)format("woff"),url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Light.303a8b23.ttf)format("truetype");font-weight:200;font-style:normal}@font-face{font-family:spotify-circular;src:url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Book.3466e0ec.woff2)format("woff2"),url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Book.ea8d19db.woff)format("woff"),url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Book.a357677a.ttf)format("truetype");font-weight:400;font-style:normal}@font-face{font-family:spotify-circular;src:url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Bold.8d0a45cc.woff2)format("woff2"),url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Bold.10e93738.woff)format("woff"),url(https://open.scdn.co/cdn/fonts/CircularSpUIv3T-Bold.7eb7d0f7.ttf)format("truetype");font-weight:600;font-style:normal}</style><script
+        type="application/ld+json">{"@context":"https://schema.org/","@type":"MusicRecording","name":"Bohemian
+        Rhapsody - 2011 Remaster","duration":"PT5M54S","url":"https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv","sameAs":"spotify:track:4u7EnebtmKWzUH433cf5Qv","datePublished":"1975-11-21","isrcCode":"GBUM71029604","producer":{"@type":"Person","name":"Roy
+        Thomas Baker"},"recordingOf":{"@type":"MusicComposition","name":"Bohemian
+        Rhapsody","composer":{"@type":"Person","name":"Freddie Mercury"},"iswcCode":"T-070.068.747-3"},"inAlbum":{"@type":"MusicAlbum","name":"A
+        Night At The Opera (2011 Remaster)","datePublished":"1975-11-21"},"byArtist":{"@type":"MusicGroup","name":"Queen","url":"https://open.spotify.com/artist/1dfeR4HaWDbWqFHLkxsg1d","image":"https://i.scdn.co/image/ab6761610000e5eb48f38e719eebef11f4702e72"},"image":"https://i.scdn.co/image/ab67616d0000b2734c8ecc09a9f5e3ab10d550f8"}</script><style>#fallback{display:flex;flex-flow:column nowrap;justify-content:center;align-items:center;text-align:center;height:100%;width:100%;position:fixed;top:0;right:0;left:0;bottom:0;padding:20px}</style><link
+        rel="stylesheet" href="https://open.scdn.co/cdn/build/embed/embed.ee9607df.css"></head><body><div
+        id="embed-iframe"><div id="fallback"><div class="logo" style="width: 25%; max-width:
+        400px; margin-bottom: 40px;"><svg viewBox="0 0 566.93 170.04" xmlns="http://www.w3.org/2000/svg"
+        xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2"><path
+        d="M87.996 1.277c-46.249 0-83.743 37.493-83.743 83.742 0 46.254 37.494 83.745
+        83.743 83.745 46.251 0 83.743-37.491 83.743-83.745 0-46.246-37.49-83.738-83.744-83.738zm38.404
+        120.78c-1.504 2.467-4.718 3.24-7.177 1.737-19.665-12.019-44.417-14.734-73.567-8.075-2.809.644-5.609-1.117-6.249-3.925-.643-2.809
+        1.11-5.609 3.926-6.249 31.9-7.293 59.263-4.154 81.336 9.334 2.46 1.51 3.24 4.72
+        1.73 7.18zm10.25-22.799c-1.894 3.073-5.912 4.037-8.981 2.15-22.505-13.834-56.822-17.841-83.447-9.759-3.453
+        1.043-7.1-.903-8.148-4.35-1.04-3.453.907-7.093 4.354-8.143 30.413-9.228 68.221-4.758
+        94.071 11.127 3.07 1.89 4.04 5.91 2.15 8.976zm.88-23.744c-26.994-16.031-71.52-17.505-97.289-9.684-4.138
+        1.255-8.514-1.081-9.768-5.219-1.254-4.14 1.08-8.513 5.221-9.771 29.581-8.98
+        78.756-7.245 109.83 11.202 3.722 2.209 4.943 7.016 2.737 10.733-2.2 3.722-7.02
+        4.949-10.73 2.739z" style="fill:#1ed760;fill-rule:nonzero"/><path d="M232.09
+        78.586c-14.459-3.448-17.033-5.868-17.033-10.953 0-4.804 4.523-8.037 11.249-8.037
+        6.52 0 12.985 2.455 19.763 7.509.915.674 2.126.956 3.194.583 1.058-.385 1.832-1.262
+        2.085-2.357l2.297-9.946c.23-.951.117-1.945-.319-2.813-.437-.866-1.149-1.558-2.015-1.984-8.987-4.443-19.058-6.73-24.895-6.73-19.334
+        0-32.592 11.582-32.592 28.086 0 17.704 11.536 23.904 31.368 28.745 14.873 3.495
+        17.336 5.868 17.336 10.745 0 5.34-4.758 8.667-12.395 8.667-8.492 0-15.426-2.845-23.157-9.43-.94-.802-2.237-1.149-3.416-.809-1.15.33-2.002
+        1.209-2.284 2.295l-2.414 9.862c-.226.902-.129 1.856.297 2.7.428.84 1.117 1.515
+        1.947 1.926 8.526 4.477 19.228 6.937 28.633 6.937 20.093 0 33.584-11.075 33.584-28.261
+        0-15.448-9.273-22.607-31.222-28.725zm-79.756 48.11c-1.14.14-2.213-.195-3.018-.897-.8-.703-1.28-1.704-1.344-2.776V26.77c.064-1.112.584-2.11
+        1.442-2.785.86-.671 1.958-.962 3.066-.79l11.313 1.776c1.051.165 1.994.775 2.618
+        1.696.623.923.845 2.06.666 3.155v94.365c-.064 1.139-.554 2.135-1.407 2.811-.846.676-1.949.967-3.04.811l-10.296-1.933zm-31.847-7.893c-5.271
+        0-9.389-1.733-12.104-5.163v30.814c-.06 1.105-.578 2.105-1.413 2.811-.866.658-1.926.962-3.023.811l-10.59-1.81c-1.126-.13-2.188-.51-2.97-1.236-.783-.723-1.2-1.725-1.202-2.751V80.205c0-1.371
+        0-2.609.117-4.092.063-1.216.586-2.24 1.451-2.922.883-.703 1.998-1.022 3.147-.888l8.97
+        1.787c1.476.409 2.593 1.641 2.831 3.138.123.735.585 1.217 1.354 1.932 3.096-4.022
+        7.803-6.07 14.093-6.07 16.262 0 25.513 13.038 25.513 33.212 0 22.352-11.952
+        33.55-26.177 33.55zm-2.353-50.146c-10.578 0-13.015 13.749-13.015 27.331 0 16.143
+        5.032 26.076 13.249 26.076 8.799 0 13.366-10.458 13.366-26.076 0-11.466-2.767-27.331-13.598-27.331h-.002zm-45.899
+        50.146c-8.798 0-16.386-2.608-22.968-7.601l-.297-.157v30.635c-.066 1.11-.588
+        2.085-1.43 2.785-.845.675-1.957.972-3.053.811l-10.528-1.932c-1.124-.125-2.168-.5-2.951-1.216-.782-.715-1.258-1.712-1.258-2.747V80.068c0-2.609
+        0-5.286.118-8.137.063-1.165.626-2.243 1.516-2.905.891-.661 2.045-.922 3.178-.739l7.334
+        1.799c1.264.322 2.34 1.205 2.911 2.384.576 1.178.651 2.536.206 3.77-.222.61-.111
+        1.187.345 1.935 2.524-3.09 8.857-8.682 18.232-8.682 13.952 0 22.767 8.966 22.767
+        34.332 0 19.242-10.644 35.595-27.17 35.595zm-2.82-50.029c-9.391 0-14.438 9.76-14.438
+        26.95 0 10.465 2.903 26.95 13.93 26.95 7.157 0 13.931-8.153 13.931-26.95 0-13.157-3.619-26.95-13.424-26.95h.001zm-53.138
+        49.91c-13.598 0-23.971-10.64-23.971-35.462 0-22.934 9.694-35.8 24.679-35.8 13.013
+        0 23.151 10.758 23.151 35.8 0 27.327-11.721 35.462-23.857 35.462h-.002zm.295-59.843c-9.041
+        0-13.304 10.526-13.304 24.499 0 14.932 4.263 23.787 13.014 23.787 8.798 0 13.13-8.855
+        13.13-23.787 0-15.627-4.566-24.499-12.838-24.499h-.002z" style="fill:#000;fill-rule:nonzero"/></svg></div><div
+        style="color: #888; font-family: &#39;spotify-circular&#39;, Helvetica, Arial;
+        font-weight: 200; font-size: 16px; line-height: 24px;"><h1 style="color: #000;
+        font-family: &#39;spotify-circular&#39;, Helvetica, Arial; font-weight: 600;
+        font-size: 20px; line-height: 1.6; margin-bottom: 8px;">Spotify no longer supports
+        this version of your browser</h1>Please <a style="text-decoration: underline;
+        color: inherit; cursor: pointer; line-height: inherit;" href="https://www.spotify.com/download">download
+        the Spotify app</a> for your phone or <a style="text-decoration: underline;
+        color: inherit; cursor: pointer; line-height: inherit;" href="https://www.spotify.com/download/windows/">desktop</a>.
+        For more information, please see our <a style="text-decoration: underline; color:
+        inherit; cursor: pointer; line-height: inherit;" href="https://www.spotify.com/help/article/browsers">browser
+        support page</a>.</div></div></div><script src="https://open.scdn.co/cdn/build/embed/embed.b4322278.js"></script></body></html>'
+    headers:
+      CF-RAY:
+      - 91c0a6f97fc2ed22-SJC
+      Cache-Control:
+      - no-cache, no-store, max-age=0
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Language:
+      - en
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Tue, 27 May 2025 11:14:37 GMT
+      Last-Modified:
+      - Tue, 27 May 2025 11:14:37 GMT
+      Link:
+      - <https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv>; rel="canonical",<https://open.spotify.com/embed/track/4u7EnebtmKWzUH433cf5Qv>;
+        rel="alternate"; type="text/html"
+      Permissions-Policy:
+      - interest-cohort=()
+      Referrer-Policy:
+      - no-referrer-when-downgrade
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - sp_t=6dd43c9c6a5a93f7e2ae79c1e3889f1c; expires=Tue, 27 May 2025 13:14:37 GMT;
+        Max-Age=7200; path=/; domain=.spotify.com; samesite=none; secure
+      Strict-Transport-Security:
+      - max-age=31536000
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding, Accept-Language
+      Via:
+      - 1.1 google
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status:
+      code: 200
+      message: OK
+version: 1
