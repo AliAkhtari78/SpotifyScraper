@@ -49,12 +49,12 @@ album = client.get_album_info(album_url)
 
 print(f"\nAlbum: {album['name']}")
 print(f"Artist: {album['artists'][0]['name']}")
-print(f"Released: {album['release_date']}")
+print(f"Released: {album.get('release_date', 'N/A')}")
 print(f"Total tracks: {album['total_tracks']}")
 
 # List all tracks
 print("\nTracklist:")
-for i, item in enumerate(album['tracks']['items'], 1):
+for i, item in enumerate(album['tracks'], 1):
     duration = item['duration_ms'] // 1000
     print(f"{i:2d}. {item['name']} ({duration // 60}:{duration % 60:02d})")
 ```
@@ -124,7 +124,7 @@ with open('playlist_tracks.csv', 'w', newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
     writer.writerow(['Position', 'Title', 'Artist(s)', 'Album', 'Duration', 'Added Date'])
     
-    for i, item in enumerate(playlist['tracks']['items'], 1):
+    for i, item in enumerate(playlist['tracks'], 1):
         track = item['track']
         writer.writerow([
             i,
@@ -142,7 +142,7 @@ with open('playlist.md', 'w', encoding='utf-8') as f:
     f.write(markdown)
 
 # 4. Export as M3U playlist
-tracks = [item['track'] for item in playlist['tracks']['items']]
+tracks = [item['track'] for item in playlist['tracks']]
 formatter.export_to_m3u(tracks, 'playlist.m3u')
 
 print(f"Exported playlist '{playlist['name']}' to multiple formats")
@@ -164,9 +164,9 @@ print(f"Creating dataset for {artist['name']}...")
 dataset = {
     "artist": {
         "name": artist['name'],
-        "genres": artist['genres'],
-        "popularity": artist['popularity'],
-        "followers": artist['followers']['total']
+        "genres": artist.get('genres', []),
+        "popularity": artist.get('popularity', 'N/A'),
+        "followers": artist.get('followers', {}).get('total', 'N/A')
     },
     "tracks": all_tracks,
     "generated_at": datetime.now().isoformat()
@@ -515,7 +515,7 @@ def generate_playlist_report(playlist_url: str, output_file: str = "playlist_rep
         
         <div class="stats">
             <h2>Overview</h2>
-            <p><strong>Owner:</strong> {playlist['owner']['display_name']}</p>
+            <p><strong>Owner:</strong> {playlist['owner']['name']}</p>
             <p><strong>Total Tracks:</strong> {analysis['basic_stats']['total_tracks']}</p>
             <p><strong>Total Duration:</strong> {analysis['basic_stats']['total_duration_formatted']}</p>
             <p><strong>Average Popularity:</strong> {analysis['basic_stats']['average_popularity']:.1f}/100</p>
@@ -537,7 +537,7 @@ def generate_playlist_report(playlist_url: str, output_file: str = "playlist_rep
                 <td>{', '.join(a['name'] for a in item['track']['artists'])}</td>
                 <td>{item['track']['album']['name']}</td>
                 <td>{item['track']['duration_ms'] // 60000}:{(item['track']['duration_ms'] % 60000) // 1000:02d}</td>
-            </tr>''' for i, item in enumerate(playlist['tracks']['items'], 1))}
+            </tr>''' for i, item in enumerate(playlist['tracks'], 1))}
         </table>
     </body>
     </html>

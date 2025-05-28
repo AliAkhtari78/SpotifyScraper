@@ -146,12 +146,12 @@ def get_album_tracklist(album_url):
         
         print(f"Album: {album['name']}")
         print(f"Artist: {album['artists'][0]['name']}")
-        print(f"Release Date: {album['release_date']}")
-        print(f"Label: {album.get('label', 'Unknown')}")
+        print(f"Release Date: {album.get('release_date', 'N/A')}")
+        print(f"Total Tracks: {album['total_tracks']}")
         print(f"\nTracks ({album['total_tracks']}):")
         
         total_duration_ms = 0
-        for track in album['tracks']['items']:
+        for track in album['tracks']:
             duration_sec = track['duration_ms'] / 1000
             total_duration_ms += track['duration_ms']
             print(f"{track['track_number']:2d}. {track['name']} ({duration_sec:.2f}s)")
@@ -176,21 +176,21 @@ def analyze_playlist(playlist_url):
         playlist = client.get_playlist_info(playlist_url)
         
         print(f"Playlist: {playlist['name']}")
-        print(f"Owner: {playlist['owner']['display_name']}")
-        print(f"Total Tracks: {playlist['tracks']['total']}")
+        print(f"Owner: {playlist['owner']['name']}")
+        print(f"Total Tracks: {playlist['track_count']}")
         
         if playlist.get('description'):
             print(f"Description: {playlist['description']}")
         
         # Calculate total duration
-        total_ms = sum(item['track']['duration_ms'] for item in playlist['tracks']['items'])
+        total_ms = sum(item['track']['duration_ms'] for item in playlist['tracks'])
         hours = total_ms // 3600000
         minutes = (total_ms % 3600000) // 60000
         print(f"Total Duration: {hours}h {minutes}m")
         
         # Show first 5 tracks
         print("\nFirst 5 tracks:")
-        for i, item in enumerate(playlist['tracks']['items'][:5], 1):
+        for i, item in enumerate(playlist['tracks'][:5], 1):
             track = item['track']
             artists = ', '.join([a['name'] for a in track['artists']])
             print(f"{i}. {track['name']} - {artists}")
@@ -505,7 +505,7 @@ class SpotifyAnalyzer:
                 "id": album['id'],
                 "name": album['name'],
                 "artists": [a['name'] for a in album['artists']],
-                "release_date": album['release_date'],
+                "release_date": album.get('release_date', 'N/A'),
                 "total_tracks": album['total_tracks'],
                 "label": album.get('label', 'Unknown'),
                 "tracks": [
@@ -514,7 +514,7 @@ class SpotifyAnalyzer:
                         "name": t['name'],
                         "duration_seconds": t['duration_ms'] / 1000
                     }
-                    for t in album['tracks']['items']
+                    for t in album['tracks']
                 ]
             }
         }
@@ -548,7 +548,7 @@ class SpotifyAnalyzer:
                 "name": artist['name'],
                 "genres": artist.get('genres', []),
                 "popularity": artist.get('popularity', 0),
-                "followers": artist['followers']['total'],
+                "followers": artist.get('followers', {}).get('total', 'N/A'),
                 "verified": artist.get('verified', False),
                 "top_tracks": [
                     {"name": t['name'], "popularity": t.get('popularity', 0)}
@@ -562,7 +562,7 @@ class SpotifyAnalyzer:
         playlist = self.client.get_playlist_info(url)
         
         # Calculate statistics
-        tracks = playlist['tracks']['items']
+        tracks = playlist['tracks']
         total_duration_ms = sum(item['track']['duration_ms'] for item in tracks)
         
         # Get unique artists
@@ -578,11 +578,11 @@ class SpotifyAnalyzer:
             "data": {
                 "id": playlist['id'],
                 "name": playlist['name'],
-                "owner": playlist['owner']['display_name'],
+                "owner": playlist['owner']['name'],
                 "description": playlist.get('description', ''),
                 "public": playlist.get('public', True),
                 "collaborative": playlist.get('collaborative', False),
-                "total_tracks": playlist['tracks']['total'],
+                "total_tracks": playlist['track_count'],
                 "total_duration_hours": total_duration_ms / 3600000,
                 "unique_artists": len(unique_artists),
                 "sample_tracks": [

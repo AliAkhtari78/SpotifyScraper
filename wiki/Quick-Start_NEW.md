@@ -107,8 +107,7 @@ with open('tracks.csv', 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(['Title', 'Artist', 'Album', 'Duration'])
     
-    for item in playlist['tracks']['items']:
-        track = item['track']
+    for track in playlist['tracks']:
         writer.writerow([
             track['name'],
             ', '.join(a['name'] for a in track['artists']),
@@ -125,13 +124,13 @@ artist_url = "https://open.spotify.com/artist/3fMbdgg4jU18AjLCKBhRSm"
 artist = client.get_artist_info(artist_url)
 
 print(f"Artist: {artist['name']}")
-print(f"Genres: {', '.join(artist['genres'])}")
-print(f"Followers: {artist['followers']['total']:,}")
+print(f"Genres: {', '.join(artist.get('genres', []))}")
+print(f"Followers: {artist.get('followers', {}).get('total', 'N/A'):,}")
 
 # Get top tracks
 if artist.get('top_tracks'):
     print("\nTop Tracks:")
-    for i, track in enumerate(artist['top_tracks'][:5], 1):
+    for i, track in enumerate(artist.get('top_tracks', [])[:5], 1):
         print(f"{i}. {track['name']}")
 ```
 

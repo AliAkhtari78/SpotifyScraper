@@ -94,11 +94,11 @@ album = client.get_album_info(album_url)
 
 print(f"Album: {album['name']}")
 print(f"Artist: {album['artists'][0]['name']}")
-print(f"Released: {album['release_date']}")
+print(f"Released: {album.get('release_date', 'N/A')}")
 print(f"Tracks: {album['total_tracks']}")
 
 # List all tracks
-for track in album['tracks']['items']:
+for track in album['tracks']:
     print(f"  {track['track_number']}. {track['name']}")
 ```
 
@@ -109,12 +109,12 @@ for track in album['tracks']['items']:
 artist = client.get_artist_info(artist_url)
 
 print(f"Artist: {artist['name']}")
-print(f"Followers: {artist['followers']['total']:,}")
-print(f"Genres: {', '.join(artist['genres'])}")
-print(f"Popularity: {artist['popularity']}/100")
+print(f"Followers: {artist.get('followers', {}).get('total', 'N/A'):,}")
+print(f"Genres: {', '.join(artist.get('genres', []))}")
+print(f"Popularity: {artist.get('popularity', 'N/A')}/100")
 
 # Get top tracks
-for track in artist['top_tracks'][:5]:
+for track in artist.get('top_tracks', [])[:5]:
     print(f"  - {track['name']}")
 ```
 
@@ -125,13 +125,12 @@ for track in artist['top_tracks'][:5]:
 playlist = client.get_playlist_info(playlist_url)
 
 print(f"Playlist: {playlist['name']}")
-print(f"Owner: {playlist['owner']['display_name']}")
-print(f"Tracks: {playlist['tracks']['total']}")
-print(f"Followers: {playlist['followers']['total']:,}")
+print(f"Owner: {playlist['owner']['name']}")
+print(f"Tracks: {playlist['track_count']}")
+print(f"Followers: {playlist.get('followers', {}).get('total', 'N/A'):,}")
 
 # Get all tracks
-for item in playlist['tracks']['items']:
-    track = item['track']
+for track in playlist['tracks']:
     print(f"  - {track['name']} by {track['artists'][0]['name']}")
 ```
 
@@ -306,7 +305,7 @@ Tools for analyzing Spotify data.
 album = client.get_album_info(album_url)
 
 # Download all track previews
-for track in album['tracks']['items']:
+for track in album['tracks']:
     track_url = f"https://open.spotify.com/track/{track['id']}"
     client.download_preview_mp3(track_url, path=f"album_{album['name']}/")
 ```
@@ -345,7 +344,7 @@ with open("playlist_report.md", "w") as f:
     f.write(markdown)
 
 # Create M3U file
-tracks = [item['track'] for item in playlist['tracks']['items']]
+tracks = [item['track'] for item in playlist['tracks']]
 formatter.export_to_m3u(tracks, "playlist.m3u")
 ```
 

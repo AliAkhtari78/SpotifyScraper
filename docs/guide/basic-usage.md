@@ -43,7 +43,7 @@ print(f"Duration: {track['duration_ms'] / 1000:.0f} seconds")
 album = client.get_album_info("https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy")
 
 print(f"Album: {album['name']}")
-print(f"Release Date: {album['release_date']}")
+print(f"Release Date: {album.get('release_date', 'N/A')}")
 
 # List all tracks
 for i, track in enumerate(album['tracks'], 1):

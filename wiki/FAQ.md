@@ -118,7 +118,7 @@ playlist = client.get_playlist_info(playlist_url)
 
 # Extract track URLs
 track_urls = []
-for item in playlist['tracks']['items']:
+for item in playlist['tracks']:
     if item['track'] and item['track'].get('id'):
         track_urls.append(f"https://open.spotify.com/track/{item['track']['id']}")
 
@@ -142,7 +142,7 @@ For playlists with many tracks, process in batches:
 ```python
 def process_large_playlist(playlist_url, batch_size=50):
     playlist = client.get_playlist_info(playlist_url)
-    tracks = playlist['tracks']['items']
+    tracks = playlist['tracks']
     
     for i in range(0, len(tracks), batch_size):
         batch = tracks[i:i + batch_size]
@@ -300,8 +300,7 @@ def process_playlist_stream(playlist_url):
     playlist = client.get_playlist_info(playlist_url)
     
     # Process tracks one by one instead of loading all
-    for item in playlist['tracks']['items']:
-        track = item['track']
+    for track in playlist['tracks']:
         # Process track
         yield {
             'name': track['name'],

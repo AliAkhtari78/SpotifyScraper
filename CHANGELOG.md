@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.21] - 2025-05-28
+
+### Fixed
+- Fixed all documentation examples to use only available fields based on comprehensive testing
+- Fixed album examples incorrectly using `album['release_date']` which is not always available
+- Fixed album examples incorrectly using `album['label']` which is not available via web scraping
+- Fixed artist examples incorrectly using `artist['genres']`, `artist['followers']`, and `artist['popularity']`
+- Fixed playlist examples incorrectly using `playlist['owner']['display_name']` (should be `playlist['owner']['name']`)
+- Fixed playlist examples using `playlist['total_tracks']` instead of correct `playlist['track_count']`
+- Updated all documentation to handle missing fields gracefully with `.get()` method
+
+### Changed
+- Album tracks are now accessed as `album['tracks']` (list) instead of `album['tracks']['items']`
+- Playlist tracks are now accessed as `playlist['tracks']` (list) instead of `playlist['tracks']['items']`
+- All examples now use safe access patterns for fields that may not be available
+- Improved error handling in documentation examples
+
+### Documentation
+- Comprehensively tested all extractors to identify exact available fields
+- Updated README, Wiki, and all documentation files with corrected field usage
+- Added notes explaining which fields are not available via web scraping
+- Fixed over 10 documentation files with incorrect field references
+
 ## [2.0.20] - 2025-05-28
 
 ### Fixed
