@@ -560,7 +560,7 @@ def extract_album_data_from_jsonld(html_content: str) -> Optional[AlbumData]:
         jsonld_scripts = soup.find_all("script", {"type": "application/ld+json"})
 
         for script in jsonld_scripts:
-            script_content = getattr(script, 'string', None)
+            script_content = getattr(script, "string", None)
             if not script_content:
                 continue
 
