@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -15,38 +15,44 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        
-      - name: Create minimal site
+      - name: Create and push to gh-pages branch
         run: |
-          mkdir -p _site
-          if [ -f index.html ]; then
-            cp index.html _site/
-          else
-            echo "No index.html found, creating default"
-            echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=https://github.com/AliAkhtari78/SpotifyScraper"></head></html>' > _site/index.html
-          fi
-          touch _site/.nojekyll
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '_site'
+          # Create orphan gh-pages branch
+          git checkout --orphan gh-pages
           
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          # Remove all files
+          git rm -rf .
+          
+          # Create minimal site
+          echo '<!DOCTYPE html>' > index.html
+          echo '<html>' >> index.html
+          echo '<head>' >> index.html
+          echo '    <meta charset="utf-8">' >> index.html
+          echo '    <title>SpotifyScraper Documentation</title>' >> index.html
+          echo '    <meta http-equiv="refresh" content="0; url=https://spotifyscraper.readthedocs.io/">' >> index.html
+          echo '    <link rel="canonical" href="https://spotifyscraper.readthedocs.io/">' >> index.html
+          echo '</head>' >> index.html
+          echo '<body>' >> index.html
+          echo '    <h1>Redirecting to SpotifyScraper Documentation...</h1>' >> index.html
+          echo '    <p>If you are not redirected automatically, please visit <a href="https://spotifyscraper.readthedocs.io/">https://spotifyscraper.readthedocs.io/</a></p>' >> index.html
+          echo '</body>' >> index.html
+          echo '</html>' >> index.html
+          
+          # Create .nojekyll
+          touch .nojekyll
+          
+          # Add and commit
+          git add index.html .nojekyll
+          git commit -m "Deploy GitHub Pages"
+          
+          # Push to gh-pages branch
+          git push -f origin gh-pages
