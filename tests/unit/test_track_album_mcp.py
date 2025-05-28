@@ -7,13 +7,14 @@ for network-independent testing while validating real-world behavior.
 
 import json
 import os
-import pytest
-import vcr
 from pathlib import Path
 
+import pytest
+import vcr
+
+from spotify_scraper.browsers.requests_browser import RequestsBrowser
 from spotify_scraper.client import SpotifyClient
 from spotify_scraper.extractors.track import TrackExtractor
-from spotify_scraper.browsers.requests_browser import RequestsBrowser
 
 # Configure VCR for recording HTTP interactions
 vcr_cassette_dir = Path(__file__).parent.parent / "fixtures" / "vcr_cassettes"

@@ -6,13 +6,15 @@ information in the track data, as per Spotify's API contract.
 """
 
 import json
-import pytest
 from pathlib import Path
+
+import pytest
+
+from spotify_scraper.browsers.requests_browser import RequestsBrowser
+from spotify_scraper.client import SpotifyClient
 
 # Import the TrackExtractor
 from spotify_scraper.extractors.track import TrackExtractor
-from spotify_scraper.client import SpotifyClient
-from spotify_scraper.browsers.requests_browser import RequestsBrowser
 
 
 # Simple mock browser for testing (avoid complex imports)
