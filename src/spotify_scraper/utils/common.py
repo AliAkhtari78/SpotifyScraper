@@ -899,7 +899,7 @@ class SpotifyBulkOperations:
         self,
         urls: List[str],
         output_dir: Union[str, Path],
-        media_types: List[str] = ["audio", "cover"],
+        media_types: Optional[List[str]] = None,
         skip_errors: bool = True,
     ) -> Dict[str, Any]:
         """
@@ -914,6 +914,9 @@ class SpotifyBulkOperations:
         Returns:
             Dictionary with download results
         """
+        if media_types is None:
+            media_types = ["audio", "cover"]
+            
         output_dir = Path(output_dir)
         results = {
             "total": len(urls),
