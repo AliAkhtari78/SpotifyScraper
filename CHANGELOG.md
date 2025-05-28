@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.19] - 2025-05-28
+
+### Fixed
+- Fixed None handling in CLI utilities for duration_ms values
+- Fixed bulk operations `extract_urls_from_text` to handle None input gracefully
+- Fixed playlist formatter to safely handle None tracks data
+
+### Changed
+- Aligned documentation across README, GitHub Wiki, and PyPI with consistent tone and structure
+- Updated all Wiki pages with unified formatting and improved examples
+- Enhanced API reference documentation with comprehensive examples
+- Improved FAQ section with common issues and solutions
+
+### Documentation
+- Created unified documentation templates for better consistency
+- Added more real-world examples in the Examples section
+- Improved Quick Start guide with clearer instructions
+- Enhanced troubleshooting information in FAQ
+
 ## [2.0.18] - 2025-05-28
 
 ### Added
