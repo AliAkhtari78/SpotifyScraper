@@ -27,8 +27,13 @@ jobs:
       - name: Create minimal site
         run: |
           mkdir -p _site
-          cp index.html _site/
-          echo "" > _site/.nojekyll
+          if [ -f index.html ]; then
+            cp index.html _site/
+          else
+            echo "No index.html found, creating default"
+            echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=https://github.com/AliAkhtari78/SpotifyScraper"></head></html>' > _site/index.html
+          fi
+          touch _site/.nojekyll
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
