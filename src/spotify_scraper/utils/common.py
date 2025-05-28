@@ -442,7 +442,7 @@ class SpotifyBulkOperations:
         """
         if not text:
             return []
-            
+
         # Pattern to match Spotify URLs
         pattern = r"https?://(?:open\.)?spotify\.com/(?:track|album|artist|playlist)/[a-zA-Z0-9]+"
 
@@ -748,9 +748,7 @@ class SpotifyBulkOperations:
                             audio_path = self.client.download_preview_mp3(
                                 url, str(output_dir / "audio")
                             )
-                            cover_path = self.client.download_cover(
-                                url, str(output_dir / "covers")
-                            )
+                            cover_path = self.client.download_cover(url, str(output_dir / "covers"))
                             result["downloads"] = {
                                 "audio": audio_path,
                                 "cover": cover_path,
@@ -761,9 +759,7 @@ class SpotifyBulkOperations:
 
                     elif url_type == "album":
                         try:
-                            cover_path = self.client.download_cover(
-                                url, str(output_dir / "covers")
-                            )
+                            cover_path = self.client.download_cover(url, str(output_dir / "covers"))
                             result["downloads"] = {"cover": cover_path}
                         except Exception as e:
                             result["download_error"] = str(e)
@@ -831,46 +827,52 @@ class SpotifyBulkOperations:
 
                     # Add type-specific fields
                     if result.get("type") == "track":
-                        row.update({
-                            "artists": ", ".join(
-                                a["name"] for a in info.get("artists", [])
-                            ),
-                            "album": info.get("album", {}).get("name"),
-                            "duration_ms": info.get("duration_ms"),
-                            "popularity": info.get("popularity"),
-                            "preview_url": info.get("preview_url"),
-                        })
+                        row.update(
+                            {
+                                "artists": ", ".join(a["name"] for a in info.get("artists", [])),
+                                "album": info.get("album", {}).get("name"),
+                                "duration_ms": info.get("duration_ms"),
+                                "popularity": info.get("popularity"),
+                                "preview_url": info.get("preview_url"),
+                            }
+                        )
                     elif result.get("type") == "album":
-                        row.update({
-                            "artists": ", ".join(
-                                a["name"] for a in info.get("artists", [])
-                            ),
-                            "release_date": info.get("release_date"),
-                            "total_tracks": info.get("total_tracks"),
-                            "album_type": info.get("album_type"),
-                        })
+                        row.update(
+                            {
+                                "artists": ", ".join(a["name"] for a in info.get("artists", [])),
+                                "release_date": info.get("release_date"),
+                                "total_tracks": info.get("total_tracks"),
+                                "album_type": info.get("album_type"),
+                            }
+                        )
                     elif result.get("type") == "artist":
-                        row.update({
-                            "genres": ", ".join(info.get("genres", [])),
-                            "followers": info.get("followers", {}).get("total"),
-                            "popularity": info.get("popularity"),
-                        })
+                        row.update(
+                            {
+                                "genres": ", ".join(info.get("genres", [])),
+                                "followers": info.get("followers", {}).get("total"),
+                                "popularity": info.get("popularity"),
+                            }
+                        )
                     elif result.get("type") == "playlist":
-                        row.update({
-                            "owner": info.get("owner", {}).get("display_name"),
-                            "total_tracks": info.get("tracks", {}).get("total"),
-                            "public": info.get("public"),
-                            "collaborative": info.get("collaborative"),
-                        })
+                        row.update(
+                            {
+                                "owner": info.get("owner", {}).get("display_name"),
+                                "total_tracks": info.get("tracks", {}).get("total"),
+                                "public": info.get("public"),
+                                "collaborative": info.get("collaborative"),
+                            }
+                        )
 
                     rows.append(row)
                 else:
                     # Handle errors
-                    rows.append({
-                        "url": url,
-                        "type": "error",
-                        "error": result.get("error", "Unknown error"),
-                    })
+                    rows.append(
+                        {
+                            "url": url,
+                            "type": "error",
+                            "error": result.get("error", "Unknown error"),
+                        }
+                    )
 
             data = rows
         elif isinstance(data, list):
@@ -937,18 +939,14 @@ class SpotifyBulkOperations:
 
                     if "cover" in media_types:
                         try:
-                            cover_path = self.client.download_cover(
-                                url, str(output_dir / "covers")
-                            )
+                            cover_path = self.client.download_cover(url, str(output_dir / "covers"))
                             downloads["cover"] = cover_path
                         except Exception as e:
                             downloads["cover_error"] = str(e)
 
                 elif url_type in ["album", "playlist"] and "cover" in media_types:
                     try:
-                        cover_path = self.client.download_cover(
-                            url, str(output_dir / "covers")
-                        )
+                        cover_path = self.client.download_cover(url, str(output_dir / "covers"))
                         downloads["cover"] = cover_path
                     except Exception as e:
                         downloads["cover_error"] = str(e)

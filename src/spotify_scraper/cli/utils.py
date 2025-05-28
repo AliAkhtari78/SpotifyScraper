@@ -161,8 +161,10 @@ def format_artist_table(artist: Dict[str, Any]) -> str:
     table.add_row("Name", artist.get("name", ""))
     table.add_row("Genres", ", ".join(artist.get("genres", [])))
     table.add_row("Popularity", str(artist.get("popularity", "")))
-    followers = artist.get('followers') or {}
-    table.add_row("Followers", f"{followers.get('total', 0):,}" if isinstance(followers, dict) else "0")
+    followers = artist.get("followers") or {}
+    table.add_row(
+        "Followers", f"{followers.get('total', 0):,}" if isinstance(followers, dict) else "0"
+    )
     table.add_row("Monthly Listeners", f"{artist.get('monthly_listeners', 0):,}")
     table.add_row("Verified", "Yes" if artist.get("verified") else "No")
 
@@ -183,18 +185,19 @@ def format_playlist_table(playlist: Dict[str, Any]) -> str:
     table.add_row("Name", playlist.get("name", ""))
     owner = playlist.get("owner") or {}
     table.add_row("Owner", owner.get("display_name", "") if isinstance(owner, dict) else "")
-    
+
     description = playlist.get("description", "")
     table.add_row(
-        "Description",
-        (description[:50] + "..." if len(description) > 50 else description)
+        "Description", (description[:50] + "..." if len(description) > 50 else description)
     )
-    
+
     tracks = playlist.get("tracks") or {}
     table.add_row("Total Tracks", str(tracks.get("total", 0)) if isinstance(tracks, dict) else "0")
-    
-    followers = playlist.get('followers') or {}
-    table.add_row("Followers", f"{followers.get('total', 0):,}" if isinstance(followers, dict) else "0")
+
+    followers = playlist.get("followers") or {}
+    table.add_row(
+        "Followers", f"{followers.get('total', 0):,}" if isinstance(followers, dict) else "0"
+    )
     table.add_row("Public", "Yes" if playlist.get("public") else "No")
     table.add_row("Collaborative", "Yes" if playlist.get("collaborative") else "No")
 
