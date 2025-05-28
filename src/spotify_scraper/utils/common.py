@@ -311,12 +311,13 @@ Preview: {'Available' if track_data.get('preview_url') else 'Not Available'}
         Returns:
             Markdown formatted string
         """
-        tracks = playlist_data.get("tracks", {}).get("items", [])
+        tracks_data = playlist_data.get("tracks") or {}
+        tracks = tracks_data.get("items", []) if isinstance(tracks_data, dict) else []
 
         markdown = f"""# {playlist_data.get('name', 'Unnamed Playlist')}
 
-**Owner:** {playlist_data.get('owner', {}).get('display_name', 'Unknown')}
-**Tracks:** {playlist_data.get('tracks', {}).get('total', 0)}
+**Owner:** {(playlist_data.get('owner') or {}).get('display_name', 'Unknown')}
+**Tracks:** {(playlist_data.get('tracks') or {}).get('total', 0)}
 **Public:** {'Yes' if playlist_data.get('public') else 'No'}
 **Collaborative:** {'Yes' if playlist_data.get('collaborative') else 'No'}
 
@@ -439,6 +440,9 @@ class SpotifyBulkOperations:
         Returns:
             List of valid Spotify URLs
         """
+        if not text:
+            return []
+            
         # Pattern to match Spotify URLs
         pattern = r"https?://(?:open\.)?spotify\.com/(?:track|album|artist|playlist)/[a-zA-Z0-9]+"
 

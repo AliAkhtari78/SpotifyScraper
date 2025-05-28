@@ -114,7 +114,7 @@ def format_track_table(track: Dict[str, Any]) -> str:
     table.add_row("Album", album.get("name", "") if isinstance(album, dict) else "")
 
     # Format duration
-    duration_ms = track.get("duration_ms", 0)
+    duration_ms = track.get("duration_ms", 0) or 0  # Handle None
     duration_min = duration_ms // 60000
     duration_sec = (duration_ms % 60000) // 1000
     table.add_row("Duration", f"{duration_min}:{duration_sec:02d}")
