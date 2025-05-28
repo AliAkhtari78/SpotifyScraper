@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.20] - 2025-05-28
+
+### Fixed
+- Fixed documentation incorrectly listing 'popularity' as an available field for tracks
+- Updated all examples to remove references to track['popularity'] field
+- Clarified that popularity data is only available via Spotify's official API, not web scraping
+
+### Changed
+- Updated README to correctly list available track fields
+- Modified example code to use proper field names (is_explicit instead of explicit)
+- Added notes in documentation about web scraping limitations vs official API
+
+### Documentation
+- Corrected track metadata field list in README
+- Updated Wiki examples to remove popularity field references
+- Added clarification about available fields when using web scraping
+
 ## [2.0.19] - 2025-05-28
 
 ### Fixed

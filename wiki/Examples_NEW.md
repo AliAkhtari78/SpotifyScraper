@@ -32,8 +32,7 @@ print(f"Artist(s): {', '.join(a['name'] for a in track['artists'])}")
 print(f"Album: {track['album']['name']}")
 print(f"Released: {track['album']['release_date']}")
 print(f"Duration: {track['duration_ms'] // 60000}:{(track['duration_ms'] % 60000) // 1000:02d}")
-print(f"Popularity: {track['popularity']}/100")
-print(f"Explicit: {'Yes' if track['explicit'] else 'No'}")
+print(f"Explicit: {'Yes' if track.get('is_explicit', False) else 'No'}")
 
 if track.get('preview_url'):
     print(f"Preview available: {track['preview_url']}")
@@ -199,7 +198,6 @@ print(f"\n📈 Basic Statistics:")
 print(f"Total tracks: {analysis['basic_stats']['total_tracks']}")
 print(f"Total duration: {analysis['basic_stats']['total_duration_formatted']}")
 print(f"Average track duration: {analysis['basic_stats']['average_track_duration_formatted']}")
-print(f"Average popularity: {analysis['basic_stats']['average_popularity']:.1f}/100")
 
 print(f"\n🎤 Top Artists:")
 for artist, count in analysis['artist_stats']['top_artists'][:5]:
@@ -210,10 +208,8 @@ years = analysis['temporal_stats']['release_year_distribution']
 for year in sorted(years.keys(), reverse=True)[:5]:
     print(f"{year}: {years[year]} tracks")
 
-print(f"\n🔥 Most Popular Tracks:")
-for track in analysis['popularity_stats']['most_popular_tracks'][:3]:
-    artists = ', '.join(a['name'] for a in track['artists'])
-    print(f"- {track['name']} by {artists} ({track['popularity']}/100)")
+# Note: Popularity data is not available via web scraping
+# The analyzer's popularity features require data from Spotify's official API
 ```
 
 ### Compare Multiple Playlists

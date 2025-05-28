@@ -76,9 +76,10 @@ track = client.get_track_info(track_url)
 # Available data:
 # - name, id, uri, duration_ms
 # - artists (with names and IDs)  
-# - album (with name, ID, release date)
+# - album (with name, ID, release date, images)
 # - preview_url (30-second MP3)
-# - popularity, explicit, is_playable
+# - is_explicit, is_playable
+# Note: popularity field is NOT available via web scraping
 
 # Get lyrics (requires cookies)
 client = SpotifyClient(cookie_file="cookies.txt")
