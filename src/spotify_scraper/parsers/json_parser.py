@@ -560,11 +560,12 @@ def extract_album_data_from_jsonld(html_content: str) -> Optional[AlbumData]:
         jsonld_scripts = soup.find_all("script", {"type": "application/ld+json"})
 
         for script in jsonld_scripts:
-            if not script.string:
+            script_content = getattr(script, 'string', None)
+            if not script_content:
                 continue
 
             try:
-                data = json.loads(script.string)
+                data = json.loads(script_content)
 
                 # Check if this is album data
                 if isinstance(data, dict) and data.get("@type") == "MusicRecording":
