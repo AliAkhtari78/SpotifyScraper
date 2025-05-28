@@ -1,9 +1,10 @@
 """Unit tests for SpotifyBulkOperations class."""
 
-import json
 import csv
+import json
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
 
 from spotify_scraper.utils.common import SpotifyBulkOperations
