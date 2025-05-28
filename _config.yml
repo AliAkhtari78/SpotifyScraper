@@ -1,0 +1,60 @@
+# Jekyll configuration for GitHub Pages
+# This file tells Jekyll to ignore Python project files
+
+# Exclude Python virtual environments and build directories
+exclude:
+  - venv*/
+  - test_env/
+  - __pycache__/
+  - "*.pyc"
+  - .pytest_cache/
+  - .tox/
+  - htmlcov/
+  - dist/
+  - build/
+  - "*.egg-info/"
+  - .git/
+  - .github/
+  - src/
+  - tests/
+  - scripts/
+  - docs/
+  - examples/
+  - wiki/
+  - "*.py"
+  - "*.yml"
+  - "*.yaml"
+  - "*.ini"
+  - "*.cfg"
+  - "*.toml"
+  - "*.txt"
+  - "*.json"
+  - "*.sh"
+  - "*.md"
+  - Dockerfile
+  - Makefile
+  - LICENSE
+  - MANIFEST.in
+  - mypy.ini
+  - pytest.ini
+  - setup.cfg
+  - setup.py
+  - tox.ini
+  - pyproject.toml
+  - mkdocs.yml
+  - docker-compose.yml
+  - bandit-report.json
+  - coverage.xml
+  - track_with_album.json
+  - exception_analysis.md
+  - mcp_test_runner.py
+
+# Only process these files
+include:
+  - index.html
+  - .nojekyll
+  - _config.yml
+
+# Disable Jekyll processing
+plugins: []
+markdown: kramdown

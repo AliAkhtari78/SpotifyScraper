@@ -187,3 +187,4 @@ venv_docs/
 wiki-repo/
 wiki_update/
 venv_publish/
+.jekyll-metadata
