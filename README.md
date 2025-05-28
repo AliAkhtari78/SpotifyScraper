@@ -259,6 +259,28 @@ export SPOTIFY_SCRAPER_BROWSER_TYPE=selenium
 export SPOTIFY_SCRAPER_COOKIE_FILE=/path/to/cookies.txt
 ```
 
+### Bulk Operations
+
+Process multiple URLs efficiently:
+
+```python
+from spotify_scraper.utils.common import SpotifyBulkOperations
+
+# Process multiple URLs
+urls = [
+    "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh",
+    "https://open.spotify.com/album/0JGOiO34nwfUdDrD612dOp",
+    "https://open.spotify.com/artist/00FQb4jTyendYWaN8pK0wa"
+]
+
+bulk = SpotifyBulkOperations()
+results = bulk.process_urls(urls, operation="all_info")
+
+# Export results
+bulk.export_to_json(results, "spotify_data.json")
+bulk.export_to_csv(results, "spotify_data.csv")
+```
+
 ## 🎯 CLI Commands
 
 ### Track Command

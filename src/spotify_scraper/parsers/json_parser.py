@@ -171,8 +171,10 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                         "uri": artist.get("uri", ""),
                     }
 
-                    if "uri" in artist:
-                        artist_data["id"] = artist["uri"].split(":")[-1]
+                    if "uri" in artist and artist["uri"]:
+                        uri_parts = artist["uri"].split(":")
+                        if len(uri_parts) > 0:
+                            artist_data["id"] = uri_parts[-1]
 
                     artists_list.append(artist_data)
 
@@ -230,9 +232,11 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                 "type": "album",
             }
 
-            if "uri" in album_data:
+            if "uri" in album_data and album_data["uri"]:
                 album["uri"] = album_data["uri"]
-                album["id"] = album_data["uri"].split(":")[-1]
+                uri_parts = album_data["uri"].split(":")
+                if len(uri_parts) > 0:
+                    album["id"] = uri_parts[-1]
 
             # Extract images from various possible locations
             if "images" in album_data:

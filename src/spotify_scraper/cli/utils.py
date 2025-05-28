@@ -108,8 +108,10 @@ def format_track_table(track: Dict[str, Any]) -> str:
     # Add track information
     table.add_row("ID", track.get("id", ""))
     table.add_row("Name", track.get("name", ""))
-    table.add_row("Artists", ", ".join([a.get("name", "") for a in track.get("artists", [])]))
-    table.add_row("Album", track.get("album", {}).get("name", ""))
+    artists = track.get("artists") or []
+    table.add_row("Artists", ", ".join([a.get("name", "") for a in artists if isinstance(a, dict)]))
+    album = track.get("album") or {}
+    table.add_row("Album", album.get("name", "") if isinstance(album, dict) else "")
 
     # Format duration
     duration_ms = track.get("duration_ms", 0)
@@ -159,7 +161,8 @@ def format_artist_table(artist: Dict[str, Any]) -> str:
     table.add_row("Name", artist.get("name", ""))
     table.add_row("Genres", ", ".join(artist.get("genres", [])))
     table.add_row("Popularity", str(artist.get("popularity", "")))
-    table.add_row("Followers", f"{artist.get('followers', {}).get('total', 0):,}")
+    followers = artist.get('followers') or {}
+    table.add_row("Followers", f"{followers.get('total', 0):,}" if isinstance(followers, dict) else "0")
     table.add_row("Monthly Listeners", f"{artist.get('monthly_listeners', 0):,}")
     table.add_row("Verified", "Yes" if artist.get("verified") else "No")
 
@@ -178,17 +181,20 @@ def format_playlist_table(playlist: Dict[str, Any]) -> str:
     # Add playlist information
     table.add_row("ID", playlist.get("id", ""))
     table.add_row("Name", playlist.get("name", ""))
-    table.add_row("Owner", playlist.get("owner", {}).get("display_name", ""))
+    owner = playlist.get("owner") or {}
+    table.add_row("Owner", owner.get("display_name", "") if isinstance(owner, dict) else "")
+    
+    description = playlist.get("description", "")
     table.add_row(
         "Description",
-        (
-            playlist.get("description", "")[:50] + "..."
-            if len(playlist.get("description", "")) > 50
-            else playlist.get("description", "")
-        ),
+        (description[:50] + "..." if len(description) > 50 else description)
     )
-    table.add_row("Total Tracks", str(playlist.get("tracks", {}).get("total", 0)))
-    table.add_row("Followers", f"{playlist.get('followers', {}).get('total', 0):,}")
+    
+    tracks = playlist.get("tracks") or {}
+    table.add_row("Total Tracks", str(tracks.get("total", 0)) if isinstance(tracks, dict) else "0")
+    
+    followers = playlist.get('followers') or {}
+    table.add_row("Followers", f"{followers.get('total', 0):,}" if isinstance(followers, dict) else "0")
     table.add_row("Public", "Yes" if playlist.get("public") else "No")
     table.add_row("Collaborative", "Yes" if playlist.get("collaborative") else "No")
 

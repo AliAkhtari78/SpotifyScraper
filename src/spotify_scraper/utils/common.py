@@ -679,6 +679,287 @@ class SpotifyBulkOperations:
         self.logger.info("Downloaded %s unique album covers", len(downloaded))
         return downloaded
 
+    def process_urls(
+        self,
+        urls: List[str],
+        operation: str = "info",
+        output_dir: Optional[Union[str, Path]] = None,
+        parallel: bool = False,
+    ) -> Dict[str, Any]:
+        """
+        Process multiple Spotify URLs with specified operation.
+
+        Args:
+            urls: List of Spotify URLs to process
+            operation: Operation to perform ('info', 'download', 'both', 'all_info')
+            output_dir: Directory for downloads (if applicable)
+            parallel: Whether to process URLs in parallel (not implemented yet)
+
+        Returns:
+            Dictionary with processing results for each URL
+        """
+        results = {
+            "total_urls": len(urls),
+            "processed": 0,
+            "failed": 0,
+            "results": {},
+        }
+
+        if output_dir:
+            output_dir = Path(output_dir)
+            output_dir.mkdir(parents=True, exist_ok=True)
+
+        for url in urls:
+            try:
+                url_type = get_url_type(url)
+                result = {}
+
+                if operation in ["info", "both", "all_info"]:
+                    # Get information based on URL type
+                    if url_type == "track":
+                        info = self.client.get_track_info(url)
+                        if operation == "all_info":
+                            # Get additional track details
+                            try:
+                                info["lyrics"] = self.client.get_track_lyrics(url)
+                            except Exception as e:
+                                info["lyrics"] = None
+                                self.logger.debug("Failed to get lyrics for %s: %s", url, e)
+                    elif url_type == "album":
+                        info = self.client.get_album_info(url)
+                    elif url_type == "artist":
+                        info = self.client.get_artist_info(url)
+                    elif url_type == "playlist":
+                        info = self.client.get_playlist_info(url)
+                    else:
+                        info = {"error": f"Unknown URL type: {url_type}"}
+
+                    result["info"] = info
+                    result["type"] = url_type
+
+                if operation in ["download", "both"] and output_dir:
+                    # Download media based on type
+                    if url_type == "track":
+                        try:
+                            audio_path = self.client.download_preview_mp3(
+                                url, str(output_dir / "audio")
+                            )
+                            cover_path = self.client.download_cover(
+                                url, str(output_dir / "covers")
+                            )
+                            result["downloads"] = {
+                                "audio": audio_path,
+                                "cover": cover_path,
+                            }
+                        except Exception as e:
+                            result["download_error"] = str(e)
+                            self.logger.error("Download failed for %s: %s", url, e)
+
+                    elif url_type == "album":
+                        try:
+                            cover_path = self.client.download_cover(
+                                url, str(output_dir / "covers")
+                            )
+                            result["downloads"] = {"cover": cover_path}
+                        except Exception as e:
+                            result["download_error"] = str(e)
+
+                results["results"][url] = result
+                results["processed"] += 1
+
+            except Exception as e:
+                self.logger.error("Failed to process %s: %s", url, e)
+                results["failed"] += 1
+                results["results"][url] = {"error": str(e)}
+
+        return results
+
+    def export_to_json(
+        self, data: Union[Dict[str, Any], List[Any]], output_file: Union[str, Path]
+    ) -> Path:
+        """
+        Export data to JSON file.
+
+        Args:
+            data: Data to export (dict or list)
+            output_file: Output file path
+
+        Returns:
+            Path to the created file
+        """
+        output_file = Path(output_file)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+        self.logger.info("Exported data to JSON: %s", output_file)
+        return output_file
+
+    def export_to_csv(
+        self, data: Union[Dict[str, Any], List[Dict[str, Any]]], output_file: Union[str, Path]
+    ) -> Path:
+        """
+        Export data to CSV file.
+
+        Args:
+            data: Data to export (dict with results or list of dicts)
+            output_file: Output file path
+
+        Returns:
+            Path to the created file
+        """
+        output_file = Path(output_file)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+
+        # Convert results dict to list if needed
+        if isinstance(data, dict) and "results" in data:
+            rows = []
+            for url, result in data["results"].items():
+                if "info" in result and not result.get("error"):
+                    info = result["info"]
+                    row = {
+                        "url": url,
+                        "type": result.get("type", "unknown"),
+                        "id": info.get("id"),
+                        "name": info.get("name"),
+                    }
+
+                    # Add type-specific fields
+                    if result.get("type") == "track":
+                        row.update({
+                            "artists": ", ".join(
+                                a["name"] for a in info.get("artists", [])
+                            ),
+                            "album": info.get("album", {}).get("name"),
+                            "duration_ms": info.get("duration_ms"),
+                            "popularity": info.get("popularity"),
+                            "preview_url": info.get("preview_url"),
+                        })
+                    elif result.get("type") == "album":
+                        row.update({
+                            "artists": ", ".join(
+                                a["name"] for a in info.get("artists", [])
+                            ),
+                            "release_date": info.get("release_date"),
+                            "total_tracks": info.get("total_tracks"),
+                            "album_type": info.get("album_type"),
+                        })
+                    elif result.get("type") == "artist":
+                        row.update({
+                            "genres": ", ".join(info.get("genres", [])),
+                            "followers": info.get("followers", {}).get("total"),
+                            "popularity": info.get("popularity"),
+                        })
+                    elif result.get("type") == "playlist":
+                        row.update({
+                            "owner": info.get("owner", {}).get("display_name"),
+                            "total_tracks": info.get("tracks", {}).get("total"),
+                            "public": info.get("public"),
+                            "collaborative": info.get("collaborative"),
+                        })
+
+                    rows.append(row)
+                else:
+                    # Handle errors
+                    rows.append({
+                        "url": url,
+                        "type": "error",
+                        "error": result.get("error", "Unknown error"),
+                    })
+
+            data = rows
+        elif isinstance(data, list):
+            # Already a list, use as is
+            pass
+        else:
+            raise ValueError("Data must be a dict with 'results' or a list of dicts")
+
+        # Write CSV
+        if data:
+            keys = set()
+            for row in data:
+                keys.update(row.keys())
+
+            with open(output_file, "w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=sorted(keys))
+                writer.writeheader()
+                writer.writerows(data)
+
+        self.logger.info("Exported data to CSV: %s", output_file)
+        return output_file
+
+    def batch_download(
+        self,
+        urls: List[str],
+        output_dir: Union[str, Path],
+        media_types: List[str] = ["audio", "cover"],
+        skip_errors: bool = True,
+    ) -> Dict[str, Any]:
+        """
+        Batch download media from multiple URLs.
+
+        Args:
+            urls: List of Spotify URLs
+            output_dir: Directory to save downloads
+            media_types: Types of media to download
+            skip_errors: Whether to continue on errors
+
+        Returns:
+            Dictionary with download results
+        """
+        output_dir = Path(output_dir)
+        results = {
+            "total": len(urls),
+            "successful": 0,
+            "failed": 0,
+            "downloads": {},
+        }
+
+        for url in urls:
+            try:
+                url_type = get_url_type(url)
+                downloads = {}
+
+                if url_type == "track":
+                    if "audio" in media_types:
+                        try:
+                            audio_path = self.client.download_preview_mp3(
+                                url, str(output_dir / "audio")
+                            )
+                            downloads["audio"] = audio_path
+                        except Exception as e:
+                            downloads["audio_error"] = str(e)
+
+                    if "cover" in media_types:
+                        try:
+                            cover_path = self.client.download_cover(
+                                url, str(output_dir / "covers")
+                            )
+                            downloads["cover"] = cover_path
+                        except Exception as e:
+                            downloads["cover_error"] = str(e)
+
+                elif url_type in ["album", "playlist"] and "cover" in media_types:
+                    try:
+                        cover_path = self.client.download_cover(
+                            url, str(output_dir / "covers")
+                        )
+                        downloads["cover"] = cover_path
+                    except Exception as e:
+                        downloads["cover_error"] = str(e)
+
+                results["downloads"][url] = downloads
+                results["successful"] += 1
+
+            except Exception as e:
+                results["failed"] += 1
+                results["downloads"][url] = {"error": str(e)}
+                if not skip_errors:
+                    raise
+
+        return results
+
 
 # Utility functions
 

@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.18] - 2025-05-28
+
+### Added
+- Added `process_urls()` method to `SpotifyBulkOperations` class for processing multiple URLs
+- Added `export_to_json()` and `export_to_csv()` methods to `SpotifyBulkOperations`
+- Added `batch_download()` method for efficient bulk media downloads
+- Added comprehensive bulk operations documentation
+- Added unit tests for all new bulk operations functionality
+
+### Fixed
+- Fixed bare except clause in `SpotifyBulkOperations` (now properly catches and logs exceptions)
+- Fixed multiple potential None reference errors in CLI utilities
+- Fixed None reference errors in JSON parser when handling missing URI fields
+- Improved error handling for missing nested dictionary values
+- Added proper type checking before accessing dictionary methods
+
+### Changed
+- Improved error handling throughout the codebase with proper exception logging
+- Enhanced input validation for safer dictionary access patterns
+- Updated documentation with correct usage examples for bulk operations
+
+### Security
+- Added safe handling of potentially None values to prevent crashes
+- Improved URI parsing to handle edge cases safely
+
 ## [2.0.7] - 2025-05-26
 
 ### Fixed
