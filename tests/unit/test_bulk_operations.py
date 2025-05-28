@@ -3,7 +3,7 @@
 import csv
 import json
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -246,7 +246,7 @@ class TestSpotifyBulkOperations:
         # Test URLs
         https://open.spotify.com/track/123
         https://open.spotify.com/album/456
-        
+
         # This is a comment
         spotify:artist:789
         """
