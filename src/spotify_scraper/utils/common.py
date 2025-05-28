@@ -916,7 +916,7 @@ class SpotifyBulkOperations:
         """
         if media_types is None:
             media_types = ["audio", "cover"]
-            
+
         output_dir = Path(output_dir)
         results = {
             "total": len(urls),
