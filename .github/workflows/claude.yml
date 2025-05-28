@@ -54,6 +54,7 @@ permissions:
   checks: read
   actions: read
   security-events: read
+  id-token: write
 
 env:
   PYTHON_VERSION: "3.11"
