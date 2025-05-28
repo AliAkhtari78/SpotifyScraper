@@ -437,7 +437,19 @@ def extract_track_data_from_page(html_content: str) -> TrackData:
     # Try using __NEXT_DATA__ first (modern approach)
     try:
         json_data = extract_json_from_next_data(html_content)
-        return extract_track_data(json_data, TRACK_JSON_PATH)
+        track_data = extract_track_data(json_data, TRACK_JSON_PATH)
+        
+        # Check if album data is missing and try to fetch it from JSON-LD
+        if "album" not in track_data and not track_data.get("ERROR"):
+            try:
+                # Try to extract album data from JSON-LD
+                album_data = extract_album_data_from_jsonld(html_content)
+                if album_data:
+                    track_data["album"] = album_data
+            except Exception as e:
+                logger.warning("Failed to extract album data from JSON-LD: %s", e)
+                
+        return track_data
     except ParsingError as e:
         logger.warning("Failed to extract track data using __NEXT_DATA__: %s", e)
 
@@ -445,7 +457,19 @@ def extract_track_data_from_page(html_content: str) -> TrackData:
     try:
         json_data = extract_json_from_resource(html_content)
         # For resource script tag, the data is directly in the root
-        return extract_track_data(json_data, "")
+        track_data = extract_track_data(json_data, "")
+        
+        # Check if album data is missing and try to fetch it from JSON-LD
+        if "album" not in track_data and not track_data.get("ERROR"):
+            try:
+                # Try to extract album data from JSON-LD
+                album_data = extract_album_data_from_jsonld(html_content)
+                if album_data:
+                    track_data["album"] = album_data
+            except Exception as e:
+                logger.warning("Failed to extract album data from JSON-LD: %s", e)
+                
+        return track_data
     except ParsingError as e:
         logger.warning("Failed to extract track data using resource script: %s", e)
 
@@ -514,6 +538,80 @@ def extract_playlist_data_from_page(html_content: str) -> PlaylistData:
     # Implementation would follow a similar pattern to extract_track_data_from_page
     # For brevity, this is left as a placeholder
     raise NotImplementedError("Playlist data extraction not yet implemented")
+
+
+def extract_album_data_from_jsonld(html_content: str) -> Optional[AlbumData]:
+    """
+    Extract album data from JSON-LD script tags in a Spotify page.
+    
+    JSON-LD (JSON for Linked Data) is a method of encoding linked data using JSON.
+    Spotify embeds album metadata in JSON-LD script tags for SEO purposes.
+    
+    Args:
+        html_content: HTML content of the Spotify page
+        
+    Returns:
+        AlbumData or None if no album data could be extracted
+    """
+    try:
+        soup = BeautifulSoup(html_content, "html.parser")
+        
+        # Look for application/ld+json script tags
+        jsonld_scripts = soup.find_all("script", {"type": "application/ld+json"})
+        
+        for script in jsonld_scripts:
+            if not script.string:
+                continue
+                
+            try:
+                data = json.loads(script.string)
+                
+                # Check if this is album data
+                if isinstance(data, dict) and data.get("@type") == "MusicRecording":
+                    album_data: AlbumData = {}
+                    
+                    # Extract album data
+                    if "inAlbum" in data:
+                        in_album = data["inAlbum"]
+                        
+                        if "name" in in_album:
+                            album_data["name"] = in_album["name"]
+                            
+                        if "@type" in in_album:
+                            album_data["type"] = "album"
+                            
+                        if "@id" in in_album:
+                            album_id = in_album["@id"]
+                            if isinstance(album_id, str) and "album:" in album_id:
+                                album_data["id"] = album_id.split("album:")[-1]
+                                album_data["uri"] = f"spotify:album:{album_data['id']}"
+                        
+                        # Extract image data if available
+                        if "image" in data:
+                            album_data["images"] = []
+                            
+                            # Handle both string and array image formats
+                            images = data["image"] if isinstance(data["image"], list) else [data["image"]]
+                            
+                            for img in images:
+                                if isinstance(img, str):
+                                    album_data["images"].append({
+                                        "url": img,
+                                        "width": 0,
+                                        "height": 0
+                                    })
+                    
+                    # Return if we found meaningful album data
+                    if "name" in album_data:
+                        return album_data
+                        
+            except json.JSONDecodeError:
+                continue
+                
+        return None
+    except Exception as e:
+        logger.warning("Failed to extract album data from JSON-LD: %s", e)
+        return None
 
 
 def extract_auth_token_from_page(html_content: str) -> Optional[str]:

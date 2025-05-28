@@ -1,0 +1,20 @@
+{
+  "id": "4u7EnebtmKWzUH433cf5Qv",
+  "name": "Bohemian Rhapsody - 2011 Remaster",
+  "title": "Bohemian Rhapsody - 2011 Remaster",
+  "uri": "spotify:track:4u7EnebtmKWzUH433cf5Qv",
+  "type": "track",
+  "album": {
+    "name": "A Night At The Opera (2011 Remaster)",
+    "type": "album",
+    "uri": "spotify:album:1GbtB4zTqAsyfZEsm1RZfx",
+    "id": "1GbtB4zTqAsyfZEsm1RZfx"
+  },
+  "artists": [
+    {
+      "name": "Queen",
+      "uri": "spotify:artist:1dfeR4HaWDbWqFHLkxsg1d",
+      "id": "1dfeR4HaWDbWqFHLkxsg1d"
+    }
+  ]
+}
