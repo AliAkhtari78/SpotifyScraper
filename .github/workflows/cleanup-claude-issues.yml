@@ -1,0 +1,55 @@
+name: Cleanup Claude AI Issues
+
+on:
+  schedule:
+    # Run every hour
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close Claude AI Failure Issues
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            
+            // Get all open issues with claude-assistant label
+            const issues = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              labels: 'claude-assistant',
+              per_page: 100
+            });
+            
+            for (const issue of issues.data) {
+              // Check if it's an automated failure report
+              if (issue.title.includes('Claude AI Assistant Failed') && 
+                  issue.user.login === 'github-actions[bot]') {
+                
+                // Add a comment before closing
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  body: '🤖 This automated failure report is being closed as part of routine cleanup. The Claude AI workflow has been updated to handle failures more gracefully.'
+                });
+                
+                // Close the issue
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  state: 'closed'
+                });
+                
+                console.log(`Closed issue #${issue.number}: ${issue.title}`);
+              }
+            }

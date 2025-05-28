@@ -101,6 +101,7 @@ jobs:
       - name: Claude Interactive Issue Assistant
         if: contains(github.event_name, 'issue') || contains(github.event_name, 'pull_request')
         uses: anthropics/claude-code-action@beta
+        continue-on-error: true
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           anthropic_model: "claude-sonnet-4-20250514"
@@ -243,6 +244,7 @@ jobs:
       - name: Automated PR Analysis
         if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize')
         uses: anthropics/claude-code-base-action@beta
+        continue-on-error: true
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           anthropic_model: "claude-sonnet-4-20250514"
@@ -297,6 +299,7 @@ jobs:
       - name: Specialized Analysis
         if: github.event_name == 'workflow_dispatch'
         uses: anthropics/claude-code-base-action@beta
+        continue-on-error: true
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           anthropic_model: "claude-sonnet-4-20250514"
