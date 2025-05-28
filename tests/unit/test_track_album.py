@@ -14,6 +14,7 @@ from spotify_scraper.extractors.track import TrackExtractor
 from spotify_scraper.client import SpotifyClient
 from spotify_scraper.browsers.requests_browser import RequestsBrowser
 
+
 # Simple mock browser for testing (avoid complex imports)
 class MockBrowser:
     """Mock browser for testing extractors without network requests."""
@@ -72,25 +73,24 @@ class TestTrackAlbumField:
         """Test that client.get_track_info() returns data with album field."""
         # We need to patch both the create_browser function AND the extract method
         # of the TrackExtractor to ensure we test our actual implementation
-        
+
         mock_browser = MockBrowser(track_html)
-        
+
         # First test that the album is correctly extracted by the TrackExtractor
         extractor = TrackExtractor(browser=mock_browser)
         track_data = extractor.extract(url="https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv")
-        
+
         # Then verify it's correctly returned by get_track_info
         monkeypatch.setattr(
-            'spotify_scraper.extractors.track.TrackExtractor.extract', 
-            lambda self, url: track_data
+            "spotify_scraper.extractors.track.TrackExtractor.extract", lambda self, url: track_data
         )
-        
+
         # Create client - it doesn't matter what browser it has since we mocked the extract method
         client = SpotifyClient()
-        
+
         # Get track info
         track = client.get_track_info("https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv")
-        
+
         # Verify album field is present
         assert "album" in track
         assert track["album"] is not None
