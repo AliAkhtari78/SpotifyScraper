@@ -10,7 +10,6 @@ from pathlib import Path
 
 import pytest
 
-from spotify_scraper.browsers.requests_browser import RequestsBrowser
 from spotify_scraper.client import SpotifyClient
 
 # Import the TrackExtractor
