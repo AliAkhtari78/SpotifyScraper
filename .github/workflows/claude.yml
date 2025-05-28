@@ -48,13 +48,20 @@ on:
 
 # Comprehensive permissions for full analysis capabilities
 permissions:
-  contents: read
-  issues: write
-  pull-requests: write
-  checks: read
-  actions: read
-  security-events: read
+  # Full access permissions for comprehensive repository operations
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
   id-token: write
+  issues: write
+  discussions: write
+  packages: write
+  pages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
 
 env:
   PYTHON_VERSION: "3.11"
