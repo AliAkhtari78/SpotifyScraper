@@ -167,9 +167,7 @@ class TestFullSystemIntegration:
             assert track_info["name"] == "Test Track"
 
             # Test playlist operations
-            playlist_info = wrapper.get_playlist(
-                "https://open.spotify.com/playlist/playlist123"
-            )
+            playlist_info = wrapper.get_playlist("https://open.spotify.com/playlist/playlist123")
             assert playlist_info["name"] == "Test Playlist"
 
             # Use data analyzer
