@@ -81,10 +81,10 @@ def main():
         track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
         print(f"\n7. Testing client with track: {track_url}")
 
-        track_info = client.get_track_info(track_url)
-        print(f"   Track: {track_info.get('name', 'Unknown')}")
-        if track_info.get("artists"):
-            print(f"   Artists: {', '.join(a['name'] for a in track_info['artists'])}")
+        track = client.get_track_info(track_url)
+        print(f"   Track: {track.get('name', 'Unknown')}")
+        if track.get("artists"):
+            print(f"   Artists: {', '.join(a['name'] for a in track['artists'])}")
 
     except Exception as e:
         print(f"   Error: {e}")

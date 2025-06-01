@@ -22,26 +22,26 @@ def main():
 
     try:
         # Get track information
-        track_info = client.get_track_info(track_url)
+        track = client.get_track_info(track_url)
 
         # Display track information
-        print(f"Track: {track_info.get('name', 'Unknown')}")
-        print(f"Artists: {', '.join(artist.get('name', 'Unknown') for artist in track_info.get('artists', []))}")
+        print(f"Track: {track.get('name', 'Unknown')}")
+        print(f"Artists: {', '.join(artist.get('name', 'Unknown') for artist in track.get('artists', []))}")
 
         # Handle album information safely
-        album = track_info.get("album", {})
+        album = track.get("album", {})
         if isinstance(album, dict) and album.get("name"):
             print(f"Album: {album.get('name', 'Unknown')}")
         else:
             print("Album: Information not available")
 
         # Handle duration safely
-        duration_ms = track_info.get("duration_ms", 0)
+        duration_ms = track.get("duration_ms", 0)
         if duration_ms:
             print(f"Duration: {duration_ms / 1000:.2f} seconds")
 
-        if track_info.get("preview_url"):
-            print(f"Preview URL: {track_info['preview_url']}")
+        if track.get("preview_url"):
+            print(f"Preview URL: {track['preview_url']}")
         else:
             print("Preview: Not available")
 

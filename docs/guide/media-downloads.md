@@ -318,7 +318,7 @@ image_sizes = {
 def custom_filename_pattern(track_info):
     """Create custom filename from track info."""
     artist = track_info['artists'][0]['name']
-    title = track_info.get('name', 'Unknown')
+    title = track.get('name', 'Unknown')
     album = track_info['album']['name']
     
     # Clean filename (remove invalid characters)
@@ -414,7 +414,7 @@ def update_mp3_metadata(file_path, track_info):
         audiofile.initTag()
     
     # Set basic metadata
-    audiofile.tag.title = track_info.get('name', 'Unknown')
+    audiofile.tag.title = track.get('name', 'Unknown')
     audiofile.tag.artist = track_info['artists'][0]['name']
     audiofile.tag.album = track_info['album']['name']
     audiofile.tag.album_artist = track_info['album']['artists'][0]['name']
@@ -433,7 +433,7 @@ def update_mp3_metadata(file_path, track_info):
 # Update metadata for all downloaded files
 for mp3_file in Path("./downloads/").glob("*.mp3"):
     # Get track info and update metadata
-    # track_info = client.get_track_info(...)
+    # track = client.get_track_info(...)
     # update_mp3_metadata(mp3_file, track_info)
     pass
 ```
@@ -633,10 +633,10 @@ def safe_download_preview(client, url, path):
     
     try:
         # Check if preview is available
-        track_info = client.get_track_info(url)
+        track = client.get_track_info(url)
         
-        if not track_info.get('preview_url'):
-            print(f"No preview available for: {track_info.get('name', 'Unknown')}")
+        if not track.get('preview_url'):
+            print(f"No preview available for: {track.get('name', 'Unknown')}")
             return None
         
         return client.download_preview_mp3(url, path=path)

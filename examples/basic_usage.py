@@ -27,7 +27,7 @@ def main():
 
     print(f"\n2. Extracting track information:")
     try:
-        track_info = client.get_track_info(track_url)
+        track = client.get_track_info(track_url)
 
         if "ERROR" not in track_info:
             print(f"   Title: {track_info.get('name', 'Unknown')}")
@@ -49,7 +49,7 @@ def main():
 
     print(f"\n3. Extracting album information:")
     try:
-        album_info = client.get_album_info(album_url)
+        album = client.get_album_info(album_url)
 
         if "ERROR" not in album_info:
             print(f"   Title: {album_info.get('name', 'Unknown')}")
@@ -68,7 +68,7 @@ def main():
 
     print(f"\n4. Extracting artist information:")
     try:
-        artist_info = client.get_artist_info(artist_url)
+        artist = client.get_artist_info(artist_url)
 
         if "ERROR" not in artist_info:
             print(f"   Name: {artist_info.get('name', 'Unknown')}")
@@ -87,7 +87,7 @@ def main():
 
     print(f"\n5. Extracting playlist information:")
     try:
-        playlist_info = client.get_playlist_info(playlist_url)
+        playlist = client.get_playlist_info(playlist_url)
 
         if "ERROR" not in playlist_info:
             print(f"   Name: {playlist_info.get('name', 'Unknown')}")

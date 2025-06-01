@@ -81,8 +81,8 @@ class MusicAnalyzer:
             # Get artist info to find genres
             artist_url = track['artists'][0]['external_urls']['spotify']
             try:
-                artist_info = self.client.get_artist_info(artist_url)
-                for genre in artist_info.get('genres', []):
+                artist = self.client.get_artist_info(artist_url)
+                for genre in artist.get('genres', []):
                     genre_count[genre] = genre_count.get(genre, 0) + 1
             except Exception:
                 continue
@@ -108,8 +108,8 @@ class MusicAnalyzer:
         
         for track in tracks:
             try:
-                album_info = self.client.get_album_info(track['album']['external_urls']['spotify'])
-                release_date = album_info.get('release_date', '')
+                album = self.client.get_album_info(track['album']['external_urls']['spotify'])
+                release_date = album.get('release_date', '')
                 if release_date and len(release_date) >= 4:
                     year = int(release_date[:4])
                     decade = f"{(year // 10) * 10}s"
@@ -128,13 +128,13 @@ class MusicAnalyzer:
             try:
                 # Get similar artists
                 artist_url = track['artists'][0]['external_urls']['spotify']
-                artist_info = self.client.get_artist_info(artist_url)
+                artist = self.client.get_artist_info(artist_url)
                 
                 # Get top tracks from related artists (simplified)
                 # In a real implementation, you'd use Spotify's recommendation API
                 recommendations.append({
                     'type': 'similar_artist',
-                    'artist': artist_info.get('name', 'Unknown'),
+                    'artist': artist.get('name', 'Unknown'),
                     'reason': f"Because you listen to {track.get('name', 'Unknown')}"
                 })
                 
@@ -160,13 +160,13 @@ async def get_track_details(track_id: str):
     """Get detailed track information."""
     try:
         track_url = f"https://open.spotify.com/track/{track_id}"
-        track_info = analyzer.client.get_track_info(track_url)
+        track = analyzer.client.get_track_info(track_url)
         
         # Enhance with additional data
         enhanced_info = {
             **track_info,
             'analysis_timestamp': datetime.now().isoformat(),
-            'preview_available': bool(track_info.get('preview_url')),
+            'preview_available': bool(track.get('preview_url')),
             'energy_score': calculate_energy_score(track_info)
         }
         
@@ -178,8 +178,8 @@ def calculate_energy_score(track_info: dict) -> float:
     """Calculate energy score based on track features."""
     # Simplified energy calculation
     # In practice, you'd use Spotify's audio features API
-    duration = track_info.get('duration_ms', 0)
-    popularity = track_info.get('popularity', 0)
+    duration = track.get('duration_ms', 0)
+    popularity = track.get('popularity', 0)
     
     # Simple heuristic (replace with actual audio feature analysis)
     energy = min(100, (popularity * 0.7) + (min(300000, duration) / 3000))
@@ -402,9 +402,9 @@ class PlaylistManager:
             try:
                 # Get artist info for genre data
                 artist_url = track['artists'][0]['external_urls']['spotify']
-                artist_info = self.client.get_artist_info(artist_url)
+                artist = self.client.get_artist_info(artist_url)
                 
-                genres = artist_info.get('genres', ['Unknown'])
+                genres = artist.get('genres', ['Unknown'])
                 primary_genre = self._get_primary_genre(genres)
                 
                 genre_groups[primary_genre].append(track)
@@ -682,10 +682,10 @@ class MusicDiscoveryBot(commands.Bot):
             
             if search_results:
                 artist_url = search_results[0]['external_urls']['spotify']
-                artist_info = self.spotify.get_artist_info(artist_url)
+                artist = self.spotify.get_artist_info(artist_url)
                 
                 # Get related artists
-                related = artist_info.get('related_artists', [])[:5]
+                related = artist.get('related_artists', [])[:5]
                 
                 for related_artist in related:
                     # Get top tracks from related artist
@@ -694,7 +694,7 @@ class MusicDiscoveryBot(commands.Bot):
                     if top_tracks:
                         recommendations.append({
                             'track': top_tracks[0],
-                            'reason': f"Because you like {artist_info.get('name', 'Unknown')}",
+                            'reason': f"Because you like {artist.get('name', 'Unknown')}",
                             'discovery_type': 'similar_artist'
                         })
             else:
@@ -1111,9 +1111,9 @@ class MusicArchiver:
             # Genre (from artist info)
             try:
                 artist_url = f"https://open.spotify.com/artist/{track_data['artists'][0]['id']}"
-                artist_info = self.spotify.get_artist_info(artist_url)
-                if artist_info.get('genres'):
-                    audio_file.tags.add(TCON(encoding=3, text=artist_info['genres'][0]))
+                artist = self.spotify.get_artist_info(artist_url)
+                if artist.get('genres'):
+                    audio_file.tags.add(TCON(encoding=3, text=artist['genres'][0]))
             except Exception:
                 pass
             
@@ -1391,7 +1391,7 @@ def index():
 def get_track(track_id):
     try:
         track_url = f"https://open.spotify.com/track/{track_id}"
-        track_info = spotify.get_track_info(track_url)
+        track = spotify.get_track_info(track_url)
         return jsonify(track_info)
     except Exception as e:
         return jsonify({'error': str(e)}), 404

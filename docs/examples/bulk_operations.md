@@ -222,8 +222,8 @@ playlist_urls = [
 # Extract all tracks from playlists
 all_tracks = []
 for url in playlist_urls:
-    playlist_info = client.get_playlist_info(url)
-    tracks = playlist_info.get("tracks", {}).get("items", [])
+    playlist = client.get_playlist_info(url)
+    tracks = playlist.get("tracks", {}).get("items", [])
     all_tracks.extend([item["track"] for item in tracks if item.get("track")])
 
 # Create dataset

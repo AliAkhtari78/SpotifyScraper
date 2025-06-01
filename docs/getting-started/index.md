@@ -150,8 +150,8 @@ With SpotifyScraper installed and configured, you're ready to:
 ### 🎵 Music Analytics
 ```python
 # Analyze an artist's top tracks
-artist_info = client.get_artist_info(artist_url)
-print(f"Monthly Listeners: {artist_info['stats']['monthlyListeners']:,}")
+artist = client.get_artist_info(artist_url)
+print(f"Monthly Listeners: {artist['stats']['monthlyListeners']:,}")
 ```
 
 ### 📥 Media Downloads

@@ -59,15 +59,15 @@ client = SpotifyClient()
 **v1.x:**
 ```python
 # Separate URL and ID methods
-track_info = scraper.get_track_url_info(url='https://...')
-track_info = scraper.get_track_id_info(track_id='6rqhFgbbKwnb9MLmUQDhG6')
+track = scraper.get_track_url_info(url='https://...')
+track = scraper.get_track_id_info(track_id='6rqhFgbbKwnb9MLmUQDhG6')
 ```
 
 **v2.0:**
 ```python
 # Single method handles both
-track_info = client.get_track_info('https://...')
-track_info = client.get_track_info('spotify:track:6rqhFgbbKwnb9MLmUQDhG6')
+track = client.get_track_info('https://...')
+track = client.get_track_info('spotify:track:6rqhFgbbKwnb9MLmUQDhG6')
 ```
 
 ### 5. Return Value Changes
@@ -76,7 +76,7 @@ v2.0 returns cleaner, more consistent data structures:
 
 **v1.x:**
 ```python
-track_info = {
+track = {
     'track_id': '...',
     'track_name': '...',
     'track_artists': ['...'],
@@ -86,7 +86,7 @@ track_info = {
 
 **v2.0:**
 ```python
-track_info = {
+track = {
     'id': '...',
     'name': '...',
     'artists': [{'id': '...', 'name': '...', 'uri': '...'}],
@@ -107,10 +107,10 @@ from SpotifyScraper.scraper import Scraper, Request
 request = Request().request()
 scraper = Scraper(session=request)
 
-track_info = scraper.get_track_url_info(
+track = scraper.get_track_url_info(
     url='https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6'
 )
-print(track_info['track_name'])
+print(track['track_name'])
 ```
 
 **v2.0:**
@@ -119,31 +119,31 @@ from spotify_scraper import SpotifyClient
 
 client = SpotifyClient()
 
-track_info = client.get_track_info(
+track = client.get_track_info(
     'https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6'
 )
-print(track_info.get('name', 'Unknown'))
+print(track.get('name', 'Unknown'))
 ```
 
 ### Album Extraction with Tracks
 
 **v1.x:**
 ```python
-album_info = scraper.get_album_url_info(
+album = scraper.get_album_url_info(
     url='https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv'
 )
 # Access nested in 'album_tracks'
-for track in album_info['album_tracks']:
+for track in album['album_tracks']:
     print(track['track_name'])
 ```
 
 **v2.0:**
 ```python
-album_info = client.get_album_info(
+album = client.get_album_info(
     'https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv'
 )
 # Cleaner structure
-for track in album_info['tracks']:
+for track in album['tracks']:
     print(track.get('name', 'Unknown'))
 ```
 
@@ -152,7 +152,7 @@ for track in album_info['tracks']:
 **v1.x:**
 ```python
 try:
-    track_info = scraper.get_track_url_info(url='...')
+    track = scraper.get_track_url_info(url='...')
 except Exception as e:
     # Generic exception
     print(f"Error: {e}")
@@ -168,7 +168,7 @@ from spotify_scraper import (
 )
 
 try:
-    track_info = client.get_track_info('...')
+    track = client.get_track_info('...')
 except URLError:
     print("Invalid Spotify URL")
 except NetworkError:
@@ -303,11 +303,11 @@ client = SpotifyClient()
 
 ```python
 # Update field names
-# OLD: track_info['track_name']
-# NEW: track_info.get('name', 'Unknown')
+# OLD: track['track_name']
+# NEW: track.get('name', 'Unknown')
 
-# OLD: track_info['track_artists']
-# NEW: [a['name'] for a in track_info['artists']]
+# OLD: track['track_artists']
+# NEW: [a['name'] for a in track['artists']]
 ```
 
 ### 5. Add Error Handling

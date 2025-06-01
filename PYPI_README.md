@@ -30,7 +30,7 @@ track = client.get_track_info("https://open.spotify.com/track/4iV5W9uYEdYUVa79Ax
 print(f"{track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
 
 # Download cover art
-cover_path = client.download_cover(track['album']['uri'])
+cover_path = client.download_cover("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
 
 client.close()
 ```

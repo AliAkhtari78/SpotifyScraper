@@ -142,7 +142,7 @@ class SpotifyScraperWrapper:
 
         Args:
             url: Spotify URL
-            operation: Operation type (e.g., 'track_info', 'lyrics')
+            operation: Operation type (e.g., 'track', 'lyrics')
 
         Returns:
             Path to cache file
@@ -235,7 +235,7 @@ class SpotifyScraperWrapper:
 
         raise last_exception
 
-    def get_track_info(self, url: str, use_cache: bool = True) -> Dict[str, Any]:
+    def get_track(self, url: str, use_cache: bool = True) -> Dict[str, Any]:
         """
         Get track information with caching and retry logic.
 
@@ -267,21 +267,21 @@ class SpotifyScraperWrapper:
 
         # Check cache first
         if use_cache:
-            cache_key = self._get_cache_key(url, "track_info")
+            cache_key = self._get_cache_key(url, "track")
             cached_data = self._load_from_cache(cache_key)
             if cached_data:
                 return cached_data
 
         # Fetch with retry logic
         try:
-            track_info = self._retry_operation(self.client.get_track_info, url)
+            track = self._retry_operation(self.client.get_track, url)
 
             # Save to cache
             if use_cache:
-                self._save_to_cache(cache_key, track_info)
+                self._save_to_cache(cache_key, track)
 
-            self.logger.info(f"Successfully retrieved track: {track_info.get('name', 'Unknown')}")
-            return track_info
+            self.logger.info(f"Successfully retrieved track: {track.get('name', 'Unknown')}")
+            return track
 
         except URLError as e:
             self.logger.error(f"Invalid URL: {e}")
@@ -334,7 +334,7 @@ class SpotifyScraperWrapper:
             self.logger.error(f"Failed to get lyrics: {e}")
             return None
 
-    def get_album_info(self, url: str, use_cache: bool = True) -> Dict[str, Any]:
+    def get_album(self, url: str, use_cache: bool = True) -> Dict[str, Any]:
         """
         Get album information with enhanced error handling.
 
@@ -348,28 +348,28 @@ class SpotifyScraperWrapper:
         self.logger.info(f"Getting album info for: {url}")
 
         if use_cache:
-            cache_key = self._get_cache_key(url, "album_info")
+            cache_key = self._get_cache_key(url, "album")
             cached_data = self._load_from_cache(cache_key)
             if cached_data:
                 return cached_data
 
         try:
-            album_info = self._retry_operation(self.client.get_album_info, url)
+            album = self._retry_operation(self.client.get_album, url)
 
             if use_cache:
-                self._save_to_cache(cache_key, album_info)
+                self._save_to_cache(cache_key, album)
 
             self.logger.info(
-                f"Successfully retrieved album: {album_info.get('name', 'Unknown')} "
-                f"with {album_info.get('total_tracks', 0)} tracks"
+                f"Successfully retrieved album: {album.get('name', 'Unknown')} "
+                f"with {album.get('total_tracks', 0)} tracks"
             )
-            return album_info
+            return album
 
         except Exception as e:
             self.logger.error(f"Failed to get album info: {e}")
             raise SpotifyScraperError(f"Failed to get album info: {e}")
 
-    def get_artist_info(self, url: str, use_cache: bool = True) -> Dict[str, Any]:
+    def get_artist(self, url: str, use_cache: bool = True) -> Dict[str, Any]:
         """
         Get artist information including top tracks and albums.
 
@@ -383,28 +383,28 @@ class SpotifyScraperWrapper:
         self.logger.info(f"Getting artist info for: {url}")
 
         if use_cache:
-            cache_key = self._get_cache_key(url, "artist_info")
+            cache_key = self._get_cache_key(url, "artist")
             cached_data = self._load_from_cache(cache_key)
             if cached_data:
                 return cached_data
 
         try:
-            artist_info = self._retry_operation(self.client.get_artist_info, url)
+            artist = self._retry_operation(self.client.get_artist, url)
 
             if use_cache:
-                self._save_to_cache(cache_key, artist_info)
+                self._save_to_cache(cache_key, artist)
 
             self.logger.info(
-                f"Successfully retrieved artist: {artist_info.get('name', 'Unknown')} "
-                f"with {artist_info.get('followers', {}).get('total', 0)} followers"
+                f"Successfully retrieved artist: {artist.get('name', 'Unknown')} "
+                f"with {artist.get('followers', {}).get('total', 0)} followers"
             )
-            return artist_info
+            return artist
 
         except Exception as e:
             self.logger.error(f"Failed to get artist info: {e}")
             raise SpotifyScraperError(f"Failed to get artist info: {e}")
 
-    def get_playlist_info(self, url: str, use_cache: bool = True) -> Dict[str, Any]:
+    def get_playlist(self, url: str, use_cache: bool = True) -> Dict[str, Any]:
         """
         Get playlist information with all tracks.
 
@@ -418,22 +418,22 @@ class SpotifyScraperWrapper:
         self.logger.info(f"Getting playlist info for: {url}")
 
         if use_cache:
-            cache_key = self._get_cache_key(url, "playlist_info")
+            cache_key = self._get_cache_key(url, "playlist")
             cached_data = self._load_from_cache(cache_key)
             if cached_data:
                 return cached_data
 
         try:
-            playlist_info = self._retry_operation(self.client.get_playlist_info, url)
+            playlist = self._retry_operation(self.client.get_playlist, url)
 
             if use_cache:
-                self._save_to_cache(cache_key, playlist_info)
+                self._save_to_cache(cache_key, playlist)
 
             self.logger.info(
-                f"Successfully retrieved playlist: {playlist_info.get('name', 'Unknown')} "
-                f"with {playlist_info.get('tracks', {}).get('total', 0)} tracks"
+                f"Successfully retrieved playlist: {playlist.get('name', 'Unknown')} "
+                f"with {playlist.get('tracks', {}).get('total', 0)} tracks"
             )
-            return playlist_info
+            return playlist
 
         except Exception as e:
             self.logger.error(f"Failed to get playlist info: {e}")
@@ -506,7 +506,7 @@ class SpotifyScraperWrapper:
     def batch_process(
         self,
         urls: List[str],
-        operation: str = "track_info",
+        operation: str = "track",
         use_cache: bool = True,
         continue_on_error: bool = True,
     ) -> Dict[str, Union[Dict[str, Any], Exception]]:
@@ -515,7 +515,7 @@ class SpotifyScraperWrapper:
 
         Args:
             urls: List of Spotify URLs to process
-            operation: Operation to perform ('track_info', 'album_info', etc.)
+            operation: Operation to perform ('track', 'album', etc.)
             use_cache: Whether to use cached results
             continue_on_error: Whether to continue processing on errors
 
@@ -526,10 +526,10 @@ class SpotifyScraperWrapper:
 
         results = {}
         operation_map = {
-            "track_info": self.get_track_info,
-            "album_info": self.get_album_info,
-            "artist_info": self.get_artist_info,
-            "playlist_info": self.get_playlist_info,
+            "track": self.get_track,
+            "album": self.get_album,
+            "artist": self.get_artist,
+            "playlist": self.get_playlist,
             "all_info": self.client.get_all_info,
         }
 
@@ -749,12 +749,12 @@ def main():
         # 1. Get track information with lyrics (if authenticated)
         print("\n=== Track Information ===")
         try:
-            track_info = scraper.get_track_info(example_urls["track"])
+            track = scraper.get_track(example_urls["track"])
             print(
-                f"Track: {track_info.get('name', 'Unknown')} by {', '.join(a['name'] for a in track_info['artists'])}"
+                f"Track: {track.get('name', 'Unknown')} by {', '.join(a['name'] for a in track['artists'])}"
             )
-            print(f"Album: {track_info['album']['name']}")
-            print(f"Duration: {track_info['duration_ms'] / 1000:.2f} seconds")
+            print(f"Album: {track['album']['name']}")
+            print(f"Duration: {track['duration_ms'] / 1000:.2f} seconds")
 
             # Try to get lyrics (will fail without authentication)
             try:
@@ -770,15 +770,15 @@ def main():
         # 2. Get album information
         print("\n=== Album Information ===")
         try:
-            album_info = scraper.get_album_info(example_urls["album"])
+            album = scraper.get_album(example_urls["album"])
             print(
-                f"Album: {album_info.get('name', 'Unknown')} by {', '.join(a['name'] for a in album_info['artists'])}"
+                f"Album: {album.get('name', 'Unknown')} by {', '.join(a['name'] for a in album['artists'])}"
             )
-            print(f"Release Date: {album_info['release_date']}")
-            print(f"Total Tracks: {album_info['total_tracks']}")
+            print(f"Release Date: {album['release_date']}")
+            print(f"Total Tracks: {album['total_tracks']}")
 
             # Export album info to JSON
-            scraper.export_results(album_info, output_dir / "album_info.json", format="json")
+            scraper.export_results(album, output_dir / "album.json", format="json")
 
         except Exception as e:
             print(f"Error getting album info: {e}")
@@ -786,10 +786,10 @@ def main():
         # 3. Get artist information
         print("\n=== Artist Information ===")
         try:
-            artist_info = scraper.get_artist_info(example_urls["artist"])
-            print(f"Artist: {artist_info.get('name', 'Unknown')}")
-            print(f"Genres: {', '.join(artist_info.get('genres', []))}")
-            print(f"Followers: {artist_info['followers']['total']:,}")
+            artist = scraper.get_artist(example_urls["artist"])
+            print(f"Artist: {artist.get('name', 'Unknown')}")
+            print(f"Genres: {', '.join(artist.get('genres', []))}")
+            print(f"Followers: {artist['followers']['total']:,}")
 
         except Exception as e:
             print(f"Error getting artist info: {e}")
@@ -797,10 +797,10 @@ def main():
         # 4. Get playlist information
         print("\n=== Playlist Information ===")
         try:
-            playlist_info = scraper.get_playlist_info(example_urls["playlist"])
-            print(f"Playlist: {playlist_info.get('name', 'Unknown')}")
-            print(f"Owner: {playlist_info['owner']['display_name']}")
-            print(f"Total Tracks: {playlist_info['tracks']['total']}")
+            playlist = scraper.get_playlist(example_urls["playlist"])
+            print(f"Playlist: {playlist.get('name', 'Unknown')}")
+            print(f"Owner: {playlist['owner']['display_name']}")
+            print(f"Total Tracks: {playlist['tracks']['total']}")
 
         except Exception as e:
             print(f"Error getting playlist info: {e}")

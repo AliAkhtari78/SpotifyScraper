@@ -29,7 +29,7 @@ print(f"{track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('n
 # Output: One More Time by Daft Punk
 
 # Download cover art
-cover_path = client.download_cover(track['album']['uri'])
+cover_path = client.download_cover("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
 print(f"Cover saved to: {cover_path}")
 
 client.close()

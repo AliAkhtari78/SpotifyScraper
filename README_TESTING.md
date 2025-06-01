@@ -47,7 +47,7 @@ spotify-scraper track https://open.spotify.com/track/3n3Ppam7vgaVa1iaRUc9Lp
 from spotify_scraper import SpotifyClient
 
 client = SpotifyClient()
-track_info = client.get_track_info("https://open.spotify.com/track/3n3Ppam7vgaVa1iaRUc9Lp")
+track = client.get_track_info("https://open.spotify.com/track/3n3Ppam7vgaVa1iaRUc9Lp")
 print(track_info)
 ```
 
