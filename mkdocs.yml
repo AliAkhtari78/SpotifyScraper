@@ -7,39 +7,24 @@ repo_name: AliAkhtari78/SpotifyScraper
 copyright: Copyright &copy; 2025 Ali Akhtari - Documentation Last Updated May 2025
 
 theme:
-  name: material
-  language: en
-  palette:
-    - scheme: default
-      primary: teal
-      accent: teal
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - scheme: slate
-      primary: teal
-      accent: teal
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
-  font:
-    text: Roboto
-    code: Roboto Mono
-  features:
-    - navigation.instant
-    - navigation.tracking
-    - navigation.tabs
-    - navigation.sections
-    - navigation.expand
-    - navigation.indexes
-    - navigation.top
-    - search.suggest
-    - search.highlight
-    - content.code.copy
-    - content.code.annotate
-  icon:
-    logo: material/library
-    repo: fontawesome/brands/github
+  name: readthedocs
+  locale: en
+  analytics:
+    gtag: null
+  highlightjs: true
+  hljs_languages:
+    - python
+    - bash
+    - yaml
+    - json
+    - xml
+  navigation_depth: 4
+  collapse_navigation: false
+  titles_only: false
+  sticky_navigation: true
+  prev_next_buttons_location: both
+  include_search_page: true
+  search_index_only: false
 
 nav:
   - Home: index.md
@@ -95,25 +80,11 @@ markdown_extensions:
   - attr_list
   - def_list
   - footnotes
-  - pymdownx.highlight:
-      anchor_linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences
-  - pymdownx.details
-  - pymdownx.tabbed:
-      alternate_style: true
 
 extra:
   version: 2.0.0
   author: Ali Akhtari
   year: 2025
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/AliAkhtari78/SpotifyScraper
-    - icon: fontawesome/brands/python
-      link: https://pypi.org/project/spotifyscraper/
-  generator: false
 
 plugins:
   - search
