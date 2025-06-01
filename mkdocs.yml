@@ -7,7 +7,7 @@ repo_name: AliAkhtari78/SpotifyScraper
 copyright: Copyright &copy; 2025 Ali Akhtari - Documentation Last Updated May 2025
 
 theme:
-  name: readthedocs
+  name: mkdocs
   locale: en
   highlightjs: true
   hljs_languages:
@@ -43,6 +43,7 @@ nav:
     - Advanced Usage: examples/advanced.md
     - Real-World Projects: examples/projects.md
   - Advanced Topics:
+    - Overview: advanced/index.md
     - Architecture: advanced/architecture.md
     - Custom Extractors: advanced/custom-extractors.md
     - Performance: advanced/performance.md

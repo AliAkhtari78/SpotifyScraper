@@ -9,18 +9,6 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
-  commands:
-    # Install the package and docs dependencies
-    - pip install -e .
-    - pip install -r docs/requirements.txt
-    # Build the documentation
-    - mkdocs build --site-dir $READTHEDOCS_OUTPUT/html
-
-# Build documentation in the docs/ directory with Sphinx
-#sphinx:
-#  configuration: docs/conf.py
-#  builder: html
-#  fail_on_warning: false
 
 # Build documentation with MkDocs
 mkdocs:
