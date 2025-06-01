@@ -1,0 +1,750 @@
+# Configuration
+
+Comprehensive guide to configuring SpotifyScraper for optimal performance and your specific use case.
+
+## Quick Configuration
+
+### Basic Setup
+
+```python
+from spotify_scraper import SpotifyClient
+
+# Default configuration
+client = SpotifyClient()
+
+# Basic customization
+client = SpotifyClient(
+    timeout=30,                  # Request timeout
+    log_level="INFO",           # Logging level
+    download_path="./downloads", # Default download location
+    browser_type="requests"      # Browser engine
+)
+```
+
+### Configuration File
+
+Create `spotify_config.json`:
+
+```json
+{
+  "browser_type": "requests",
+  "timeout": 30,
+  "log_level": "INFO",
+  "download_path": "./downloads",
+  "max_retries": 3,
+  "use_cache": true,
+  "cache_size": 1000
+}
+```
+
+Load configuration:
+
+```python
+import json
+from spotify_scraper import SpotifyClient
+
+with open('spotify_config.json', 'r') as f:
+    config = json.load(f)
+
+client = SpotifyClient(**config)
+```
+
+## Environment Variables
+
+Set environment variables for automatic configuration:
+
+```bash
+# Core settings
+export SPOTIFY_SCRAPER_LOG_LEVEL=DEBUG
+export SPOTIFY_SCRAPER_TIMEOUT=60
+export SPOTIFY_SCRAPER_DOWNLOAD_PATH=/path/to/downloads
+export SPOTIFY_SCRAPER_BROWSER_TYPE=selenium
+
+# Authentication
+export SPOTIFY_SCRAPER_COOKIE_FILE=/path/to/cookies.txt
+export SPOTIFY_COOKIES='{"sp_dc": "your_token", "sp_key": "your_key"}'
+
+# Performance settings
+export SPOTIFY_SCRAPER_MAX_RETRIES=5
+export SPOTIFY_SCRAPER_CONCURRENT_REQUESTS=3
+export SPOTIFY_SCRAPER_USE_CACHE=true
+```
+
+## Client Configuration
+
+### Browser Settings
+
+```python
+# Use requests for speed (default)
+client = SpotifyClient(browser_type="requests")
+
+# Use Selenium for JavaScript-heavy content
+client = SpotifyClient(
+    browser_type="selenium",
+    selenium_browser="chrome",  # or "firefox", "edge"
+    headless=True              # Run without GUI
+)
+
+# Custom browser settings
+client = SpotifyClient(
+    browser_type="selenium",
+    selenium_options={
+        'window_size': (1920, 1080),
+        'user_agent': 'Custom User Agent',
+        'disable_images': True,
+        'disable_javascript': False
+    }
+)
+```
+
+### Timeout Configuration
+
+```python
+client = SpotifyClient(
+    timeout=30,           # General request timeout (seconds)
+    download_timeout=300, # Download timeout (5 minutes)
+    retry_timeout=5,      # Delay between retries
+    connect_timeout=10    # Connection timeout
+)
+```
+
+### Logging Configuration
+
+```python
+import logging
+
+# Basic logging setup
+client = SpotifyClient(
+    log_level="DEBUG",           # DEBUG, INFO, WARNING, ERROR
+    log_file="spotify.log",      # Log to file
+    log_format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+# Advanced logging configuration
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('spotify_scraper.log'),
+        logging.StreamHandler()  # Console output
+    ]
+)
+
+client = SpotifyClient()
+```
+
+## Authentication Configuration
+
+### Cookie-Based Authentication
+
+```python
+# Using cookie file
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
+
+# Using cookie dictionary
+cookies = {
+    'sp_dc': 'your_sp_dc_value',
+    'sp_key': 'your_sp_key_value'
+}
+client = SpotifyClient(cookies=cookies)
+
+# Using cookie string
+client = SpotifyClient(cookies="sp_dc=value1; sp_key=value2")
+```
+
+### Cookie File Formats
+
+#### Netscape Format (cookies.txt)
+```txt
+# Netscape HTTP Cookie File
+.spotify.com	TRUE	/	TRUE	1672531200	sp_dc	AQBYourTokenHere
+.spotify.com	TRUE	/	TRUE	1672531200	sp_key	AQAYourKeyHere
+```
+
+#### JSON Format
+```json
+{
+  "sp_dc": "AQBYourTokenHere",
+  "sp_key": "AQAYourKeyHere"
+}
+```
+
+### Extracting Cookies
+
+#### From Browser (Manual)
+
+**Chrome/Edge:**
+1. Go to [open.spotify.com](https://open.spotify.com) and log in
+2. Press F12 → Application tab → Cookies → https://open.spotify.com
+3. Copy `sp_dc` and `sp_key` values
+
+**Firefox:**
+1. Go to [open.spotify.com](https://open.spotify.com) and log in
+2. Press F12 → Storage tab → Cookies → https://open.spotify.com
+3. Copy `sp_dc` and `sp_key` values
+
+#### Programmatic Extraction
+
+```python
+from selenium import webdriver
+import json
+
+def extract_spotify_cookies(email, password):
+    """Extract cookies using Selenium."""
+    driver = webdriver.Chrome()
+    
+    try:
+        # Login to Spotify
+        driver.get("https://accounts.spotify.com/login")
+        driver.find_element("id", "login-username").send_keys(email)
+        driver.find_element("id", "login-password").send_keys(password)
+        driver.find_element("id", "login-button").click()
+        
+        # Wait and navigate to web player
+        driver.implicitly_wait(5)
+        driver.get("https://open.spotify.com")
+        
+        # Extract cookies
+        cookies = {}
+        for cookie in driver.get_cookies():
+            if cookie['name'] in ['sp_dc', 'sp_key']:
+                cookies[cookie['name']] = cookie['value']
+        
+        return cookies
+    finally:
+        driver.quit()
+```
+
+## Performance Configuration
+
+### Request Optimization
+
+```python
+client = SpotifyClient(
+    max_retries=3,              # Retry failed requests
+    retry_delay=1,              # Delay between retries (seconds)
+    concurrent_requests=5,       # Parallel requests limit
+    request_delay=0.1,          # Delay between requests
+    connection_pool_size=10     # HTTP connection pool size
+)
+```
+
+### Caching Configuration
+
+```python
+# Memory caching
+client = SpotifyClient(
+    use_cache=True,             # Enable caching
+    cache_size=1000,           # Cache size (number of responses)
+    cache_ttl=3600             # Cache TTL in seconds
+)
+
+# File-based caching
+client = SpotifyClient(
+    cache_type="file",
+    cache_dir="./cache",
+    cache_ttl=7200
+)
+
+# Redis caching (requires redis-py)
+client = SpotifyClient(
+    cache_type="redis",
+    redis_host="localhost",
+    redis_port=6379,
+    redis_db=0,
+    cache_ttl=3600
+)
+```
+
+### Rate Limiting
+
+```python
+client = SpotifyClient(
+    rate_limit=True,            # Enable rate limiting
+    requests_per_minute=60,     # Max requests per minute
+    burst_limit=10,             # Allow burst requests
+    rate_limit_strategy="token_bucket"  # "fixed_window" or "token_bucket"
+)
+```
+
+## Network Configuration
+
+### Proxy Settings
+
+```python
+# HTTP proxy
+client = SpotifyClient(
+    proxy="http://proxy.example.com:8080"
+)
+
+# SOCKS proxy
+client = SpotifyClient(
+    proxy="socks5://proxy.example.com:1080"
+)
+
+# Proxy with authentication
+client = SpotifyClient(
+    proxy="http://user:pass@proxy.example.com:8080"
+)
+
+# Rotating proxies
+proxies = [
+    "http://proxy1.example.com:8080",
+    "http://proxy2.example.com:8080",
+    "http://proxy3.example.com:8080"
+]
+client = SpotifyClient(proxy_rotation=proxies)
+```
+
+### SSL Configuration
+
+```python
+# Disable SSL verification (not recommended for production)
+client = SpotifyClient(verify_ssl=False)
+
+# Custom CA bundle
+client = SpotifyClient(ca_bundle_path="/path/to/ca-bundle.crt")
+
+# Client certificates
+client = SpotifyClient(
+    client_cert="/path/to/client.crt",
+    client_key="/path/to/client.key"
+)
+```
+
+### User Agent Configuration
+
+```python
+# Custom user agent
+client = SpotifyClient(
+    user_agent="Mozilla/5.0 (Custom Browser) SpotifyScraper/2.0.0"
+)
+
+# Random user agents
+client = SpotifyClient(
+    user_agent_rotation=True,
+    user_agent_list=[
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+    ]
+)
+```
+
+## Download Configuration
+
+### Basic Download Settings
+
+```python
+client = SpotifyClient(
+    download_path="./music_downloads/",     # Default download directory
+    create_directories=True,                # Auto-create directories
+    overwrite_existing=False,              # Don't overwrite existing files
+    embed_metadata=True,                   # Always embed metadata
+    default_audio_quality="high",          # Default audio quality
+    default_image_format="jpg"             # Default image format
+)
+```
+
+### Quality Settings
+
+```python
+# Audio quality options
+client = SpotifyClient(
+    audio_quality_preference=[
+        "premium",    # Best quality (320kbps, requires auth)
+        "high",       # High quality (320kbps)
+        "medium",     # Medium quality (160kbps)
+        "low"         # Low quality (96kbps)
+    ]
+)
+
+# Image quality options
+client = SpotifyClient(
+    image_size_preference=[
+        "original",   # Highest available resolution
+        "large",      # 640x640
+        "medium",     # 300x300
+        "small"       # 64x64
+    ]
+)
+```
+
+### File Organization
+
+```python
+# Organize downloads by artist
+client = SpotifyClient(
+    organize_downloads=True,
+    organization_pattern="{artist}/{album}/{track_number:02d} - {title}"
+)
+
+# Custom filename patterns
+client = SpotifyClient(
+    filename_pattern="{artist} - {title} ({album})",
+    sanitize_filenames=True,  # Remove invalid characters
+    max_filename_length=200   # Limit filename length
+)
+```
+
+## YAML Configuration
+
+Create `spotify_config.yaml`:
+
+```yaml
+# Core settings
+browser_type: requests
+timeout: 30
+log_level: INFO
+download_path: ./downloads
+
+# Authentication
+cookies:
+  sp_dc: your_sp_dc_value
+  sp_key: your_sp_key_value
+
+# Performance
+performance:
+  max_retries: 3
+  concurrent_requests: 5
+  request_delay: 0.1
+  use_cache: true
+  cache_size: 1000
+
+# Downloads
+downloads:
+  embed_metadata: true
+  organize_by: artist
+  quality: high
+  overwrite: false
+  create_directories: true
+
+# Network
+network:
+  proxy: null
+  verify_ssl: true
+  user_agent: SpotifyScraper/2.0.0
+  connect_timeout: 10
+
+# Rate limiting
+rate_limiting:
+  enabled: true
+  requests_per_minute: 60
+  burst_limit: 10
+```
+
+Load YAML configuration:
+
+```python
+import yaml
+from spotify_scraper import SpotifyClient
+
+with open('spotify_config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
+
+# Flatten nested configuration
+flat_config = {}
+flat_config.update(config)
+flat_config.update(config.get('performance', {}))
+flat_config.update(config.get('downloads', {}))
+flat_config.update(config.get('network', {}))
+
+client = SpotifyClient(**flat_config)
+```
+
+## Advanced Configuration
+
+### Custom Session Configuration
+
+```python
+import requests
+from spotify_scraper import SpotifyClient
+
+# Create custom session
+session = requests.Session()
+session.headers.update({
+    'User-Agent': 'Custom User Agent',
+    'Accept-Language': 'en-US,en;q=0.9'
+})
+
+# Use custom session
+client = SpotifyClient(session=session)
+```
+
+### Middleware Configuration
+
+```python
+class RequestMiddleware:
+    """Custom request middleware."""
+    
+    def before_request(self, url, headers, **kwargs):
+        """Modify request before sending."""
+        headers['X-Custom-Header'] = 'value'
+        return url, headers, kwargs
+    
+    def after_response(self, response):
+        """Process response after receiving."""
+        # Log response time, status, etc.
+        return response
+
+client = SpotifyClient(middleware=[RequestMiddleware()])
+```
+
+### Plugin Configuration
+
+```python
+# Enable/disable plugins
+client = SpotifyClient(
+    plugins={
+        'cache': True,
+        'rate_limiter': True,
+        'retry_handler': True,
+        'metrics': False
+    }
+)
+
+# Plugin-specific configuration
+client = SpotifyClient(
+    plugin_config={
+        'cache': {
+            'backend': 'redis',
+            'ttl': 3600
+        },
+        'rate_limiter': {
+            'requests_per_minute': 30
+        }
+    }
+)
+```
+
+## Environment-Specific Configuration
+
+### Development Configuration
+
+```python
+# Development settings
+client = SpotifyClient(
+    browser_type="selenium",        # Better for debugging
+    timeout=60,                     # Longer timeout for debugging
+    log_level="DEBUG",             # Detailed logging
+    log_file="debug.log",          # Log to file
+    max_retries=1,                 # Fail fast in development
+    use_cache=False,               # Fresh data for testing
+    headless=False                 # See browser for debugging
+)
+```
+
+### Production Configuration
+
+```python
+# Production settings
+client = SpotifyClient(
+    browser_type="requests",        # Faster for most use cases
+    timeout=45,                     # Reasonable timeout
+    max_retries=3,                  # Handle temporary failures
+    log_level="WARNING",            # Reduce log noise
+    use_cache=True,                 # Improve performance
+    cache_size=5000,               # Large cache for production
+    rate_limit=True,               # Respect rate limits
+    requests_per_minute=30,         # Conservative rate limit
+    user_agent_rotation=True        # Avoid detection
+)
+```
+
+### Testing Configuration
+
+```python
+# Testing settings
+client = SpotifyClient(
+    timeout=10,                     # Fast timeouts for tests
+    max_retries=0,                  # No retries in tests
+    use_cache=False,                # Predictable behavior
+    log_level="ERROR",             # Minimal logging
+    mock_responses=True             # Use mock responses
+)
+```
+
+## Configuration Validation
+
+### Validate Settings
+
+```python
+def validate_config(config):
+    """Validate configuration settings."""
+    required_keys = ['browser_type', 'timeout']
+    
+    for key in required_keys:
+        if key not in config:
+            raise ValueError(f"Missing required config: {key}")
+    
+    if config['timeout'] <= 0:
+        raise ValueError("Timeout must be positive")
+    
+    if config['browser_type'] not in ['requests', 'selenium']:
+        raise ValueError("Invalid browser_type")
+    
+    return True
+
+# Use validation
+config = {'browser_type': 'requests', 'timeout': 30}
+validate_config(config)
+client = SpotifyClient(**config)
+```
+
+### Configuration Schema
+
+```python
+from schema import Schema, And, Use, Optional
+
+# Define configuration schema
+config_schema = Schema({
+    'browser_type': And(str, lambda x: x in ['requests', 'selenium']),
+    'timeout': And(Use(int), lambda x: x > 0),
+    Optional('log_level'): And(str, lambda x: x in ['DEBUG', 'INFO', 'WARNING', 'ERROR']),
+    Optional('max_retries'): And(Use(int), lambda x: x >= 0),
+    Optional('use_cache'): bool,
+    Optional('cache_size'): And(Use(int), lambda x: x > 0)
+})
+
+# Validate configuration
+config = {
+    'browser_type': 'requests',
+    'timeout': 30,
+    'log_level': 'INFO',
+    'max_retries': 3,
+    'use_cache': True,
+    'cache_size': 1000
+}
+
+validated_config = config_schema.validate(config)
+client = SpotifyClient(**validated_config)
+```
+
+## Configuration Best Practices
+
+### Security Considerations
+
+```python
+import os
+
+# Never hardcode sensitive data
+client = SpotifyClient(
+    cookies=os.getenv('SPOTIFY_COOKIES'),
+    proxy=os.getenv('PROXY_URL')
+)
+
+# Use secure defaults
+client = SpotifyClient(
+    verify_ssl=True,               # Always verify SSL
+    timeout=30,                    # Prevent hanging requests
+    max_retries=3,                 # Limit retry attempts
+    log_level="INFO"               # Don't log sensitive data
+)
+```
+
+### Resource Management
+
+```python
+# Always use context managers
+with SpotifyClient() as client:
+    track = client.get_track_info(url)
+
+# Or manually manage resources
+client = SpotifyClient()
+try:
+    track = client.get_track_info(url)
+finally:
+    client.close()
+```
+
+### Configuration Hierarchy
+
+```python
+# Configuration priority (highest to lowest):
+# 1. Explicit parameters
+# 2. Environment variables
+# 3. Configuration file
+# 4. Default values
+
+import os
+import json
+
+def load_config():
+    """Load configuration with proper hierarchy."""
+    
+    # Default configuration
+    config = {
+        'browser_type': 'requests',
+        'timeout': 30,
+        'log_level': 'INFO'
+    }
+    
+    # Load from config file
+    config_file = os.path.expanduser('~/.spotifyscraper/config.json')
+    if os.path.exists(config_file):
+        with open(config_file, 'r') as f:
+            file_config = json.load(f)
+            config.update(file_config)
+    
+    # Override with environment variables
+    if os.getenv('SPOTIFY_SCRAPER_BROWSER_TYPE'):
+        config['browser_type'] = os.getenv('SPOTIFY_SCRAPER_BROWSER_TYPE')
+    if os.getenv('SPOTIFY_SCRAPER_TIMEOUT'):
+        config['timeout'] = int(os.getenv('SPOTIFY_SCRAPER_TIMEOUT'))
+    if os.getenv('SPOTIFY_SCRAPER_LOG_LEVEL'):
+        config['log_level'] = os.getenv('SPOTIFY_SCRAPER_LOG_LEVEL')
+    
+    return config
+
+# Use hierarchical configuration
+config = load_config()
+client = SpotifyClient(**config)
+```
+
+## Troubleshooting Configuration
+
+### Common Issues
+
+1. **SSL Certificate Errors**
+```python
+client = SpotifyClient(verify_ssl=False)  # Not recommended for production
+```
+
+2. **Timeout Issues**
+```python
+client = SpotifyClient(timeout=120)  # Increase timeout
+```
+
+3. **Authentication Problems**
+```python
+# Check cookie format and validity
+client = SpotifyClient(
+    cookies={'sp_dc': 'your_token'},
+    log_level="DEBUG"  # See authentication attempts
+)
+```
+
+4. **Rate Limiting**
+```python
+client = SpotifyClient(
+    requests_per_minute=10,  # Reduce rate
+    request_delay=1          # Add delay between requests
+)
+```
+
+### Debug Configuration
+
+```python
+# Enable comprehensive debugging
+client = SpotifyClient(
+    log_level="DEBUG",
+    debug=True,                 # Enable debug mode
+    debug_requests=True,        # Log all requests
+    debug_responses=True,       # Log response details
+    save_debug_files=True       # Save debug data to files
+)
+```
+
+---
+
+For more configuration examples and advanced setups, visit the [SpotifyScraper Documentation](https://spotifyscraper.readthedocs.io).

@@ -1,0 +1,657 @@
+# CLI Usage
+
+SpotifyScraper provides a powerful command-line interface for extracting Spotify data and downloading media files without requiring API credentials.
+
+## Installation
+
+```bash
+# Install SpotifyScraper
+pip install spotifyscraper
+
+# Verify installation
+spotify-scraper --version
+```
+
+## Quick Start
+
+```bash
+# Extract track information
+spotify-scraper track https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh
+
+# Download track preview
+spotify-scraper download https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh --output-dir ./downloads/
+
+# Extract playlist with all tracks
+spotify-scraper playlist https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M --include-tracks
+```
+
+## Commands Overview
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `track` | Extract track information | `spotify-scraper track <url>` |
+| `album` | Extract album information | `spotify-scraper album <url>` |
+| `artist` | Extract artist information | `spotify-scraper artist <url>` |
+| `playlist` | Extract playlist information | `spotify-scraper playlist <url>` |
+| `download` | Download audio previews and covers | `spotify-scraper download <url>` |
+| `batch` | Process multiple URLs from file | `spotify-scraper batch urls.txt` |
+| `search` | Search for tracks, albums, artists | `spotify-scraper search "Daft Punk"` |
+
+## Track Information
+
+### Basic Track Extraction
+
+```bash
+# Extract basic track info
+spotify-scraper track https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh
+
+# Output format options
+spotify-scraper track <url> --format json        # JSON format (default)
+spotify-scraper track <url> --format yaml        # YAML format
+spotify-scraper track <url> --format table       # Human-readable table
+
+# Save to file
+spotify-scraper track <url> --output track_info.json
+```
+
+### Track Output Example
+
+```json
+{
+  "id": "4iV5W9uYEdYUVa79Axb7Rh",
+  "name": "One More Time",
+  "artists": [
+    {
+      "name": "Daft Punk",
+      "id": "4tZwfgrHOc3mvqYlEYSvVi"
+    }
+  ],
+  "album": {
+    "name": "Discovery",
+    "id": "2noRn2Aes5aoNVsU6iWThc"
+  },
+  "duration_ms": 320357,
+  "preview_url": "https://p.scdn.co/mp3-preview/...",
+  "explicit": false,
+  "popularity": 85
+}
+```
+
+### Advanced Track Options
+
+```bash
+# Include audio features
+spotify-scraper track <url> --include-audio-features
+
+# Include lyrics (if available)
+spotify-scraper track <url> --include-lyrics
+
+# Include all available data
+spotify-scraper track <url> --verbose
+
+# Multiple tracks
+spotify-scraper track <url1> <url2> <url3>
+```
+
+## Album Information
+
+### Basic Album Extraction
+
+```bash
+# Extract album info
+spotify-scraper album https://open.spotify.com/album/2noRn2Aes5aoNVsU6iWThc
+
+# Include track listing
+spotify-scraper album <url> --include-tracks
+
+# Include track previews info
+spotify-scraper album <url> --include-tracks --include-previews
+```
+
+### Album Options
+
+```bash
+# Limit number of tracks shown
+spotify-scraper album <url> --include-tracks --limit 10
+
+# Export track list to file
+spotify-scraper album <url> --include-tracks --output-tracks tracks.json
+
+# Get only album metadata (no tracks)
+spotify-scraper album <url> --metadata-only
+```
+
+## Artist Information
+
+### Basic Artist Extraction
+
+```bash
+# Extract artist info
+spotify-scraper artist https://open.spotify.com/artist/4tZwfgrHOc3mvqYlEYSvVi
+
+# Include top tracks
+spotify-scraper artist <url> --include-top-tracks
+
+# Include albums
+spotify-scraper artist <url> --include-albums
+
+# Include related artists
+spotify-scraper artist <url> --include-related
+```
+
+### Artist Options
+
+```bash
+# Comprehensive artist data
+spotify-scraper artist <url> --include-top-tracks --include-albums --include-related
+
+# Limit results
+spotify-scraper artist <url> --include-albums --album-limit 20
+spotify-scraper artist <url> --include-top-tracks --track-limit 10
+
+# Filter by album type
+spotify-scraper artist <url> --include-albums --album-types album,single
+```
+
+## Playlist Information
+
+### Basic Playlist Extraction
+
+```bash
+# Extract playlist info
+spotify-scraper playlist https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M
+
+# Include all tracks
+spotify-scraper playlist <url> --include-tracks
+
+# Include track details
+spotify-scraper playlist <url> --include-tracks --track-details
+```
+
+### Playlist Options
+
+```bash
+# Limit tracks
+spotify-scraper playlist <url> --include-tracks --limit 50
+
+# Skip certain tracks
+spotify-scraper playlist <url> --include-tracks --offset 20
+
+# Export tracks only
+spotify-scraper playlist <url> --tracks-only --output playlist_tracks.json
+
+# Get playlist metadata only
+spotify-scraper playlist <url> --metadata-only
+```
+
+## Download Commands
+
+### Audio Downloads
+
+```bash
+# Download track preview
+spotify-scraper download https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh
+
+# Download to specific directory
+spotify-scraper download <url> --output-dir ./music/
+
+# Download with custom filename
+spotify-scraper download <url> --output-dir ./music/ --filename "daft_punk_one_more_time.mp3"
+
+# Download multiple tracks
+spotify-scraper download <url1> <url2> <url3> --output-dir ./music/
+```
+
+### Image Downloads
+
+```bash
+# Download album cover
+spotify-scraper download <url> --cover-only --output-dir ./covers/
+
+# Download specific image size
+spotify-scraper download <url> --cover-only --image-size large --output-dir ./covers/
+
+# Download both audio and cover
+spotify-scraper download <url> --include-cover --output-dir ./downloads/
+```
+
+### Download Options
+
+```bash
+# Quality settings
+spotify-scraper download <url> --quality high --output-dir ./music/
+
+# Metadata embedding
+spotify-scraper download <url> --embed-metadata --output-dir ./music/
+
+# Overwrite existing files
+spotify-scraper download <url> --overwrite --output-dir ./music/
+
+# Create directory structure
+spotify-scraper download <url> --organize-by artist --output-dir ./music/
+spotify-scraper download <url> --organize-by album --output-dir ./music/
+```
+
+## Batch Processing
+
+### Batch from File
+
+```bash
+# Create URL list file
+echo "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh" > urls.txt
+echo "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6" >> urls.txt
+
+# Process all URLs
+spotify-scraper batch urls.txt --command track --output-dir ./batch_results/
+
+# Download all URLs
+spotify-scraper batch urls.txt --command download --output-dir ./downloads/
+```
+
+### Batch Options
+
+```bash
+# Parallel processing
+spotify-scraper batch urls.txt --workers 5 --command track
+
+# Continue on errors
+spotify-scraper batch urls.txt --continue-on-error --command download
+
+# Progress reporting
+spotify-scraper batch urls.txt --progress --command track
+
+# Filter by URL type
+spotify-scraper batch urls.txt --filter-type track --command track
+```
+
+### Batch File Formats
+
+```txt
+# Simple URL list (urls.txt)
+https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh
+https://open.spotify.com/album/2noRn2Aes5aoNVsU6iWThc
+https://open.spotify.com/artist/4tZwfgrHOc3mvqYlEYSvVi
+```
+
+```json
+# JSON format with metadata (batch.json)
+[
+  {
+    "url": "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh",
+    "custom_name": "one_more_time",
+    "download_cover": true
+  },
+  {
+    "url": "https://open.spotify.com/album/2noRn2Aes5aoNVsU6iWThc",
+    "include_tracks": true
+  }
+]
+```
+
+## Search Functionality
+
+### Basic Search
+
+```bash
+# Search for tracks
+spotify-scraper search "Daft Punk One More Time" --type track
+
+# Search for albums
+spotify-scraper search "Discovery" --type album
+
+# Search for artists
+spotify-scraper search "Daft Punk" --type artist
+
+# Search for playlists
+spotify-scraper search "Electronic Music" --type playlist
+```
+
+### Search Options
+
+```bash
+# Limit results
+spotify-scraper search "Daft Punk" --type track --limit 10
+
+# Multiple types
+spotify-scraper search "Daft Punk" --type track,album,artist
+
+# Market/region specific
+spotify-scraper search "Daft Punk" --market US --type track
+
+# Export search results
+spotify-scraper search "Daft Punk" --type track --output search_results.json
+```
+
+## Authentication
+
+### Cookie-Based Authentication
+
+```bash
+# Using cookie file
+spotify-scraper track <url> --cookies cookies.txt
+
+# Using cookie string
+spotify-scraper track <url> --cookie-string "sp_dc=AQB...; sp_key=AQA..."
+
+# Using environment variable
+export SPOTIFY_COOKIES='{"sp_dc": "AQB...", "sp_key": "AQA..."}'
+spotify-scraper track <url>
+```
+
+### Premium Features
+
+```bash
+# Access premium content (requires authentication)
+spotify-scraper track <premium_url> --cookies cookies.txt
+
+# Higher quality downloads
+spotify-scraper download <url> --cookies cookies.txt --quality premium
+
+# Private playlists
+spotify-scraper playlist <private_playlist_url> --cookies cookies.txt
+```
+
+## Output Formats
+
+### JSON Output
+
+```bash
+# Default JSON output
+spotify-scraper track <url>
+
+# Pretty-printed JSON
+spotify-scraper track <url> --format json --pretty
+
+# Compact JSON
+spotify-scraper track <url> --format json --compact
+```
+
+### YAML Output
+
+```bash
+# YAML format
+spotify-scraper track <url> --format yaml
+```
+
+### Table Output
+
+```bash
+# Human-readable table
+spotify-scraper track <url> --format table
+
+# Custom table columns
+spotify-scraper track <url> --format table --columns name,artists,duration
+```
+
+### CSV Output
+
+```bash
+# CSV format
+spotify-scraper track <url> --format csv
+
+# Custom CSV headers
+spotify-scraper track <url> --format csv --csv-headers name,artist,album,duration
+```
+
+## Configuration
+
+### Configuration File
+
+Create `~/.spotifyscraper/config.yaml`:
+
+```yaml
+# Default settings
+output_dir: ~/Music/SpotifyScraper
+format: json
+workers: 3
+timeout: 30
+
+# Authentication
+cookies_file: ~/.spotifyscraper/cookies.txt
+
+# Download settings
+embed_metadata: true
+organize_by: artist
+quality: high
+overwrite: false
+
+# Output settings
+pretty_print: true
+verbose: false
+```
+
+### Environment Variables
+
+```bash
+# Configuration via environment variables
+export SPOTIFY_SCRAPER_OUTPUT_DIR="~/Music"
+export SPOTIFY_SCRAPER_FORMAT="json"
+export SPOTIFY_SCRAPER_WORKERS="5"
+export SPOTIFY_SCRAPER_TIMEOUT="60"
+export SPOTIFY_SCRAPER_COOKIES_FILE="~/.spotify_cookies.txt"
+```
+
+### Command-Line Configuration
+
+```bash
+# Override config file settings
+spotify-scraper track <url> --config-file custom_config.yaml
+
+# Ignore config file
+spotify-scraper track <url> --no-config
+
+# Show current configuration
+spotify-scraper config --show
+```
+
+## Advanced Usage
+
+### Pipeline Usage
+
+```bash
+# Pipe URLs from other commands
+curl -s "https://example.com/playlist.m3u" | grep "spotify.com" | spotify-scraper batch --stdin
+
+# Extract URLs from text file
+grep -o "https://open.spotify.com/[^[:space:]]*" file.txt | spotify-scraper batch --stdin
+```
+
+### Scripting Integration
+
+```bash
+#!/bin/bash
+# Example script for automated processing
+
+PLAYLIST_URL="https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
+OUTPUT_DIR="./weekly_downloads"
+
+# Create output directory
+mkdir -p "$OUTPUT_DIR"
+
+# Extract playlist and download previews
+spotify-scraper playlist "$PLAYLIST_URL" --include-tracks --output "$OUTPUT_DIR/playlist.json"
+
+# Download all track previews
+spotify-scraper batch <(jq -r '.tracks.items[].track.external_urls.spotify' "$OUTPUT_DIR/playlist.json") \
+  --command download \
+  --output-dir "$OUTPUT_DIR/tracks" \
+  --embed-metadata \
+  --organize-by artist
+```
+
+### Custom Processing
+
+```bash
+# Extract specific fields with jq
+spotify-scraper track <url> | jq '.name, .artists[0].name, .duration_ms'
+
+# Process multiple tracks and combine results
+for url in $(cat track_urls.txt); do
+  spotify-scraper track "$url" --format json --compact
+done | jq -s '.'
+```
+
+## Error Handling
+
+### Common Error Messages
+
+```bash
+# Invalid URL format
+Error: Invalid Spotify URL format
+
+# Network connection issues
+Error: Failed to connect to Spotify servers
+
+# Authentication required
+Error: This content requires authentication
+
+# Rate limiting
+Error: Rate limited. Please wait and try again
+
+# Content not found
+Error: The requested content was not found
+```
+
+### Error Handling Options
+
+```bash
+# Continue on errors during batch processing
+spotify-scraper batch urls.txt --continue-on-error
+
+# Retry failed requests
+spotify-scraper track <url> --retries 3 --retry-delay 5
+
+# Verbose error reporting
+spotify-scraper track <url> --verbose --debug
+
+# Log errors to file
+spotify-scraper batch urls.txt --log-file errors.log --log-level ERROR
+```
+
+## Performance Optimization
+
+### Parallel Processing
+
+```bash
+# Increase worker threads
+spotify-scraper batch urls.txt --workers 10
+
+# Optimize for download speed
+spotify-scraper download <url> --workers 5 --timeout 60
+```
+
+### Caching
+
+```bash
+# Enable response caching
+spotify-scraper track <url> --cache --cache-dir ~/.cache/spotifyscraper
+
+# Cache for specific duration
+spotify-scraper track <url> --cache --cache-timeout 3600  # 1 hour
+```
+
+### Rate Limiting
+
+```bash
+# Add delays between requests
+spotify-scraper batch urls.txt --delay 1  # 1 second delay
+
+# Limit requests per minute
+spotify-scraper batch urls.txt --rate-limit 30  # 30 requests per minute
+```
+
+## Integration Examples
+
+### Shell Scripts
+
+```bash
+#!/bin/bash
+# Download new releases from favorite artists
+
+ARTISTS=(
+  "https://open.spotify.com/artist/4tZwfgrHOc3mvqYlEYSvVi"  # Daft Punk
+  "https://open.spotify.com/artist/4dpARuHxo51G3z768sgnrY"  # Adele
+)
+
+for artist_url in "${ARTISTS[@]}"; do
+  echo "Processing $artist_url"
+  
+  # Get latest albums
+  spotify-scraper artist "$artist_url" \
+    --include-albums \
+    --album-types album,single \
+    --limit 5 \
+    --output "latest_releases_$(basename $artist_url).json"
+done
+```
+
+### Python Integration
+
+```bash
+# Use CLI from Python scripts
+import subprocess
+import json
+
+def get_track_info(url):
+    result = subprocess.run([
+        'spotify-scraper', 'track', url, '--format', 'json'
+    ], capture_output=True, text=True)
+    
+    if result.returncode == 0:
+        return json.loads(result.stdout)
+    else:
+        print(f"Error: {result.stderr}")
+        return None
+
+# Usage
+track_data = get_track_info("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
+```
+
+### Cron Jobs
+
+```bash
+# Add to crontab for automated processing
+# Extract daily playlists every day at 9 AM
+0 9 * * * /usr/local/bin/spotify-scraper playlist https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M --output-dir ~/daily_music/$(date +\%Y-\%m-\%d)/ --include-tracks
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Command not found**: Ensure SpotifyScraper is properly installed and in PATH
+2. **Permission denied**: Check file/directory permissions
+3. **Network timeouts**: Increase timeout or check internet connection
+4. **Authentication errors**: Verify cookie file or authentication setup
+5. **Rate limiting**: Reduce request frequency or add delays
+
+### Debug Mode
+
+```bash
+# Enable debug mode for detailed logs
+spotify-scraper track <url> --debug --verbose
+
+# Save debug output
+spotify-scraper track <url> --debug --log-file debug.log
+```
+
+### Getting Help
+
+```bash
+# Show help for main command
+spotify-scraper --help
+
+# Show help for specific subcommand
+spotify-scraper track --help
+spotify-scraper download --help
+
+# Show version
+spotify-scraper --version
+
+# List all available commands
+spotify-scraper --list-commands
+```
+
+---
+
+For more detailed information, visit the [SpotifyScraper Documentation](https://spotifyscraper.readthedocs.io).
