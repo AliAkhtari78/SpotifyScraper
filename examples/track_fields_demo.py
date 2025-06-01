@@ -76,7 +76,7 @@ def main():
     # Example of handling missing fields properly
     
     # WRONG - This will raise KeyError
-    # popularity = track['popularity']  # KeyError!
+    # popularity = track.get('popularity', 0)  # KeyError!
     
     # CORRECT - Use .get() with default
     popularity = track.get('popularity', 'Not available')

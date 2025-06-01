@@ -379,7 +379,7 @@ def safe_extract_track(json_data: Dict[str, Any]) -> Optional[TrackData]:
 # Usage
 track_data = safe_extract_track(json_data)
 if track_data:
-    print(f"Track: {track_data['name']}")
+    print(f"Track: {track_data.get('name', 'Unknown')}")
 else:
     print("Failed to extract track data")
 ```

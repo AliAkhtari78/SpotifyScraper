@@ -68,7 +68,7 @@ def main():
         
         if album_data:
             print(f"✅ Successfully extracted album data from JSON-LD")
-            print(f"   Album Name: {album_data['name']}")
+            print(f"   Album Name: {album_data.get('name', 'Unknown')}")
             print(f"   Album Type: {album_data['type']}")
         else:
             print("❌ Failed to extract album data from JSON-LD")
@@ -102,7 +102,7 @@ def main():
         }
         
         print(f"✅ Track data with album field:")
-        print(f"   Track: {track_data['name']}")
+        print(f"   Track: {track_data.get('name', 'Unknown')}")
         print(f"   Album: {track_data['album']['name']}")
         print(f"   Artist: {track_data['artists'][0]['name']}")
         

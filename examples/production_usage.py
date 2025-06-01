@@ -751,7 +751,7 @@ def main():
         try:
             track_info = scraper.get_track_info(example_urls["track"])
             print(
-                f"Track: {track_info['name']} by {', '.join(a['name'] for a in track_info['artists'])}"
+                f"Track: {track_info.get('name', 'Unknown')} by {', '.join(a['name'] for a in track_info['artists'])}"
             )
             print(f"Album: {track_info['album']['name']}")
             print(f"Duration: {track_info['duration_ms'] / 1000:.2f} seconds")
@@ -772,7 +772,7 @@ def main():
         try:
             album_info = scraper.get_album_info(example_urls["album"])
             print(
-                f"Album: {album_info['name']} by {', '.join(a['name'] for a in album_info['artists'])}"
+                f"Album: {album_info.get('name', 'Unknown')} by {', '.join(a['name'] for a in album_info['artists'])}"
             )
             print(f"Release Date: {album_info['release_date']}")
             print(f"Total Tracks: {album_info['total_tracks']}")
@@ -787,7 +787,7 @@ def main():
         print("\n=== Artist Information ===")
         try:
             artist_info = scraper.get_artist_info(example_urls["artist"])
-            print(f"Artist: {artist_info['name']}")
+            print(f"Artist: {artist_info.get('name', 'Unknown')}")
             print(f"Genres: {', '.join(artist_info.get('genres', []))}")
             print(f"Followers: {artist_info['followers']['total']:,}")
 
@@ -798,7 +798,7 @@ def main():
         print("\n=== Playlist Information ===")
         try:
             playlist_info = scraper.get_playlist_info(example_urls["playlist"])
-            print(f"Playlist: {playlist_info['name']}")
+            print(f"Playlist: {playlist_info.get('name', 'Unknown')}")
             print(f"Owner: {playlist_info['owner']['display_name']}")
             print(f"Total Tracks: {playlist_info['tracks']['total']}")
 

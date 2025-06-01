@@ -122,7 +122,7 @@ client = SpotifyClient()
 track_info = client.get_track_info(
     'https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6'
 )
-print(track_info['name'])
+print(track_info.get('name', 'Unknown'))
 ```
 
 ### Album Extraction with Tracks
@@ -144,7 +144,7 @@ album_info = client.get_album_info(
 )
 # Cleaner structure
 for track in album_info['tracks']:
-    print(track['name'])
+    print(track.get('name', 'Unknown'))
 ```
 
 ### Error Handling
@@ -248,7 +248,7 @@ class Scraper:
         # Transform to v1 format
         return {
             'track_id': data['id'],
-            'track_name': data['name'],
+            'track_name': data.get('name', 'Unknown'),
             'track_artists': [a['name'] for a in data['artists']],
             # ... map other fields
         }
@@ -258,7 +258,7 @@ class Scraper:
         # Transform to v1 format
         return {
             'album_id': data['id'],
-            'album_name': data['name'],
+            'album_name': data.get('name', 'Unknown'),
             'album_tracks': data['tracks'],
             # ... map other fields
         }
@@ -304,7 +304,7 @@ client = SpotifyClient()
 ```python
 # Update field names
 # OLD: track_info['track_name']
-# NEW: track_info['name']
+# NEW: track_info.get('name', 'Unknown')
 
 # OLD: track_info['track_artists']
 # NEW: [a['name'] for a in track_info['artists']]

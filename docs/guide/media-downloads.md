@@ -211,7 +211,7 @@ album_url = "https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy"
 album = client.get_album_info(album_url)
 
 # Create album directory
-album_dir = f"./downloads/{album['name']}"
+album_dir = f"./downloads/{album.get('name', 'Unknown')}"
 
 # Download album cover
 cover_path = client.download_cover(
@@ -237,7 +237,7 @@ def download_playlist_content(playlist_url, base_path="./downloads/"):
     
     # Get playlist info
     playlist = client.get_playlist_info(playlist_url)
-    playlist_name = playlist['name']
+    playlist_name = playlist.get('name', 'Unknown')
     playlist_dir = f"{base_path}/{playlist_name}"
     
     # Download playlist cover
@@ -318,7 +318,7 @@ image_sizes = {
 def custom_filename_pattern(track_info):
     """Create custom filename from track info."""
     artist = track_info['artists'][0]['name']
-    title = track_info['name']
+    title = track_info.get('name', 'Unknown')
     album = track_info['album']['name']
     
     # Clean filename (remove invalid characters)
@@ -414,7 +414,7 @@ def update_mp3_metadata(file_path, track_info):
         audiofile.initTag()
     
     # Set basic metadata
-    audiofile.tag.title = track_info['name']
+    audiofile.tag.title = track_info.get('name', 'Unknown')
     audiofile.tag.artist = track_info['artists'][0]['name']
     audiofile.tag.album = track_info['album']['name']
     audiofile.tag.album_artist = track_info['album']['artists'][0]['name']
@@ -424,7 +424,7 @@ def update_mp3_metadata(file_path, track_info):
         audiofile.tag.track_num = track_info['track_number']
     
     if 'release_date' in track_info['album']:
-        year = track_info['album']['release_date'][:4]
+        year = track_info['album'].get('release_date', '')[:4] if track_info['album'].get('release_date') else 'Unknown'
         audiofile.tag.recording_date = year
     
     # Save changes
@@ -636,7 +636,7 @@ def safe_download_preview(client, url, path):
         track_info = client.get_track_info(url)
         
         if not track_info.get('preview_url'):
-            print(f"No preview available for: {track_info['name']}")
+            print(f"No preview available for: {track_info.get('name', 'Unknown')}")
             return None
         
         return client.download_preview_mp3(url, path=path)

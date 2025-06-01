@@ -96,7 +96,7 @@ class MusicAnalyzer:
         artist_count = {}
         
         for track in tracks:
-            artist_name = track['artists'][0]['name']
+            artist_name = (track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')
             artist_count[artist_name] = artist_count.get(artist_name, 0) + 1
         
         sorted_artists = sorted(artist_count.items(), key=lambda x: x[1], reverse=True)
@@ -134,8 +134,8 @@ class MusicAnalyzer:
                 # In a real implementation, you'd use Spotify's recommendation API
                 recommendations.append({
                     'type': 'similar_artist',
-                    'artist': artist_info['name'],
-                    'reason': f"Because you listen to {track['name']}"
+                    'artist': artist_info.get('name', 'Unknown'),
+                    'reason': f"Because you listen to {track.get('name', 'Unknown')}"
                 })
                 
             except Exception:
@@ -364,8 +364,8 @@ class PlaylistManager:
         """Create fingerprint for duplicate detection."""
         
         # Normalize track name and artist
-        track_name = track['name'].lower().strip()
-        artist_name = track['artists'][0]['name'].lower().strip()
+        track_name = track.get('name', 'Unknown').lower().strip()
+        artist_name = (track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown').lower().strip()
         
         # Remove common variations
         track_name = self._normalize_title(track_name)
@@ -410,7 +410,7 @@ class PlaylistManager:
                 genre_groups[primary_genre].append(track)
                 
             except Exception as e:
-                print(f"Failed to get genre for {track['name']}: {e}")
+                print(f"Failed to get genre for {track.get('name', 'Unknown')}: {e}")
                 genre_groups['Unknown'].append(track)
         
         return dict(genre_groups)
@@ -493,7 +493,7 @@ class PlaylistManager:
         backup_data = {
             'backup_date': datetime.now().isoformat(),
             'playlist_id': playlist['id'],
-            'playlist_name': playlist['name'],
+            'playlist_name': playlist.get('name', 'Unknown'),
             'description': playlist.get('description', ''),
             'total_tracks': playlist['tracks']['total'],
             'tracks': []
@@ -505,14 +505,14 @@ class PlaylistManager:
                 track = item['track']
                 track_data = {
                     'id': track['id'],
-                    'name': track['name'],
-                    'artists': [{'name': artist['name'], 'id': artist['id']} 
+                    'name': track.get('name', 'Unknown'),
+                    'artists': [{'name': artist.get('name', 'Unknown'), 'id': artist['id']} 
                               for artist in track['artists']],
                     'album': {
-                        'name': track['album']['name'],
+                        'name': track.get('album', {}).get('name', 'Unknown'),
                         'id': track['album']['id']
                     },
-                    'duration_ms': track['duration_ms'],
+                    'duration_ms': track.get('duration_ms', 0),
                     'explicit': track.get('explicit', False),
                     'external_urls': track['external_urls'],
                     'added_at': item.get('added_at')
@@ -549,7 +549,7 @@ class PlaylistManager:
                 analysis['unavailable_tracks'] += 1
         
         # Analyze duration distribution
-        durations = [track['duration_ms'] for track in tracks]
+        durations = [track.get('duration_ms', 0) for track in tracks]
         if durations:
             analysis['duration_analysis'] = {
                 'avg_duration': sum(durations) / len(durations),
@@ -694,7 +694,7 @@ class MusicDiscoveryBot(commands.Bot):
                     if top_tracks:
                         recommendations.append({
                             'track': top_tracks[0],
-                            'reason': f"Because you like {artist_info['name']}",
+                            'reason': f"Because you like {artist_info.get('name', 'Unknown')}",
                             'discovery_type': 'similar_artist'
                         })
             else:
@@ -744,7 +744,7 @@ class MusicDiscoveryBot(commands.Bot):
             
             return [{
                 'track': track,
-                'reason': f"From {playlist['name']} playlist",
+                'reason': f"From {playlist.get('name', 'Unknown')} playlist",
                 'discovery_type': 'playlist_random'
             } for track in selected]
         
@@ -798,7 +798,7 @@ class MusicDiscoveryBot(commands.Bot):
         trending = await self._get_trending_tracks()
         if trending:
             trending_text = "\n".join([
-                f"• {track['name']} by {track['artists'][0]['name']}"
+                f"• {track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}"
                 for track in trending[:5]
             ])
             embed.add_field(
@@ -826,7 +826,7 @@ class MusicDiscoveryBot(commands.Bot):
         new_releases = await self._get_new_releases()
         if new_releases:
             releases_text = "\n".join([
-                f"• {album['name']} by {album['artists'][0]['name']}"
+                f"• {album.get('name', 'Unknown')} by {(album.get('artists', [{}])[0].get('name', 'Unknown') if album.get('artists') else 'Unknown')}"
                 for album in new_releases[:3]
             ])
             embed.add_field(
@@ -851,12 +851,12 @@ class MusicDiscoveryBot(commands.Bot):
             track = rec['track']
             reason = rec['reason']
             
-            track_info = f"**{track['name']}**\n"
-            track_info += f"by {track['artists'][0]['name']}\n"
+            track_info = f"**{track.get('name', 'Unknown')}**\n"
+            track_info += f"by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}\n"
             track_info += f"*{reason}*"
             
             if track.get('preview_url'):
-                track_info += f"\n[🎵 Preview]({track['preview_url']})"
+                track_info += f"\n[🎵 Preview]({track.get('preview_url', 'Not available')})"
             
             track_info += f"\n[🎧 Listen on Spotify]({track['external_urls']['spotify']})"
             
@@ -994,15 +994,15 @@ class MusicArchiver:
         """Archive a complete Spotify playlist."""
         
         playlist = self.spotify.get_playlist_info(playlist_url)
-        playlist_name = self._sanitize_filename(playlist['name'])
+        playlist_name = self._sanitize_filename(playlist.get('name', 'Unknown'))
         playlist_path = self.archive_path / "Playlists" / playlist_name
         playlist_path.mkdir(parents=True, exist_ok=True)
         
         # Create playlist metadata file
         playlist_metadata = {
-            'name': playlist['name'],
+            'name': playlist.get('name', 'Unknown'),
             'description': playlist.get('description', ''),
-            'owner': playlist['owner']['display_name'],
+            'owner': playlist.get('owner', {}).get('display_name', 'Unknown'),
             'total_tracks': playlist['tracks']['total'],
             'spotify_url': playlist_url,
             'archived_date': datetime.now().isoformat(),
@@ -1032,7 +1032,7 @@ class MusicArchiver:
         self._create_m3u_playlist(playlist_metadata, playlist_path)
         
         return {
-            'playlist_name': playlist['name'],
+            'playlist_name': playlist.get('name', 'Unknown'),
             'total_tracks': len(playlist_metadata['tracks']),
             'downloaded_count': downloaded_count,
             'playlist_path': str(playlist_path)
@@ -1044,10 +1044,10 @@ class MusicArchiver:
         track_id = track['id']
         track_metadata = {
             'id': track_id,
-            'name': track['name'],
-            'artists': [artist['name'] for artist in track['artists']],
-            'album': track['album']['name'],
-            'duration_ms': track['duration_ms'],
+            'name': track.get('name', 'Unknown'),
+            'artists': [artist.get('name', 'Unknown') for artist in track['artists']],
+            'album': track.get('album', {}).get('name', 'Unknown'),
+            'duration_ms': track.get('duration_ms', 0),
             'explicit': track.get('explicit', False),
             'spotify_url': track['external_urls']['spotify'],
             'preview_url': track.get('preview_url'),
@@ -1059,9 +1059,9 @@ class MusicArchiver:
         if download_preview and track.get('preview_url'):
             try:
                 # Create organized directory structure
-                artist_name = self._sanitize_filename(track['artists'][0]['name'])
-                album_name = self._sanitize_filename(track['album']['name'])
-                track_name = self._sanitize_filename(track['name'])
+                artist_name = self._sanitize_filename((track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown'))
+                album_name = self._sanitize_filename(track.get('album', {}).get('name', 'Unknown'))
+                track_name = self._sanitize_filename(track.get('name', 'Unknown'))
                 
                 track_dir = base_path / artist_name / album_name
                 track_dir.mkdir(parents=True, exist_ok=True)
@@ -1080,7 +1080,7 @@ class MusicArchiver:
                     track_metadata['file_path'] = str(Path(preview_path).relative_to(base_path))
                 
             except Exception as e:
-                print(f"Failed to download {track['name']}: {e}")
+                print(f"Failed to download {track.get('name', 'Unknown')}: {e}")
         
         # Cache metadata
         self.metadata_cache[track_id] = track_metadata
@@ -1099,13 +1099,13 @@ class MusicArchiver:
                 audio_file.add_tags()
             
             # Basic metadata
-            audio_file.tags.add(TIT2(encoding=3, text=track_data['name']))
+            audio_file.tags.add(TIT2(encoding=3, text=track_data.get('name', 'Unknown')))
             audio_file.tags.add(TPE1(encoding=3, text=track_data['artists'][0]['name']))
             audio_file.tags.add(TALB(encoding=3, text=track_data['album']['name']))
             
             # Release date
             if 'release_date' in track_data.get('album', {}):
-                release_date = track_data['album']['release_date'][:4]  # Year only
+                release_date = track_data['album'].get('release_date', '')[:4] if track_data['album'].get('release_date') else 'Unknown'  # Year only
                 audio_file.tags.add(TDRC(encoding=3, text=release_date))
             
             # Genre (from artist info)
@@ -1153,18 +1153,18 @@ class MusicArchiver:
     def _create_m3u_playlist(self, playlist_metadata: dict, playlist_path: Path):
         """Create M3U playlist file."""
         
-        m3u_path = playlist_path / f"{playlist_metadata['name']}.m3u"
+        m3u_path = playlist_path / f"{playlist_metadata.get('name', 'Unknown')}.m3u"
         
         with open(m3u_path, 'w', encoding='utf-8') as f:
             f.write("#EXTM3U\n")
-            f.write(f"# Playlist: {playlist_metadata['name']}\n")
+            f.write(f"# Playlist: {playlist_metadata.get('name', 'Unknown')}\n")
             f.write(f"# Created: {playlist_metadata['archived_date']}\n\n")
             
             for track in playlist_metadata['tracks']:
                 if track.get('file_path'):
-                    duration = track['duration_ms'] // 1000
+                    duration = track.get('duration_ms', 0) // 1000
                     artist = track['artists'][0] if track['artists'] else 'Unknown'
-                    title = track['name']
+                    title = track.get('name', 'Unknown')
                     
                     f.write(f"#EXTINF:{duration},{artist} - {title}\n")
                     f.write(f"{track['file_path']}\n")
@@ -1229,7 +1229,7 @@ class MusicArchiver:
         best_score = 0
         
         for track_id, spotify_track in self.metadata_cache.items():
-            spotify_title = spotify_track['name'].lower()
+            spotify_title = spotify_track.get('name', 'Unknown').lower()
             spotify_artist = spotify_track['artists'][0].lower()
             
             # Simple fuzzy matching

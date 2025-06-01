@@ -36,9 +36,9 @@ track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
 track = client.get_track_info(track_url)
 
 # Display information
-print(f"Track: {track['name']}")
+print(f"Track: {track.get('name', 'Unknown')}")
 print(f"Artist: {', '.join(a['name'] for a in track['artists'])}")
-print(f"Duration: {track['duration_ms'] / 1000:.1f} seconds")
+print(f"Duration: {track.get('duration_ms', 0) / 1000:.1f} seconds")
 print(f"Explicit: {'Yes' if track.get('is_explicit') else 'No'}")
 ```
 
@@ -59,14 +59,14 @@ print(f"Preview saved to: {preview_path}")
 album_url = "https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv"
 album = client.get_album_info(album_url)
 
-print(f"\nAlbum: {album['name']}")
-print(f"Artist: {album['artists'][0]['name']}")
-print(f"Released: {album['release_date']}")
-print(f"\nTracks ({album['total_tracks']}):")
+print(f"\nAlbum: {album.get('name', 'Unknown')}")
+print(f"Artist: {(album.get('artists', [{}])[0].get('name', 'Unknown') if album.get('artists') else 'Unknown')}")
+print(f"Released: {album.get('release_date', 'N/A')}")
+print(f"\nTracks ({album.get('total_tracks', 0)}):")
 
 for track in album['tracks']:
-    duration = track['duration_ms'] / 1000
-    print(f"{track['track_number']:2d}. {track['name']} ({duration:.1f}s)")
+    duration = track.get('duration_ms', 0) / 1000
+    print(f"{track['track_number']:2d}. {track.get('name', 'Unknown')} ({duration:.1f}s)")
 ```
 
 ### Extract Playlist
@@ -75,9 +75,9 @@ for track in album['tracks']:
 playlist_url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
 playlist = client.get_playlist_info(playlist_url)
 
-print(f"Playlist: {playlist['name']}")
-print(f"By: {playlist['owner']['name']}")
-print(f"Tracks: {playlist['track_count']}")
+print(f"Playlist: {playlist.get('name', 'Unknown')}")
+print(f"By: {playlist.get('owner', {}).get('display_name', playlist.get('owner', {}).get('id', 'Unknown'))}")
+print(f"Tracks: {playlist.get('track_count', 0)}")
 
 # Calculate total duration
 total_ms = sum(t['duration_ms'] for t in playlist['tracks'])
@@ -216,7 +216,7 @@ def analyze_artist_popularity(artist_url):
     client = SpotifyClient()
     artist = client.get_artist_info(artist_url)
     
-    print(f"\nAnalyzing: {artist['name']}")
+    print(f"\nAnalyzing: {artist.get('name', 'Unknown')}")
     print(f"Followers: {artist.get('followers', 0):,}")
     
     # Get top tracks
@@ -247,7 +247,7 @@ def analyze_artist_popularity(artist_url):
     print(f"\nTop 5 Most Popular Tracks:")
     sorted_tracks = sorted(top_tracks, key=lambda x: x.get('popularity', 0), reverse=True)
     for i, track in enumerate(sorted_tracks[:5]):
-        print(f"{i+1}. {track['name']} (Popularity: {track.get('popularity', 0)})")
+        print(f"{i+1}. {track.get('name', 'Unknown')} (Popularity: {track.get('popularity', 0)})")
     
     return stats
 ```
@@ -261,7 +261,7 @@ def analyze_playlist_genres(playlist_url):
     client = SpotifyClient()
     playlist = client.get_playlist_info(playlist_url)
     
-    print(f"Analyzing: {playlist['name']}")
+    print(f"Analyzing: {playlist.get('name', 'Unknown')}")
     
     # Collect all artist IDs
     artist_ids = set()
@@ -302,7 +302,7 @@ def find_duplicate_tracks(playlist_url):
     client = SpotifyClient()
     playlist = client.get_playlist_info(playlist_url)
     
-    print(f"Checking: {playlist['name']}")
+    print(f"Checking: {playlist.get('name', 'Unknown')}")
     
     # Track occurrences
     track_counts = {}
@@ -319,15 +319,15 @@ def find_duplicate_tracks(playlist_url):
         else:
             track_counts[track_id] = {
                 'count': 1,
-                'name': track['name'],
-                'artists': track['artists'][0]['name']
+                'name': track.get('name', 'Unknown'),
+                'artists': (track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')
             }
     
     # Report duplicates
     if duplicates:
         print(f"\nFound {len(duplicates)} duplicate entries:")
         for track in duplicates:
-            print(f"- {track['name']} by {track['artists'][0]['name']}")
+            print(f"- {track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
     else:
         print("\nNo duplicates found!")
     
@@ -438,11 +438,11 @@ def build_track_dataset(track_urls, output_format='csv'):
             # Extract relevant fields
             data = {
                 'id': track['id'],
-                'name': track['name'],
-                'artist': track['artists'][0]['name'],
+                'name': track.get('name', 'Unknown'),
+                'artist': (track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown'),
                 'artist_id': track['artists'][0]['id'],
                 'album': track.get('album', {}).get('name', ''),
-                'duration_ms': track['duration_ms'],
+                'duration_ms': track.get('duration_ms', 0),
                 'popularity': track.get('popularity', 0),
                 'explicit': track.get('is_explicit', False),
                 'preview_url': track.get('preview_url', ''),
@@ -451,7 +451,7 @@ def build_track_dataset(track_urls, output_format='csv'):
             }
             
             dataset.append(data)
-            print(f"  [{i+1}/{len(track_urls)}] ✓ {data['name']}")
+            print(f"  [{i+1}/{len(track_urls)}] ✓ {data.get('name', 'Unknown')}")
             
             time.sleep(0.5)  # Rate limiting
             

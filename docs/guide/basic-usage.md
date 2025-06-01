@@ -31,9 +31,9 @@ track = client.get_track_info("https://open.spotify.com/track/4iV5W9uYEdYUVa79Ax
 # Note: Direct ID extraction is not supported - use full URL
 
 # Access track data
-print(f"Track: {track['name']}")
-print(f"Artist: {track['artists'][0]['name']}")
-print(f"Duration: {track['duration_ms'] / 1000:.0f} seconds")
+print(f"Track: {track.get('name', 'Unknown')}")
+print(f"Artist: {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
+print(f"Duration: {track.get('duration_ms', 0) / 1000:.0f} seconds")
 ```
 
 ### Albums
@@ -42,12 +42,12 @@ print(f"Duration: {track['duration_ms'] / 1000:.0f} seconds")
 # Extract album with all tracks
 album = client.get_album_info("https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy")
 
-print(f"Album: {album['name']}")
+print(f"Album: {album.get('name', 'Unknown')}")
 print(f"Release Date: {album.get('release_date', 'N/A')}")
 
 # List all tracks
 for i, track in enumerate(album['tracks'], 1):
-    print(f"  {i}. {track['name']}")
+    print(f"  {i}. {track.get('name', 'Unknown')}")
 
 # Don't forget to close the client
 client.close()### Artists
@@ -56,7 +56,7 @@ client.close()### Artists
 # Extract artist information
 artist = client.get_artist_info("https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF")
 
-print(f"Artist: {artist['name']}")
+print(f"Artist: {artist.get('name', 'Unknown')}")
 if 'stats' in artist:
     print(f"Monthly Listeners: {artist['stats'].get('monthly_listeners', 'N/A'):,}")
 ```
@@ -67,14 +67,16 @@ if 'stats' in artist:
 # Extract playlist with all tracks
 playlist = client.get_playlist_info("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")
 
-print(f"Playlist: {playlist['name']}")
-print(f"Owner: {playlist['owner']['name']}")
-print(f"Description: {playlist['description']}")
-print(f"Total Tracks: {playlist['track_count']}")
+print(f"Playlist: {playlist.get('name', 'Unknown')}")
+print(f"Owner: {playlist.get('owner', {}).get('display_name', playlist.get('owner', {}).get('id', 'Unknown'))}")
+# Note: description may not always be available
+if 'description' in playlist:
+    print(f"Description: {playlist.get('description', '')}")
+print(f"Total Tracks: {playlist.get('track_count', 0)}")
 
 # List first 10 tracks
 for i, track in enumerate(playlist['tracks'][:10], 1):
-    print(f"  {i}. {track['name']} - {track['artists'][0]['name']}")
+    print(f"  {i}. {track.get('name', 'Unknown')} - {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
 ```
 
 ## Working with URLs

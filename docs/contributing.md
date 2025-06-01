@@ -289,7 +289,7 @@ class TrackExtractor:
 Follow the established error handling patterns:
 
 ```python
-from spotify_scraper.exceptions import SpotifyScraperError, NotFoundError
+from spotify_scraper import SpotifyScraperError, NotFoundError
 
 def extract_track_info(self, url: str) -> Dict[str, Any]:
     """Extract track information."""
@@ -334,7 +334,7 @@ tests/
 import pytest
 from unittest.mock import Mock, patch
 from spotify_scraper.extractors.track import TrackExtractor
-from spotify_scraper.exceptions import NotFoundError
+from spotify_scraper import NotFoundError
 
 class TestTrackExtractor:
     """Test cases for TrackExtractor."""
@@ -550,7 +550,7 @@ def get_album_info(self, url: str, include_tracks: bool = True) -> Dict[str, Any
         
         >>> client = SpotifyClient()
         >>> album = client.get_album_info('https://open.spotify.com/album/123')
-        >>> print(album['name'])
+        >>> print(album.get('name', 'Unknown'))
         'Album Name'
         >>> print(len(album['tracks']))
         12

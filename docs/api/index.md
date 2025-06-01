@@ -160,7 +160,7 @@ client = SpotifyClient()
 
 # Extract track information
 track = client.get_track_info("https://open.spotify.com/track/...")
-print(f"Track: {track['name']} by {track['artists'][0]['name']}")
+print(f"Track: {track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
 
 # Download preview
 preview_path = client.download_preview_mp3(track_url, path="previews/")
@@ -225,7 +225,7 @@ def analyze_track(url: str) -> Dict[str, Any]:
     track_data: Dict[str, Any] = client.get_track_info(url)
     
     return {
-        'title': track_data['name'],
+        'title': track_data.get('name', 'Unknown'),
         'artist': track_data['artists'][0]['name'],
         'duration_seconds': track_data['duration_ms'] / 1000
     }

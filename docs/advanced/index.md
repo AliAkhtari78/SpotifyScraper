@@ -262,7 +262,7 @@ class SpotifyTrack(models.Model):
         data = client.get_track_info(url)
         return cls.objects.create(
             spotify_id=data['id'],
-            name=data['name'],
+            name=data.get('name', 'Unknown'),
             artist=data['artists'][0]['name'],
             data=data
         )

@@ -42,7 +42,7 @@ client = SpotifyClient()
 
 # Get track info
 track = client.get_track_info("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
-print(f"{track['name']} by {track['artists'][0]['name']}")
+print(f"{track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
 # Output: One More Time by Daft Punk
 
 # Download cover art
@@ -93,14 +93,14 @@ print(track['lyrics'])
 # Get album with all tracks
 album = client.get_album_info(album_url)
 
-print(f"Album: {album['name']}")
-print(f"Artist: {album['artists'][0]['name']}")
+print(f"Album: {album.get('name', 'Unknown')}")
+print(f"Artist: {(album.get('artists', [{}])[0].get('name', 'Unknown') if album.get('artists') else 'Unknown')}")
 print(f"Released: {album.get('release_date', 'N/A')}")
-print(f"Tracks: {album['total_tracks']}")
+print(f"Tracks: {album.get('total_tracks', 0)}")
 
 # List all tracks
 for track in album['tracks']:
-    print(f"  {track['track_number']}. {track['name']}")
+    print(f"  {track['track_number']}. {track.get('name', 'Unknown')}")
 ```
 
 ### 👤 Artist Information
@@ -109,14 +109,14 @@ for track in album['tracks']:
 # Get artist profile
 artist = client.get_artist_info(artist_url)
 
-print(f"Artist: {artist['name']}")
+print(f"Artist: {artist.get('name', 'Unknown')}")
 print(f"Followers: {artist.get('followers', {}).get('total', 'N/A'):,}")
 print(f"Genres: {', '.join(artist.get('genres', []))}")
 print(f"Popularity: {artist.get('popularity', 'N/A')}/100")
 
 # Get top tracks
 for track in artist.get('top_tracks', [])[:5]:
-    print(f"  - {track['name']}")
+    print(f"  - {track.get('name', 'Unknown')}")
 ```
 
 ### 📋 Playlist Information
@@ -125,14 +125,14 @@ for track in artist.get('top_tracks', [])[:5]:
 # Get playlist details
 playlist = client.get_playlist_info(playlist_url)
 
-print(f"Playlist: {playlist['name']}")
-print(f"Owner: {playlist['owner']['name']}")
-print(f"Tracks: {playlist['track_count']}")
+print(f"Playlist: {playlist.get('name', 'Unknown')}")
+print(f"Owner: {playlist.get('owner', {}).get('display_name', playlist.get('owner', {}).get('id', 'Unknown'))}")
+print(f"Tracks: {playlist.get('track_count', 0)}")
 print(f"Followers: {playlist.get('followers', {}).get('total', 'N/A'):,}")
 
 # Get all tracks
 for track in playlist['tracks']:
-    print(f"  - {track['name']} by {track['artists'][0]['name']}")
+    print(f"  - {track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
 ```
 
 ### 📥 Media Downloads
@@ -308,7 +308,7 @@ album = client.get_album_info(album_url)
 # Download all track previews
 for track in album['tracks']:
     track_url = f"https://open.spotify.com/track/{track['id']}"
-    client.download_preview_mp3(track_url, path=f"album_{album['name']}/")
+    client.download_preview_mp3(track_url, path=f"album_{album.get('name', 'Unknown')}/")
 ```
 
 ### Export Artist Discography
@@ -325,7 +325,7 @@ for album in artist['albums']['items']:
 
 # Export to JSON
 import json
-with open(f"{artist['name']}_discography.json", "w") as f:
+with open(f"{artist.get('name', 'Unknown')}_discography.json", "w") as f:
     json.dump(albums_data, f, indent=2)
 ```
 

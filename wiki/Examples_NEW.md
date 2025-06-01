@@ -27,15 +27,15 @@ track_url = "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh"
 track = client.get_track_info(track_url)
 
 # Display formatted information
-print(f"Track: {track['name']}")
+print(f"Track: {track.get('name', 'Unknown')}")
 print(f"Artist(s): {', '.join(a['name'] for a in track['artists'])}")
-print(f"Album: {track['album']['name']}")
-print(f"Released: {track['album']['release_date']}")
-print(f"Duration: {track['duration_ms'] // 60000}:{(track['duration_ms'] % 60000) // 1000:02d}")
+print(f"Album: {track.get('album', {}).get('name', 'Unknown')}")
+print(f"Released: {track['album'].get('release_date', 'N/A')}")
+print(f"Duration: {track.get('duration_ms', 0) // 60000}:{(track.get('duration_ms', 0) % 60000) // 1000:02d}")
 print(f"Explicit: {'Yes' if track.get('is_explicit', False) else 'No'}")
 
 if track.get('preview_url'):
-    print(f"Preview available: {track['preview_url']}")
+    print(f"Preview available: {track.get('preview_url', 'Not available')}")
 
 client.close()
 ```
@@ -47,10 +47,10 @@ client.close()
 album_url = "https://open.spotify.com/album/0JGOiO34nwfUdDrD612dOp"
 album = client.get_album_info(album_url)
 
-print(f"\nAlbum: {album['name']}")
-print(f"Artist: {album['artists'][0]['name']}")
+print(f"\nAlbum: {album.get('name', 'Unknown')}")
+print(f"Artist: {(album.get('artists', [{}])[0].get('name', 'Unknown') if album.get('artists') else 'Unknown')}")
 print(f"Released: {album.get('release_date', 'N/A')}")
-print(f"Total tracks: {album['total_tracks']}")
+print(f"Total tracks: {album.get('total_tracks', 0)}")
 
 # List all tracks
 print("\nTracklist:")
@@ -128,10 +128,10 @@ with open('playlist_tracks.csv', 'w', newline='', encoding='utf-8') as f:
         track = item['track']
         writer.writerow([
             i,
-            track['name'],
+            track.get('name', 'Unknown'),
             ', '.join(a['name'] for a in track['artists']),
-            track['album']['name'],
-            f"{track['duration_ms'] // 60000}:{(track['duration_ms'] % 60000) // 1000:02d}",
+            track.get('album', {}).get('name', 'Unknown'),
+            f"{track.get('duration_ms', 0) // 60000}:{(track.get('duration_ms', 0) % 60000) // 1000:02d}",
             item.get('added_at', 'N/A')
         ])
 
@@ -145,7 +145,7 @@ with open('playlist.md', 'w', encoding='utf-8') as f:
 tracks = [item['track'] for item in playlist['tracks']]
 formatter.export_to_m3u(tracks, 'playlist.m3u')
 
-print(f"Exported playlist '{playlist['name']}' to multiple formats")
+print(f"Exported playlist '{playlist.get('name', 'Unknown')}' to multiple formats")
 ```
 
 ### Create Dataset from Artist Discography
@@ -158,12 +158,12 @@ artist = client.get_artist_info(artist_url)
 all_tracks = []
 
 # Note: This example shows the concept - full discography requires additional API calls
-print(f"Creating dataset for {artist['name']}...")
+print(f"Creating dataset for {artist.get('name', 'Unknown')}...")
 
 # Export to structured dataset
 dataset = {
     "artist": {
-        "name": artist['name'],
+        "name": artist.get('name', 'Unknown'),
         "genres": artist.get('genres', []),
         "popularity": artist.get('popularity', 'N/A'),
         "followers": artist.get('followers', {}).get('total', 'N/A')
@@ -172,7 +172,7 @@ dataset = {
     "generated_at": datetime.now().isoformat()
 }
 
-with open(f"{artist['name']}_dataset.json", 'w', encoding='utf-8') as f:
+with open(f"{artist.get('name', 'Unknown')}_dataset.json", 'w', encoding='utf-8') as f:
     json.dump(dataset, f, indent=2, ensure_ascii=False)
 ```
 
@@ -191,7 +191,7 @@ analyzer = SpotifyDataAnalyzer()
 analysis = analyzer.analyze_playlist(playlist)
 
 # Display insights
-print(f"\n📊 Playlist Analysis: {playlist['name']}")
+print(f"\n📊 Playlist Analysis: {playlist.get('name', 'Unknown')}")
 print(f"{'='*50}")
 
 print(f"\n📈 Basic Statistics:")
@@ -325,7 +325,7 @@ def get_track_with_retry(client, url, max_retries=3):
 # Use the function
 track = get_track_with_retry(client, track_url)
 if track:
-    print(f"Successfully retrieved: {track['name']}")
+    print(f"Successfully retrieved: {track.get('name', 'Unknown')}")
 ```
 
 ### Handle Different Error Types
@@ -445,7 +445,7 @@ class SpotifyArchive:
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             track_data['id'],
-            track_data['name'],
+            track_data.get('name', 'Unknown'),
             ', '.join(a['name'] for a in track_data['artists']),
             track_data['album']['name'],
             track_data['duration_ms'],
@@ -499,7 +499,7 @@ def generate_playlist_report(playlist_url: str, output_file: str = "playlist_rep
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Playlist Report: {playlist['name']}</title>
+        <title>Playlist Report: {playlist.get('name', 'Unknown')}</title>
         <style>
             body {{ font-family: Arial, sans-serif; margin: 20px; }}
             h1, h2 {{ color: #1db954; }}
@@ -510,12 +510,12 @@ def generate_playlist_report(playlist_url: str, output_file: str = "playlist_rep
         </style>
     </head>
     <body>
-        <h1>Playlist Report: {playlist['name']}</h1>
+        <h1>Playlist Report: {playlist.get('name', 'Unknown')}</h1>
         <p>Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
         
         <div class="stats">
             <h2>Overview</h2>
-            <p><strong>Owner:</strong> {playlist['owner']['name']}</p>
+            <p><strong>Owner:</strong> {playlist.get('owner', {}).get('display_name', playlist.get('owner', {}).get('id', 'Unknown'))}</p>
             <p><strong>Total Tracks:</strong> {analysis['basic_stats']['total_tracks']}</p>
             <p><strong>Total Duration:</strong> {analysis['basic_stats']['total_duration_formatted']}</p>
             <p><strong>Average Popularity:</strong> {analysis['basic_stats']['average_popularity']:.1f}/100</p>

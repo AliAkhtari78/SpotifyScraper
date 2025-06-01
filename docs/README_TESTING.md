@@ -191,7 +191,7 @@ Fast, isolated tests that mock external dependencies:
 import pytest
 from unittest.mock import Mock, patch
 from spotify_scraper import SpotifyClient
-from spotify_scraper.exceptions import InvalidURLError
+from spotify_scraper import InvalidURLError
 
 class TestSpotifyClient:
     """Unit tests for SpotifyClient."""
@@ -379,7 +379,7 @@ class TestPerformance:
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from spotify_scraper import SpotifyClient
-from spotify_scraper.exceptions import SpotifyScraperError
+from spotify_scraper import SpotifyScraperError
 
 class TestYourFeature:
     """Test class for your feature."""
@@ -458,7 +458,7 @@ def test_url_parsing(url, expected_type):
 ])
 def test_invalid_url_handling(invalid_url):
     """Test handling of invalid URLs."""
-    from spotify_scraper.exceptions import InvalidURLError
+    from spotify_scraper import InvalidURLError
     from spotify_scraper.utils.url_parser import parse_spotify_url
     
     with pytest.raises(InvalidURLError):
@@ -644,7 +644,7 @@ class TestNetworkMocking:
     def test_network_error_handling(self, mock_get):
         """Test network error handling."""
         from requests.exceptions import ConnectionError
-        from spotify_scraper.exceptions import NetworkError
+        from spotify_scraper import NetworkError
         
         # Arrange
         mock_get.side_effect = ConnectionError("Connection failed")
@@ -755,7 +755,7 @@ class TestRealNetwork:
         assert 'album' in track
         
         # Verify data types
-        assert isinstance(track['name'], str)
+        assert isinstance(track.get('name', 'Unknown'), str)
         assert isinstance(track['artists'], list)
         assert isinstance(track.get('duration_ms'), int)
     
@@ -827,7 +827,7 @@ class TestDatabaseIntegration:
             "INSERT INTO tracks (id, name, artist, album, duration_ms) VALUES (?, ?, ?, ?, ?)",
             (
                 track_data['id'],
-                track_data['name'],
+                track_data.get('name', 'Unknown'),
                 track_data['artists'][0]['name'],
                 track_data['album']['name'],
                 track_data['duration_ms']
@@ -840,7 +840,7 @@ class TestDatabaseIntegration:
         stored_track = cursor.fetchone()
         
         assert stored_track is not None
-        assert stored_track[1] == track_data['name']  # name column
+        assert stored_track[1] == track_data.get('name', 'Unknown')  # name column
 ```
 
 ---

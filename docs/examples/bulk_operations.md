@@ -45,7 +45,7 @@ results = bulk.process_urls(urls, operation="info")
 for url, result in results["results"].items():
     if "error" not in result:
         info = result["info"]
-        print(f"{info['name']} - Type: {result['type']}")
+        print(f"{info.get('name', 'Unknown')} - Type: {result['type']}")
 ```
 
 #### Download Media Files

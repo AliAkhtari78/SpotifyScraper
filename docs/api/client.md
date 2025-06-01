@@ -90,7 +90,7 @@ Dictionary containing track information with the following structure:
 
 ```python
 track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-print(f"{track['name']} - {track['duration_ms'] / 1000:.1f}s")
+print(f"{track.get('name', 'Unknown')} - {track.get('duration_ms', 0) / 1000:.1f}s")
 ```
 
 ### get_track_lyrics

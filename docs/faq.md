@@ -85,7 +85,7 @@ from spotify_scraper import SpotifyClient
 
 client = SpotifyClient()
 track = client.get_track_info("https://open.spotify.com/track/...")
-print(track['name'], track['artists'][0]['name'])
+print(track.get('name', 'Unknown'), (track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown'))
 ```
 
 ### Can I extract multiple items at once?

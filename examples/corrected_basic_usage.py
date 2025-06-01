@@ -25,13 +25,13 @@ def main():
         track_info = client.get_track_info(track_url)
 
         # Display track information
-        print(f"Track: {track_info['name']}")
-        print(f"Artists: {', '.join(artist['name'] for artist in track_info.get('artists', []))}")
+        print(f"Track: {track_info.get('name', 'Unknown')}")
+        print(f"Artists: {', '.join(artist.get('name', 'Unknown') for artist in track_info.get('artists', []))}")
 
         # Handle album information safely
         album = track_info.get("album", {})
         if isinstance(album, dict) and album.get("name"):
-            print(f"Album: {album['name']}")
+            print(f"Album: {album.get('name', 'Unknown')}")
         else:
             print("Album: Information not available")
 

@@ -46,7 +46,7 @@ from spotify_scraper import SpotifyClient
 
 client = SpotifyClient()
 track = client.get_track_info("spotify_track_url")
-print(f"Track: {track['name']} by {track['artists'][0]['name']}")
+print(f"Track: {track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
 ```
 
 ### 📊 Comprehensive Data Access
@@ -73,10 +73,10 @@ track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
 track = client.get_track_info(track_url)
 
 # Display the results
-print(f"Track: {track['name']}")
-print(f"Artist: {track['artists'][0]['name']}")
-print(f"Album: {track['album']['name']}")
-print(f"Duration: {track['duration_ms'] / 1000:.0f} seconds")
+print(f"Track: {track.get('name', 'Unknown')}")
+print(f"Artist: {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
+print(f"Album: {track.get('album', {}).get('name', 'Unknown')}")
+print(f"Duration: {track.get('duration_ms', 0) / 1000:.0f} seconds")
 
 # Download preview audio (if available)
 if track.get('preview_url'):
@@ -165,7 +165,7 @@ cover_path = client.download_cover(album_url, size="large")
 # Extract all tracks from a playlist
 playlist = client.get_playlist_info(playlist_url)
 for track in playlist['tracks']:
-    print(f"- {track['name']} by {track['artists'][0]['name']}")
+    print(f"- {track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
 ```
 
 ### 🔍 Batch Processing

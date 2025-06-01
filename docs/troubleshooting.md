@@ -187,7 +187,7 @@ track = client.get_track_info(track_url)
 if track.get('album') and track['album'].get('id'):
     album_url = f"https://open.spotify.com/album/{track['album']['id']}"
     album = client.get_album_info(album_url)
-    track['album']['name'] = album['name']
+    track.get('album', {}).get('name', 'Unknown') = album.get('name', 'Unknown')
 ```
 
 ---

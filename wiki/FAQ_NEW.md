@@ -303,7 +303,7 @@ def process_playlist_stream(playlist_url):
     for track in playlist['tracks']:
         # Process track
         yield {
-            'name': track['name'],
+            'name': track.get('name', 'Unknown'),
             'artists': [a['name'] for a in track['artists']]
         }
         

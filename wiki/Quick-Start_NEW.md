@@ -30,10 +30,10 @@ track_url = "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh"
 track = client.get_track_info(track_url)
 
 # Display results
-print(f"Track: {track['name']}")
-print(f"Artist: {track['artists'][0]['name']}")
-print(f"Album: {track['album']['name']}")
-print(f"Duration: {track['duration_ms'] // 1000} seconds")
+print(f"Track: {track.get('name', 'Unknown')}")
+print(f"Artist: {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
+print(f"Album: {track.get('album', {}).get('name', 'Unknown')}")
+print(f"Duration: {track.get('duration_ms', 0) // 1000} seconds")
 
 # Clean up
 client.close()
@@ -109,10 +109,10 @@ with open('tracks.csv', 'w', newline='') as f:
     
     for track in playlist['tracks']:
         writer.writerow([
-            track['name'],
+            track.get('name', 'Unknown'),
             ', '.join(a['name'] for a in track['artists']),
-            track['album']['name'],
-            track['duration_ms'] // 1000
+            track.get('album', {}).get('name', 'Unknown'),
+            track.get('duration_ms', 0) // 1000
         ])
 ```
 
@@ -123,7 +123,7 @@ with open('tracks.csv', 'w', newline='') as f:
 artist_url = "https://open.spotify.com/artist/3fMbdgg4jU18AjLCKBhRSm"
 artist = client.get_artist_info(artist_url)
 
-print(f"Artist: {artist['name']}")
+print(f"Artist: {artist.get('name', 'Unknown')}")
 print(f"Genres: {', '.join(artist.get('genres', []))}")
 print(f"Followers: {artist.get('followers', {}).get('total', 'N/A'):,}")
 
@@ -131,7 +131,7 @@ print(f"Followers: {artist.get('followers', {}).get('total', 'N/A'):,}")
 if artist.get('top_tracks'):
     print("\nTop Tracks:")
     for i, track in enumerate(artist.get('top_tracks', [])[:5], 1):
-        print(f"{i}. {track['name']}")
+        print(f"{i}. {track.get('name', 'Unknown')}")
 ```
 
 ## Configuration Options

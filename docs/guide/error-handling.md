@@ -42,7 +42,7 @@ SpotifyScraper provides comprehensive error handling to help you build robust ap
 #### Connection Timeout
 ```python
 from spotify_scraper import SpotifyClient
-from spotify_scraper.exceptions import TimeoutError
+from spotify_scraper import TimeoutError
 
 client = SpotifyClient(timeout=30)
 
@@ -55,7 +55,7 @@ except TimeoutError as e:
 
 #### Connection Failed
 ```python
-from spotify_scraper.exceptions import ConnectionError
+from spotify_scraper import ConnectionError
 
 try:
     track = client.get_track_info(url)
@@ -66,7 +66,7 @@ except ConnectionError as e:
 
 #### Rate Limiting
 ```python
-from spotify_scraper.exceptions import RateLimitError
+from spotify_scraper import RateLimitError
 import time
 
 try:
@@ -83,7 +83,7 @@ except RateLimitError as e:
 
 #### Invalid URL
 ```python
-from spotify_scraper.exceptions import InvalidURLError
+from spotify_scraper import InvalidURLError
 
 try:
     track = client.get_track_info("invalid-url")
@@ -94,7 +94,7 @@ except InvalidURLError as e:
 
 #### Content Not Found
 ```python
-from spotify_scraper.exceptions import NotFoundError
+from spotify_scraper import NotFoundError
 
 try:
     track = client.get_track_info("https://open.spotify.com/track/nonexistent")
@@ -105,7 +105,7 @@ except NotFoundError as e:
 
 #### Parsing Errors
 ```python
-from spotify_scraper.exceptions import ParseError
+from spotify_scraper import ParseError
 
 try:
     track = client.get_track_info(url)
@@ -118,7 +118,7 @@ except ParseError as e:
 
 #### Invalid Cookies
 ```python
-from spotify_scraper.exceptions import AuthenticationError
+from spotify_scraper import AuthenticationError
 
 try:
     client = SpotifyClient(cookies={'sp_dc': 'invalid_cookie'})
@@ -136,7 +136,7 @@ SpotifyScraper provides a comprehensive exception hierarchy:
 
 ### Base Exception
 ```python
-from spotify_scraper.exceptions import SpotifyScraperError
+from spotify_scraper import SpotifyScraperError
 
 # Catch all SpotifyScraper-specific errors
 try:
@@ -147,7 +147,7 @@ except SpotifyScraperError as e:
 
 ### Network Exceptions
 ```python
-from spotify_scraper.exceptions import (
+from spotify_scraper import (
     NetworkError,      # Base network error
     ConnectionError,   # Connection failed
     TimeoutError,      # Request timeout
@@ -172,7 +172,7 @@ def handle_network_errors(func, *args, **kwargs):
 
 ### HTTP Exceptions
 ```python
-from spotify_scraper.exceptions import (
+from spotify_scraper import (
     HTTPError,         # Base HTTP error
     BadRequestError,   # 400 Bad Request
     UnauthorizedError, # 401 Unauthorized
@@ -201,7 +201,7 @@ def handle_http_errors(func, *args, **kwargs):
 
 ### Data Exceptions
 ```python
-from spotify_scraper.exceptions import (
+from spotify_scraper import (
     DataError,         # Base data error
     InvalidURLError,   # Invalid Spotify URL
     ParseError,        # Failed to parse response
@@ -242,7 +242,7 @@ def safe_get_track(client, url):
 # Usage
 track = safe_get_track(client, url)
 if track:
-    print(f"Track: {track['name']}")
+    print(f"Track: {track.get('name', 'Unknown')}")
 else:
     print("Failed to get track info")
 ```
@@ -250,7 +250,7 @@ else:
 ### Specific Exception Handling
 
 ```python
-from spotify_scraper.exceptions import (
+from spotify_scraper import (
     TimeoutError, RateLimitError, NotFoundError
 )
 
@@ -302,7 +302,7 @@ def spotify_client_context(**kwargs):
 try:
     with spotify_client_context() as client:
         track = client.get_track_info(url)
-        print(f"Track: {track['name']}")
+        print(f"Track: {track.get('name', 'Unknown')}")
 except Exception as e:
     print(f"Operation failed: {e}")
 ```

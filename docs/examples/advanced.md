@@ -91,7 +91,7 @@ class LyricsExtractor:
         lyrics_text = track_data['lyrics']
         
         return {
-            'track': track_data['name'],
+            'track': track_data.get('name', 'Unknown'),
             'artist': track_data['artists'][0]['name'],
             'lyrics': lyrics_text
         }
@@ -135,7 +135,7 @@ class ArtistAnalyzer:
         
         analysis = {
             'basic_info': {
-                'name': artist_data['name'],
+                'name': artist_data.get('name', 'Unknown'),
                 'id': artist_data['id'],
                 'verified': artist_data.get('is_verified', False)
             },
@@ -170,9 +170,9 @@ class ArtistAnalyzer:
         top_tracks = []
         for track in artist_data.get('top_tracks', [])[:10]:
             top_tracks.append({
-                'name': track['name'],
+                'name': track.get('name', 'Unknown'),
                 'play_count': track.get('play_count', 0),
-                'album': track['album']['name']
+                'album': track.get('album', {}).get('name', 'Unknown')
             })
         return top_tracks
 
@@ -271,10 +271,10 @@ class AsyncDownloader:
         async with aiohttp.ClientSession() as session:
             tasks = []
             for track in tracks_data:
-                filename = f"{track['name']}.mp3".replace('/', '_')
+                filename = f"{track.get('name', 'Unknown')}.mp3".replace('/', '_')
                 task = self.download_file(
                     session,
-                    track['preview_url'],
+                    track.get('preview_url', 'Not available'),
                     filename
                 )
                 tasks.append(task)
@@ -390,14 +390,14 @@ class DataExporter:
     
     def _export_json(self, data):
         """Export to JSON file."""
-        filename = f"{data['name']}.json".replace('/', '_')
+        filename = f"{data.get('name', 'Unknown')}.json".replace('/', '_')
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         return filename
     
     def _export_csv(self, data):
         """Export tracks to CSV file."""
-        filename = f"{data['name']}.csv".replace('/', '_')
+        filename = f"{data.get('name', 'Unknown')}.csv".replace('/', '_')
         
         with open(filename, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=[
@@ -408,27 +408,27 @@ class DataExporter:
             for i, track in enumerate(data['tracks'], 1):
                 writer.writerow({
                     'position': i,
-                    'name': track['name'],
-                    'artist': track['artists'][0]['name'],
-                    'album': track['album']['name'],
-                    'duration_ms': track['duration_ms']
+                    'name': track.get('name', 'Unknown'),
+                    'artist': (track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown'),
+                    'album': track.get('album', {}).get('name', 'Unknown'),
+                    'duration_ms': track.get('duration_ms', 0)
                 })
         
         return filename
     
     def _export_excel(self, data):
         """Export to Excel file with formatting."""
-        filename = f"{data['name']}.xlsx".replace('/', '_')
+        filename = f"{data.get('name', 'Unknown')}.xlsx".replace('/', '_')
         
         # Prepare data for DataFrame
         tracks_data = []
         for i, track in enumerate(data['tracks'], 1):
             tracks_data.append({
                 'Position': i,
-                'Track': track['name'],
-                'Artist': track['artists'][0]['name'],
-                'Album': track['album']['name'],
-                'Duration': f"{track['duration_ms'] // 60000}:{(track['duration_ms'] % 60000) // 1000:02d}",
+                'Track': track.get('name', 'Unknown'),
+                'Artist': (track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown'),
+                'Album': track.get('album', {}).get('name', 'Unknown'),
+                'Duration': f"{track.get('duration_ms', 0) // 60000}:{(track.get('duration_ms', 0) % 60000) // 1000:02d}",
                 'Explicit': '✓' if track.get('is_explicit') else ''
             })
         
@@ -441,7 +441,7 @@ class DataExporter:
             metadata = pd.DataFrame({
                 'Property': ['Playlist Name', 'Owner', 'Total Tracks', 'Description'],
                 'Value': [
-                    data['name'],
+                    data.get('name', 'Unknown'),
                     data['owner']['name'],
                     data['track_count'],
                     data.get('description', 'N/A')
@@ -453,10 +453,10 @@ class DataExporter:
     
     def _export_markdown(self, data):
         """Export to Markdown file."""
-        filename = f"{data['name']}.md".replace('/', '_')
+        filename = f"{data.get('name', 'Unknown')}.md".replace('/', '_')
         
         with open(filename, 'w', encoding='utf-8') as f:
-            f.write(f"# {data['name']}\n\n")
+            f.write(f"# {data.get('name', 'Unknown')}\n\n")
             f.write(f"**Owner:** {data['owner']['name']}  \n")
             f.write(f"**Tracks:** {data['track_count']}  \n\n")
             
@@ -468,8 +468,8 @@ class DataExporter:
             f.write("|---|-------|--------|-------|----------|\n")
             
             for i, track in enumerate(data['tracks'], 1):
-                duration = f"{track['duration_ms'] // 60000}:{(track['duration_ms'] % 60000) // 1000:02d}"
-                f.write(f"| {i} | {track['name']} | {track['artists'][0]['name']} | {track['album']['name']} | {duration} |\n")
+                duration = f"{track.get('duration_ms', 0) // 60000}:{(track.get('duration_ms', 0) % 60000) // 1000:02d}"
+                f.write(f"| {i} | {track.get('name', 'Unknown')} | {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')} | {track.get('album', {}).get('name', 'Unknown')} | {duration} |\n")
         
         return filename
 
@@ -701,7 +701,7 @@ class SpotifyBot(discord.Client):
             track_data = self.spotify_client.get_track_info(url)
             
             embed = discord.Embed(
-                title=track_data['name'],
+                title=track_data.get('name', 'Unknown'),
                 url=url,
                 description=f"by {track_data['artists'][0]['name']}",
                 color=0x1DB954  # Spotify green
@@ -757,7 +757,7 @@ def get_track(track_id):
         # Simplify response
         return jsonify({
             'id': track_data['id'],
-            'name': track_data['name'],
+            'name': track_data.get('name', 'Unknown'),
             'artist': track_data['artists'][0]['name'],
             'album': track_data['album']['name'],
             'duration_ms': track_data['duration_ms'],

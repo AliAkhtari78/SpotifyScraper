@@ -83,9 +83,9 @@ client = SpotifyClient()
 track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
 track = client.get_track_info(track_url)
 
-print(f"Track: {track['name']}")
-print(f"Artist: {track['artists'][0]['name']}")
-print(f"Duration: {track['duration_ms'] / 1000:.0f} seconds")
+print(f"Track: {track.get('name', 'Unknown')}")
+print(f"Artist: {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
+print(f"Duration: {track.get('duration_ms', 0) / 1000:.0f} seconds")
 
 # Always close when done
 client.close()

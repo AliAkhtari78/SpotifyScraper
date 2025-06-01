@@ -82,7 +82,7 @@ def main():
         print(f"\n7. Testing client with track: {track_url}")
 
         track_info = client.get_track_info(track_url)
-        print(f"   Track: {track_info['name']}")
+        print(f"   Track: {track_info.get('name', 'Unknown')}")
         if track_info.get("artists"):
             print(f"   Artists: {', '.join(a['name'] for a in track_info['artists'])}")
 

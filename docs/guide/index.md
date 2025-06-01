@@ -43,7 +43,7 @@ recommendations = discover_similar_tracks(seed_track)
 
 print("🎵 Recommended tracks:")
 for track in recommendations:
-    print(f"  - {track['name']}")
+    print(f"  - {track.get('name', 'Unknown')}")
 ```
 
 ### 📊 Playlist Analyzer
@@ -54,19 +54,19 @@ def analyze_playlist(playlist_url):
     
     # Basic stats
     total_tracks = len(playlist['tracks'])
-    total_duration_ms = sum(track['duration_ms'] for track in playlist['tracks'])
+    total_duration_ms = sum(track.get('duration_ms', 0) for track in playlist['tracks'])
     total_duration_min = total_duration_ms / 60000
     
     # Artist frequency
     artist_count = {}
     for track in playlist['tracks']:
         for artist in track['artists']:
-            artist_count[artist['name']] = artist_count.get(artist['name'], 0) + 1
+            artist_count[artist.get('name', 'Unknown')] = artist_count.get(artist.get('name', 'Unknown'), 0) + 1
     
     # Most common artists
     top_artists = sorted(artist_count.items(), key=lambda x: x[1], reverse=True)[:5]
     
-    print(f"📊 Playlist Analysis: {playlist['name']}")
+    print(f"📊 Playlist Analysis: {playlist.get('name', 'Unknown')}")
     print(f"   Total Tracks: {total_tracks}")
     print(f"   Total Duration: {total_duration_min:.1f} minutes")
     print(f"   Top Artists:")
@@ -91,14 +91,14 @@ def download_album_media(album_url, output_dir="downloads/"):
     from spotify_scraper.media import ImageDownloader, AudioDownloader
     
     album = client.get_album(album_url)
-    album_dir = os.path.join(output_dir, album['name'].replace('/', '-'))
+    album_dir = os.path.join(output_dir, album.get('name', 'Unknown').replace('/', '-'))
     os.makedirs(album_dir, exist_ok=True)
     
     img_downloader = ImageDownloader()
     audio_downloader = AudioDownloader()
     
     # Download album cover
-    if album['images']:
+    if album.get('images'):
         img_downloader.download_image(
             album['images'][0]['url'],
             os.path.join(album_dir, "cover.jpg")

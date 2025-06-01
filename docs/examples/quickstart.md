@@ -41,10 +41,10 @@ track_url = "https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6"
 track = client.get_track_info(track_url)
 
 # Display results
-print(f"Track: {track['name']}")
-print(f"Artist: {track['artists'][0]['name']}")
-print(f"Album: {track['album']['name']}")
-print(f"Duration: {track['duration_ms'] / 1000:.2f} seconds")
+print(f"Track: {track.get('name', 'Unknown')}")
+print(f"Artist: {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
+print(f"Album: {track.get('album', {}).get('name', 'Unknown')}")
+print(f"Duration: {track.get('duration_ms', 0) / 1000:.2f} seconds")
 
 # Always close when done
 client.close()
@@ -64,10 +64,10 @@ def get_track_details(url):
         track = client.get_track_info(url)
         
         return {
-            "title": track['name'],
-            "artists": [artist['name'] for artist in track['artists']],
-            "album": track['album']['name'],
-            "duration_seconds": track['duration_ms'] / 1000,
+            "title": track.get('name', 'Unknown'),
+            "artists": [artist.get('name', 'Unknown') for artist in track['artists']],
+            "album": track.get('album', {}).get('name', 'Unknown'),
+            "duration_seconds": track.get('duration_ms', 0) / 1000,
             "preview_url": track.get('preview_url'),
             "popularity": track.get('popularity', 0),
             "explicit": track.get('explicit', False)
@@ -144,17 +144,17 @@ def get_album_tracklist(album_url):
     try:
         album = client.get_album_info(album_url)
         
-        print(f"Album: {album['name']}")
-        print(f"Artist: {album['artists'][0]['name']}")
+        print(f"Album: {album.get('name', 'Unknown')}")
+        print(f"Artist: {(album.get('artists', [{}])[0].get('name', 'Unknown') if album.get('artists') else 'Unknown')}")
         print(f"Release Date: {album.get('release_date', 'N/A')}")
-        print(f"Total Tracks: {album['total_tracks']}")
-        print(f"\nTracks ({album['total_tracks']}):")
+        print(f"Total Tracks: {album.get('total_tracks', 0)}")
+        print(f"\nTracks ({album.get('total_tracks', 0)}):")
         
         total_duration_ms = 0
         for track in album['tracks']:
-            duration_sec = track['duration_ms'] / 1000
-            total_duration_ms += track['duration_ms']
-            print(f"{track['track_number']:2d}. {track['name']} ({duration_sec:.2f}s)")
+            duration_sec = track.get('duration_ms', 0) / 1000
+            total_duration_ms += track.get('duration_ms', 0)
+            print(f"{track['track_number']:2d}. {track.get('name', 'Unknown')} ({duration_sec:.2f}s)")
         
         print(f"\nTotal Duration: {total_duration_ms / 60000:.2f} minutes")
     finally:
@@ -175,12 +175,14 @@ def analyze_playlist(playlist_url):
     try:
         playlist = client.get_playlist_info(playlist_url)
         
-        print(f"Playlist: {playlist['name']}")
-        print(f"Owner: {playlist['owner']['name']}")
-        print(f"Total Tracks: {playlist['track_count']}")
+        print(f"Playlist: {playlist.get('name', 'Unknown')}")
+        print(f"Owner: {playlist.get('owner', {}).get('display_name', playlist.get('owner', {}).get('id', 'Unknown'))}")
+        print(f"Total Tracks: {playlist.get('track_count', 0)}")
         
         if playlist.get('description'):
-            print(f"Description: {playlist['description']}")
+            # Note: description may not always be available
+if 'description' in playlist:
+    print(f"Description: {playlist.get('description', '')}")
         
         # Calculate total duration
         total_ms = sum(item['track']['duration_ms'] for item in playlist['tracks'])
@@ -193,7 +195,7 @@ def analyze_playlist(playlist_url):
         for i, item in enumerate(playlist['tracks'][:5], 1):
             track = item['track']
             artists = ', '.join([a['name'] for a in track['artists']])
-            print(f"{i}. {track['name']} - {artists}")
+            print(f"{i}. {track.get('name', 'Unknown')} - {artists}")
     finally:
         client.close()
 
@@ -214,8 +216,8 @@ def get_track_with_lyrics(url, cookie_file):
         # Get track info with lyrics
         track = client.get_track_info_with_lyrics(url)
         
-        print(f"Track: {track['name']}")
-        print(f"Artist: {track['artists'][0]['name']}")
+        print(f"Track: {track.get('name', 'Unknown')}")
+        print(f"Artist: {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
         
         if track.get('lyrics'):
             print("\nLyrics:")
@@ -273,7 +275,7 @@ def process_any_url(url):
         data = client.get_all_info(url)
         
         print(f"Type: {data['type']}")
-        print(f"Name: {data['name']}")
+        print(f"Name: {data.get('name', 'Unknown')}")
         
         if data['type'] == 'track':
             print(f"Artists: {', '.join([a['name'] for a in data['artists']])}")
@@ -282,7 +284,7 @@ def process_any_url(url):
         elif data['type'] == 'artist':
             print(f"Genres: {', '.join(data.get('genres', []))}")
         elif data['type'] == 'playlist':
-            print(f"Owner: {data['owner']['display_name']}")
+            print(f"Owner: {data.get('owner', {}).get('display_name', 'Unknown')}")
     finally:
         client.close()
 
@@ -364,7 +366,7 @@ def batch_extract_tracks(urls):
                 track = client.get_track_info(url)
                 results.append({
                     "url": url,
-                    "name": track['name'],
+                    "name": track.get('name', 'Unknown'),
                     "artists": [a['name'] for a in track['artists']],
                     "success": True
                 })
@@ -454,10 +456,10 @@ class SpotifyAnalyzer:
             "timestamp": datetime.now().isoformat(),
             "data": {
                 "id": track['id'],
-                "name": track['name'],
+                "name": track.get('name', 'Unknown'),
                 "artists": [a['name'] for a in track['artists']],
-                "album": track['album']['name'],
-                "duration_seconds": track['duration_ms'] / 1000,
+                "album": track.get('album', {}).get('name', 'Unknown'),
+                "duration_seconds": track.get('duration_ms', 0) / 1000,
                 "popularity": track.get('popularity', 0),
                 "explicit": track.get('explicit', False),
                 "preview_available": bool(track.get('preview_url'))
@@ -503,10 +505,10 @@ class SpotifyAnalyzer:
             "timestamp": datetime.now().isoformat(),
             "data": {
                 "id": album['id'],
-                "name": album['name'],
+                "name": album.get('name', 'Unknown'),
                 "artists": [a['name'] for a in album['artists']],
                 "release_date": album.get('release_date', 'N/A'),
-                "total_tracks": album['total_tracks'],
+                "total_tracks": album.get('total_tracks', 0),
                 "label": album.get('label', 'Unknown'),
                 "tracks": [
                     {
@@ -545,7 +547,7 @@ class SpotifyAnalyzer:
             "timestamp": datetime.now().isoformat(),
             "data": {
                 "id": artist['id'],
-                "name": artist['name'],
+                "name": artist.get('name', 'Unknown'),
                 "genres": artist.get('genres', []),
                 "popularity": artist.get('popularity', 0),
                 "followers": artist.get('followers', {}).get('total', 'N/A'),
@@ -577,12 +579,12 @@ class SpotifyAnalyzer:
             "timestamp": datetime.now().isoformat(),
             "data": {
                 "id": playlist['id'],
-                "name": playlist['name'],
-                "owner": playlist['owner']['name'],
+                "name": playlist.get('name', 'Unknown'),
+                "owner": playlist.get('owner', {}).get('display_name', playlist.get('owner', {}).get('id', 'Unknown')),
                 "description": playlist.get('description', ''),
                 "public": playlist.get('public', True),
                 "collaborative": playlist.get('collaborative', False),
-                "total_tracks": playlist['track_count'],
+                "total_tracks": playlist.get('track_count', 0),
                 "total_duration_hours": total_duration_ms / 3600000,
                 "unique_artists": len(unique_artists),
                 "sample_tracks": [

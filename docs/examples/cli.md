@@ -358,7 +358,7 @@ def run_spotify_scraper(url, format='json'):
 
 # Usage
 track_data = run_spotify_scraper("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-print(f"Track: {track_data['name']}")
+print(f"Track: {track_data.get('name', 'Unknown')}")
 ```
 
 ## Advanced Examples
