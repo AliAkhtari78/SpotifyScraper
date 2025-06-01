@@ -274,7 +274,7 @@ class SpotifyScraperWrapper:
 
         # Fetch with retry logic
         try:
-            track = self._retry_operation(self.client.get_track, url)
+            track = self._retry_operation(self.client.get_track_info, url)
 
             # Save to cache
             if use_cache:
@@ -354,7 +354,7 @@ class SpotifyScraperWrapper:
                 return cached_data
 
         try:
-            album = self._retry_operation(self.client.get_album, url)
+            album = self._retry_operation(self.client.get_album_info, url)
 
             if use_cache:
                 self._save_to_cache(cache_key, album)
@@ -389,7 +389,7 @@ class SpotifyScraperWrapper:
                 return cached_data
 
         try:
-            artist = self._retry_operation(self.client.get_artist, url)
+            artist = self._retry_operation(self.client.get_artist_info, url)
 
             if use_cache:
                 self._save_to_cache(cache_key, artist)
@@ -424,7 +424,7 @@ class SpotifyScraperWrapper:
                 return cached_data
 
         try:
-            playlist = self._retry_operation(self.client.get_playlist, url)
+            playlist = self._retry_operation(self.client.get_playlist_info, url)
 
             if use_cache:
                 self._save_to_cache(cache_key, playlist)
