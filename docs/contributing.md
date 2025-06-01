@@ -823,9 +823,9 @@ python -m memory_profiler your_script.py
 Now that you understand the development setup:
 
 1. 🔧 Set up your [development environment](#development-setup)
-2. 📝 Read the main [contributing guidelines](../../CONTRIBUTING.md)
+2. 📝 Read the main [contributing guidelines](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CONTRIBUTING.md)
 3. 🧪 Write your first [test](#testing-guidelines)
-4. 📖 Check the [API reference](../api/index.md)
+4. 📖 Check the [API reference](api/index.md)
 5. 🚀 Submit your first [pull request](#submitting-changes)
 
 ---
@@ -837,4 +837,4 @@ Development questions and support:
 1. 💬 Join [GitHub Discussions](https://github.com/AliAkhtari78/SpotifyScraper/discussions)
 2. 📋 Check [existing issues](https://github.com/AliAkhtari78/SpotifyScraper/issues)
 3. 📧 Contact maintainers: [ali@aliakhtari.com](mailto:ali@aliakhtari.com)
-4. 📚 Read the [full documentation](../index.md)
+4. 📚 Read the [full documentation](index.md)

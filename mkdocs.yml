@@ -17,11 +17,45 @@ theme:
 
 nav:
   - Home: index.md
-  - Getting Started: getting-started/installation.md
-  - User Guide: guide/index.md
-  - API Reference: api/index.md
-  - Examples: examples/index.md
-  - FAQ: faq.md
+  - Getting Started:
+    - Overview: getting-started/index.md
+    - Installation: getting-started/installation.md
+    - Configuration: getting-started/configuration.md
+  - User Guide:
+    - Introduction: guide/index.md
+    - Basic Usage: guide/basic-usage.md
+    - Authentication: guide/authentication.md
+    - Error Handling: guide/error-handling.md
+    - Media Downloads: guide/media-downloads.md
+  - API Reference:
+    - Overview: api/index.md
+    - Client: api/client.md
+    - Extractors: api/extractors.md
+    - Media: api/media.md
+    - Utils: api/utils.md
+    - Parsers: api/parsers.md
+    - Exceptions: api/exceptions.md
+  - Examples:
+    - Overview: examples/index.md
+    - Quick Start: examples/quickstart.md
+    - CLI Usage: examples/cli.md
+    - Bulk Operations: examples/bulk_operations.md
+    - Advanced Usage: examples/advanced.md
+    - Real-World Projects: examples/projects.md
+  - Advanced Topics:
+    - Architecture: advanced/architecture.md
+    - Custom Extractors: advanced/custom-extractors.md
+    - Performance: advanced/performance.md
+    - Scaling: advanced/scaling.md
+  - Additional Resources:
+    - FAQ: faq.md
+    - Troubleshooting: troubleshooting.md
+    - Migration Guide: migration.md
+    - Changelog: changelog.md
+    - Contributing: contributing.md
+    - Features: features.md
+    - Testing Guide: README_TESTING.md
+    - MCP Testing: mcp_testing.md
 
 markdown_extensions:
   - toc:
