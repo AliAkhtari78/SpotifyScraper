@@ -163,11 +163,11 @@ class TestFullSystemIntegration:
             wrapper.client = mock_client
 
             # Test track operations
-            track_info = wrapper.get_track_info("https://open.spotify.com/track/test123")
+            track_info = wrapper.get_track("https://open.spotify.com/track/test123")
             assert track_info["name"] == "Test Track"
 
             # Test playlist operations
-            playlist_info = wrapper.get_playlist_info(
+            playlist_info = wrapper.get_playlist(
                 "https://open.spotify.com/playlist/playlist123"
             )
             assert playlist_info["name"] == "Test Playlist"
@@ -252,7 +252,7 @@ class TestFullSystemIntegration:
 
             # Should raise after retries
             with pytest.raises(SpotifyScraperError):
-                wrapper.get_track_info("https://open.spotify.com/track/test")
+                wrapper.get_track("https://open.spotify.com/track/test")
 
             # Verify retries were attempted
             assert mock_client.get_track_info.call_count == 2
@@ -271,11 +271,11 @@ class TestFullSystemIntegration:
             url = "https://open.spotify.com/track/test123"
 
             # First call - should hit API
-            result1 = wrapper.get_track_info(url)
+            result1 = wrapper.get_track(url)
             assert mock_client.get_track_info.call_count == 1
 
             # Second call - should use cache
-            result2 = wrapper.get_track_info(url)
+            result2 = wrapper.get_track(url)
             assert mock_client.get_track_info.call_count == 1
             assert result1 == result2
 

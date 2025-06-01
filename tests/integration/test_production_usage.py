@@ -225,7 +225,7 @@ class TestSpotifyScraperWrapper:
         }
         mock_client.get_track_info.return_value = expected_data
 
-        result = wrapper.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+        result = wrapper.get_track("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 
         assert result == expected_data
         mock_client.get_track_info.assert_called_once()
@@ -237,12 +237,12 @@ class TestSpotifyScraperWrapper:
         mock_client.get_track_info.return_value = expected_data
 
         # First call - should hit the API
-        result1 = wrapper.get_track_info(url, use_cache=True)
+        result1 = wrapper.get_track(url, use_cache=True)
         assert result1 == expected_data
         assert mock_client.get_track_info.call_count == 1
 
         # Second call - should use cache
-        result2 = wrapper.get_track_info(url, use_cache=True)
+        result2 = wrapper.get_track(url, use_cache=True)
         assert result2 == expected_data
         assert mock_client.get_track_info.call_count == 1  # No additional calls
 
@@ -253,8 +253,8 @@ class TestSpotifyScraperWrapper:
         mock_client.get_track_info.return_value = expected_data
 
         # Multiple calls without cache should all hit the API
-        wrapper.get_track_info(url, use_cache=False)
-        wrapper.get_track_info(url, use_cache=False)
+        wrapper.get_track(url, use_cache=False)
+        wrapper.get_track(url, use_cache=False)
 
         assert mock_client.get_track_info.call_count == 2
 
@@ -443,7 +443,7 @@ class TestSpotifyScraperWrapper:
         mock_client.get_track_info.side_effect = URLError("Invalid URL")
 
         with pytest.raises(URLError):
-            wrapper.get_track_info("invalid-url")
+            wrapper.get_track("invalid-url")
 
     def test_comprehensive_workflow(self, wrapper, mock_client, temp_dir):
         """Test a comprehensive workflow with multiple operations."""
@@ -461,11 +461,11 @@ class TestSpotifyScraperWrapper:
         mock_client.download_preview_mp3.return_value = str(temp_dir / "audio.mp3")
 
         # 1. Get track info
-        track = wrapper.get_track_info("https://open.spotify.com/track/123")
+        track = wrapper.get_track("https://open.spotify.com/track/123")
         assert track["name"] == "Test Track"
 
         # 2. Get album info
-        album = wrapper.get_album_info("https://open.spotify.com/album/456")
+        album = wrapper.get_album("https://open.spotify.com/album/456")
         assert album["total_tracks"] == 10
 
         # 3. Download media
@@ -571,7 +571,7 @@ class TestIntegrationScenarios:
         ]
 
         # Process playlist
-        playlist = wrapper.get_playlist_info("https://open.spotify.com/playlist/123")
+        playlist = wrapper.get_playlist("https://open.spotify.com/playlist/123")
 
         # Process each track
         track_urls = [
@@ -579,7 +579,7 @@ class TestIntegrationScenarios:
             for item in playlist["tracks"]["items"]
         ]
 
-        track_results = wrapper.batch_process(track_urls, operation="track_info")
+        track_results = wrapper.batch_process(track_urls, operation="track")
 
         # Export everything
         export_data = {"playlist": playlist, "tracks": track_results}
@@ -602,7 +602,7 @@ class TestIntegrationScenarios:
         ]
 
         # Should succeed after retry
-        result = wrapper.get_track_info("https://open.spotify.com/track/123")
+        result = wrapper.get_track("https://open.spotify.com/track/123")
 
         assert result["name"] == "Success after retry"
         assert mock_client.get_track_info.call_count == 2
