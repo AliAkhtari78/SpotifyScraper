@@ -7,48 +7,15 @@ repo_name: AliAkhtari78/SpotifyScraper
 copyright: Copyright &copy; 2025 Ali Akhtari - Documentation Last Updated May 2025
 
 theme:
-  name: material
-  language: en
-  palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: green
-      accent: green
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: green
-      accent: green
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
-  font:
-    text: Roboto
-    code: Roboto Mono
-  features:
-    - navigation.instant
-    - navigation.tracking
-    - navigation.tabs
-    - navigation.tabs.sticky
-    - navigation.sections
-    - navigation.expand
-    - navigation.path
-    - navigation.indexes
-    - navigation.top
-    - search.suggest
-    - search.highlight
-    - search.share
-    - content.code.copy
-    - content.code.select
-    - content.code.annotate
-    - content.tabs.link
-    - header.autohide
-    - announce.dismiss
-  icon:
-    logo: material/music-note
-    repo: fontawesome/brands/github
+  name: gitbook
+  highlightjs: true
+  hljs_languages:
+    - python
+    - bash
+    - yaml
+    - json
+    - xml
+  navigation_depth: 3
 
 nav:
   - Home: index.md
@@ -104,34 +71,8 @@ markdown_extensions:
   - attr_list
   - def_list
   - footnotes
-  - md_in_html
-  - pymdownx.arithmatex:
-      generic: true
-  - pymdownx.betterem:
-      smart_enable: all
-  - pymdownx.caret
-  - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
-  - pymdownx.inlinehilite
-  - pymdownx.keys
-  - pymdownx.mark
-  - pymdownx.smartsymbols
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.tabbed:
-      alternate_style: true
-  - pymdownx.tasklist:
-      custom_checkbox: true
-  - pymdownx.tilde
+  - nl2br
+  - sane_lists
 
 extra:
   version: 2.0.0
@@ -145,9 +86,4 @@ extra:
   generator: false
 
 plugins:
-  - search:
-      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
-      lang:
-        - en
-  - minify:
-      minify_html: true
+  - search
