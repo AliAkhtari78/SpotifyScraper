@@ -1,0 +1,868 @@
+# Troubleshooting
+
+Common issues and solutions when using SpotifyScraper.
+
+## Quick Fixes
+
+### Installation Issues
+
+#### Package Not Found
+```bash
+# Problem: pip cannot find spotifyscraper
+pip install spotifyscraper
+
+# Solution: Check package name spelling
+pip install spotifyscraper
+
+# Alternative: Install from GitHub
+pip install git+https://github.com/AliAkhtari78/SpotifyScraper.git
+```
+
+#### Permission Errors
+```bash
+# Problem: Permission denied during installation
+ERROR: Could not install packages due to an EnvironmentError: [Errno 13] Permission denied
+
+# Solution: Use user installation
+pip install --user spotifyscraper
+
+# Or create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+pip install spotifyscraper
+```
+
+#### SSL Certificate Errors
+```bash
+# Problem: SSL certificate verification failed
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org spotifyscraper
+
+# Permanent solution: Update certificates
+pip install --upgrade certifi
+```
+
+### Import Errors
+
+#### Module Not Found
+```python
+# Problem: ModuleNotFoundError: No module named 'spotify_scraper'
+
+# Solution 1: Check installation
+pip list | grep spotifyscraper
+
+# Solution 2: Reinstall
+pip uninstall spotifyscraper
+pip install spotifyscraper
+
+# Solution 3: Check Python path
+import sys
+print(sys.path)
+```
+
+#### Import Specific Components
+```python
+# Problem: Cannot import specific classes
+from spotify_scraper import SpotifyClient  # ✓ Correct
+from spotifyscraper import SpotifyClient    # ✗ Wrong package name
+
+# Solution: Use correct import
+from spotify_scraper import SpotifyClient, exceptions
+from spotify_scraper.extractors import TrackExtractor
+```
+
+### Basic Usage Issues
+
+#### Client Initialization
+```python
+# Problem: Client fails to initialize
+client = SpotifyClient()
+
+# Solution: Check for common issues
+try:
+    client = SpotifyClient(
+        timeout=30,
+        log_level="DEBUG"  # Enable debug logging
+    )
+    print("Client initialized successfully")
+except Exception as e:
+    print(f"Initialization failed: {e}")
+```
+
+## Network Issues
+
+### Connection Problems
+
+#### Timeout Errors
+```python
+from spotify_scraper import SpotifyClient
+from spotify_scraper.exceptions import TimeoutError
+
+client = SpotifyClient(timeout=60)  # Increase timeout
+
+try:
+    track = client.get_track_info(url)
+except TimeoutError:
+    print("Request timed out - try increasing timeout or checking internet connection")
+```
+
+#### DNS Resolution Failures
+```python
+# Problem: DNS resolution failed
+# Solution: Check internet connection and DNS settings
+
+import socket
+
+def check_connectivity():
+    try:
+        socket.gethostbyname('open.spotify.com')
+        print("✓ DNS resolution working")
+        return True
+    except socket.gaierror:
+        print("✗ DNS resolution failed")
+        return False
+
+if not check_connectivity():
+    print("Check your internet connection and DNS settings")
+```
+
+#### Proxy Issues
+```python
+# Problem: Behind corporate proxy
+client = SpotifyClient(
+    proxy="http://proxy.company.com:8080"
+)
+
+# With authentication
+client = SpotifyClient(
+    proxy="http://username:password@proxy.company.com:8080"
+)
+
+# For SOCKS proxy
+client = SpotifyClient(
+    proxy="socks5://proxy.company.com:1080"
+)
+```
+
+### Rate Limiting
+
+#### Too Many Requests
+```python
+from spotify_scraper.exceptions import RateLimitError
+import time
+
+def extract_with_rate_limiting(client, urls):
+    results = []
+    
+    for url in urls:
+        try:
+            result = client.get_track_info(url)
+            results.append(result)
+            time.sleep(1)  # Add delay between requests
+        except RateLimitError as e:
+            print(f"Rate limited - waiting {e.retry_after} seconds")
+            time.sleep(e.retry_after or 60)
+            # Retry the request
+            result = client.get_track_info(url)
+            results.append(result)
+    
+    return results
+```
+
+#### Implementing Backoff Strategy
+```python
+import random
+import time
+
+def exponential_backoff(func, *args, max_retries=3, **kwargs):
+    """Execute function with exponential backoff on rate limiting."""
+    
+    for attempt in range(max_retries):
+        try:
+            return func(*args, **kwargs)
+        except RateLimitError as e:
+            if attempt == max_retries - 1:
+                raise  # Re-raise on final attempt
+            
+            # Calculate backoff time
+            base_delay = e.retry_after or 60
+            jitter = random.uniform(0.5, 1.5)
+            delay = base_delay * (2 ** attempt) * jitter
+            
+            print(f"Rate limited - attempt {attempt + 1}, waiting {delay:.1f}s")
+            time.sleep(delay)
+
+# Usage
+track = exponential_backoff(client.get_track_info, url)
+```
+
+## Authentication Issues
+
+### Cookie Problems
+
+#### Invalid Cookie Format
+```python
+# Problem: Cookies not working
+# Solution: Check cookie format
+
+# ✓ Correct formats
+cookies = {'sp_dc': 'AQB...', 'sp_key': 'AQA...'}  # Dictionary
+cookies = "sp_dc=AQB...; sp_key=AQA..."             # String
+client = SpotifyClient(cookies=cookies)
+
+# ✗ Common mistakes
+cookies = {'sp_dc': '"AQB..."'}  # Don't include quotes
+cookies = {'sp_dc': 'sp_dc=AQB...'}  # Don't include key name
+```
+
+#### Expired Cookies
+```python
+# Problem: Cookies expired
+from spotify_scraper.exceptions import AuthenticationError
+
+try:
+    track = client.get_track_info(url)
+except AuthenticationError:
+    print("Authentication failed - cookies may be expired")
+    print("Please extract fresh cookies from your browser")
+```
+
+#### Cookie Extraction Issues
+```python
+# Validate extracted cookies
+def validate_cookies(cookies):
+    """Validate cookie format and content."""
+    
+    if isinstance(cookies, str):
+        # Parse cookie string
+        cookie_dict = {}
+        for item in cookies.split(';'):
+            if '=' in item:
+                key, value = item.strip().split('=', 1)
+                cookie_dict[key] = value
+        cookies = cookie_dict
+    
+    required_cookies = ['sp_dc']
+    missing = [cookie for cookie in required_cookies if cookie not in cookies]
+    
+    if missing:
+        print(f"Missing required cookies: {missing}")
+        return False
+    
+    # Check sp_dc format (should start with AQB)
+    if not cookies['sp_dc'].startswith('AQB'):
+        print("Warning: sp_dc cookie format looks unusual")
+    
+    print("✓ Cookies appear valid")
+    return True
+
+# Usage
+cookies = {'sp_dc': 'AQB...'}
+if validate_cookies(cookies):
+    client = SpotifyClient(cookies=cookies)
+```
+
+### Regional Restrictions
+
+#### Content Not Available
+```python
+# Problem: Content not available in your region
+from spotify_scraper.exceptions import NotFoundError
+
+try:
+    track = client.get_track_info(url)
+except NotFoundError:
+    print("Track not found - may be region-restricted")
+    
+    # Try with different proxy/VPN
+    client_with_proxy = SpotifyClient(
+        proxy="http://proxy-in-different-region.com:8080"
+    )
+    track = client_with_proxy.get_track_info(url)
+```
+
+## Data Extraction Issues
+
+### Invalid URLs
+
+#### URL Format Validation
+```python
+from spotify_scraper.exceptions import InvalidURLError
+import re
+
+def validate_spotify_url(url):
+    """Validate Spotify URL format."""
+    
+    spotify_patterns = [
+        r'https://open\.spotify\.com/(track|album|artist|playlist)/[a-zA-Z0-9]+',
+        r'spotify:(track|album|artist|playlist):[a-zA-Z0-9]+'
+    ]
+    
+    for pattern in spotify_patterns:
+        if re.match(pattern, url):
+            return True
+    
+    return False
+
+# Usage
+url = "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh"
+if not validate_spotify_url(url):
+    print("Invalid Spotify URL format")
+else:
+    try:
+        track = client.get_track_info(url)
+    except InvalidURLError as e:
+        print(f"URL validation failed: {e}")
+```
+
+#### Converting Between URL Formats
+```python
+def convert_spotify_url(url):
+    """Convert between different Spotify URL formats."""
+    
+    # Extract ID from URL
+    if 'open.spotify.com' in url:
+        # Extract from web URL
+        parts = url.split('/')
+        if len(parts) >= 2:
+            content_type = parts[-2]
+            content_id = parts[-1].split('?')[0]  # Remove query parameters
+            return f"spotify:{content_type}:{content_id}"
+    
+    elif url.startswith('spotify:'):
+        # Convert from URI to web URL
+        parts = url.split(':')
+        if len(parts) == 3:
+            content_type, content_id = parts[1], parts[2]
+            return f"https://open.spotify.com/{content_type}/{content_id}"
+    
+    return url
+
+# Usage
+web_url = "https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh"
+uri = convert_spotify_url(web_url)
+print(uri)  # spotify:track:4iV5W9uYEdYUVa79Axb7Rh
+```
+
+### Missing Data
+
+#### Handling Missing Fields
+```python
+def safe_extract_track_info(client, url):
+    """Safely extract track info with fallbacks for missing data."""
+    
+    try:
+        track = client.get_track_info(url)
+        
+        # Provide defaults for missing fields
+        track.setdefault('name', 'Unknown Track')
+        track.setdefault('artists', [{'name': 'Unknown Artist'}])
+        track.setdefault('album', {'name': 'Unknown Album'})
+        track.setdefault('duration_ms', 0)
+        track.setdefault('preview_url', None)
+        
+        return track
+        
+    except Exception as e:
+        print(f"Extraction failed: {e}")
+        return None
+
+# Usage
+track = safe_extract_track_info(client, url)
+if track:
+    print(f"Track: {track['name']} by {track['artists'][0]['name']}")
+```
+
+#### Checking Data Completeness
+```python
+def check_track_completeness(track_data):
+    """Check completeness of extracted track data."""
+    
+    required_fields = ['id', 'name', 'artists']
+    optional_fields = ['album', 'duration_ms', 'preview_url', 'explicit']
+    
+    missing_required = [field for field in required_fields if field not in track_data]
+    missing_optional = [field for field in optional_fields if field not in track_data]
+    
+    if missing_required:
+        print(f"❌ Missing required fields: {missing_required}")
+        return False
+    
+    if missing_optional:
+        print(f"⚠️ Missing optional fields: {missing_optional}")
+    
+    print("✓ Track data appears complete")
+    return True
+```
+
+## Download Issues
+
+### Preview Download Problems
+
+#### No Preview Available
+```python
+def download_with_preview_check(client, url, output_path):
+    """Download preview with availability check."""
+    
+    # First, check if preview is available
+    track = client.get_track_info(url)
+    
+    if not track.get('preview_url'):
+        print(f"No preview available for: {track.get('name', 'Unknown')}")
+        return None
+    
+    try:
+        file_path = client.download_preview_mp3(url, path=output_path)
+        print(f"Downloaded: {file_path}")
+        return file_path
+    except Exception as e:
+        print(f"Download failed: {e}")
+        return None
+```
+
+#### Download Failures
+```python
+import os
+import time
+
+def download_with_retry(client, url, output_path, max_retries=3):
+    """Download with retry logic."""
+    
+    for attempt in range(max_retries):
+        try:
+            file_path = client.download_preview_mp3(url, path=output_path)
+            
+            # Verify file was actually downloaded
+            if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+                print(f"✓ Download successful: {file_path}")
+                return file_path
+            else:
+                raise Exception("Downloaded file is empty or missing")
+                
+        except Exception as e:
+            print(f"Download attempt {attempt + 1} failed: {e}")
+            
+            if attempt < max_retries - 1:
+                delay = 2 ** attempt  # Exponential backoff
+                print(f"Retrying in {delay} seconds...")
+                time.sleep(delay)
+            else:
+                print("All download attempts failed")
+                return None
+```
+
+### File Permission Issues
+
+#### Permission Denied
+```python
+import os
+import stat
+
+def ensure_directory_writable(directory):
+    """Ensure directory exists and is writable."""
+    
+    # Create directory if it doesn't exist
+    os.makedirs(directory, exist_ok=True)
+    
+    # Check if directory is writable
+    if not os.access(directory, os.W_OK):
+        print(f"Directory not writable: {directory}")
+        
+        # Try to fix permissions
+        try:
+            current_mode = os.stat(directory).st_mode
+            new_mode = current_mode | stat.S_IWRITE | stat.S_IREAD
+            os.chmod(directory, new_mode)
+            print(f"Fixed permissions for: {directory}")
+        except Exception as e:
+            print(f"Failed to fix permissions: {e}")
+            return False
+    
+    return True
+
+# Usage
+output_dir = "./downloads"
+if ensure_directory_writable(output_dir):
+    file_path = client.download_preview_mp3(url, path=output_dir)
+```
+
+#### Disk Space Issues
+```python
+import shutil
+
+def check_disk_space(path, required_mb=100):
+    """Check available disk space."""
+    
+    try:
+        total, used, free = shutil.disk_usage(path)
+        free_mb = free // (1024 * 1024)
+        
+        if free_mb < required_mb:
+            print(f"Insufficient disk space: {free_mb}MB available, {required_mb}MB required")
+            return False
+        
+        print(f"✓ Sufficient disk space: {free_mb}MB available")
+        return True
+        
+    except Exception as e:
+        print(f"Failed to check disk space: {e}")
+        return False
+
+# Usage
+if check_disk_space("./downloads", required_mb=50):
+    client.download_preview_mp3(url, path="./downloads")
+```
+
+## Browser-Specific Issues
+
+### Selenium Problems
+
+#### WebDriver Not Found
+```bash
+# Problem: WebDriver executable not found
+selenium.common.exceptions.WebDriverException: 'chromedriver' executable needs to be in PATH
+
+# Solution 1: Install webdriver-manager
+pip install webdriver-manager
+
+# Solution 2: Manual installation
+# Download ChromeDriver from https://chromedriver.chromium.org/
+# Add to PATH or specify path in code
+```
+
+```python
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Automatic driver management
+driver = webdriver.Chrome(ChromeDriverManager().install())
+
+# Or specify path manually
+driver = webdriver.Chrome('/path/to/chromedriver')
+```
+
+#### Browser Launch Failures
+```python
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+# Configure Chrome options for headless operation
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('--disable-gpu')
+
+try:
+    driver = webdriver.Chrome(options=chrome_options)
+    print("✓ Browser launched successfully")
+except Exception as e:
+    print(f"Browser launch failed: {e}")
+```
+
+### User Agent Issues
+
+#### Blocked User Agent
+```python
+# Problem: Requests blocked due to user agent
+# Solution: Use realistic user agent
+
+client = SpotifyClient(
+    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+)
+
+# Or rotate user agents
+user_agents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+]
+
+client = SpotifyClient(user_agent_rotation=user_agents)
+```
+
+## Performance Issues
+
+### Slow Response Times
+
+#### Optimize Client Settings
+```python
+# Problem: Slow extraction times
+# Solution: Optimize settings for speed
+
+client = SpotifyClient(
+    browser_type="requests",        # Faster than Selenium
+    timeout=30,                     # Reasonable timeout
+    max_retries=2,                  # Fewer retries
+    concurrent_requests=3,          # Some parallelism
+    use_cache=True,                 # Cache responses
+    cache_size=1000                # Large cache
+)
+```
+
+#### Parallel Processing
+```python
+import concurrent.futures
+import time
+
+def extract_tracks_parallel(client, urls, max_workers=5):
+    """Extract multiple tracks in parallel."""
+    
+    def extract_single(url):
+        try:
+            return client.get_track_info(url)
+        except Exception as e:
+            print(f"Failed to extract {url}: {e}")
+            return None
+    
+    start_time = time.time()
+    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        results = list(executor.map(extract_single, urls))
+    
+    end_time = time.time()
+    successful = [r for r in results if r is not None]
+    
+    print(f"Extracted {len(successful)}/{len(urls)} tracks in {end_time - start_time:.2f}s")
+    return successful
+```
+
+### Memory Issues
+
+#### Memory Usage Optimization
+```python
+import gc
+
+def process_large_playlist(client, playlist_url, batch_size=50):
+    """Process large playlist in batches to manage memory."""
+    
+    playlist = client.get_playlist_info(playlist_url)
+    total_tracks = playlist['tracks']['total']
+    
+    print(f"Processing {total_tracks} tracks in batches of {batch_size}")
+    
+    for offset in range(0, total_tracks, batch_size):
+        batch_tracks = playlist['tracks']['items'][offset:offset + batch_size]
+        
+        # Process batch
+        for item in batch_tracks:
+            if item['track']:
+                track = client.get_track_info(item['track']['external_urls']['spotify'])
+                # Process track...
+        
+        # Clean up memory
+        del batch_tracks
+        gc.collect()
+        
+        print(f"Processed {min(offset + batch_size, total_tracks)}/{total_tracks} tracks")
+```
+
+## Error Debugging
+
+### Enable Debug Logging
+
+```python
+import logging
+
+# Enable debug logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+client = SpotifyClient(log_level="DEBUG")
+
+# Or save logs to file
+logging.basicConfig(
+    filename='spotify_debug.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+```
+
+### Custom Error Handling
+
+```python
+from spotify_scraper.exceptions import (
+    SpotifyScraperError,
+    NetworkError,
+    AuthenticationError,
+    InvalidURLError,
+    NotFoundError,
+    RateLimitError
+)
+
+def handle_extraction_errors(func, *args, **kwargs):
+    """Comprehensive error handling for extraction functions."""
+    
+    try:
+        return func(*args, **kwargs)
+        
+    except InvalidURLError as e:
+        print(f"❌ Invalid URL: {e}")
+        print("Please check the Spotify URL format")
+        
+    except NotFoundError as e:
+        print(f"❌ Content not found: {e}")
+        print("The track/album/artist may not exist or may be region-restricted")
+        
+    except AuthenticationError as e:
+        print(f"❌ Authentication failed: {e}")
+        print("Please check your cookies or try without authentication")
+        
+    except RateLimitError as e:
+        print(f"❌ Rate limited: {e}")
+        print(f"Please wait {e.retry_after or 60} seconds before retrying")
+        
+    except NetworkError as e:
+        print(f"❌ Network error: {e}")
+        print("Please check your internet connection")
+        
+    except SpotifyScraperError as e:
+        print(f"❌ SpotifyScraper error: {e}")
+        
+    except Exception as e:
+        print(f"❌ Unexpected error: {e}")
+        print("Please report this issue on GitHub")
+    
+    return None
+
+# Usage
+track = handle_extraction_errors(client.get_track_info, url)
+```
+
+## Platform-Specific Issues
+
+### Windows Issues
+
+#### Path Length Limitations
+```python
+import os
+
+def handle_long_paths(file_path):
+    """Handle Windows long path limitations."""
+    
+    if os.name == 'nt' and len(file_path) > 260:
+        # Use UNC path prefix for long paths
+        if not file_path.startswith('\\\\?\\'):
+            file_path = '\\\\?\\' + os.path.abspath(file_path)
+    
+    return file_path
+
+# Usage
+long_path = handle_long_paths("very/long/path/to/file.mp3")
+```
+
+#### Character Encoding Issues
+```python
+import sys
+
+def fix_encoding_issues():
+    """Fix character encoding issues on Windows."""
+    
+    if sys.platform.startswith('win'):
+        # Set UTF-8 encoding
+        import codecs
+        sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+        sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
+# Call at start of script
+fix_encoding_issues()
+```
+
+### macOS Issues
+
+#### Security Restrictions
+```bash
+# Problem: "chromedriver" cannot be opened because the developer cannot be verified
+# Solution: Allow the executable
+xattr -d com.apple.quarantine /path/to/chromedriver
+
+# Or globally allow downloaded apps
+sudo spctl --master-disable
+```
+
+### Linux Issues
+
+#### Missing Dependencies
+```bash
+# Problem: Missing system dependencies for Selenium
+# Solution: Install required packages
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install -y chromium-browser chromium-chromedriver
+
+# CentOS/RHEL
+sudo yum install -y chromium chromium-chromedriver
+
+# Or install Chrome
+wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+sudo apt-get update
+sudo apt-get install -y google-chrome-stable
+```
+
+## Getting Additional Help
+
+### Diagnostic Information
+
+```python
+def collect_diagnostic_info():
+    """Collect diagnostic information for troubleshooting."""
+    
+    import sys
+    import platform
+    import spotify_scraper
+    
+    print("=== SpotifyScraper Diagnostic Information ===")
+    print(f"SpotifyScraper version: {spotify_scraper.__version__}")
+    print(f"Python version: {sys.version}")
+    print(f"Platform: {platform.platform()}")
+    print(f"Architecture: {platform.architecture()}")
+    
+    # Check dependencies
+    try:
+        import requests
+        print(f"Requests version: {requests.__version__}")
+    except ImportError:
+        print("Requests: Not installed")
+    
+    try:
+        import selenium
+        print(f"Selenium version: {selenium.__version__}")
+    except ImportError:
+        print("Selenium: Not installed")
+    
+    # Check network connectivity
+    try:
+        import socket
+        socket.gethostbyname('open.spotify.com')
+        print("Network connectivity: ✓ OK")
+    except socket.gaierror:
+        print("Network connectivity: ✗ Failed")
+
+# Run diagnostics
+collect_diagnostic_info()
+```
+
+### Creating Bug Reports
+
+When reporting issues, include:
+
+1. **Error message** and full stack trace
+2. **Minimal code example** that reproduces the issue
+3. **Environment information** (OS, Python version, SpotifyScraper version)
+4. **Spotify URL** that's causing issues (if applicable)
+5. **Expected vs actual behavior**
+
+### Community Support
+
+- **GitHub Issues** - For bugs and feature requests
+- **GitHub Discussions** - For questions and general help
+- **Documentation** - Check the full documentation first
+- **Examples** - Look at working examples in the repository
+
+---
+
+If you can't find a solution here, please create an issue on GitHub with detailed information about your problem.

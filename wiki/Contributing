@@ -1,0 +1,738 @@
+# Contributing
+
+Welcome to the SpotifyScraper community! We're excited to have you contribute to making SpotifyScraper even better.
+
+## Quick Start
+
+### 1. Fork and Clone
+
+```bash
+# Fork the repository on GitHub
+# Then clone your fork
+git clone https://github.com/YOUR_USERNAME/SpotifyScraper.git
+cd SpotifyScraper
+
+# Add upstream repository
+git remote add upstream https://github.com/AliAkhtari78/SpotifyScraper.git
+```
+
+### 2. Set Up Development Environment
+
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install development dependencies
+pip install -e ".[dev]"
+
+# Install pre-commit hooks
+pre-commit install
+```
+
+### 3. Make Your Changes
+
+```bash
+# Create feature branch
+git checkout -b feature/your-awesome-feature
+
+# Make changes and commit
+git add .
+git commit -m "Add awesome new feature"
+
+# Push to your fork
+git push origin feature/your-awesome-feature
+```
+
+### 4. Submit Pull Request
+
+1. Go to your fork on GitHub
+2. Click "New Pull Request"
+3. Fill out the PR template
+4. Submit for review
+
+## Development Setup
+
+### Prerequisites
+
+- **Python 3.8+** (3.10+ recommended)
+- **Git** for version control
+- **Make** for running development tasks (optional)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/AliAkhtari78/SpotifyScraper.git
+cd SpotifyScraper
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# OR
+venv\Scripts\activate     # Windows
+
+# Install in development mode
+pip install -e ".[dev]"
+```
+
+### Development Dependencies
+
+The development installation includes:
+
+- **pytest** - Testing framework
+- **black** - Code formatting
+- **isort** - Import sorting
+- **flake8** - Code linting
+- **mypy** - Type checking
+- **pre-commit** - Git hooks
+- **sphinx** - Documentation generation
+
+### Verify Setup
+
+```bash
+# Run tests
+pytest
+
+# Check code style
+black --check src/ tests/
+isort --check-only src/ tests/
+flake8 src/ tests/
+
+# Type checking
+mypy src/
+
+# Run all checks
+make check-all  # if you have make installed
+```
+
+## How to Contribute
+
+### Types of Contributions
+
+We welcome all types of contributions:
+
+- 🐛 **Bug Reports** - Help us identify and fix issues
+- 💡 **Feature Requests** - Suggest new functionality
+- 📝 **Documentation** - Improve guides, examples, and API docs
+- 🧪 **Tests** - Add test coverage for existing code
+- 🔧 **Code** - Fix bugs or implement new features
+- 🎨 **Examples** - Create real-world usage examples
+- 📦 **Packaging** - Improve distribution and deployment
+
+### Bug Reports
+
+When reporting bugs, please include:
+
+1. **Clear title** describing the issue
+2. **Steps to reproduce** the problem
+3. **Expected behavior** vs actual behavior
+4. **Environment details** (Python version, OS, SpotifyScraper version)
+5. **Code example** demonstrating the issue
+6. **Error messages** and stack traces
+
+#### Bug Report Template
+
+```markdown
+**Bug Description**
+A clear description of what the bug is.
+
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+
+**Expected Behavior**
+A clear description of what you expected to happen.
+
+**Environment**
+- OS: [e.g. Ubuntu 20.04, Windows 10, macOS 12]
+- Python Version: [e.g. 3.10.0]
+- SpotifyScraper Version: [e.g. 2.0.0]
+
+**Code Example**
+```python
+from spotify_scraper import SpotifyClient
+
+client = SpotifyClient()
+# Your code that demonstrates the issue
+```
+
+**Error Output**
+```
+Paste any error messages or stack traces here
+```
+
+**Additional Context**
+Add any other context about the problem here.
+```
+
+### Feature Requests
+
+When requesting features:
+
+1. **Describe the problem** you're trying to solve
+2. **Explain your proposed solution**
+3. **Consider alternatives** you've thought about
+4. **Provide use cases** and examples
+5. **Check existing issues** to avoid duplicates
+
+#### Feature Request Template
+
+```markdown
+**Is your feature request related to a problem?**
+A clear description of what the problem is. Ex. I'm always frustrated when [...]
+
+**Describe the solution you'd like**
+A clear description of what you want to happen.
+
+**Describe alternatives you've considered**
+A description of any alternative solutions or features you've considered.
+
+**Use Cases**
+Describe specific use cases where this feature would be helpful.
+
+**Code Example**
+```python
+# Example of how you'd like to use the feature
+client = SpotifyClient()
+result = client.new_awesome_feature(parameters)
+```
+
+**Additional context**
+Add any other context or screenshots about the feature request here.
+```
+
+## Code Contributions
+
+### Development Workflow
+
+1. **Check existing issues** - Look for related work or discussions
+2. **Create an issue** - Discuss your approach before implementing
+3. **Fork and branch** - Create a feature branch from `main`
+4. **Write code** - Follow our coding standards
+5. **Add tests** - Ensure your code is well-tested
+6. **Update docs** - Document any user-facing changes
+7. **Submit PR** - Create a pull request for review
+
+### Coding Standards
+
+#### Code Style
+
+We use **Black** for code formatting and **isort** for import sorting:
+
+```bash
+# Format code
+black src/ tests/
+isort src/ tests/
+
+# Check formatting
+black --check src/ tests/
+isort --check-only src/ tests/
+```
+
+#### Code Quality
+
+- **Type hints** for all public functions
+- **Docstrings** for classes and public methods
+- **Error handling** with appropriate exceptions
+- **Testing** with good coverage
+- **Performance** considerations for hot paths
+
+#### Example Code Style
+
+```python
+from typing import Dict, List, Optional, Union
+from spotify_scraper.exceptions import SpotifyScraperError
+
+class TrackExtractor:
+    """Extract track information from Spotify pages."""
+    
+    def __init__(self, session: Optional[requests.Session] = None) -> None:
+        """Initialize the track extractor.
+        
+        Args:
+            session: Optional HTTP session to use for requests
+        """
+        self.session = session or requests.Session()
+    
+    def extract_track_info(self, url: str) -> Dict[str, Union[str, int, List[str]]]:
+        """Extract track information from Spotify URL.
+        
+        Args:
+            url: Spotify track URL
+            
+        Returns:
+            Dictionary containing track information
+            
+        Raises:
+            InvalidURLError: If URL format is invalid
+            NotFoundError: If track is not found
+            
+        Example:
+            >>> extractor = TrackExtractor()
+            >>> info = extractor.extract_track_info('https://open.spotify.com/track/123')
+            >>> print(info['name'])
+            'Track Name'
+        """
+        try:
+            # Implementation here
+            return self._parse_track_data(response.text)
+        except requests.RequestException as e:
+            raise NetworkError(f"Failed to fetch track: {e}") from e
+```
+
+### Testing Guidelines
+
+#### Test Structure
+
+```bash
+tests/
+├── unit/           # Fast, isolated tests
+├── integration/    # Tests with external dependencies
+├── fixtures/       # Test data
+└── conftest.py     # Shared test configuration
+```
+
+#### Writing Tests
+
+```python
+import pytest
+from unittest.mock import Mock, patch
+from spotify_scraper import SpotifyClient
+from spotify_scraper.exceptions import InvalidURLError
+
+class TestSpotifyClient:
+    """Test cases for SpotifyClient."""
+    
+    def setup_method(self):
+        """Set up test fixtures."""
+        self.client = SpotifyClient()
+    
+    def teardown_method(self):
+        """Clean up after tests."""
+        self.client.close()
+    
+    def test_get_track_info_success(self):
+        """Test successful track extraction."""
+        # Arrange
+        url = "https://open.spotify.com/track/123"
+        expected = {"name": "Test Track", "artists": ["Test Artist"]}
+        
+        # Act
+        with patch.object(self.client, '_fetch_page') as mock_fetch:
+            mock_fetch.return_value = self._load_fixture('track_page.html')
+            result = self.client.get_track_info(url)
+        
+        # Assert
+        assert result["name"] == expected["name"]
+        assert result["artists"] == expected["artists"]
+        mock_fetch.assert_called_once_with(url)
+    
+    def test_get_track_info_invalid_url(self):
+        """Test error handling for invalid URLs."""
+        with pytest.raises(InvalidURLError):
+            self.client.get_track_info("invalid-url")
+    
+    @pytest.mark.parametrize("url,expected_type", [
+        ("https://open.spotify.com/track/123", "track"),
+        ("https://open.spotify.com/album/456", "album"),
+        ("https://open.spotify.com/artist/789", "artist"),
+    ])
+    def test_url_type_detection(self, url, expected_type):
+        """Test URL type detection for different Spotify URLs."""
+        result = self.client._detect_url_type(url)
+        assert result == expected_type
+    
+    def _load_fixture(self, filename):
+        """Load test fixture file."""
+        with open(f"tests/fixtures/{filename}", 'r') as f:
+            return f.read()
+```
+
+#### Test Categories
+
+Use pytest markers to categorize tests:
+
+```python
+@pytest.mark.unit
+def test_unit_function():
+    """Fast unit test."""
+    pass
+
+@pytest.mark.integration
+def test_integration_workflow():
+    """Integration test with external dependencies."""
+    pass
+
+@pytest.mark.slow
+def test_performance_heavy():
+    """Slow test that takes significant time."""
+    pass
+
+@pytest.mark.network
+def test_requires_internet():
+    """Test that requires internet connection."""
+    pass
+```
+
+Run specific test categories:
+
+```bash
+pytest -m unit                    # Run unit tests only
+pytest -m "integration and not slow"  # Integration tests, skip slow ones
+pytest -m "not network"           # Skip network-dependent tests
+```
+
+### Documentation
+
+#### API Documentation
+
+Use Google-style docstrings:
+
+```python
+def get_track_info(self, url: str, include_lyrics: bool = False) -> TrackData:
+    """Get comprehensive track information from Spotify.
+    
+    Extracts track metadata including name, artists, album information,
+    duration, and preview URLs from a Spotify track URL.
+    
+    Args:
+        url: Spotify track URL (e.g., 'https://open.spotify.com/track/123')
+        include_lyrics: Whether to fetch lyrics if available. Defaults to False.
+    
+    Returns:
+        TrackData dictionary containing track information:
+        
+        .. code-block:: python
+        
+            {
+                'id': 'track_id',
+                'name': 'Track Name',
+                'artists': [{'name': 'Artist Name', 'id': 'artist_id'}],
+                'album': {'name': 'Album Name', 'id': 'album_id'},
+                'duration_ms': 210000,
+                'preview_url': 'https://...',
+                'explicit': False
+            }
+    
+    Raises:
+        InvalidURLError: If the provided URL is not a valid Spotify track URL
+        NotFoundError: If the track cannot be found or is not accessible
+        NetworkError: If there's a network-related error during extraction
+    
+    Example:
+        Basic track extraction:
+        
+        >>> client = SpotifyClient()
+        >>> track = client.get_track_info('https://open.spotify.com/track/123')
+        >>> print(track['name'])
+        'Track Name'
+        
+        Include lyrics in extraction:
+        
+        >>> track = client.get_track_info(url, include_lyrics=True)
+        >>> if 'lyrics' in track:
+        ...     print(track['lyrics']['lines'][0]['words'])
+    
+    Note:
+        - Track extraction may be slower for very popular tracks due to rate limiting
+        - Some tracks may have regional restrictions
+        - Preview URLs may not be available for all tracks
+    """
+```
+
+#### User Guides
+
+When writing user-facing documentation:
+
+1. **Start with examples** - Show working code first
+2. **Explain concepts** - Provide context and background
+3. **Cover edge cases** - Document limitations and gotchas
+4. **Link related topics** - Help users discover relevant features
+5. **Keep it updated** - Ensure docs match current API
+
+### Pull Request Process
+
+#### Before Submitting
+
+1. **Run all checks**:
+   ```bash
+   pytest                           # Run tests
+   black --check src/ tests/       # Check formatting
+   isort --check-only src/ tests/  # Check import sorting
+   flake8 src/ tests/              # Check linting
+   mypy src/                       # Check types
+   ```
+
+2. **Update documentation** if needed
+3. **Add/update tests** for new functionality
+4. **Update CHANGELOG.md** with your changes
+
+#### PR Template
+
+```markdown
+## Summary
+Brief description of changes made.
+
+## Type of Change
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
+
+## Changes Made
+- Detailed list of changes
+- Include any new dependencies
+- Mention any breaking changes
+
+## Testing
+- [ ] All existing tests pass
+- [ ] New tests added for new functionality
+- [ ] Manual testing completed
+
+## Documentation
+- [ ] Code comments added/updated
+- [ ] API documentation updated
+- [ ] User guide updated (if applicable)
+
+## Checklist
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] No breaking changes (or clearly marked)
+- [ ] Tests added/updated
+- [ ] Documentation updated
+
+## Related Issues
+Closes #123
+Fixes #456
+```
+
+#### Review Process
+
+1. **Automated checks** must pass
+2. **Code review** by maintainers
+3. **Testing** on different platforms if needed
+4. **Documentation review** for user-facing changes
+5. **Final approval** and merge
+
+### Code Review Guidelines
+
+#### For Contributors
+
+- **Be responsive** to feedback
+- **Ask questions** if feedback is unclear
+- **Make incremental changes** rather than large rewrites
+- **Test your changes** thoroughly
+- **Be patient** - reviews take time
+
+#### For Reviewers
+
+- **Be constructive** and specific in feedback
+- **Explain the "why"** behind suggestions
+- **Acknowledge good work** and improvements
+- **Focus on code quality** and maintainability
+- **Test changes** when possible
+
+## Project Structure
+
+### Key Directories
+
+```
+SpotifyScraper/
+├── src/spotify_scraper/    # Main package code
+│   ├── __init__.py
+│   ├── client.py          # Main client class
+│   ├── extractors/        # Data extraction modules
+│   ├── parsers/           # HTML/JSON parsing
+│   ├── media/             # Media download handling
+│   ├── utils/             # Utility functions
+│   └── exceptions.py      # Custom exceptions
+├── tests/                 # Test suite
+├── docs/                  # Documentation
+├── examples/              # Usage examples
+├── scripts/               # Development scripts
+└── requirements/          # Dependency files
+```
+
+### Adding New Features
+
+#### 1. Extractors
+
+To add support for a new Spotify entity type:
+
+```python
+# src/spotify_scraper/extractors/new_entity.py
+from typing import Dict, Any
+from .base import BaseExtractor
+
+class NewEntityExtractor(BaseExtractor):
+    """Extract new entity information from Spotify."""
+    
+    def extract(self, html: str, url: str) -> Dict[str, Any]:
+        """Extract entity data from HTML content."""
+        # Implementation here
+        pass
+```
+
+#### 2. Parser Functions
+
+To add new parsing capabilities:
+
+```python
+# src/spotify_scraper/parsers/json_parser.py
+def extract_new_entity_data(json_data: Dict[str, Any]) -> NewEntityData:
+    """Extract new entity data from Spotify JSON."""
+    # Implementation here
+    pass
+```
+
+#### 3. Client Methods
+
+To expose new functionality:
+
+```python
+# src/spotify_scraper/client.py
+def get_new_entity_info(self, url: str) -> Dict[str, Any]:
+    """Get new entity information from Spotify URL."""
+    # Implementation here
+    pass
+```
+
+### Release Process
+
+#### Version Numbering
+
+We follow [Semantic Versioning](https://semver.org/):
+
+- **MAJOR** version for incompatible API changes
+- **MINOR** version for backward-compatible functionality additions
+- **PATCH** version for backward-compatible bug fixes
+
+#### Release Checklist
+
+1. **Update version** in `src/spotify_scraper/__init__.py`
+2. **Update CHANGELOG.md** with release notes
+3. **Run full test suite** on all supported Python versions
+4. **Update documentation** if needed
+5. **Create release tag** and GitHub release
+6. **Publish to PyPI** (maintainers only)
+
+## Community Guidelines
+
+### Code of Conduct
+
+We are committed to providing a welcoming and inclusive environment. Please:
+
+- **Be respectful** and considerate in all interactions
+- **Focus on constructive feedback** and solutions
+- **Help newcomers** learn and contribute
+- **Report inappropriate behavior** to maintainers
+- **Follow the [Contributor Covenant](https://www.contributor-covenant.org/)**
+
+### Communication
+
+- **GitHub Issues** - Bug reports and feature requests
+- **GitHub Discussions** - Questions, ideas, and general discussion
+- **Pull Requests** - Code contributions and reviews
+- **Email** - Security issues and private matters (ali@aliakhtari.com)
+
+### Recognition
+
+We appreciate all contributions! Contributors are recognized:
+
+- **AUTHORS.md** - List of all contributors
+- **GitHub contributors** - Automatic GitHub recognition
+- **Release notes** - Major contributions highlighted
+- **Social media** - Significant contributions may be shared
+
+## Getting Help
+
+### For Contributors
+
+- **Documentation** - Check existing docs first
+- **GitHub Discussions** - Ask questions and get help
+- **Code Examples** - Look at existing code for patterns
+- **Issue Templates** - Use provided templates for consistency
+
+### For Maintainers
+
+- **Maintainer Guide** - Internal guidelines for maintainers
+- **Release Process** - Steps for creating releases
+- **Security Policy** - Handling security issues
+- **Code Review** - Standards for reviewing contributions
+
+## Common Tasks
+
+### Running Tests
+
+```bash
+# All tests
+pytest
+
+# Specific test categories
+pytest -m unit
+pytest -m integration
+pytest -m "not slow"
+
+# With coverage
+pytest --cov=src/spotify_scraper --cov-report=html
+
+# Specific test file
+pytest tests/unit/test_client.py
+
+# Specific test function
+pytest tests/unit/test_client.py::TestSpotifyClient::test_get_track_info
+```
+
+### Code Quality
+
+```bash
+# Format code
+black src/ tests/
+isort src/ tests/
+
+# Check code quality
+flake8 src/ tests/
+mypy src/
+
+# Security check
+bandit -r src/
+
+# All quality checks
+make quality  # if using Makefile
+```
+
+### Documentation
+
+```bash
+# Build documentation
+cd docs/
+make html
+
+# Serve documentation locally
+cd docs/_build/html/
+python -m http.server 8000
+
+# Check for broken links
+make linkcheck
+```
+
+### Pre-commit Hooks
+
+```bash
+# Install hooks
+pre-commit install
+
+# Run hooks manually
+pre-commit run --all-files
+
+# Update hook versions
+pre-commit autoupdate
+```
+
+---
+
+Thank you for contributing to SpotifyScraper! Your help makes this project better for everyone. 🎵✨
