@@ -1,5 +1,6 @@
 # Documentation dependencies
 mkdocs>=1.5.0
-mkdocs-windmill>=1.0.5
+mkdocs-simple-blog>=0.0.1
 markdown>=3.3
 pygments>=2.10
+python-markdown-math>=0.8

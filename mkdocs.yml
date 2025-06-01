@@ -7,7 +7,22 @@ repo_name: AliAkhtari78/SpotifyScraper
 copyright: Copyright &copy; 2025 Ali Akhtari - Documentation Last Updated May 2025
 
 theme:
-  name: windmill
+  name: simple-blog
+  custom_dir: null
+  locale: en
+  theme:
+    language: en
+    features:
+      - content.code.annotate
+      - content.tabs.link
+      - content.code.copy
+  font:
+    text: Roboto
+    code: Roboto Mono
+  logo: null
+  favicon: null
+  include_search_page: true
+  search_index_only: true
   highlightjs: true
   hljs_languages:
     - python
@@ -15,10 +30,14 @@ theme:
     - yaml
     - json
     - xml
-  navigation_depth: 3
-  sticky_navigation: true
-  collapse_navigation: false
-  include_search_page: true
+  hljs_style: github
+  navigation_depth: 2
+  nav_style: dark
+  shortcuts:
+    help: 191      # ?
+    next: 78       # n
+    previous: 80   # p
+    search: 83     # s
 
 nav:
   - Home: index.md
@@ -82,11 +101,18 @@ extra:
   author: Ali Akhtari
   year: 2025
   social:
-    - icon: fontawesome/brands/github
+    - name: GitHub
       link: https://github.com/AliAkhtari78/SpotifyScraper
-    - icon: fontawesome/brands/python
+      icon: github
+    - name: PyPI
       link: https://pypi.org/project/spotifyscraper/
+      icon: python
   generator: false
+  blog:
+    dir: blog
+    author: Ali Akhtari
+    author_image: null
+    words_read_per_minute: 200
 
 plugins:
   - search
