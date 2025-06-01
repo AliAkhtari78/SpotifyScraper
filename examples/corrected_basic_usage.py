@@ -26,7 +26,9 @@ def main():
 
         # Display track information
         print(f"Track: {track.get('name', 'Unknown')}")
-        print(f"Artists: {', '.join(artist.get('name', 'Unknown') for artist in track.get('artists', []))}")
+        print(
+            f"Artists: {', '.join(artist.get('name', 'Unknown') for artist in track.get('artists', []))}"
+        )
 
         # Handle album information safely
         album = track.get("album", {})
