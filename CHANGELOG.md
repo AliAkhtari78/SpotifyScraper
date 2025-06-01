@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.22] - 2025-01-06
+
+### Fixed
+- Fixed all documentation examples to use safe field access patterns with `.get()` method
+- Fixed KeyError issues when fields are missing from API responses
+- Fixed nested field access patterns (e.g., `track['artists'][0]['name']`) to handle missing data
+- Fixed error handling imports in documentation (`from spotify_scraper import` instead of `from spotify_scraper.exceptions import`)
+- Updated over 40 documentation files to prevent KeyError exceptions
+
+### Added
+- Added `docs/examples/corrected_examples.md` with working code samples showing exactly which fields are available
+- Added safe patterns for accessing optional fields throughout documentation
+
+### Changed
+- All field access now uses `.get()` method with appropriate defaults:
+  - `track['name']` → `track.get('name', 'Unknown')`
+  - `album['release_date']` → `album.get('release_date', 'N/A')`
+  - `artist['genres']` → `artist.get('genres', [])`
+  - `playlist['description']` → `playlist.get('description', '')`
+- Complex nested access patterns now check for existence before accessing
+
+### Documentation
+- Updated all code examples in README, Wiki, and documentation to use safe field access
+- Fixed the specific example that was causing `KeyError: 'release_date'` as reported by user
+- Ensured consistency across all documentation files
+
 ## [2.0.21] - 2025-05-28
 
 ### Fixed
