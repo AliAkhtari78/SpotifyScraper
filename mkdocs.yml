@@ -7,37 +7,39 @@ repo_name: AliAkhtari78/SpotifyScraper
 copyright: Copyright &copy; 2025 Ali Akhtari - Documentation Last Updated May 2025
 
 theme:
-  name: simple-blog
-  custom_dir: null
-  locale: en
-  theme:
-    language: en
-    features:
-      - content.code.annotate
-      - content.tabs.link
-      - content.code.copy
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   font:
     text: Roboto
     code: Roboto Mono
-  logo: null
-  favicon: null
-  include_search_page: true
-  search_index_only: true
-  highlightjs: true
-  hljs_languages:
-    - python
-    - bash
-    - yaml
-    - json
-    - xml
-  hljs_style: github
-  navigation_depth: 2
-  nav_style: dark
-  shortcuts:
-    help: 191      # ?
-    next: 78       # n
-    previous: 80   # p
-    search: 83     # s
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    logo: material/library
+    repo: fontawesome/brands/github
 
 nav:
   - Home: index.md
@@ -93,26 +95,25 @@ markdown_extensions:
   - attr_list
   - def_list
   - footnotes
-  - nl2br
-  - sane_lists
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
 
 extra:
   version: 2.0.0
   author: Ali Akhtari
   year: 2025
   social:
-    - name: GitHub
+    - icon: fontawesome/brands/github
       link: https://github.com/AliAkhtari78/SpotifyScraper
-      icon: github
-    - name: PyPI
+    - icon: fontawesome/brands/python
       link: https://pypi.org/project/spotifyscraper/
-      icon: python
   generator: false
-  blog:
-    dir: blog
-    author: Ali Akhtari
-    author_image: null
-    words_read_per_minute: 200
 
 plugins:
   - search
