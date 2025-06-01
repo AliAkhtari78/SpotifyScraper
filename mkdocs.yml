@@ -7,7 +7,7 @@ repo_name: AliAkhtari78/SpotifyScraper
 copyright: Copyright &copy; 2025 Ali Akhtari - Documentation Last Updated May 2025
 
 theme:
-  name: gitbook
+  name: windmill
   highlightjs: true
   hljs_languages:
     - python
@@ -16,6 +16,9 @@ theme:
     - json
     - xml
   navigation_depth: 3
+  sticky_navigation: true
+  collapse_navigation: false
+  include_search_page: true
 
 nav:
   - Home: index.md

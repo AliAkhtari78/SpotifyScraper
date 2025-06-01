@@ -1,5 +1,5 @@
 # Documentation dependencies
 mkdocs>=1.5.0
-mkdocs-gitbook-theme>=0.0.1
+mkdocs-windmill>=1.0.5
 markdown>=3.3
 pygments>=2.10
