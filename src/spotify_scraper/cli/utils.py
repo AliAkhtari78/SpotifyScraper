@@ -287,3 +287,74 @@ def confirm_action(message: str, default: bool = False) -> bool:
         User's choice
     """
     return click.confirm(message, default=default)
+
+
+def format_duration(duration_ms: int) -> str:
+    """
+    Format duration from milliseconds to human-readable format.
+    
+    Args:
+        duration_ms: Duration in milliseconds
+        
+    Returns:
+        Formatted duration string (e.g., "3:45" or "1:23:45")
+    """
+    if duration_ms is None:
+        return "0:00"
+        
+    total_seconds = duration_ms // 1000
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    seconds = total_seconds % 60
+    
+    if hours > 0:
+        return f"{hours}:{minutes:02d}:{seconds:02d}"
+    else:
+        return f"{minutes}:{seconds:02d}"
+
+
+def handle_errors(func):
+    """
+    Decorator to handle common CLI errors.
+    
+    Wraps CLI commands to catch and display errors gracefully.
+    """
+    from functools import wraps
+    
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except click.Abort:
+            # User cancelled, exit quietly
+            raise
+        except Exception as e:
+            print_error(str(e))
+            click.get_current_context().exit(1)
+    
+    return wrapper
+
+
+def setup_client(**kwargs) -> SpotifyClient:
+    """
+    Set up a SpotifyClient from the current click context.
+    
+    Args:
+        **kwargs: Additional arguments to pass to SpotifyClient
+        
+    Returns:
+        Configured SpotifyClient instance
+    """
+    ctx = click.get_current_context()
+    ctx_obj = ctx.obj or {}
+    
+    # Merge context options with provided kwargs
+    client_args = {
+        'cookie_file': ctx_obj.get('cookie_file'),
+        'browser_type': ctx_obj.get('browser', 'requests'),
+        'log_level': ctx_obj.get('log_level', 'INFO'),
+        'proxy': ctx_obj.get('proxy'),
+    }
+    client_args.update(kwargs)
+    
+    return SpotifyClient(**client_args)

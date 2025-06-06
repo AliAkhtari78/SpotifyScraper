@@ -20,6 +20,7 @@ Example:
 """
 
 import logging
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -31,6 +32,8 @@ from spotify_scraper.extractors.album import AlbumExtractor
 from spotify_scraper.extractors.artist import ArtistExtractor
 from spotify_scraper.extractors.playlist import PlaylistExtractor
 from spotify_scraper.extractors.track import TrackExtractor
+from spotify_scraper.extractors.episode import EpisodeExtractor
+from spotify_scraper.extractors.show import ShowExtractor
 from spotify_scraper.media.audio import AudioDownloader
 from spotify_scraper.media.image import ImageDownloader
 from spotify_scraper.utils.logger import configure_logging
@@ -170,6 +173,8 @@ class SpotifyClient:
         self.album_extractor = AlbumExtractor(browser=self.browser)
         self.artist_extractor = ArtistExtractor(browser=self.browser)
         self.playlist_extractor = PlaylistExtractor(browser=self.browser)
+        self.episode_extractor = EpisodeExtractor(browser=self.browser)
+        self.show_extractor = ShowExtractor(browser=self.browser)
 
         # Create downloaders
         self._image_downloader = ImageDownloader(browser=self.browser)
@@ -491,11 +496,211 @@ class SpotifyClient:
         logger.info("Getting playlist info for %s", url)
         return self.playlist_extractor.extract(url)
 
+    def get_episode_info(self, url: str) -> Dict[str, Any]:
+        """
+        Get episode information from a Spotify episode URL.
+
+        This method extracts comprehensive episode information including:
+        - Episode metadata (name, duration, release date)
+        - Show information
+        - Audio preview URL (1-2 minute clip)
+        - Video preview URL (if available)
+        - Episode description
+        - Explicit content flag
+
+        Args:
+            url: Spotify episode URL (regular or embed format).
+                Examples:
+                - https://open.spotify.com/episode/1234567890abcdef
+                - https://open.spotify.com/embed/episode/1234567890abcdef
+                - spotify:episode:1234567890abcdef
+
+        Returns:
+            Dictionary containing episode information with the following structure:
+            {
+                "id": str,                    # Spotify episode ID
+                "name": str,                  # Episode name
+                "uri": str,                   # Spotify URI (spotify:episode:...)
+                "type": "episode",            # Entity type
+                "duration_ms": int,           # Duration in milliseconds
+                "release_date": str,          # Release date (ISO format)
+                "description": str,           # Episode description
+                "explicit": bool,             # Explicit content flag
+                "is_playable": bool,          # Playability status
+                "is_trailer": bool,           # Whether it's a trailer
+                "has_video": bool,            # Whether episode has video
+                "audio_preview_url": str,     # Preview clip URL
+                "video_preview_url": str,     # Video preview URL (if available)
+                "show": {                     # Show information
+                    "id": str,
+                    "name": str,
+                    "uri": str,
+                    "images": List[Dict]
+                },
+                "images": List[Dict],         # Episode images
+                "visual_identity": Dict       # Visual identity with colors
+            }
+
+        Note:
+            - Preview URLs are short clips (1-2 minutes) and don't require authentication
+            - Full episode URLs require Premium authentication
+            - Video previews are only available for video podcasts
+
+        Raises:
+            URLError: If the provided URL is not a valid Spotify episode URL.
+            ScrapingError: If the episode data cannot be extracted.
+            NetworkError: If there are network connectivity issues.
+        """
+        logger.info("Getting episode info for %s", url)
+        return self.episode_extractor.extract(url)
+
+    def get_show_info(self, url: str) -> Dict[str, Any]:
+        """
+        Get show information from a Spotify show URL.
+
+        This method extracts comprehensive show information including:
+        - Show metadata (name, publisher, description)
+        - Episodes list (recent episodes)
+        - Categories/genres
+        - Rating information (if available)
+        - Show cover art
+
+        Args:
+            url: Spotify show URL (regular or embed format).
+                Examples:
+                - https://open.spotify.com/show/1234567890abcdef
+                - https://open.spotify.com/embed/show/1234567890abcdef
+                - spotify:show:1234567890abcdef
+
+        Returns:
+            Dictionary containing show information with the following structure:
+            {
+                "id": str,                    # Spotify show ID
+                "name": str,                  # Show name
+                "uri": str,                   # Spotify URI (spotify:show:...)
+                "type": "show",               # Entity type
+                "description": str,           # Show description
+                "publisher": str,             # Publisher name
+                "categories": List[str],      # Show categories/genres
+                "total_episodes": int,        # Total number of episodes
+                "images": List[Dict],         # Show cover art
+                "episodes": List[Dict],       # Recent episodes list
+                "rating": {                   # Rating info (if available)
+                    "average": float,
+                    "count": int
+                },
+                "explicit": bool,             # Explicit content flag
+                "media_type": str,            # Media type (audio/video)
+                "visual_identity": Dict       # Visual identity with colors
+            }
+
+        Note:
+            - The episodes list typically contains only recent episodes
+            - Complete episode listings may require pagination or API access
+
+        Raises:
+            URLError: If the provided URL is not a valid Spotify show URL.
+            ScrapingError: If the show data cannot be extracted.
+            NetworkError: If there are network connectivity issues.
+        """
+        logger.info("Getting show info for %s", url)
+        return self.show_extractor.extract(url)
+
+    def download_episode_preview(self, url: str, path: str = "", filename: Optional[str] = None) -> Optional[str]:
+        """Download episode preview audio from a Spotify episode.
+
+        Downloads the preview audio clip that Spotify provides for podcast episodes.
+        These are typically 1-2 minute clips showcasing a portion of the episode.
+
+        Args:
+            url: Spotify episode URL in any supported format.
+            path: Directory path where the audio should be saved.
+                Defaults to current directory. Directory will be created
+                if it doesn't exist.
+            filename: Custom filename for the audio file (without extension).
+                If None, generates filename as: "{episode_name}_preview.mp3"
+
+        Returns:
+            Optional[str]: Full path to the downloaded audio file, or None if
+                download failed. Example: "/path/to/Episode_Title_preview.mp3"
+
+        Raises:
+            URLError: If the URL is not a valid Spotify episode URL.
+            MediaError: If the episode has no preview available.
+            DownloadError: If the preview cannot be downloaded.
+
+        Example:
+            >>> client = SpotifyClient()
+            >>> # Basic download
+            >>> preview_path = client.download_episode_preview(
+            ...     "https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
+            ... )
+            >>> print(f"Preview saved to: {preview_path}")
+            Preview saved to: #2333_-_Protect_Our_Parks_15_preview.mp3
+
+            >>> # Download with custom path and filename
+            >>> preview_path = client.download_episode_preview(
+            ...     episode_url,
+            ...     path="podcasts/",
+            ...     filename="joe_rogan_episode"
+            ... )
+
+        Note:
+            - Not all episodes have preview URLs available
+            - Preview clips are typically 1-2 minutes long
+            - Audio quality is usually 96-128 kbps MP3
+            - For full episodes, Premium authentication is required
+        """
+        logger.info("Downloading episode preview for %s", url)
+        
+        try:
+            # Get episode data
+            episode_data = self.get_episode_info(url)
+            
+            # Check if preview URL exists
+            preview_url = episode_data.get("audio_preview_url")
+            if not preview_url:
+                raise MediaError("No preview URL available for this episode")
+            
+            # Generate filename if not provided
+            if not filename:
+                episode_name = episode_data.get("name", "Unknown_Episode")
+                # Clean filename
+                filename = re.sub(r'[^\w\s-]', '', episode_name)
+                filename = re.sub(r'[-\s]+', '_', filename)
+                filename = f"{filename}_preview"
+            
+            # Download the preview
+            from pathlib import Path
+            import requests
+            
+            # Ensure path exists
+            download_path = Path(path) if path else Path.cwd()
+            download_path.mkdir(parents=True, exist_ok=True)
+            
+            # Full file path
+            file_path = download_path / f"{filename}.mp3"
+            
+            # Download the file
+            response = requests.get(preview_url, stream=True)
+            response.raise_for_status()
+            
+            with open(file_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            
+            logger.info(f"Episode preview downloaded to: {file_path}")
+            return str(file_path)
+            
+        except Exception as e:
+            logger.error("Failed to download episode preview: %s", e)
+            raise MediaError(f"Failed to download episode preview: {e}") from e
+
     def get_all_info(self, url: str) -> Dict[str, Any]:
         """Automatically detect URL type and extract appropriate information.
 
         This convenience method examines the provided Spotify URL, determines
-        its type (track, album, artist, or playlist), and automatically routes
+        its type (track, album, artist, playlist, episode, or show), and automatically routes
         it to the appropriate extraction method. Useful when processing mixed
         URL types or when the URL type is unknown.
 
@@ -554,6 +759,10 @@ class SpotifyClient:
             return self.get_artist_info(url)
         elif url_type == "playlist":
             return self.get_playlist_info(url)
+        elif url_type == "episode":
+            return self.get_episode_info(url)
+        elif url_type == "show":
+            return self.get_show_info(url)
         else:
             raise URLError(f"Unable to determine URL type for: {url}")
 

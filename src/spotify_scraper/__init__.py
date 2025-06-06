@@ -1,15 +1,15 @@
 """SpotifyScraper - Modern Spotify Web Scraper.
 
 A fast, modern Python library for extracting data from Spotify's web player.
-Supports tracks, albums, artists, playlists, and lyrics with both requests and
-Selenium backends.
+Supports tracks, albums, artists, playlists, podcasts, and lyrics with both 
+requests and Selenium backends.
 
 This package provides a high-level interface for extracting metadata from Spotify's
 web player without requiring API authentication. It parses Spotify's React-based
 web interface to extract structured data.
 
 Key Features:
-    - Extract metadata for tracks, albums, artists, and playlists
+    - Extract metadata for tracks, albums, artists, playlists, and podcasts
     - Download preview audio clips and cover images
     - Support for both lightweight (requests) and full (Selenium) browsers
     - No API key required - works with public Spotify web pages
@@ -39,7 +39,7 @@ Note:
     Spotify's Terms of Service and robots.txt when using this library.
 """
 
-__version__ = "2.0.22"
+__version__ = "2.1.0"
 __author__ = "Ali Akhtari"
 __email__ = "aliakhtari78@hotmail.com"
 __license__ = "MIT"

@@ -197,6 +197,110 @@ class VisualIdentityData(TypedDict, total=False):
     image: List[Dict[str, Any]]
 
 
+class EpisodeData(TypedDict, total=False):
+    """
+    Data for a podcast episode.
+
+    Required Attributes:
+        id: Spotify ID of the episode
+        name: Name of the episode
+        uri: Spotify URI of the episode
+        type: Type of entity ("episode")
+
+    Optional Attributes:
+        title: Title of the episode (alternative to name)
+        subtitle: Subtitle (usually show name)
+        duration_ms: Duration of the episode in milliseconds
+        release_date: Release date ISO string
+        description: Episode description
+        explicit: Whether the episode has explicit content
+        is_playable: Whether the episode is playable
+        is_trailer: Whether it's a trailer
+        is_audiobook: Whether it's an audiobook
+        has_video: Whether episode has video
+        audio_preview_url: URL to a preview clip
+        video_preview_url: URL to video preview (if available)
+        video_thumbnails: List of video thumbnail images
+        show: Show information
+        images: List of episode images
+        visual_identity: Visual identity with colors and images
+        full_audio_urls: Full episode URLs (requires Premium)
+        audio_format: Audio format type
+        file_id: Audio file ID
+        requires_drm: Whether DRM is required
+    """
+
+    id: str
+    name: str
+    uri: str
+    type: str
+    title: str
+    subtitle: str
+    duration_ms: int
+    release_date: str
+    description: str
+    explicit: bool
+    is_playable: bool
+    is_trailer: bool
+    is_audiobook: bool
+    has_video: bool
+    audio_preview_url: str
+    video_preview_url: str
+    video_thumbnails: List[ImageData]
+    show: Dict[str, Any]
+    images: List[ImageData]
+    visual_identity: Dict[str, Any]
+    full_audio_urls: List[str]
+    audio_format: str
+    file_id: str
+    requires_drm: bool
+
+
+class ShowData(TypedDict, total=False):
+    """
+    Data for a podcast show.
+
+    Required Attributes:
+        id: Spotify ID of the show
+        name: Name of the show
+        uri: Spotify URI of the show
+        type: Type of entity ("show")
+
+    Optional Attributes:
+        title: Title of the show (alternative to name)
+        subtitle: Show subtitle
+        description: Show description
+        publisher: Publisher name
+        categories: List of categories/genres
+        total_episodes: Total number of episodes
+        images: List of show cover art images
+        episodes: List of recent episodes
+        rating: Rating information (average and count)
+        explicit: Whether show has explicit content
+        media_type: Type of media (audio/video)
+        is_externally_hosted: Whether hosted outside Spotify
+        visual_identity: Visual identity with colors
+    """
+
+    id: str
+    name: str
+    uri: str
+    type: str
+    title: str
+    subtitle: str
+    description: str
+    publisher: str
+    categories: List[str]
+    total_episodes: int
+    images: List[ImageData]
+    episodes: List[EpisodeData]
+    rating: Dict[str, Any]
+    explicit: bool
+    media_type: str
+    is_externally_hosted: bool
+    visual_identity: Dict[str, Any]
+
+
 class ConfigurationData(TypedDict, total=False):
     """
     Configuration data for the scraper.

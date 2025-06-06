@@ -10,6 +10,8 @@ The module handles URLs for all Spotify entity types:
     - Albums: /album/{id}
     - Artists: /artist/{id}
     - Playlists: /playlist/{id}
+    - Episodes: /episode/{id}
+    - Shows: /show/{id}
 
 Example:
     >>> from spotify_scraper.utils.url import is_spotify_url, extract_id, convert_to_embed_url
@@ -33,7 +35,7 @@ from spotify_scraper.core.constants import (
 from spotify_scraper.core.exceptions import URLError
 
 # URL type definitions
-URLType = Literal["track", "album", "artist", "playlist", "search", "unknown"]
+URLType = Literal["track", "album", "artist", "playlist", "episode", "show", "search", "unknown"]
 
 
 def is_spotify_url(url: str) -> bool:
@@ -90,6 +92,8 @@ def get_url_type(url: str) -> URLType:
             - "album": Album URL
             - "artist": Artist URL
             - "playlist": Playlist URL
+            - "episode": Episode URL
+            - "show": Show URL
             - "search": Search results URL
             - "unknown": Valid Spotify URL but unknown type
 
@@ -103,6 +107,10 @@ def get_url_type(url: str) -> URLType:
         'album'
         >>> get_url_type("spotify:track:789")
         'track'
+        >>> get_url_type("https://open.spotify.com/episode/abc")
+        'episode'
+        >>> get_url_type("https://open.spotify.com/show/def")
+        'show'
         >>> get_url_type("https://open.spotify.com/search/queen")
         'search'
     """
@@ -114,7 +122,7 @@ def get_url_type(url: str) -> URLType:
         parts = url.split(":")
         if len(parts) >= 2:
             resource_type = parts[1]
-            if resource_type in ["track", "album", "artist", "playlist"]:
+            if resource_type in ["track", "album", "artist", "playlist", "episode", "show"]:
                 return resource_type
         return "unknown"
 
@@ -136,6 +144,10 @@ def get_url_type(url: str) -> URLType:
         return "artist"
     elif resource_type == "playlist":
         return "playlist"
+    elif resource_type == "episode":
+        return "episode"
+    elif resource_type == "show":
+        return "show"
     elif resource_type == "search":
         return "search"
     else:
@@ -260,7 +272,7 @@ def convert_to_embed_url(url: str) -> str:
             id_value = extract_id(url)
         except URLError as e:
             raise URLError(f"Could not extract ID for embed URL conversion: {url}") from e
-        return f"{SPOTIFY_EMBED_URL}/embed/{url_type}/{id_value}"
+        return f"{SPOTIFY_EMBED_URL}/{url_type}/{id_value}"
 
     # If it's already an embed URL, return it
     parsed_url = urlparse(url)
@@ -390,7 +402,7 @@ def validate_url(url: str, expected_type: Optional[URLType] = None) -> bool:
     Args:
         url: URL to validate. Must be a complete URL with protocol.
         expected_type: If provided, validates the URL is of this specific type.
-            Options: "track", "album", "artist", "playlist", "search"
+            Options: "track", "album", "artist", "playlist", "episode", "show", "search"
 
     Returns:
         bool: Always returns True if validation passes.
@@ -442,7 +454,7 @@ def build_url(
 
     Args:
         resource_type: Type of Spotify entity. Must be one of:
-            "track", "album", "artist", "playlist"
+            "track", "album", "artist", "playlist", "episode", "show"
         resource_id: The 22-character Spotify ID for the entity.
             Example: "6rqhFgbbKwnb9MLmUQDhG6"
         embed: If True, creates an embed URL (/embed/...).

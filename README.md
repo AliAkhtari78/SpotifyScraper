@@ -6,13 +6,14 @@
 [![codecov](https://codecov.io/gh/AliAkhtari78/SpotifyScraper/branch/master/graph/badge.svg)](https://codecov.io/gh/AliAkhtari78/SpotifyScraper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Extract Spotify data without the official API**. Access tracks, albums, artists, and playlists - no authentication required.
+**Extract Spotify data without the official API**. Access tracks, albums, artists, playlists, and podcasts - no authentication required.
 
 ## Why SpotifyScraper?
 
 - 🔓 **No API Key Required** - Start extracting data immediately
 - 🚀 **Fast & Lightweight** - Optimized for speed and minimal dependencies  
 - 📊 **Complete Metadata** - Get all available track, album, artist details
+- 🎙️ **Podcast Support** - Extract podcast episodes and show information
 - 💿 **Media Downloads** - Download cover art and preview clips
 - 🔄 **Bulk Operations** - Process multiple URLs efficiently
 - 🛡️ **Robust & Reliable** - Comprehensive error handling and retries
@@ -134,6 +135,63 @@ print(f"Followers: {playlist.get('followers', {}).get('total', 'N/A'):,}")
 for track in playlist['tracks']:
     print(f"  - {track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
 ```
+
+### 🎙️ Podcast Support (NEW!)
+
+#### Episode Information
+
+```python
+# Get episode details
+episode = client.get_episode_info(episode_url)
+
+print(f"Episode: {episode.get('name', 'Unknown')}")
+print(f"Show: {episode.get('show', {}).get('name', 'Unknown')}")
+print(f"Duration: {episode.get('duration_ms', 0) / 1000 / 60:.1f} minutes")
+print(f"Release Date: {episode.get('release_date', 'N/A')}")
+print(f"Has Video: {'Yes' if episode.get('has_video') else 'No'}")
+
+# Download episode preview (1-2 minute clip)
+preview_path = client.download_episode_preview(
+    episode_url,
+    path="podcast_previews/",
+    filename="episode_preview"
+)
+print(f"Preview downloaded to: {preview_path}")
+```
+
+#### Show Information
+
+```python
+# Get podcast show details
+show = client.get_show_info(show_url)
+
+print(f"Show: {show.get('name', 'Unknown')}")
+print(f"Publisher: {show.get('publisher', 'Unknown')}")
+print(f"Total Episodes: {show.get('total_episodes', 'N/A')}")
+print(f"Categories: {', '.join(show.get('categories', []))}")
+
+# Get recent episodes
+for episode in show.get('episodes', [])[:5]:
+    print(f"  - {episode.get('name', 'Unknown')} ({episode.get('duration_ms', 0) / 1000 / 60:.1f} min)")
+```
+
+#### CLI Commands for Podcasts
+
+```bash
+# Get episode info
+spotify-scraper episode info https://open.spotify.com/episode/...
+
+# Download episode preview
+spotify-scraper episode download https://open.spotify.com/episode/... -o previews/
+
+# Get show info with episodes
+spotify-scraper show info https://open.spotify.com/show/...
+
+# List show episodes
+spotify-scraper show episodes https://open.spotify.com/show/... -o episodes.json
+```
+
+**Note**: Full episode downloads require Spotify Premium authentication. SpotifyScraper currently supports preview clips only.
 
 ### 📥 Media Downloads
 

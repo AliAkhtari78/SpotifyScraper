@@ -13,7 +13,7 @@ from typing import Optional
 import click
 
 from spotify_scraper import __version__
-from spotify_scraper.cli.commands import album, artist, download, playlist, track
+from spotify_scraper.cli.commands import album, artist, download, episode, playlist, show, track
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ def cli(
     SpotifyScraper - Extract data from Spotify's web interface.
 
     A modern Python library and CLI for extracting track, album, artist,
-    and playlist information from Spotify without using the official API.
+    playlist, and podcast information from Spotify without using the official API.
 
     Examples:
         # Get track information
@@ -72,6 +72,15 @@ def cli(
 
         # Get playlist info and save to file
         spotify-scraper playlist -o playlist.json https://open.spotify.com/playlist/...
+
+        # Get podcast episode info
+        spotify-scraper episode info https://open.spotify.com/episode/...
+
+        # Download podcast preview
+        spotify-scraper episode download https://open.spotify.com/episode/...
+
+        # Get podcast show info with episodes
+        spotify-scraper show info https://open.spotify.com/show/...
     """
     # Configure logging
     from spotify_scraper.utils.logger import configure_logging
@@ -100,6 +109,8 @@ cli.add_command(track.track)
 cli.add_command(album.album)
 cli.add_command(artist.artist)
 cli.add_command(playlist.playlist)
+cli.add_command(episode.episode_group)
+cli.add_command(show.show_group)
 cli.add_command(download.download)
 
 
