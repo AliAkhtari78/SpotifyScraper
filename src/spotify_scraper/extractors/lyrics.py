@@ -7,10 +7,10 @@ for all tracks.
 
 import logging
 import re
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import URLError, ExtractionError, AuthenticationError
+from spotify_scraper.core.exceptions import AuthenticationError, ExtractionError, URLError
 from spotify_scraper.utils.url import extract_id, validate_url
 
 logger = logging.getLogger(__name__)
