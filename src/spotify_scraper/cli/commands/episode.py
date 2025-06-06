@@ -113,9 +113,7 @@ def download(url: str, output: str, filename: Optional[str]):
         output_path.mkdir(parents=True, exist_ok=True)
 
         # Download preview
-        file_path = client.download_episode_preview(
-            url, path=str(output_path), filename=filename
-        )
+        file_path = client.download_episode_preview(url, path=str(output_path), filename=filename)
 
         if file_path:
             click.echo(f"\nPreview downloaded successfully to: {file_path}")
@@ -178,4 +176,3 @@ def batch(urls: tuple, output: str, pretty: bool):
 
     finally:
         client.close()
-

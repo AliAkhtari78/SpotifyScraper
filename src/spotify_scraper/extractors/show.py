@@ -169,9 +169,7 @@ class ShowExtractor:
 
             # If extraction failed, log the error and return the error data
             error_msg = show_data.get("ERROR", "Unknown error")
-            logger.warning(
-                "Failed to extract show data from embed URL: %s", error_msg
-            )
+            logger.warning("Failed to extract show data from embed URL: %s", error_msg)
             return show_data
 
         except Exception as e:
@@ -258,9 +256,7 @@ class ShowExtractor:
                 ),
                 "media_type": show_entity.get("mediaType", ""),
                 "is_externally_hosted": show_entity.get("isExternallyHosted", False),
-                "explicit": (
-                    show_entity.get("htmlDescription", "").lower().find("explicit") != -1
-                ),
+                "explicit": (show_entity.get("htmlDescription", "").lower().find("explicit") != -1),
             }
 
             # Extract description
@@ -270,10 +266,7 @@ class ShowExtractor:
                 show_data["description"] = re.sub(r"<[^>]+>", "", html_desc)
 
             # Extract images
-            if (
-                "visualIdentity" in show_entity
-                and "image" in show_entity["visualIdentity"]
-            ):
+            if "visualIdentity" in show_entity and "image" in show_entity["visualIdentity"]:
                 show_data["images"] = show_entity["visualIdentity"]["image"]
             elif "coverArt" in show_entity:
                 show_data["images"] = show_entity.get("coverArt", [])
@@ -326,15 +319,11 @@ class ShowExtractor:
 
                     # Extract audio preview if available
                     if "audioPreview" in episode:
-                        episode_info["audio_preview_url"] = episode["audioPreview"].get(
-                            "url", ""
-                        )
+                        episode_info["audio_preview_url"] = episode["audioPreview"].get("url", "")
 
                     # Extract video preview if available
                     if "videoPreview" in episode:
-                        episode_info["video_preview_url"] = episode["videoPreview"].get(
-                            "url", ""
-                        )
+                        episode_info["video_preview_url"] = episode["videoPreview"].get("url", "")
 
                     episodes_data.append(episode_info)
 
@@ -349,9 +338,7 @@ class ShowExtractor:
             topics = show_entity.get("topics", [])
             if topics:
                 show_data["categories"] = [
-                    topic.get("title", "")
-                    for topic in topics
-                    if topic.get("title")
+                    topic.get("title", "") for topic in topics if topic.get("title")
                 ]
 
             return show_data
@@ -421,9 +408,7 @@ class ShowExtractor:
 
                     # Extract audio preview if available
                     if "audioPreview" in episode:
-                        episode_info["audio_preview_url"] = episode["audioPreview"].get(
-                            "url", ""
-                        )
+                        episode_info["audio_preview_url"] = episode["audioPreview"].get("url", "")
 
                     episodes_data.append(episode_info)
 
@@ -534,9 +519,9 @@ class ShowExtractor:
                         show_data["publisher"] = publisher
 
                 # Extract description if better than what we have
-                if "description" in jsonld_data and show_data.get(
-                    "description", ""
-                ).startswith("Podcast show:"):
+                if "description" in jsonld_data and show_data.get("description", "").startswith(
+                    "Podcast show:"
+                ):
                     # Clean up the description
                     desc = jsonld_data["description"]
                     desc = desc.replace("Listen to ", "").replace(" on Spotify.", ".")
@@ -546,16 +531,12 @@ class ShowExtractor:
             desc_match = re.search(
                 r'<meta property="og:description" content="([^"]+)"', page_content
             )
-            if desc_match and show_data.get("description", "").startswith(
-                "Podcast show:"
-            ):
+            if desc_match and show_data.get("description", "").startswith("Podcast show:"):
                 # Parse the meta description format: "Podcast · Publisher · Description"
                 parts = desc_match.group(1).split(" · ")
                 if len(parts) >= 3:
                     show_data["publisher"] = (
-                        parts[1]
-                        if not show_data.get("publisher")
-                        else show_data["publisher"]
+                        parts[1] if not show_data.get("publisher") else show_data["publisher"]
                     )
                     show_data["description"] = parts[2]
 
@@ -643,10 +624,7 @@ class ShowExtractor:
                 return images[0].get("url")
 
         # Check visual identity as fallback
-        if (
-            "visual_identity" in show_data
-            and "image" in show_data["visual_identity"]
-        ):
+        if "visual_identity" in show_data and "image" in show_data["visual_identity"]:
             images = show_data["visual_identity"]["image"]
             if images and len(images) > 0:
                 return images[0].get("url")
@@ -679,4 +657,3 @@ class ShowExtractor:
         """
         show_data = self.extract(url)
         return show_data.get("episodes", [])
-

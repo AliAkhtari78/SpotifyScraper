@@ -21,19 +21,13 @@ class TestPodcastURLUtilities:
     def test_is_spotify_url_podcast(self):
         """Test is_spotify_url with podcast URLs."""
         # Valid episode URLs
-        assert is_spotify_url(
-            "https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
-        )
-        assert is_spotify_url(
-            "https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
-        )
+        assert is_spotify_url("https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G")
+        assert is_spotify_url("https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G")
         assert is_spotify_url("spotify:episode:5Q2dkZHfnGb2Y4BzzoBu2G")
 
         # Valid show URLs
         assert is_spotify_url("https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk")
-        assert is_spotify_url(
-            "https://open.spotify.com/embed/show/4rOoJ6Egrf8K2IrywzwOMk"
-        )
+        assert is_spotify_url("https://open.spotify.com/embed/show/4rOoJ6Egrf8K2IrywzwOMk")
         assert is_spotify_url("spotify:show:4rOoJ6Egrf8K2IrywzwOMk")
 
         # Invalid URLs
@@ -43,41 +37,25 @@ class TestPodcastURLUtilities:
     def test_get_url_type_podcast(self):
         """Test get_url_type with podcast URLs."""
         # Episode URLs
+        assert get_url_type("https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G") == "episode"
         assert (
-            get_url_type("https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G")
-            == "episode"
-        )
-        assert (
-            get_url_type(
-                "https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
-            )
+            get_url_type("https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G")
             == "episode"
         )
         assert get_url_type("spotify:episode:5Q2dkZHfnGb2Y4BzzoBu2G") == "episode"
 
         # Show URLs
-        assert (
-            get_url_type("https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk")
-            == "show"
-        )
-        assert (
-            get_url_type("https://open.spotify.com/embed/show/4rOoJ6Egrf8K2IrywzwOMk")
-            == "show"
-        )
+        assert get_url_type("https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk") == "show"
+        assert get_url_type("https://open.spotify.com/embed/show/4rOoJ6Egrf8K2IrywzwOMk") == "show"
         assert get_url_type("spotify:show:4rOoJ6Egrf8K2IrywzwOMk") == "show"
 
         # With query parameters
         assert (
-            get_url_type(
-                "https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G?si=abcd"
-            )
+            get_url_type("https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G?si=abcd")
             == "episode"
         )
         assert (
-            get_url_type(
-                "https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk?si=efgh"
-            )
-            == "show"
+            get_url_type("https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk?si=efgh") == "show"
         )
 
     def test_extract_id_podcast(self):
@@ -88,15 +66,10 @@ class TestPodcastURLUtilities:
             == "5Q2dkZHfnGb2Y4BzzoBu2G"
         )
         assert (
-            extract_id(
-                "https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
-            )
+            extract_id("https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G")
             == "5Q2dkZHfnGb2Y4BzzoBu2G"
         )
-        assert (
-            extract_id("spotify:episode:5Q2dkZHfnGb2Y4BzzoBu2G")
-            == "5Q2dkZHfnGb2Y4BzzoBu2G"
-        )
+        assert extract_id("spotify:episode:5Q2dkZHfnGb2Y4BzzoBu2G") == "5Q2dkZHfnGb2Y4BzzoBu2G"
 
         # Show IDs
         assert (
@@ -107,9 +80,7 @@ class TestPodcastURLUtilities:
             extract_id("https://open.spotify.com/embed/show/4rOoJ6Egrf8K2IrywzwOMk")
             == "4rOoJ6Egrf8K2IrywzwOMk"
         )
-        assert (
-            extract_id("spotify:show:4rOoJ6Egrf8K2IrywzwOMk") == "4rOoJ6Egrf8K2IrywzwOMk"
-        )
+        assert extract_id("spotify:show:4rOoJ6Egrf8K2IrywzwOMk") == "4rOoJ6Egrf8K2IrywzwOMk"
 
         # With query parameters
         assert (
@@ -123,9 +94,7 @@ class TestPodcastURLUtilities:
         """Test convert_to_embed_url with podcast URLs."""
         # Episode conversions
         assert (
-            convert_to_embed_url(
-                "https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
-            )
+            convert_to_embed_url("https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G")
             == "https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
         )
         assert (
@@ -145,9 +114,7 @@ class TestPodcastURLUtilities:
 
         # Already embed URLs should remain unchanged
         assert (
-            convert_to_embed_url(
-                "https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
-            )
+            convert_to_embed_url("https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G")
             == "https://open.spotify.com/embed/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
         )
 
@@ -158,9 +125,7 @@ class TestPodcastURLUtilities:
             "https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G",
             expected_type="episode",
         )
-        assert validate_url(
-            "spotify:episode:5Q2dkZHfnGb2Y4BzzoBu2G", expected_type="episode"
-        )
+        assert validate_url("spotify:episode:5Q2dkZHfnGb2Y4BzzoBu2G", expected_type="episode")
 
         # Valid show URLs
         assert validate_url(
@@ -236,9 +201,7 @@ class TestPodcastURLUtilities:
             == episode_uri
         )
         assert (
-            convert_url_to_spotify_uri(
-                "https://open.spotify.com/embed/show/4rOoJ6Egrf8K2IrywzwOMk"
-            )
+            convert_url_to_spotify_uri("https://open.spotify.com/embed/show/4rOoJ6Egrf8K2IrywzwOMk")
             == show_uri
         )
 
@@ -258,7 +221,4 @@ class TestPodcastURLUtilities:
             extract_id("https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G/")
             == "5Q2dkZHfnGb2Y4BzzoBu2G"
         )
-        assert (
-            get_url_type("https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk/")
-            == "show"
-        )
+        assert get_url_type("https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk/") == "show"

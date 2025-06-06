@@ -63,9 +63,7 @@ def info(url: str, output: Optional[str], pretty: bool, episodes: bool):
         # Rating if available
         rating = show_data.get("rating", {})
         if rating and rating.get("average"):
-            click.echo(
-                f"Rating: {rating['average']:.1f}/5.0 ({rating.get('count', 0)} ratings)"
-            )
+            click.echo(f"Rating: {rating['average']:.1f}/5.0 ({rating.get('count', 0)} ratings)")
 
         click.echo(f"Explicit: {'Yes' if show_data.get('explicit') else 'No'}")
 
@@ -225,4 +223,3 @@ def batch(urls: tuple, output: str, pretty: bool, no_episodes: bool):
 
     finally:
         client.close()
-

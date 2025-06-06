@@ -3,6 +3,7 @@
 import json
 import pytest
 
+
 # Simple mock browser for testing (avoid complex imports)
 class MockBrowser:
     """Mock browser for testing extractors without network requests."""
@@ -24,7 +25,7 @@ class MockBrowser:
     def get(self, url):
         """Alias for get_page_content to match the real Browser interface."""
         return self.get_page_content(url)
-    
+
     def set_responses(self, responses):
         """Set multiple responses for sequential calls."""
         self._responses = responses
@@ -47,7 +48,7 @@ class TestEpisodeExtractor:
     @pytest.fixture
     def sample_episode_embed_html(self):
         """Sample HTML content from episode embed page."""
-        return '''
+        return """
         <html>
         <head><title>Spotify Embed</title></head>
         <body>
@@ -106,11 +107,9 @@ class TestEpisodeExtractor:
         </script>
         </body>
         </html>
-        '''
+        """
 
-    def test_extract_valid_episode_url(
-        self, extractor, sample_episode_embed_html
-    ):
+    def test_extract_valid_episode_url(self, extractor, sample_episode_embed_html):
         """Test extracting episode data from a valid URL."""
         mock_browser = MockBrowser(sample_episode_embed_html)
         episode_extractor = extractor(browser=mock_browser)
@@ -151,9 +150,7 @@ class TestEpisodeExtractor:
         assert result["id"] == "5Q2dkZHfnGb2Y4BzzoBu2G"
         assert result["name"] == "#2333 - Protect Our Parks 15"
 
-    def test_extract_preview_url(
-        self, extractor, sample_episode_embed_html
-    ):
+    def test_extract_preview_url(self, extractor, sample_episode_embed_html):
         """Test extracting preview URL only."""
         mock_browser = MockBrowser(sample_episode_embed_html)
         episode_extractor = extractor(browser=mock_browser)
@@ -162,9 +159,7 @@ class TestEpisodeExtractor:
             "https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
         )
 
-        assert (
-            preview_url == "https://podz-content.spotifycdn.com/audio/clips/preview.mp3"
-        )
+        assert preview_url == "https://podz-content.spotifycdn.com/audio/clips/preview.mp3"
 
     def test_extract_cover_url(self, extractor, sample_episode_embed_html):
         """Test extracting cover image URL."""
@@ -179,7 +174,7 @@ class TestEpisodeExtractor:
 
     def test_extract_no_preview_available(self, extractor):
         """Test extraction when no preview is available."""
-        html = '''
+        html = """
         <html>
         <script id="__NEXT_DATA__" type="application/json">
         {
@@ -200,7 +195,7 @@ class TestEpisodeExtractor:
         }
         </script>
         </html>
-        '''
+        """
         mock_browser = MockBrowser(html)
         episode_extractor = extractor(browser=mock_browser)
 
@@ -221,11 +216,12 @@ class TestEpisodeExtractor:
 
     def test_extract_network_error(self, extractor):
         """Test extraction when network error occurs."""
+
         # Create a mock browser that raises an exception
         class ErrorBrowser(MockBrowser):
             def get_page_content(self, url):
                 raise Exception("Network error")
-        
+
         mock_browser = ErrorBrowser("")
         episode_extractor = extractor(browser=mock_browser)
 
@@ -234,9 +230,7 @@ class TestEpisodeExtractor:
         assert "ERROR" in result
         assert "Network error" in result["ERROR"]
 
-    def test_spotify_uri_support(
-        self, extractor, sample_episode_embed_html
-    ):
+    def test_spotify_uri_support(self, extractor, sample_episode_embed_html):
         """Test extraction with Spotify URI."""
         mock_browser = MockBrowser(sample_episode_embed_html)
         episode_extractor = extractor(browser=mock_browser)
@@ -248,7 +242,7 @@ class TestEpisodeExtractor:
 
     def test_extract_full_audio_url(self, extractor):
         """Test extracting full audio URLs (requires Premium)."""
-        html = '''
+        html = """
         <html>
         <script id="__NEXT_DATA__" type="application/json">
         {
@@ -276,7 +270,7 @@ class TestEpisodeExtractor:
         }
         </script>
         </html>
-        '''
+        """
         mock_browser = MockBrowser(html)
         episode_extractor = extractor(browser=mock_browser)
 
