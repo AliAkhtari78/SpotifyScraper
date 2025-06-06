@@ -101,10 +101,8 @@ class LyricsExtractor:
             if lyrics:
                 return lyrics
 
-            # Method 3: Try the web API with authentication token
-            if self.authenticated:
-                # Currently returns None as OAuth is required
-                _ = self._try_web_api_lyrics(track_id)
+            # Method 3: Web API would require OAuth token
+            # Currently not implemented as it requires full OAuth flow
 
             logger.debug("No lyrics found for track %s", track_id)
             return None
