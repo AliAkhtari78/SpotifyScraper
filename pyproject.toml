@@ -48,24 +48,6 @@ requires-python = ">=3.8"
 
 [project.urls]
 Homepage = "https://github.com/AliAkhtari78/SpotifyScraper"
-
-[tool.black]
-line-length = 100
-target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
-include = '\.pyi?$'
-extend-exclude = '''
-/(
-  # directories
-  \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | build
-  | dist
-)/
-'''
 Documentation = "https://spotifyscraper.readthedocs.io/"
 Repository = "https://github.com/AliAkhtari78/SpotifyScraper.git"
 "Bug Tracker" = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
@@ -130,7 +112,7 @@ spotify_scraper = ["py.typed"]
 
 [tool.black]
 line-length = 100
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
@@ -138,7 +120,8 @@ extend-exclude = '''
   \.eggs
   | \.git
   | \.hg
-  | \.mypy_cache  | \.tox
+  | \.mypy_cache
+  | \.tox
   | \.venv
   | _build
   | buck-out
