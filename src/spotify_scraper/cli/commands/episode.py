@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 @click.group(name="episode")
 def episode_group():
     """Commands for working with podcast episodes."""
-    pass
 
 
 @episode_group.command()
@@ -147,8 +146,8 @@ def batch(urls: tuple, output: str, pretty: bool):
         results = []
         errors = []
 
-        with click.progressbar(urls, label="Processing episodes") as bar:
-            for url in bar:
+        with click.progressbar(urls, label="Processing episodes") as progress:
+            for url in progress:
                 try:
                     episode_data = client.get_episode_info(url)
                     if episode_data.get("ERROR"):

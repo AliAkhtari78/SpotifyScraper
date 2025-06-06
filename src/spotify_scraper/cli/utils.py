@@ -331,6 +331,7 @@ def handle_errors(func):
         except Exception as e:
             print_error(str(e))
             click.get_current_context().exit(1)
+            return None  # Explicit return for consistency
 
     return wrapper
 

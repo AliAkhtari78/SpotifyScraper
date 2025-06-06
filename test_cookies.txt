@@ -1,0 +1,7 @@
+# Netscape HTTP Cookie File
+# This is a generated file!  Do not edit.
+
+.spotify.com	TRUE	/	TRUE	0	sp_dc	AQBDTUg0PkTORoQui8pDynba2MtByEhH3Zc-jWjJRiWSMNJUY7QNHrTfWRv-S307hkZQOwjQVRYc_oWRwMU1jUa0ePE2yydzQXtECQh2YDR3DFmxpt6FCNT6w7RGai7o85bCSl86vuxt0kUKWYFsBDPRMueV5sDppkESI2lGVJDQWytwa2TqWbDZxmFUuuvgy0K3AfKMu3fVWV1aIQ
+.spotify.com	TRUE	/	TRUE	0	sp_key	b994c6cf-b05e-4a7b-85ed-51f032bc4800
+.spotify.com	TRUE	/	TRUE	1759265031	sp_t	03a630081d956ead15131f1270f8577f
+.spotify.com	TRUE	/	FALSE	1759265032	OptanonConsent	isGpcEnabled=0&datestamp=Thu+Jun+05+2025+17%3A23%3A52+GMT-0500+(Eastern+Daylight+Time)&version=202411.2.0&browserGpcFlag=0&isIABGlobal=false&hosts=&landingPath=NotLandingPage&groups=BG169%3A1%2Ct00%3A1%2Ci00%3A1%2CBG170%3A1%2Cs00%3A1%2Cf00%3A1%2Cm00%3A1%2Cf11%3A1&AwaitingReconsent=false
