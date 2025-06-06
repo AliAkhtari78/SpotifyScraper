@@ -10,7 +10,7 @@ import re
 from typing import Any, Dict, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import AuthenticationError, ExtractionError, URLError
+from spotify_scraper.core.exceptions import AuthenticationError, ExtractionError
 from spotify_scraper.utils.url import extract_id, validate_url
 
 logger = logging.getLogger(__name__)
@@ -186,7 +186,7 @@ class LyricsExtractor:
         """
         try:
             # Try the color-lyrics endpoint with proper authentication
-            api_url = f"https://api.spotify.com/v1/tracks/{track_id}"
+            # api_url = f"https://api.spotify.com/v1/tracks/{track_id}"
 
             # This would require proper OAuth token which we might not have
             # For now, return None as this requires more complex auth
