@@ -169,7 +169,7 @@ class EpisodeExtractor:
             if episode_data and not episode_data.get("ERROR"):
                 logger.debug(
                     "Successfully extracted data for episode: %s",
-                    episode_data.get('name', episode_id)
+                    episode_data.get("name", episode_id),
                 )
                 return episode_data
 
