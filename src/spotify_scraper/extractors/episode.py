@@ -23,7 +23,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import ExtractionError, URLError
+from spotify_scraper.core.exceptions import URLError
 from spotify_scraper.core.types import EpisodeData
 from spotify_scraper.utils.url import (
     convert_to_embed_url,
@@ -125,8 +125,11 @@ class EpisodeExtractor:
             ExtractionError: If the page structure is unexpected
 
         Example:
-            >>> episode = extractor.extract("https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G")
-            >>> print(f"{episode['name']} - Duration: {episode['duration_ms'] / 1000 / 60:.1f} minutes")
+            >>> episode = extractor.extract(
+            ...     "https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G"
+            ... )
+            >>> duration_min = episode['duration_ms'] / 1000 / 60
+            >>> print(f"{episode['name']} - Duration: {duration_min:.1f} minutes")
             #2333 - Protect Our Parks 15 - Duration: 191.3 minutes
         """
         # Validate URL
@@ -165,7 +168,8 @@ class EpisodeExtractor:
             # If we got valid data, return it
             if episode_data and not episode_data.get("ERROR"):
                 logger.debug(
-                    f"Successfully extracted data for episode: {episode_data.get('name', episode_id)}"
+                    "Successfully extracted data for episode: %s",
+                    episode_data.get('name', episode_id)
                 )
                 return episode_data
 

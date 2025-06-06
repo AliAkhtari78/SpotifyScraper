@@ -7,7 +7,6 @@ from typing import Optional
 
 import click
 
-from spotify_scraper import SpotifyClient
 from spotify_scraper.cli.utils import format_duration, handle_errors, setup_client
 from spotify_scraper.core.exceptions import URLError
 
@@ -101,7 +100,8 @@ def download(url: str, output: str, filename: Optional[str]):
     Full episodes require Premium authentication.
 
     Example:
-        spotify-scraper episode download https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G -o ~/podcasts/
+        spotify-scraper episode download \\
+            https://open.spotify.com/episode/5Q2dkZHfnGb2Y4BzzoBu2G -o ~/podcasts/
     """
     client = setup_client()
 

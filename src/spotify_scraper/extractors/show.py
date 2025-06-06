@@ -22,7 +22,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import ExtractionError, URLError
+from spotify_scraper.core.exceptions import URLError
 from spotify_scraper.core.types import ShowData
 from spotify_scraper.utils.url import (
     convert_to_embed_url,
@@ -231,7 +231,8 @@ class ShowExtractor:
             # Check if we got episode data instead of show data
             if show_entity.get("type") == "episode":
                 logger.warning(
-                    "Embed URL returned episode data instead of show data, attempting to extract show info from episode"
+                    "Embed URL returned episode data instead of show data, "
+                    "attempting to extract show info from episode"
                 )
                 show_data = self._extract_show_data_from_episode(show_entity, data)
 

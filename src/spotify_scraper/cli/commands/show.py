@@ -7,7 +7,6 @@ from typing import Optional
 
 import click
 
-from spotify_scraper import SpotifyClient
 from spotify_scraper.cli.utils import format_duration, handle_errors, setup_client
 from spotify_scraper.core.exceptions import URLError
 
@@ -120,7 +119,8 @@ def episodes(url: str, output: str, pretty: bool, limit: Optional[int]):
     """Get list of episodes from a show.
 
     Example:
-        spotify-scraper show episodes https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk -o jre_episodes.json
+        spotify-scraper show episodes \\
+            https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk -o jre_episodes.json
     """
     client = setup_client()
 

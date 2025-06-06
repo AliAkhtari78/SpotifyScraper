@@ -1,7 +1,5 @@
 """Unit tests for the episode extractor module."""
 
-import json
-
 import pytest
 
 
@@ -123,8 +121,8 @@ class TestEpisodeExtractor:
         assert result["name"] == "#2333 - Protect Our Parks 15"
         assert result["type"] == "episode"
         assert result["duration_ms"] == 11476329
-        assert result["explicit"] == True
-        assert result["has_video"] == True
+        assert result["explicit"] is True
+        assert result["has_video"] is True
         assert (
             result["audio_preview_url"]
             == "https://podz-content.spotifycdn.com/audio/clips/preview.mp3"

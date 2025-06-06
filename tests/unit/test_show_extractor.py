@@ -1,7 +1,5 @@
 """Unit tests for the show extractor module."""
 
-import json
-
 import pytest
 
 
