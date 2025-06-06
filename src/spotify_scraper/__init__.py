@@ -1,7 +1,7 @@
 """SpotifyScraper - Modern Spotify Web Scraper.
 
 A fast, modern Python library for extracting data from Spotify's web player.
-Supports tracks, albums, artists, playlists, podcasts, and lyrics with both 
+Supports tracks, albums, artists, playlists, podcasts, and lyrics with both
 requests and Selenium backends.
 
 This package provides a high-level interface for extracting metadata from Spotify's

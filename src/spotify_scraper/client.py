@@ -606,7 +606,9 @@ class SpotifyClient:
         logger.info("Getting show info for %s", url)
         return self.show_extractor.extract(url)
 
-    def download_episode_preview(self, url: str, path: str = "", filename: Optional[str] = None) -> Optional[str]:
+    def download_episode_preview(
+        self, url: str, path: str = "", filename: Optional[str] = None
+    ) -> Optional[str]:
         """Download episode preview audio from a Spotify episode.
 
         Downloads the preview audio clip that Spotify provides for podcast episodes.
@@ -652,46 +654,46 @@ class SpotifyClient:
             - For full episodes, Premium authentication is required
         """
         logger.info("Downloading episode preview for %s", url)
-        
+
         try:
             # Get episode data
             episode_data = self.get_episode_info(url)
-            
+
             # Check if preview URL exists
             preview_url = episode_data.get("audio_preview_url")
             if not preview_url:
                 raise MediaError("No preview URL available for this episode")
-            
+
             # Generate filename if not provided
             if not filename:
                 episode_name = episode_data.get("name", "Unknown_Episode")
                 # Clean filename
-                filename = re.sub(r'[^\w\s-]', '', episode_name)
-                filename = re.sub(r'[-\s]+', '_', filename)
+                filename = re.sub(r"[^\w\s-]", "", episode_name)
+                filename = re.sub(r"[-\s]+", "_", filename)
                 filename = f"{filename}_preview"
-            
+
             # Download the preview
             from pathlib import Path
             import requests
-            
+
             # Ensure path exists
             download_path = Path(path) if path else Path.cwd()
             download_path.mkdir(parents=True, exist_ok=True)
-            
+
             # Full file path
             file_path = download_path / f"{filename}.mp3"
-            
+
             # Download the file
             response = requests.get(preview_url, stream=True)
             response.raise_for_status()
-            
-            with open(file_path, 'wb') as f:
+
+            with open(file_path, "wb") as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
-            
+
             logger.info(f"Episode preview downloaded to: {file_path}")
             return str(file_path)
-            
+
         except Exception as e:
             logger.error("Failed to download episode preview: %s", e)
             raise MediaError(f"Failed to download episode preview: {e}") from e
