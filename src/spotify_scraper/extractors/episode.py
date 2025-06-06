@@ -23,7 +23,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import URLError, ExtractionError
+from spotify_scraper.core.exceptions import ExtractionError, URLError
 from spotify_scraper.core.types import EpisodeData
 from spotify_scraper.utils.url import (
     convert_to_embed_url,

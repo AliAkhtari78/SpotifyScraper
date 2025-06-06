@@ -30,10 +30,10 @@ from spotify_scraper.core.exceptions import AuthenticationError, MediaError, URL
 from spotify_scraper.core.scraper import Scraper
 from spotify_scraper.extractors.album import AlbumExtractor
 from spotify_scraper.extractors.artist import ArtistExtractor
-from spotify_scraper.extractors.playlist import PlaylistExtractor
-from spotify_scraper.extractors.track import TrackExtractor
 from spotify_scraper.extractors.episode import EpisodeExtractor
+from spotify_scraper.extractors.playlist import PlaylistExtractor
 from spotify_scraper.extractors.show import ShowExtractor
+from spotify_scraper.extractors.track import TrackExtractor
 from spotify_scraper.media.audio import AudioDownloader
 from spotify_scraper.media.image import ImageDownloader
 from spotify_scraper.utils.logger import configure_logging
@@ -674,6 +674,7 @@ class SpotifyClient:
 
             # Download the preview
             from pathlib import Path
+
             import requests
 
             # Ensure path exists

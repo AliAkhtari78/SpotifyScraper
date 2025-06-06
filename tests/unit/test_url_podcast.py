@@ -2,17 +2,17 @@
 
 import pytest
 
-from spotify_scraper.utils.url import (
-    get_url_type,
-    extract_id,
-    convert_to_embed_url,
-    validate_url,
-    build_url,
-    is_spotify_url,
-    convert_spotify_uri_to_url,
-    convert_url_to_spotify_uri,
-)
 from spotify_scraper.core.exceptions import URLError
+from spotify_scraper.utils.url import (
+    build_url,
+    convert_spotify_uri_to_url,
+    convert_to_embed_url,
+    convert_url_to_spotify_uri,
+    extract_id,
+    get_url_type,
+    is_spotify_url,
+    validate_url,
+)
 
 
 class TestPodcastURLUtilities:
