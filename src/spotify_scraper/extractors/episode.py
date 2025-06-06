@@ -135,7 +135,13 @@ class EpisodeExtractor:
             validate_url(url, expected_type="episode")
         except URLError as e:
             logger.error("Invalid episode URL: %s", e)
-            return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "episode"}
+            return {
+                "ERROR": str(e),
+                "id": "",
+                "name": "",
+                "uri": "",
+                "type": "episode",
+            }
 
         # Extract episode ID for logging
         try:
@@ -165,12 +171,20 @@ class EpisodeExtractor:
 
             # If extraction failed, log the error and return the error data
             error_msg = episode_data.get("ERROR", "Unknown error")
-            logger.warning("Failed to extract episode data from embed URL: %s", error_msg)
+            logger.warning(
+                "Failed to extract episode data from embed URL: %s", error_msg
+            )
             return episode_data
 
         except Exception as e:
             logger.error("Failed to extract episode data: %s", e)
-            return {"ERROR": str(e), "id": episode_id, "name": "", "uri": "", "type": "episode"}
+            return {
+                "ERROR": str(e),
+                "id": episode_id,
+                "name": "",
+                "uri": "",
+                "type": "episode",
+            }
 
     def _extract_episode_data_from_embed(self, page_content: str) -> EpisodeData:
         """Extract episode data from embed page HTML content.
@@ -184,7 +198,8 @@ class EpisodeExtractor:
         try:
             # Find the __NEXT_DATA__ script tag which contains all the data
             match = re.search(
-                r'<script id="__NEXT_DATA__" type="application/json">([^<]+)</script>', page_content
+                r'<script id="__NEXT_DATA__" type="application/json">([^<]+)</script>',
+                page_content,
             )
             if not match:
                 return {
@@ -229,9 +244,13 @@ class EpisodeExtractor:
                 "is_trailer": episode_entity.get("isTrailer", False),
                 "is_audiobook": episode_entity.get("isAudiobook", False),
                 "has_video": episode_entity.get("hasVideo", False),
-                "release_date": episode_entity.get("releaseDate", {}).get("isoString", ""),
+                "release_date": episode_entity.get("releaseDate", {}).get(
+                    "isoString", ""
+                ),
                 "subtitle": episode_entity.get("subtitle", ""),
-                "title": episode_entity.get("title", episode_entity.get("name", "")),
+                "title": episode_entity.get(
+                    "title", episode_entity.get("name", "")
+                ),
             }
 
             # Extract audio preview URL
@@ -252,7 +271,11 @@ class EpisodeExtractor:
             # Extract show information
             related_entity_uri = episode_entity.get("relatedEntityUri", "")
             if related_entity_uri:
-                show_id = related_entity_uri.split(":")[-1] if ":" in related_entity_uri else ""
+                show_id = (
+                    related_entity_uri.split(":")[-1]
+                    if ":" in related_entity_uri
+                    else ""
+                )
                 episode_data["show"] = {
                     "id": show_id,
                     "uri": related_entity_uri,
@@ -282,7 +305,9 @@ class EpisodeExtractor:
                 episode_data["file_id"] = default_audio.get("fileId", "")
                 # Note if DRM is required
                 if default_audio.get("video"):
-                    video_info = default_audio["video"][0] if default_audio["video"] else {}
+                    video_info = (
+                        default_audio["video"][0] if default_audio["video"] else {}
+                    )
                     episode_data["requires_drm"] = video_info.get("requiresDRM", False)
 
             return episode_data
@@ -413,14 +438,19 @@ class EpisodeExtractor:
                 return images[0].get("url")
 
         # Check visual identity as fallback
-        if "visual_identity" in episode_data and "image" in episode_data["visual_identity"]:
+        if (
+            "visual_identity" in episode_data
+            and "image" in episode_data["visual_identity"]
+        ):
             images = episode_data["visual_identity"]["image"]
             if images and len(images) > 0:
                 return images[0].get("url")
 
         return None
 
-    def extract_full_audio_url(self, url: str, require_auth: bool = True) -> Optional[List[str]]:
+    def extract_full_audio_url(
+        self, url: str, require_auth: bool = True
+    ) -> Optional[List[str]]:
         """Extract full episode audio URLs (requires Premium authentication).
 
         Attempts to extract the full episode audio URLs from the page data.
