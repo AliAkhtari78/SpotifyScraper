@@ -685,7 +685,7 @@ class SpotifyClient:
             file_path = download_path / f"{filename}.mp3"
 
             # Download the file
-            response = requests.get(preview_url, stream=True)
+            response = requests.get(preview_url, stream=True, timeout=30)
             response.raise_for_status()
 
             with open(file_path, "wb") as f:
