@@ -195,4 +195,3 @@ class LyricsExtractor:
         except Exception as e:
             logger.debug("Web API lyrics attempt failed: %s", e)
             return None
-
