@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2025-06-06
+
+### Fixed
+- Fixed lyrics extraction to properly handle OAuth authentication requirement
+- Updated all documentation to clarify that lyrics require OAuth Bearer tokens, not cookie authentication
+- Added proper warning messages when attempting to access lyrics without OAuth tokens
+
+### Added
+- Added new `LyricsExtractor` class with proper OAuth token checking
+- Added comprehensive documentation about lyrics API limitations
+
+### Changed
+- Updated `get_track_lyrics()` and `get_track_info_with_lyrics()` to correctly return None with appropriate warnings
+- Modified all documentation examples to reflect that lyrics are not accessible via cookie authentication
+- Updated FAQ, troubleshooting guide, and API documentation with OAuth requirements
+
+### Documentation
+- Unified all documentation sources (README.md, GitHub Pages, ReadTheDocs) with consistent messaging about lyrics limitations
+- Removed misleading examples suggesting cookie authentication works for lyrics
+- Added clear explanations about Spotify's OAuth requirement for lyrics API
+
 ## [2.0.22] - 2025-01-06
 
 ### Fixed

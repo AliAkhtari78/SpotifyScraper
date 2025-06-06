@@ -252,8 +252,8 @@ class TrackExtractor:
         Args:
             url: Spotify track URL in any supported format
             require_auth: Whether to require authentication for lyrics access.
-                Currently a placeholder for future implementation.
-                Does not affect behavior in current version.
+                If True and browser is not authenticated, raises AuthenticationError.
+                If False, attempts extraction anyway (may return None).
 
         Returns:
             Optional[str]: The complete lyrics text with line breaks,
@@ -261,7 +261,7 @@ class TrackExtractor:
 
         Example:
             >>> # Without auth, typically returns None
-            >>> lyrics = extractor.get_lyrics(track_url)
+            >>> lyrics = extractor.get_lyrics(track_url, require_auth=False)
             >>> if lyrics:
             ...     print(lyrics.split('\\n')[0])  # First line
             ... else:
@@ -270,19 +270,20 @@ class TrackExtractor:
         Note:
             For reliable lyrics access, use SpotifyClient with authentication
             cookies. This method is limited without proper authentication.
-
-        TODO:
-            Implement proper lyrics extraction with authentication support.
         """
-        track_data = self.extract(url)
+        # Import here to avoid circular imports
+        from spotify_scraper.extractors.lyrics import LyricsExtractor
 
-        # Check if lyrics are available in the track data
-        if "lyrics" in track_data and track_data["lyrics"]:
-            return track_data["lyrics"]
+        # Create lyrics extractor with the same browser
+        lyrics_extractor = LyricsExtractor(self.browser)
 
-        # For now, return None as lyrics extraction requires more complex implementation
-        logger.debug("No lyrics found for track: %s", url)
-        return None
+        try:
+            return lyrics_extractor.extract(url, require_auth=require_auth)
+        except Exception as e:
+            logger.debug("Failed to extract lyrics for track %s: %s", url, e)
+            if require_auth:
+                raise
+            return None
 
     def extract_cover_url(self, url: str) -> Optional[str]:
         """Extract album cover image URL from a track.

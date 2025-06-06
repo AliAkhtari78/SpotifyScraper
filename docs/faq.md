@@ -29,7 +29,7 @@ SpotifyScraper is a Python library that extracts data from Spotify's web player 
 | Setup Complexity | Simple | Complex OAuth flow |
 | Use Case | Quick extraction | Full applications |
 
-*Some features like lyrics require authentication via cookies
+*Note: Lyrics are not available. Spotify's lyrics API requires OAuth Bearer tokens, not cookie authentication
 
 ### What Python versions are supported?
 SpotifyScraper supports Python 3.8 and above. We recommend using Python 3.10+ for the best experience.
@@ -122,7 +122,7 @@ url = f"https://open.spotify.com/track/{track_id}"
 ## Authentication & Cookies
 
 ### Do I need a Spotify account?
-No account is needed for basic features. However, some features (like lyrics) require authentication via cookies.
+No account is needed for basic features. Cookie authentication can provide higher rate limits and access to private playlists, but lyrics are not available (they require OAuth tokens).
 
 ### How do I get cookies for authentication?
 1. Install a browser extension like "cookies.txt"
@@ -158,7 +158,7 @@ This is a limitation of Spotify's embed API. Track data from embed URLs doesn't 
 - Release date
 - Track number
 - Explicit flag
-- Lyrics (requires auth)
+- Lyrics (not available - requires OAuth, not supported)
 
 #### Albums
 - Title, artists, release date

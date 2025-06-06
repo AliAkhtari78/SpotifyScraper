@@ -25,6 +25,8 @@ SpotifyScraper works without authentication, but authenticated access provides:
 - **Extended Metadata**: Additional track and album information
 - **Playlist Access**: Private and collaborative playlists
 
+**Note**: Lyrics are NOT accessible via cookie authentication. Spotify's lyrics API requires OAuth Bearer tokens which are only available through the official Spotify Web API.
+
 ### Authentication Methods
 
 SpotifyScraper uses **cookie-based authentication** - the same method your browser uses when you're logged into Spotify. No API keys or OAuth required.

@@ -2,11 +2,58 @@
 
 This guide covers advanced features and patterns for power users of SpotifyScraper.
 
-## Authentication and Cookies
+## Authentication and Limitations
 
-### Using Cookie Files
+### Lyrics API Requirements
 
-To access additional features like lyrics, you need to authenticate using cookies:
+**Important**: Spotify's lyrics API requires OAuth Bearer token authentication. Cookie-based authentication alone is **not sufficient** for accessing lyrics.
+
+```python
+from spotify_scraper import SpotifyClient
+
+# Cookie authentication attempt - WILL NOT WORK for lyrics
+client = SpotifyClient(cookie_file="spotify_cookies.txt")
+
+# This will return None - lyrics require OAuth token
+track_data = client.get_track_info_with_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+if track_data.get('lyrics'):
+    print("Lyrics available!")  # This won't execute
+else:
+    print("Lyrics not available - OAuth authentication required")
+```
+
+### Why Cookie Authentication Isn't Enough
+
+Spotify's lyrics are provided through a specialized API endpoint (`spclient.wg.spotify.com/color-lyrics/v2/track/`) that requires:
+
+1. **OAuth Bearer Token**: Not just cookies
+2. **Proper Authorization Header**: `Authorization: Bearer <token>`
+3. **Valid Spotify Web API Access**: Through official OAuth flow
+
+### Alternative: Using Spotify Web API
+
+For lyrics access, consider using the official Spotify Web API with proper OAuth:
+
+```python
+# Example using spotipy library (not part of SpotifyScraper)
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+
+# Set up OAuth
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_CLIENT_SECRET",
+    redirect_uri="http://localhost:8888/callback",
+    scope="user-read-currently-playing"
+))
+
+# Get track details (note: Spotify API doesn't provide lyrics directly)
+track = sp.current_user_playing_track()
+```
+
+### What Cookie Authentication CAN Do
+
+Cookie authentication with SpotifyScraper is still useful for:
 
 ```python
 from spotify_scraper import SpotifyClient
@@ -14,40 +61,14 @@ from spotify_scraper import SpotifyClient
 # Cookie file authentication
 client = SpotifyClient(cookie_file="spotify_cookies.txt")
 
-# Get track with lyrics
-track_data = client.get_track_info_with_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-if track_data.get('lyrics'):
-    print("Lyrics available!")
-    print(track_data['lyrics'])
+# Access private playlists
+private_playlist = client.get_playlist_info("https://open.spotify.com/playlist/your_private_playlist_id")
 
-# Or get just the lyrics
-lyrics = client.get_track_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-if lyrics:
-    print(lyrics)
-```
+# Get enhanced metadata
+track = client.get_track_info("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
 
-### Extracting Cookies from Browser
-
-To get cookies from your browser:
-
-1. Install a browser extension like "cookies.txt" for Chrome
-2. Log into Spotify Web Player
-3. Export cookies to a file
-4. Use the file with SpotifyScraper
-
-### Cookie Authentication
-
-```python
-from spotify_scraper import SpotifyClient
-
-# Use cookie file for authenticated features
-client = SpotifyClient(cookie_file="spotify_cookies.txt")
-
-# Now you can access lyrics
-track = client.get_track_info_with_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
-if track.get('lyrics'):
-    print("Lyrics available!")
-    print(track['lyrics'])
+# Higher rate limits for bulk operations
+album = client.get_album_info("https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv")
 ```
 
 ## Using Selenium Browser

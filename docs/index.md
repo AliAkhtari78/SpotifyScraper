@@ -148,10 +148,11 @@ print(f"Cover saved to: {cover_path}")
 ## Key Features
 
 ### Data Extraction
-- **Tracks**: Title, artists, album, duration, preview URLs, lyrics
+- **Tracks**: Title, artists, album, duration, preview URLs
 - **Albums**: Full track listings, release dates, cover art
 - **Artists**: Biography, top tracks, discography, monthly listeners
 - **Playlists**: Complete track lists, descriptions, owner info
+- **Lyrics**: Not available (requires OAuth authentication, not supported)
 
 ### Media Handling
 - **Audio Preview**: Download 30-second MP3 previews

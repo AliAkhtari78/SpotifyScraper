@@ -9,7 +9,7 @@ SpotifyScraper offers comprehensive features for extracting data from Spotify.
 - **Albums** - Full album info with track listings and artwork
 - **Artists** - Profile data, genres, popularity, top tracks
 - **Playlists** - All tracks, owner info, descriptions
-- **Lyrics** - Extract lyrics with proper authentication (cookie-based)
+- **Lyrics** - Not available (requires OAuth Bearer tokens, not supported)
 
 ### 📥 Media Download
 - **Audio Previews** - Download 30-second MP3 previews
@@ -37,7 +37,7 @@ SpotifyScraper offers comprehensive features for extracting data from Spotify.
 ## CLI Features
 
 ### Command Line Interface
-- **Track Operations** - Extract info, download preview/cover, get lyrics
+- **Track Operations** - Extract info, download preview/cover
 - **Album Operations** - Get full album data with all tracks
 - **Artist Operations** - Extract artist profile and stats
 - **Playlist Operations** - Export playlists with all track details
@@ -83,7 +83,7 @@ All methods return properly typed dictionaries with consistent structure:
 ## Authentication
 
 - **Cookie-Based Auth** - Use browser cookies for authenticated features
-- **Lyrics Access** - Get full lyrics with proper authentication
+- **Lyrics Access** - Not available (requires OAuth authentication)
 - **No API Keys Required** - Works without Spotify API credentials
 
 ## Error Handling

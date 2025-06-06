@@ -82,10 +82,12 @@ track = client.get_track_info(track_url)
 # - is_explicit, is_playable
 # Note: popularity field is NOT available via web scraping
 
-# Get lyrics (requires cookies)
+# Note: Lyrics require OAuth authentication, not just cookies
+# SpotifyScraper currently cannot access lyrics as Spotify requires
+# OAuth Bearer tokens for the lyrics API endpoint
 client = SpotifyClient(cookie_file="cookies.txt")
 track = client.get_track_info_with_lyrics(track_url)
-print(track['lyrics'])
+# track['lyrics'] will be None - OAuth required
 ```
 
 ### 💿 Album Information

@@ -95,7 +95,7 @@ print(f"{track.get('name', 'Unknown')} - {track.get('duration_ms', 0) / 1000:.1f
 
 ### get_track_lyrics
 
-Get lyrics for a Spotify track (requires authentication).
+**Note: This method currently returns None. Spotify's lyrics API requires OAuth Bearer tokens, which are not available through cookie authentication.**
 
 ```python
 get_track_lyrics(url: str, require_auth: bool = True) -> Optional[str]
@@ -104,24 +104,27 @@ get_track_lyrics(url: str, require_auth: bool = True) -> Optional[str]
 #### Parameters
 
 - **url** (*str*): Spotify track URL
-- **require_auth** (*bool*): Whether to require authentication for lyrics access
+- **require_auth** (*bool*): Whether to require authentication (currently non-functional)
 
 #### Returns
 
-The complete lyrics text with line breaks preserved, or None if lyrics are not available.
+Always returns None. Lyrics require OAuth authentication through Spotify's official Web API.
 
 #### Example
 
 ```python
 client = SpotifyClient(cookie_file="spotify_cookies.txt")
 lyrics = client.get_track_lyrics("https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6")
+# lyrics will always be None - OAuth required
 if lyrics:
-    print(lyrics)
+    print(lyrics)  # This will never execute
 ```
 
 ### get_track_info_with_lyrics
 
-Get track information and lyrics in a single call.
+Get track information with an attempt to fetch lyrics (currently non-functional).
+
+**Note: The `lyrics` field will always be None. Spotify's lyrics API requires OAuth Bearer tokens.**
 
 ```python
 get_track_info_with_lyrics(
@@ -133,11 +136,11 @@ get_track_info_with_lyrics(
 #### Parameters
 
 - **url** (*str*): Spotify track URL
-- **require_lyrics_auth** (*bool*): Whether to require authentication for lyrics
+- **require_lyrics_auth** (*bool*): Whether to require authentication (currently non-functional)
 
 #### Returns
 
-Track info dictionary with additional `lyrics` field.
+Track info dictionary with additional `lyrics` field (always None).
 
 ### get_album_info
 
