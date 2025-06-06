@@ -9,7 +9,8 @@ Using centralized constants improves maintainability and consistency.
 SPOTIFY_BASE_URL = "https://open.spotify.com"
 SPOTIFY_EMBED_URL = "https://open.spotify.com/embed"
 SPOTIFY_API_URL = "https://api.spotify.com/v1"
-TOKEN_URL = "https://accounts.spotify.com/api/token"  # nosec B105 - This is an API endpoint URL, not a password
+# nosec B105 - This is an API endpoint URL, not a password
+TOKEN_URL = "https://accounts.spotify.com/api/token"
 
 # Default configuration values
 DEFAULT_TIMEOUT = 30  # seconds
@@ -31,7 +32,8 @@ TRACK_JSON_PATH = "props.pageProps.state.data.entity"
 ALBUM_JSON_PATH = "props.pageProps.state.data.entity"
 ARTIST_JSON_PATH = "props.pageProps.state.data.entity"
 PLAYLIST_JSON_PATH = "props.pageProps.state.data.entity"
-AUTH_TOKEN_JSON_PATH = "props.pageProps.state.settings.session.accessToken"  # nosec B105 - This is a JSON path for locating tokens, not a hardcoded password
+# nosec B105 - This is a JSON path for locating tokens, not a hardcoded password
+AUTH_TOKEN_JSON_PATH = "props.pageProps.state.settings.session.accessToken"
 
 # Error messages
 ERROR_INVALID_URL = "The provided URL is not a valid Spotify URL."
