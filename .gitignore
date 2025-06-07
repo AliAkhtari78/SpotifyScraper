@@ -150,7 +150,8 @@ cache/
 logs/
 *.mp3
 *.jpg
-*.pngtest_output/
+*.png
+test_output/
 package_build_env/
 test_environment/
 
@@ -190,10 +191,50 @@ fix_logging.py
 *_REPORT.md
 *_INVENTORY.md
 *_SUMMARY.md
-venv_security/
 
+# Virtual environments
+venv_security/
 venv_docs/
+venv_publish/
+test_env/
+
+# Wiki and documentation build artifacts
 wiki-repo/
 wiki_update/
-venv_publish/
+wiki/
 .jekyll-metadata
+_config.yml
+index.html
+
+# Security and CI reports
+bandit-report.json
+github_actions_status.json
+
+# Testing artifacts
+htmlcov/
+.coverage
+.coverage.*
+coverage.html
+coverage.json
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+src/*.egg-info/
+
+# Cache directories
+.mypy_cache/
+.pytest_cache/
+.tox/
+.nox/
+
+# Example output and demos
+podcast_previews/
+
+# IDE and tool configs that shouldn't be in public repo
+.cursorrules
+copilot-instructions.md
+
+# GitHub workflows added by user tools
+.github/workflows/claude.yml
