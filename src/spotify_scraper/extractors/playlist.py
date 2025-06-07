@@ -109,7 +109,7 @@ class PlaylistExtractor:
             raise
         except Exception as e:
             logger.error("Failed to extract playlist data: %s", e)
-            raise ScrapingError(f"Failed to extract playlist data: {str(e)}")
+            raise ScrapingError(f"Failed to extract playlist data: {str(e)}") from e
 
     def extract_by_id(self, playlist_id: str) -> PlaylistData:
         """
@@ -390,7 +390,7 @@ class PlaylistExtractor:
         except Exception as e:
             logger.error("Failed to extract playlist data: %s", e)
             # Raise error instead of returning error dict
-            raise ParsingError(f"Failed to extract playlist data: {str(e)}")
+            raise ParsingError(f"Failed to extract playlist data: {str(e)}") from e
 
     def extract_cover_url(self, url: str, size: str = "large") -> Optional[str]:
         """

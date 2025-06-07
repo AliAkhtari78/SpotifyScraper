@@ -383,7 +383,7 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
     except Exception as e:
         logger.error("Failed to extract track data: %s", e)
         # Raise ParsingError instead of returning error dict
-        raise ParsingError(f"Failed to extract track data: {str(e)}")
+        raise ParsingError(f"Failed to extract track data: {str(e)}") from e
 
 
 def extract_json_from_next_data(html_content: str) -> Dict[str, Any]:

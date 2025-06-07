@@ -180,7 +180,7 @@ class EpisodeExtractor:
             raise
         except Exception as e:
             logger.error("Failed to extract episode data: %s", e)
-            raise ScrapingError(f"Failed to extract episode data: {str(e)}")
+            raise ScrapingError(f"Failed to extract episode data: {str(e)}") from e
 
     def _extract_episode_data_from_embed(self, page_content: str) -> EpisodeData:
         """Extract episode data from embed page HTML content.
@@ -288,7 +288,7 @@ class EpisodeExtractor:
 
         except Exception as e:
             logger.error("Error parsing episode data: %s", e)
-            raise ScrapingError(f"Failed to parse episode data: {str(e)}")
+            raise ScrapingError(f"Failed to parse episode data: {str(e)}") from e
 
     def extract_by_id(self, episode_id: str) -> EpisodeData:
         """Extract episode information using only the Spotify episode ID.

@@ -108,7 +108,7 @@ class ArtistExtractor:
             raise
         except Exception as e:
             logger.error("Failed to extract artist data: %s", e)
-            raise ScrapingError(f"Failed to extract artist data: {str(e)}")
+            raise ScrapingError(f"Failed to extract artist data: {str(e)}") from e
 
     def extract_by_id(self, artist_id: str) -> ArtistData:
         """
@@ -265,7 +265,7 @@ class ArtistExtractor:
         except Exception as e:
             logger.error("Failed to extract artist data: %s", e)
             # Raise error instead of returning error dict
-            raise ParsingError(f"Failed to extract artist data: {str(e)}")
+            raise ParsingError(f"Failed to extract artist data: {str(e)}") from e
 
     def extract_image_url(self, url: str, size: str = "large") -> Optional[str]:
         """

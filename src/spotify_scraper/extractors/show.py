@@ -174,7 +174,7 @@ class ShowExtractor:
             raise
         except Exception as e:
             logger.error("Failed to extract show data: %s", e)
-            raise ScrapingError(f"Failed to extract show data: {str(e)}")
+            raise ScrapingError(f"Failed to extract show data: {str(e)}") from e
 
     def _extract_show_data_from_embed(self, page_content: str) -> ShowData:
         """Extract show data from embed page HTML content.
@@ -328,7 +328,7 @@ class ShowExtractor:
 
         except Exception as e:
             logger.error("Error parsing show data: %s", e)
-            raise ScrapingError(f"Failed to parse show data: {str(e)}")
+            raise ScrapingError(f"Failed to parse show data: {str(e)}") from e
 
     def _extract_show_data_from_episode(
         self, episode_entity: Dict[str, Any], full_data: Dict[str, Any]
@@ -452,7 +452,7 @@ class ShowExtractor:
 
         except Exception as e:
             logger.error("Error extracting show data from episode: %s", e)
-            raise ScrapingError(f"Failed to extract show data from episode: {str(e)}")
+            raise ScrapingError(f"Failed to extract show data from episode: {str(e)}") from e
 
     def _enrich_show_data_from_regular_page(self, show_data: ShowData) -> ShowData:
         """Try to enrich show data by fetching additional info from regular page.

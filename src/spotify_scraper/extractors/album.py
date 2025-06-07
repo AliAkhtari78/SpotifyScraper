@@ -118,7 +118,7 @@ class AlbumExtractor:
             raise
         except Exception as e:
             logger.error("Failed to extract album data: %s", e)
-            raise ScrapingError(f"Failed to extract album data: {str(e)}")
+            raise ScrapingError(f"Failed to extract album data: {str(e)}") from e
 
     def extract_by_id(self, album_id: str) -> AlbumData:
         """
@@ -380,7 +380,7 @@ class AlbumExtractor:
         except Exception as e:
             logger.error("Failed to extract album data: %s", e)
             # Raise error instead of returning error dict
-            raise ParsingError(f"Failed to extract album data: {str(e)}")
+            raise ParsingError(f"Failed to extract album data: {str(e)}") from e
 
     def extract_cover_url(self, url: str, size: str = "large") -> Optional[str]:
         """
