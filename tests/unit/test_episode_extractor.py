@@ -1,6 +1,7 @@
 """Unit tests for the episode extractor module."""
 
 import pytest
+
 from spotify_scraper.core.exceptions import SpotifyScraperError, URLError
 
 
