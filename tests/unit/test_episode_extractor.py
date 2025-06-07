@@ -1,6 +1,7 @@
 """Unit tests for the episode extractor module."""
 
 import pytest
+from spotify_scraper.core.exceptions import SpotifyScraperError, URLError
 
 
 # Simple mock browser for testing (avoid complex imports)
@@ -134,10 +135,11 @@ class TestEpisodeExtractor:
         """Test extraction with invalid URL."""
         mock_browser = MockBrowser("")
         episode_extractor = extractor(browser=mock_browser)
-        result = episode_extractor.extract("https://open.spotify.com/track/invalid")
 
-        assert "ERROR" in result
-        assert "not a Spotify episode URL" in result["ERROR"]
+        with pytest.raises(URLError) as exc_info:
+            episode_extractor.extract("https://open.spotify.com/track/invalid")
+
+        assert "not a Spotify episode URL" in str(exc_info.value)
 
     def test_extract_by_id(self, extractor, sample_episode_embed_html):
         """Test extracting episode by ID."""
@@ -208,10 +210,10 @@ class TestEpisodeExtractor:
         mock_browser = MockBrowser("<html>No data here</html>")
         episode_extractor = extractor(browser=mock_browser)
 
-        result = episode_extractor.extract("https://open.spotify.com/episode/test")
+        with pytest.raises(SpotifyScraperError) as exc_info:
+            episode_extractor.extract("https://open.spotify.com/episode/test")
 
-        assert "ERROR" in result
-        assert "Could not find episode data" in result["ERROR"]
+        assert "Could not find episode data" in str(exc_info.value)
 
     def test_extract_network_error(self, extractor):
         """Test extraction when network error occurs."""
@@ -224,10 +226,10 @@ class TestEpisodeExtractor:
         mock_browser = ErrorBrowser("")
         episode_extractor = extractor(browser=mock_browser)
 
-        result = episode_extractor.extract("https://open.spotify.com/episode/test")
+        with pytest.raises(SpotifyScraperError) as exc_info:
+            episode_extractor.extract("https://open.spotify.com/episode/test")
 
-        assert "ERROR" in result
-        assert "Network error" in result["ERROR"]
+        assert "Network error" in str(exc_info.value)
 
     def test_spotify_uri_support(self, extractor, sample_episode_embed_html):
         """Test extraction with Spotify URI."""
