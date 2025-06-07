@@ -69,20 +69,17 @@ client.close()
 - Track name, ID, URI
 - Artists (with IDs and URIs)
 - Album information
-- Duration and popularity
 - Preview URL (30-second MP3)
 - Lyrics (with authentication)
 
 ### 💿 Albums
 - Album name, ID, URI
 - All tracks with metadata
-- Release date and label
 - Cover art in multiple sizes
 - Total tracks and duration
 
 ### 👤 Artists
 - Artist name, ID, URI
-- Biography and genres
 - Top tracks
 - Monthly listeners
 - Follower count

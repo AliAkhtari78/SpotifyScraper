@@ -69,7 +69,6 @@ def get_track_details(url):
             "album": track.get('album', {}).get('name', 'Unknown'),
             "duration_seconds": track.get('duration_ms', 0) / 1000,
             "preview_url": track.get('preview_url'),
-            "popularity": track.get('popularity', 0),
             "explicit": track.get('explicit', False)
         }
     finally:
@@ -282,7 +281,7 @@ def process_any_url(url):
         elif data['type'] == 'album':
             print(f"Total Tracks: {data['total_tracks']}")
         elif data['type'] == 'artist':
-            print(f"Genres: {', '.join(data.get('genres', []))}")
+            print(f"Artist ID: {data.get('id', 'Unknown')}")
         elif data['type'] == 'playlist':
             print(f"Owner: {data.get('owner', {}).get('display_name', 'Unknown')}")
     finally:
@@ -460,7 +459,6 @@ class SpotifyAnalyzer:
                 "artists": [a['name'] for a in track['artists']],
                 "album": track.get('album', {}).get('name', 'Unknown'),
                 "duration_seconds": track.get('duration_ms', 0) / 1000,
-                "popularity": track.get('popularity', 0),
                 "explicit": track.get('explicit', False),
                 "preview_available": bool(track.get('preview_url'))
             }
@@ -548,13 +546,9 @@ class SpotifyAnalyzer:
             "data": {
                 "id": artist['id'],
                 "name": artist.get('name', 'Unknown'),
-                "genres": artist.get('genres', []),
-                "popularity": artist.get('popularity', 0),
-                "followers": artist.get('followers', {}).get('total', 'N/A'),
                 "verified": artist.get('verified', False),
                 "top_tracks": [
-                    {"name": t['name'], "popularity": t.get('popularity', 0)}
-                    for t in artist.get('top_tracks', [])[:5]
+                    t.get('name', 'Unknown') for t in artist.get('top_tracks', [])[:5]
                 ]
             }
         }

@@ -158,6 +158,15 @@ test_environment/
 .claude/
 CLAUDE.md
 
+# Security - Never commit these
+*cookies.txt
+*cookie*.txt
+*credentials*
+*token*
+cookie_test_results.json
+spotify_auth*
+test_with_real_*
+
 # Private discovery and tool reports
 MCP_TOOLS_REPORT.md
 TOOL_DISCOVERY_REPORT.md

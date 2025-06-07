@@ -66,6 +66,14 @@ spotify-scraper download album https://open.spotify.com/album/0JGOiO34nwfUdDrD61
 spotify-scraper playlist https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M --output playlist.json
 ```
 
+## Important Notes
+
+### Field Availability
+Not all fields shown in Spotify's API documentation are available via web scraping:
+- ❌ **NOT Available**: popularity, followers, genres, detailed statistics
+- ✅ **Available**: name, artists, album info, duration, preview URLs
+- ⚠️ **Authentication Required**: lyrics (needs OAuth, not just cookies)
+
 ## Core Features
 
 ### 🎵 Track Information
@@ -80,7 +88,6 @@ track = client.get_track_info(track_url)
 # - album (with name, ID, release date, images)
 # - preview_url (30-second MP3)
 # - is_explicit, is_playable
-# Note: popularity field is NOT available via web scraping
 
 # Note: Lyrics require OAuth authentication, not just cookies
 # SpotifyScraper currently cannot access lyrics as Spotify requires
@@ -415,7 +422,7 @@ formatter.export_to_m3u(tracks, "playlist.m3u")
 from spotify_scraper.core.exceptions import (
     SpotifyScraperError,
     URLError,
-    DataExtractionError,
+    ExtractionError,
     DownloadError
 )
 
@@ -423,7 +430,7 @@ try:
     track = client.get_track_info(url)
 except URLError:
     print("Invalid Spotify URL")
-except DataExtractionError as e:
+except ExtractionError as e:
     print(f"Failed to extract data: {e}")
 except SpotifyScraperError as e:
     print(f"General error: {e}")

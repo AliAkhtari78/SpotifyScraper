@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "spotifyscraper"
-version = "2.1.2"
+version = "2.1.3"
 description = "Python library for extracting data from Spotify without authentication"
 readme = "README.md"
 authors = [

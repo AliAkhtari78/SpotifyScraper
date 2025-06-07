@@ -30,7 +30,6 @@ track = client.get_track_info(track_url)
 print(f"Track: {track.get('name', 'Unknown')}")
 print(f"Artist(s): {', '.join(a['name'] for a in track['artists'])}")
 print(f"Album: {track.get('album', {}).get('name', 'Unknown')}")
-print(f"Released: {track['album'].get('release_date', 'N/A')}")
 print(f"Duration: {track.get('duration_ms', 0) // 60000}:{(track.get('duration_ms', 0) % 60000) // 1000:02d}")
 print(f"Explicit: {'Yes' if track.get('is_explicit', False) else 'No'}")
 
@@ -49,7 +48,6 @@ album = client.get_album_info(album_url)
 
 print(f"\nAlbum: {album.get('name', 'Unknown')}")
 print(f"Artist: {(album.get('artists', [{}])[0].get('name', 'Unknown') if album.get('artists') else 'Unknown')}")
-print(f"Released: {album.get('release_date', 'N/A')}")
 print(f"Total tracks: {album.get('total_tracks', 0)}")
 
 # List all tracks
@@ -164,9 +162,6 @@ print(f"Creating dataset for {artist.get('name', 'Unknown')}...")
 dataset = {
     "artist": {
         "name": artist.get('name', 'Unknown'),
-        "genres": artist.get('genres', []),
-        "popularity": artist.get('popularity', 'N/A'),
-        "followers": artist.get('followers', {}).get('total', 'N/A')
     },
     "tracks": all_tracks,
     "generated_at": datetime.now().isoformat()
@@ -209,7 +204,6 @@ for year in sorted(years.keys(), reverse=True)[:5]:
     print(f"{year}: {years[year]} tracks")
 
 # Note: Popularity data is not available via web scraping
-# The analyzer's popularity features require data from Spotify's official API
 ```
 
 ### Compare Multiple Playlists
@@ -430,7 +424,6 @@ class SpotifyArchive:
                 artists TEXT,
                 album TEXT,
                 duration_ms INTEGER,
-                popularity INTEGER,
                 data JSON,
                 archived_at TIMESTAMP
             )
@@ -441,7 +434,6 @@ class SpotifyArchive:
         """Archive track data."""
         self.conn.execute("""
             INSERT OR REPLACE INTO tracks 
-            (id, name, artists, album, duration_ms, popularity, data, archived_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             track_data['id'],
@@ -449,7 +441,6 @@ class SpotifyArchive:
             ', '.join(a['name'] for a in track_data['artists']),
             track_data['album']['name'],
             track_data['duration_ms'],
-            track_data['popularity'],
             json.dumps(track_data),
             datetime.now()
         ))
@@ -460,7 +451,6 @@ class SpotifyArchive:
         cursor = self.conn.execute("""
             SELECT * FROM tracks 
             WHERE name LIKE ? OR artists LIKE ?
-            ORDER BY popularity DESC
         """, (f"%{query}%", f"%{query}%"))
         
         return [dict(row) for row in cursor]
@@ -518,7 +508,6 @@ def generate_playlist_report(playlist_url: str, output_file: str = "playlist_rep
             <p><strong>Owner:</strong> {playlist.get('owner', {}).get('display_name', playlist.get('owner', {}).get('id', 'Unknown'))}</p>
             <p><strong>Total Tracks:</strong> {analysis['basic_stats']['total_tracks']}</p>
             <p><strong>Total Duration:</strong> {analysis['basic_stats']['total_duration_formatted']}</p>
-            <p><strong>Average Popularity:</strong> {analysis['basic_stats']['average_popularity']:.1f}/100</p>
         </div>
         
         <h2>Top Artists</h2>

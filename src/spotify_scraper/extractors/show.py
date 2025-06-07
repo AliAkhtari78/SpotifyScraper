@@ -22,7 +22,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import URLError
+from spotify_scraper.core.exceptions import ScrapingError, URLError
 from spotify_scraper.core.types import ShowData
 from spotify_scraper.utils.url import (
     convert_to_embed_url,
@@ -133,13 +133,7 @@ class ShowExtractor:
             validate_url(url, expected_type="show")
         except URLError as e:
             logger.error("Invalid show URL: %s", e)
-            return {
-                "ERROR": str(e),
-                "id": "",
-                "name": "",
-                "uri": "",
-                "type": "show",
-            }
+            raise
 
         # Extract show ID for logging
         try:
@@ -167,20 +161,20 @@ class ShowExtractor:
                 )
                 return show_data
 
-            # If extraction failed, log the error and return the error data
+            # If extraction failed, raise an error
             error_msg = show_data.get("ERROR", "Unknown error")
             logger.warning("Failed to extract show data from embed URL: %s", error_msg)
-            return show_data
+            raise ScrapingError(f"Failed to extract show data: {error_msg}")
 
+        except URLError:
+            # Re-raise URLError as-is
+            raise
+        except ScrapingError:
+            # Re-raise ScrapingError as-is
+            raise
         except Exception as e:
             logger.error("Failed to extract show data: %s", e)
-            return {
-                "ERROR": str(e),
-                "id": show_id,
-                "name": "",
-                "uri": "",
-                "type": "show",
-            }
+            raise ScrapingError(f"Failed to extract show data: {str(e)}")
 
     def _extract_show_data_from_embed(self, page_content: str) -> ShowData:
         """Extract show data from embed page HTML content.
@@ -198,13 +192,7 @@ class ShowExtractor:
                 page_content,
             )
             if not match:
-                return {
-                    "ERROR": "Could not find show data in page",
-                    "id": "",
-                    "name": "",
-                    "uri": "",
-                    "type": "show",
-                }
+                raise ScrapingError("Could not find show data in page")
 
             import json
 
@@ -220,13 +208,7 @@ class ShowExtractor:
             )
 
             if not show_entity:
-                return {
-                    "ERROR": "Could not find show entity in data",
-                    "id": "",
-                    "name": "",
-                    "uri": "",
-                    "type": "show",
-                }
+                raise ScrapingError("Could not find show entity in data")
 
             # Check if we got episode data instead of show data
             if show_entity.get("type") == "episode":
@@ -346,13 +328,7 @@ class ShowExtractor:
 
         except Exception as e:
             logger.error("Error parsing show data: %s", e)
-            return {
-                "ERROR": f"Failed to parse show data: {str(e)}",
-                "id": "",
-                "name": "",
-                "uri": "",
-                "type": "show",
-            }
+            raise ScrapingError(f"Failed to parse show data: {str(e)}")
 
     def _extract_show_data_from_episode(
         self, episode_entity: Dict[str, Any], full_data: Dict[str, Any]
@@ -476,13 +452,7 @@ class ShowExtractor:
 
         except Exception as e:
             logger.error("Error extracting show data from episode: %s", e)
-            return {
-                "ERROR": f"Failed to extract show data from episode: {str(e)}",
-                "id": "",
-                "name": "",
-                "uri": "",
-                "type": "show",
-            }
+            raise ScrapingError(f"Failed to extract show data from episode: {str(e)}")
 
     def _enrich_show_data_from_regular_page(self, show_data: ShowData) -> ShowData:
         """Try to enrich show data by fetching additional info from regular page.

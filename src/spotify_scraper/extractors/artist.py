@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional
 
 from spotify_scraper.browsers.base import Browser
 from spotify_scraper.core.constants import ARTIST_JSON_PATH
-from spotify_scraper.core.exceptions import ParsingError, URLError
+from spotify_scraper.core.exceptions import ParsingError, ScrapingError, URLError
 from spotify_scraper.core.types import AlbumData, ArtistData, TrackData
 from spotify_scraper.parsers.json_parser import (
     extract_json_from_next_data,
@@ -68,7 +68,7 @@ class ArtistExtractor:
             validate_url(url, expected_type="artist")
         except URLError as e:
             logger.error("Invalid artist URL: %s", e)
-            return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "artist"}
+            raise
 
         # Extract artist ID for logging
         try:
@@ -95,14 +95,20 @@ class ArtistExtractor:
                 )
                 return artist_data
 
-            # If extraction failed, log the error and return the error data
+            # If extraction failed, raise an error
             error_msg = artist_data.get("ERROR", "Unknown error")
             logger.warning("Failed to extract artist data from embed URL: %s", error_msg)
-            return artist_data
+            raise ScrapingError(f"Failed to extract artist data: {error_msg}")
 
+        except URLError:
+            # Re-raise URLError as-is
+            raise
+        except ScrapingError:
+            # Re-raise ScrapingError as-is
+            raise
         except Exception as e:
             logger.error("Failed to extract artist data: %s", e)
-            return {"ERROR": str(e), "id": artist_id, "name": "", "uri": "", "type": "artist"}
+            raise ScrapingError(f"Failed to extract artist data: {str(e)}")
 
     def extract_by_id(self, artist_id: str) -> ArtistData:
         """
@@ -258,8 +264,8 @@ class ArtistExtractor:
 
         except Exception as e:
             logger.error("Failed to extract artist data: %s", e)
-            # Return a minimal artist data object with error information
-            return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "artist"}
+            # Raise error instead of returning error dict
+            raise ParsingError(f"Failed to extract artist data: {str(e)}")
 
     def extract_image_url(self, url: str, size: str = "large") -> Optional[str]:
         """

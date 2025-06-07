@@ -162,7 +162,6 @@ class ArtistAnalyzer:
             },
             'popularity': self._analyze_popularity(artist_data),
             'discography': self._analyze_discography(artist_data),
-            'top_tracks': self._get_top_tracks(artist_data)
         }
         
         return analysis
@@ -172,7 +171,6 @@ class ArtistAnalyzer:
         stats = artist_data.get('stats', {})
         return {
             'monthly_listeners': stats.get('monthly_listeners', 0),
-            'follower_count': stats.get('followers', 0),
             'world_rank': stats.get('world_rank', None)
         }
     
@@ -185,17 +183,6 @@ class ArtistAnalyzer:
             'total_compilations': discography.get('compilations', 0),
             'appears_on': discography.get('appears_on', 0)
         }
-    
-    def _get_top_tracks(self, artist_data):
-        """Extract top tracks information."""
-        top_tracks = []
-        for track in artist_data.get('top_tracks', [])[:10]:
-            top_tracks.append({
-                'name': track.get('name', 'Unknown'),
-                'play_count': track.get('play_count', 0),
-                'album': track.get('album', {}).get('name', 'Unknown')
-            })
-        return top_tracks
 
 # Usage
 analyzer = ArtistAnalyzer()

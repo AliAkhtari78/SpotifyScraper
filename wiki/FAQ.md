@@ -29,9 +29,7 @@ SpotifyScraper is a Python library that extracts data from Spotify's web player 
 
 ### What data can I extract?
 
-- **Tracks**: Name, artists, album, duration, popularity, preview URL
 - **Albums**: All tracks, release date, cover art, artist info
-- **Artists**: Biography, genres, follower count, top tracks
 - **Playlists**: All tracks, owner info, description
 - **Media**: Cover images, 30-second preview clips
 - **Lyrics**: Available with authentication cookies

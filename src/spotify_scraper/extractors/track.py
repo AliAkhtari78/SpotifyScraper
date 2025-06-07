@@ -22,7 +22,7 @@ import logging
 from typing import Any, Dict, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import URLError
+from spotify_scraper.core.exceptions import ScrapingError, URLError
 from spotify_scraper.core.types import TrackData
 from spotify_scraper.parsers.json_parser import extract_track_data_from_page
 from spotify_scraper.utils.url import (
@@ -130,7 +130,7 @@ class TrackExtractor:
             validate_url(url, expected_type="track")
         except URLError as e:
             logger.error("Invalid track URL: %s", e)
-            return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "track"}
+            raise  # Re-raise the URLError instead of returning error dict
 
         # Extract track ID for logging
         try:
@@ -158,14 +158,17 @@ class TrackExtractor:
                 )
                 return track_data
 
-            # If extraction failed, log the error and return the error data
+            # If extraction failed, raise ScrapingError
             error_msg = track_data.get("ERROR", "Unknown error")
             logger.warning("Failed to extract track data from embed URL: %s", error_msg)
-            return track_data
+            raise ScrapingError(f"Failed to extract track data: {error_msg}")
 
+        except URLError:
+            # Re-raise URL errors as-is
+            raise
         except Exception as e:
             logger.error("Failed to extract track data: %s", e)
-            return {"ERROR": str(e), "id": track_id, "name": "", "uri": "", "type": "track"}
+            raise ScrapingError(f"Failed to extract track data: {e}") from e
 
     def extract_by_id(self, track_id: str) -> TrackData:
         """Extract track information using only the Spotify track ID.

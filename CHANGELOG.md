@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.3] - 2025-06-07
+
+### Fixed
+- URLError now properly raises exceptions for invalid URLs instead of returning error dictionaries
+- Fixed import errors (DataExtractionError → ExtractionError)
+- Fixed syntax errors in documentation examples
+- Fixed broken code examples in quickstart.md and advanced.md
+
+### Changed
+- Comprehensive documentation update to reflect actual available fields
+- Updated all examples to remove references to unavailable fields (popularity, followers, genres)
+- Clarified that lyrics require OAuth authentication, not just cookies
+- Unified examples across README, Wiki, and MkDocs documentation
+
+### Added
+- AVAILABLE_FIELDS.md - Complete reference of fields available via web scraping
+- UNIFIED_EXAMPLES.md - Consistent examples across all documentation
+- Comprehensive test suite for all documentation examples
+- Clear distinction between web scraping capabilities and API-only features
+
+### Documentation
+- Updated README with "Important Notes" section about field availability
+- Fixed all code examples to use only available fields
+- Added migration notes for users expecting API-like functionality
+- Improved error handling documentation
+
 ## [2.1.2] - 2025-06-06
 
 ### Fixed

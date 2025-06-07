@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional
 
 from spotify_scraper.browsers.base import Browser
 from spotify_scraper.core.constants import ALBUM_JSON_PATH
-from spotify_scraper.core.exceptions import ParsingError, URLError
+from spotify_scraper.core.exceptions import ParsingError, ScrapingError, URLError
 from spotify_scraper.core.types import AlbumData, TrackData
 from spotify_scraper.parsers.json_parser import (
     extract_json_from_next_data,
@@ -77,7 +77,7 @@ class AlbumExtractor:
             validate_url(url, expected_type="album")
         except URLError as e:
             logger.error("Invalid album URL: %s", e)
-            return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "album"}
+            raise
 
         # Extract album ID for logging
         try:
@@ -105,14 +105,20 @@ class AlbumExtractor:
                 )
                 return album_data
 
-            # If extraction failed, log the error and return the error data
+            # If extraction failed, raise an error
             error_msg = album_data.get("ERROR", "Unknown error")
             logger.warning("Failed to extract album data from embed URL: %s", error_msg)
-            return album_data
+            raise ScrapingError(f"Failed to extract album data: {error_msg}")
 
+        except URLError:
+            # Re-raise URLError as-is
+            raise
+        except ScrapingError:
+            # Re-raise ScrapingError as-is
+            raise
         except Exception as e:
             logger.error("Failed to extract album data: %s", e)
-            return {"ERROR": str(e), "id": album_id, "name": "", "uri": "", "type": "album"}
+            raise ScrapingError(f"Failed to extract album data: {str(e)}")
 
     def extract_by_id(self, album_id: str) -> AlbumData:
         """
@@ -373,8 +379,8 @@ class AlbumExtractor:
 
         except Exception as e:
             logger.error("Failed to extract album data: %s", e)
-            # Return a minimal album data object with error information
-            return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "album"}
+            # Raise error instead of returning error dict
+            raise ParsingError(f"Failed to extract album data: {str(e)}")
 
     def extract_cover_url(self, url: str, size: str = "large") -> Optional[str]:
         """

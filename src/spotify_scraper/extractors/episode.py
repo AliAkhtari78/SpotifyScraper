@@ -23,7 +23,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 from spotify_scraper.browsers.base import Browser
-from spotify_scraper.core.exceptions import URLError
+from spotify_scraper.core.exceptions import ScrapingError, URLError
 from spotify_scraper.core.types import EpisodeData
 from spotify_scraper.utils.url import (
     convert_to_embed_url,
@@ -138,13 +138,7 @@ class EpisodeExtractor:
             validate_url(url, expected_type="episode")
         except URLError as e:
             logger.error("Invalid episode URL: %s", e)
-            return {
-                "ERROR": str(e),
-                "id": "",
-                "name": "",
-                "uri": "",
-                "type": "episode",
-            }
+            raise
 
         # Extract episode ID for logging
         try:
@@ -173,20 +167,20 @@ class EpisodeExtractor:
                 )
                 return episode_data
 
-            # If extraction failed, log the error and return the error data
+            # If extraction failed, raise an error
             error_msg = episode_data.get("ERROR", "Unknown error")
             logger.warning("Failed to extract episode data from embed URL: %s", error_msg)
-            return episode_data
+            raise ScrapingError(f"Failed to extract episode data: {error_msg}")
 
+        except URLError:
+            # Re-raise URLError as-is
+            raise
+        except ScrapingError:
+            # Re-raise ScrapingError as-is
+            raise
         except Exception as e:
             logger.error("Failed to extract episode data: %s", e)
-            return {
-                "ERROR": str(e),
-                "id": episode_id,
-                "name": "",
-                "uri": "",
-                "type": "episode",
-            }
+            raise ScrapingError(f"Failed to extract episode data: {str(e)}")
 
     def _extract_episode_data_from_embed(self, page_content: str) -> EpisodeData:
         """Extract episode data from embed page HTML content.
@@ -204,13 +198,7 @@ class EpisodeExtractor:
                 page_content,
             )
             if not match:
-                return {
-                    "ERROR": "Could not find episode data in page",
-                    "id": "",
-                    "name": "",
-                    "uri": "",
-                    "type": "episode",
-                }
+                raise ScrapingError("Could not find episode data in page")
 
             import json
 
@@ -226,13 +214,7 @@ class EpisodeExtractor:
             )
 
             if not episode_entity:
-                return {
-                    "ERROR": "Could not find episode entity in data",
-                    "id": "",
-                    "name": "",
-                    "uri": "",
-                    "type": "episode",
-                }
+                raise ScrapingError("Could not find episode entity in data")
 
             # Extract all available episode information
             episode_data = {
@@ -306,13 +288,7 @@ class EpisodeExtractor:
 
         except Exception as e:
             logger.error("Error parsing episode data: %s", e)
-            return {
-                "ERROR": f"Failed to parse episode data: {str(e)}",
-                "id": "",
-                "name": "",
-                "uri": "",
-                "type": "episode",
-            }
+            raise ScrapingError(f"Failed to parse episode data: {str(e)}")
 
     def extract_by_id(self, episode_id: str) -> EpisodeData:
         """Extract episode information using only the Spotify episode ID.

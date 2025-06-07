@@ -124,14 +124,9 @@ artist_url = "https://open.spotify.com/artist/3fMbdgg4jU18AjLCKBhRSm"
 artist = client.get_artist_info(artist_url)
 
 print(f"Artist: {artist.get('name', 'Unknown')}")
-print(f"Genres: {', '.join(artist.get('genres', []))}")
-print(f"Followers: {artist.get('followers', {}).get('total', 'N/A'):,}")
 
-# Get top tracks
-if artist.get('top_tracks'):
-    print("\nTop Tracks:")
-    for i, track in enumerate(artist.get('top_tracks', [])[:5], 1):
-        print(f"{i}. {track.get('name', 'Unknown')}")
+# Note: Top tracks are not available via web scraping
+# Use Spotify Web API for detailed artist information
 ```
 
 ## Configuration Options

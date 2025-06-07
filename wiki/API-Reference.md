@@ -53,7 +53,6 @@ track = client.get_track_info("https://open.spotify.com/track/...")
     "artists": [{"name": "Artist", "id": "artist_id"}],
     "album": {"name": "Album", "id": "album_id"},
     "duration_ms": 240000,
-    "popularity": 75,
     "preview_url": "https://...",
     "explicit": False
 }
@@ -71,7 +70,6 @@ album = client.get_album_info("https://open.spotify.com/album/...")
     "id": "album_id",
     "name": "Album Name",
     "artists": [{"name": "Artist", "id": "artist_id"}],
-    "release_date": "2023-01-01",
     "total_tracks": 12,
     "tracks": {"items": [...]},
     "images": [{"url": "...", "height": 640, "width": 640}]
@@ -89,11 +87,7 @@ artist = client.get_artist_info("https://open.spotify.com/artist/...")
 {
     "id": "artist_id",
     "name": "Artist Name",
-    "genres": ["genre1", "genre2"],
-    "followers": {"total": 1000000},
-    "popularity": 80,
     "images": [{"url": "...", "height": 640, "width": 640}],
-    "top_tracks": [...]
 }
 ```
 
@@ -259,7 +253,6 @@ TrackData = {
     "name": str,
     "uri": str,
     "duration_ms": int,
-    "popularity": int,
     "preview_url": Optional[str],
     "explicit": bool,
     "is_playable": bool,
@@ -276,7 +269,6 @@ AlbumData = {
     "id": str,
     "name": str,
     "uri": str,
-    "release_date": str,
     "total_tracks": int,
     "album_type": str,
     "artists": List[ArtistData],
@@ -292,11 +284,7 @@ ArtistData = {
     "id": str,
     "name": str,
     "uri": str,
-    "genres": List[str],
-    "popularity": int,
-    "followers": {"total": int},
     "images": List[ImageData],
-    "top_tracks": List[TrackData]  # If available
 }
 ```
 
@@ -311,7 +299,6 @@ PlaylistData = {
     "collaborative": bool,
     "description": str,
     "owner": {"display_name": str},
-    "followers": {"total": int},
     "images": List[ImageData],
     "tracks": {
         "total": int,

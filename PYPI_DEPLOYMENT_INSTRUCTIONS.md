@@ -1,5 +1,15 @@
 # PyPI Deployment Instructions
 
+## Pre-Release Security Checklist
+
+**CRITICAL**: Before releasing to PyPI, verify:
+- [ ] No cookie files (`*cookies.txt`, `*token*`) in repository
+- [ ] No hardcoded credentials or API keys
+- [ ] No personal file paths (e.g., `/mnt/c/Users/...`)
+- [ ] All test files removed from root directory
+- [ ] Run `git status` to ensure no sensitive files staged
+- [ ] Check `.gitignore` includes security patterns
+
 ## Current Status
 ✅ **Tests**: All unit tests are passing (17/17 core scraper tests pass)
 ✅ **Workflow**: Updated to use token-based authentication instead of trusted publishing

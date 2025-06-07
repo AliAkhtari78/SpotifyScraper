@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional
 
 from spotify_scraper.browsers.base import Browser
 from spotify_scraper.core.constants import PLAYLIST_JSON_PATH
-from spotify_scraper.core.exceptions import ParsingError, URLError
+from spotify_scraper.core.exceptions import ParsingError, ScrapingError, URLError
 from spotify_scraper.core.types import PlaylistData, TrackData
 from spotify_scraper.parsers.json_parser import (
     extract_json_from_next_data,
@@ -68,7 +68,7 @@ class PlaylistExtractor:
             validate_url(url, expected_type="playlist")
         except URLError as e:
             logger.error("Invalid playlist URL: %s", e)
-            return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "playlist"}
+            raise
 
         # Extract playlist ID for logging
         try:
@@ -96,14 +96,20 @@ class PlaylistExtractor:
                 )
                 return playlist_data
 
-            # If extraction failed, log the error and return the error data
+            # If extraction failed, raise an error
             error_msg = playlist_data.get("ERROR", "Unknown error")
             logger.warning("Failed to extract playlist data from embed URL: %s", error_msg)
-            return playlist_data
+            raise ScrapingError(f"Failed to extract playlist data: {error_msg}")
 
+        except URLError:
+            # Re-raise URLError as-is
+            raise
+        except ScrapingError:
+            # Re-raise ScrapingError as-is
+            raise
         except Exception as e:
             logger.error("Failed to extract playlist data: %s", e)
-            return {"ERROR": str(e), "id": playlist_id, "name": "", "uri": "", "type": "playlist"}
+            raise ScrapingError(f"Failed to extract playlist data: {str(e)}")
 
     def extract_by_id(self, playlist_id: str) -> PlaylistData:
         """
@@ -383,8 +389,8 @@ class PlaylistExtractor:
 
         except Exception as e:
             logger.error("Failed to extract playlist data: %s", e)
-            # Return a minimal playlist data object with error information
-            return {"ERROR": str(e), "id": "", "name": "", "uri": "", "type": "playlist"}
+            # Raise error instead of returning error dict
+            raise ParsingError(f"Failed to extract playlist data: {str(e)}")
 
     def extract_cover_url(self, url: str, size: str = "large") -> Optional[str]:
         """
