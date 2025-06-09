@@ -353,6 +353,22 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
         if release_date:
             result["release_date"] = release_date
 
+        # Extract track number if available
+        if "trackNumber" in track_data:
+            result["track_number"] = track_data["trackNumber"]
+        elif "track_number" in track_data:
+            result["track_number"] = track_data["track_number"]
+        
+        # Extract disc number if available
+        if "discNumber" in track_data:
+            result["disc_number"] = track_data["discNumber"]
+        elif "disc_number" in track_data:
+            result["disc_number"] = track_data["disc_number"]
+        
+        # Extract popularity if available
+        if "popularity" in track_data:
+            result["popularity"] = track_data["popularity"]
+
         # Extract lyrics if available
         if "lyrics" in track_data:
             lyrics_data = track_data["lyrics"]

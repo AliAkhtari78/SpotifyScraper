@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.4] - 2025-06-09
+
+### Added
+- Firefox browser support for Selenium backend with `browser_name` parameter
+- Automatic webdriver management via `webdriver-manager` package (optional dependency)
+- Enhanced metadata extraction: `track_number`, `disc_number`, and `popularity` fields in JSON parser
+- Comprehensive webdriver-manager documentation and examples
+- `use_webdriver_manager` parameter to SpotifyClient for automatic driver downloads
+
+### Changed
+- SeleniumBrowser now supports both Chrome (default) and Firefox browsers
+- Improved browser initialization with better error messages
+- Enhanced JSON parser to extract additional track metadata when available
+
+### Fixed
+- Track number extraction now properly works for tracks in album context
+- Improved error handling for missing webdriver-manager dependency
+
+### Technical Details
+- Added `webdriver-manager>=4.0.0` to optional selenium dependencies
+- JSON parser enhanced to handle camelCase and snake_case field variants
+- All code changes maintain backward compatibility
+
 ## [2.1.3] - 2025-06-07
 
 ### Fixed

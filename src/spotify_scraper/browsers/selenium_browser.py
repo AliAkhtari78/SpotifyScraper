@@ -16,6 +16,16 @@ try:
 except ImportError:
     SELENIUM_AVAILABLE = False
 
+try:
+    from webdriver_manager.chrome import ChromeDriverManager
+    from webdriver_manager.firefox import GeckoDriverManager
+    from selenium.webdriver.chrome.service import Service as ChromeService
+    from selenium.webdriver.firefox.service import Service as FirefoxService
+
+    WEBDRIVER_MANAGER_AVAILABLE = True
+except ImportError:
+    WEBDRIVER_MANAGER_AVAILABLE = False
+
 import json
 import logging
 from typing import Any, Dict, Optional
@@ -34,13 +44,14 @@ class SeleniumBrowser(Browser):
     using Selenium for handling dynamic web content.
     """
 
-    def __init__(self, driver: Optional[Any] = None, browser_name: str = "chrome"):
+    def __init__(self, driver: Optional[Any] = None, browser_name: str = "chrome", use_webdriver_manager: bool = True):
         """
         Initialize the SeleniumBrowser.
 
         Args:
             driver: Selenium WebDriver instance (optional)
             browser_name: Browser to use ("chrome" or "firefox")
+            use_webdriver_manager: Whether to use webdriver-manager for automatic driver downloads (default: True)
         """
         if not SELENIUM_AVAILABLE:
             raise ImportError(
@@ -60,8 +71,20 @@ class SeleniumBrowser(Browser):
                 options.set_preference("dom.push.enabled", False)
 
                 try:
-                    self.driver = webdriver.Firefox(options=options)
-                    logger.info("Initialized Firefox WebDriver")
+                    if use_webdriver_manager and WEBDRIVER_MANAGER_AVAILABLE:
+                        # Use webdriver-manager to automatically download and manage driver
+                        service = FirefoxService(GeckoDriverManager().install())
+                        self.driver = webdriver.Firefox(service=service, options=options)
+                        logger.info("Initialized Firefox WebDriver using webdriver-manager")
+                    else:
+                        # Fall back to system-installed driver
+                        if use_webdriver_manager and not WEBDRIVER_MANAGER_AVAILABLE:
+                            logger.warning(
+                                "webdriver-manager requested but not available. "
+                                "Install with: pip install webdriver-manager"
+                            )
+                        self.driver = webdriver.Firefox(options=options)
+                        logger.info("Initialized Firefox WebDriver using system driver")
                 except WebDriverException as e:
                     logger.error("Failed to create Firefox driver: %s", e)
                     raise BrowserError(f"Failed to create Firefox driver: {e}") from e
@@ -75,8 +98,20 @@ class SeleniumBrowser(Browser):
                 options.add_argument("--window-size=1920,1080")
 
                 try:
-                    self.driver = webdriver.Chrome(options=options)
-                    logger.info("Initialized Chrome WebDriver")
+                    if use_webdriver_manager and WEBDRIVER_MANAGER_AVAILABLE:
+                        # Use webdriver-manager to automatically download and manage driver
+                        service = ChromeService(ChromeDriverManager().install())
+                        self.driver = webdriver.Chrome(service=service, options=options)
+                        logger.info("Initialized Chrome WebDriver using webdriver-manager")
+                    else:
+                        # Fall back to system-installed driver
+                        if use_webdriver_manager and not WEBDRIVER_MANAGER_AVAILABLE:
+                            logger.warning(
+                                "webdriver-manager requested but not available. "
+                                "Install with: pip install webdriver-manager"
+                            )
+                        self.driver = webdriver.Chrome(options=options)
+                        logger.info("Initialized Chrome WebDriver using system driver")
                 except WebDriverException as e:
                     logger.error("Failed to create Chrome driver: %s", e)
                     raise BrowserError(f"Failed to create Chrome driver: {e}") from e

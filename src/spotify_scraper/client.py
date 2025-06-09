@@ -101,6 +101,7 @@ class SpotifyClient:
         headers: Optional[Dict[str, str]] = None,
         proxy: Optional[Dict[str, str]] = None,
         browser_type: str = "requests",
+        use_webdriver_manager: bool = True,
         log_level: str = "INFO",
         log_file: Optional[str] = None,
     ):
@@ -127,6 +128,10 @@ class SpotifyClient:
                 - "requests": Lightweight, fast, no JavaScript support (default)
                 - "selenium": Full browser, slower, full JavaScript support
                 - "auto": Automatically choose based on requirements
+            use_webdriver_manager: Whether to use webdriver-manager for automatic
+                driver downloads when using Selenium. If True (default), drivers
+                are automatically downloaded. If False, uses system-installed drivers.
+                Only applies when browser_type is "selenium".
             log_level: Logging verbosity level.
                 Options: "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"
                 Default: "INFO"
@@ -147,6 +152,7 @@ class SpotifyClient:
             >>> # Client with custom configuration
             >>> client = SpotifyClient(
             ...     browser_type="selenium",
+            ...     use_webdriver_manager=True,  # Auto-download drivers
             ...     proxy={"https": "https://proxy.example.com:8080"},
             ...     log_level="DEBUG",
             ...     log_file="scraper.log"
@@ -163,7 +169,10 @@ class SpotifyClient:
 
         # Create browser
         # For now, create browser without session until we properly implement session management
-        self.browser = create_browser(browser_type=browser_type)
+        browser_kwargs = {}
+        if browser_type == "selenium":
+            browser_kwargs["use_webdriver_manager"] = use_webdriver_manager
+        self.browser = create_browser(browser_type=browser_type, **browser_kwargs)
 
         # Create scraper instance
         self.scraper = Scraper(browser=self.browser, log_level=log_level)
