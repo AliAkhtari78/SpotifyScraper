@@ -17,10 +17,10 @@ except ImportError:
     SELENIUM_AVAILABLE = False
 
 try:
-    from webdriver_manager.chrome import ChromeDriverManager
-    from webdriver_manager.firefox import GeckoDriverManager
     from selenium.webdriver.chrome.service import Service as ChromeService
     from selenium.webdriver.firefox.service import Service as FirefoxService
+    from webdriver_manager.chrome import ChromeDriverManager
+    from webdriver_manager.firefox import GeckoDriverManager
 
     WEBDRIVER_MANAGER_AVAILABLE = True
 except ImportError:
