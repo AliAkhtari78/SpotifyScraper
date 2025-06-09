@@ -24,7 +24,7 @@
 # Basic installation
 pip install spotifyscraper
 
-# With Selenium support (for JavaScript-heavy pages)
+# With Selenium support (includes automatic driver management)
 pip install spotifyscraper[selenium]
 
 # All features
@@ -38,13 +38,17 @@ pip install spotifyscraper[all]
 ```python
 from spotify_scraper import SpotifyClient
 
-# Initialize client
+# Initialize client with rate limiting (default 0.5s between requests)
 client = SpotifyClient()
 
-# Get track info
+# Get track info with enhanced metadata
 track = client.get_track_info("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
-print(f"{track.get('name', 'Unknown')} by {(track.get('artists', [{}])[0].get('name', 'Unknown') if track.get('artists') else 'Unknown')}")
+print(f"{track['name']} by {track['artists'][0]['name']}")
 # Output: One More Time by Daft Punk
+
+# Access new fields (when available)
+print(f"Track #{track.get('track_number', 'N/A')} on disc {track.get('disc_number', 'N/A')}")
+print(f"Popularity: {track.get('popularity', 'Not available')}")
 
 # Download cover art
 cover_path = client.download_cover("https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh")
@@ -84,17 +88,29 @@ track = client.get_track_info(track_url)
 
 # Available data:
 # - name, id, uri, duration_ms
-# - artists (with names and IDs)  
-# - album (with name, ID, release date, images)
+# - artists (with names, IDs, and verification status)  
+# - album (with name, ID, release date, images, total_tracks)
 # - preview_url (30-second MP3)
 # - is_explicit, is_playable
+# - track_number, disc_number (when available)
+# - popularity (when available)
+# - external URLs
 
-# Note: Lyrics require OAuth authentication, not just cookies
-# SpotifyScraper currently cannot access lyrics as Spotify requires
-# OAuth Bearer tokens for the lyrics API endpoint
-client = SpotifyClient(cookie_file="cookies.txt")
-track = client.get_track_info_with_lyrics(track_url)
-# track['lyrics'] will be None - OAuth required
+# Example: Access enhanced metadata
+if 'artists' in track:
+    for artist in track['artists']:
+        print(f"Artist: {artist['name']}")
+        if 'verified' in artist:
+            print(f"  Verified: {artist['verified']}")
+        if 'url' in artist:
+            print(f"  URL: {artist['url']}")
+
+if 'album' in track:
+    album = track['album']
+    print(f"Album: {album['name']} ({album.get('total_tracks', 'N/A')} tracks)")
+
+# Note: Lyrics require OAuth authentication
+# SpotifyScraper cannot access lyrics as Spotify requires Bearer tokens
 ```
 
 ### 💿 Album Information
