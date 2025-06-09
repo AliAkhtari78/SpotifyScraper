@@ -56,7 +56,8 @@ class SeleniumBrowser(Browser):
         Args:
             driver: Selenium WebDriver instance (optional)
             browser_name: Browser to use ("chrome" or "firefox")
-            use_webdriver_manager: Whether to use webdriver-manager for automatic driver downloads (default: True)
+            use_webdriver_manager: Whether to use webdriver-manager for automatic driver
+                downloads (default: True)
         """
         if not SELENIUM_AVAILABLE:
             raise ImportError(
