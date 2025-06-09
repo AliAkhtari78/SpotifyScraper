@@ -34,12 +34,13 @@ class SeleniumBrowser(Browser):
     using Selenium for handling dynamic web content.
     """
 
-    def __init__(self, driver: Optional[Any] = None):
+    def __init__(self, driver: Optional[Any] = None, browser_name: str = "chrome"):
         """
         Initialize the SeleniumBrowser.
 
         Args:
             driver: Selenium WebDriver instance (optional)
+            browser_name: Browser to use ("chrome" or "firefox")
         """
         if not SELENIUM_AVAILABLE:
             raise ImportError(
@@ -47,23 +48,47 @@ class SeleniumBrowser(Browser):
             )
 
         if driver is None:
-            # Create a new Chrome driver
-            options = webdriver.ChromeOptions()
-            options.add_argument("--headless")
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-gpu")
-            options.add_argument("--window-size=1920,1080")
+            browser_name = browser_name.lower()
 
-            try:
-                self.driver = webdriver.Chrome(options=options)
-            except WebDriverException as e:
-                logger.error("Failed to create Chrome driver: %s", e)
-                raise BrowserError(f"Failed to create Chrome driver: {e}") from e
+            if browser_name == "firefox":
+                # Create a new Firefox driver
+                options = webdriver.FirefoxOptions()
+                options.add_argument("--headless")
+                options.add_argument("--window-size=1920,1080")
+                # Firefox-specific preferences
+                options.set_preference("dom.webnotifications.enabled", False)
+                options.set_preference("dom.push.enabled", False)
+
+                try:
+                    self.driver = webdriver.Firefox(options=options)
+                    logger.info("Initialized Firefox WebDriver")
+                except WebDriverException as e:
+                    logger.error("Failed to create Firefox driver: %s", e)
+                    raise BrowserError(f"Failed to create Firefox driver: {e}") from e
+            elif browser_name == "chrome":
+                # Create a new Chrome driver
+                options = webdriver.ChromeOptions()
+                options.add_argument("--headless")
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-dev-shm-usage")
+                options.add_argument("--disable-gpu")
+                options.add_argument("--window-size=1920,1080")
+
+                try:
+                    self.driver = webdriver.Chrome(options=options)
+                    logger.info("Initialized Chrome WebDriver")
+                except WebDriverException as e:
+                    logger.error("Failed to create Chrome driver: %s", e)
+                    raise BrowserError(f"Failed to create Chrome driver: {e}") from e
+            else:
+                raise ValueError(f"Unsupported browser: {browser_name}. Use 'chrome' or 'firefox'")
         else:
             self.driver = driver
 
-        logger.debug("Initialized SeleniumBrowser")
+        logger.debug(
+            "Initialized SeleniumBrowser with %s",
+            browser_name if driver is None else "custom driver",
+        )
 
     def get_page_content(self, url: str) -> str:
         """
