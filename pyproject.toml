@@ -56,6 +56,7 @@ Changelog = "https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CHANGELO
 [project.optional-dependencies]
 selenium = [
     "selenium>=4.0.0",
+    "webdriver-manager>=4.0.0",
 ]
 async = [
     "pyppeteer",

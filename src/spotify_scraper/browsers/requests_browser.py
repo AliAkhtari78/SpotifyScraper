@@ -8,6 +8,7 @@ still handles the essential tasks of getting web page content.
 """
 
 import logging
+import time
 from typing import Any, Dict, Optional
 
 import requests
@@ -45,6 +46,8 @@ class RequestsBrowser(Browser):
         timeout: int = DEFAULT_TIMEOUT,
         retries: int = DEFAULT_RETRIES,
         headers: Optional[Dict[str, str]] = None,
+        rate_limit_delay: float = 0.5,
+        rate_limit_backoff: float = 2.0,
     ):
         """
         Initialize the requests-based browser.
@@ -54,10 +57,15 @@ class RequestsBrowser(Browser):
             timeout: Request timeout in seconds
             retries: Number of retry attempts for failed requests
             headers: Additional headers to include in requests
+            rate_limit_delay: Minimum delay between requests in seconds
+            rate_limit_backoff: Backoff multiplier for rate limit errors
         """
         self.session = session
         self.timeout = timeout
         self.retries = retries
+        self.rate_limit_delay = rate_limit_delay
+        self.rate_limit_backoff = rate_limit_backoff
+        self._last_request_time = 0
 
         # Set up the requests session with retry strategy
         self.requests_session = requests.Session()
@@ -67,6 +75,8 @@ class RequestsBrowser(Browser):
             total=retries,
             backoff_factor=1,  # Wait 1, 2, 4 seconds between retries
             status_forcelist=[429, 500, 502, 503, 504],  # Retry on these HTTP status codes
+            respect_retry_after_header=True,  # Respect Retry-After header
+            raise_on_status=False,  # Don't raise on status to handle rate limits manually
         )
 
         adapter = HTTPAdapter(max_retries=retry_strategy)
@@ -91,6 +101,20 @@ class RequestsBrowser(Browser):
 
         logger.debug("Initialized RequestsBrowser")
 
+    def _apply_rate_limit(self):
+        """
+        Apply rate limiting to avoid hitting Spotify's rate limits.
+        """
+        current_time = time.time()
+        time_since_last_request = current_time - self._last_request_time
+
+        if time_since_last_request < self.rate_limit_delay:
+            sleep_time = self.rate_limit_delay - time_since_last_request
+            logger.debug("Rate limiting: sleeping for %.2f seconds", sleep_time)
+            time.sleep(sleep_time)
+
+        self._last_request_time = time.time()
+
     def get_page_content(self, url: str) -> str:
         """
         Get the HTML content of a web page.
@@ -109,45 +133,68 @@ class RequestsBrowser(Browser):
             NetworkError: If the page cannot be accessed
             AuthenticationError: If authentication is required but fails
         """
-        try:
-            logger.debug("Fetching page content from: %s", url)
+        retry_count = 0
+        while retry_count <= self.retries:
+            try:
+                logger.debug("Fetching page content from: %s", url)
 
-            response = self.requests_session.get(
-                url,
-                timeout=self.timeout,
-                allow_redirects=True,
-            )
+                # Apply rate limiting
+                self._apply_rate_limit()
 
-            # Check for authentication issues
-            if response.status_code == 401:
-                raise AuthenticationError(f"Authentication required for {url}")
-            elif response.status_code == 403:
-                raise AuthenticationError(f"Access forbidden for {url}")
+                response = self.requests_session.get(
+                    url,
+                    timeout=self.timeout,
+                    allow_redirects=True,
+                )
 
-            # Check for other HTTP errors
-            response.raise_for_status()
+                # Handle rate limiting (429 Too Many Requests)
+                if response.status_code == 429:
+                    retry_after = response.headers.get("Retry-After", None)
+                    if retry_after:
+                        sleep_time = float(retry_after)
+                    else:
+                        sleep_time = self.rate_limit_delay * (self.rate_limit_backoff**retry_count)
 
-            # Log success
-            logger.debug("Successfully fetched %d characters from %s", len(response.text), url)
+                    logger.warning("Rate limited by Spotify. Sleeping for %.2f seconds", sleep_time)
+                    time.sleep(sleep_time)
+                    retry_count += 1
+                    continue
 
-            return response.text
+                # Check for authentication issues
+                if response.status_code == 401:
+                    raise AuthenticationError(f"Authentication required for {url}")
+                elif response.status_code == 403:
+                    raise AuthenticationError(f"Access forbidden for {url}")
 
-        except requests.exceptions.Timeout as e:
-            logger.error("Request timeout for %s: %s", url, e)
-            raise NetworkError("Request timeout", url=url) from e
+                # Check for other HTTP errors
+                response.raise_for_status()
 
-        except requests.exceptions.ConnectionError as e:
-            logger.error("Connection error for %s: %s", url, e)
-            raise NetworkError("Connection error", url=url) from e
+                # Log success
+                logger.debug("Successfully fetched %d characters from %s", len(response.text), url)
 
-        except requests.exceptions.HTTPError as e:
-            status_code = e.response.status_code if e.response else None
-            logger.error("HTTP error for %s: %s", url, e)
-            raise NetworkError(f"HTTP error: {e}", url=url, status_code=status_code) from e
+                return response.text
 
-        except Exception as e:
-            logger.error("Unexpected error fetching %s: %s", url, e)
-            raise BrowserError(f"Unexpected error: {e}", browser_type="requests") from e
+            except requests.exceptions.Timeout as e:
+                logger.error("Request timeout for %s: %s", url, e)
+                raise NetworkError("Request timeout", url=url) from e
+
+            except requests.exceptions.ConnectionError as e:
+                logger.error("Connection error for %s: %s", url, e)
+                raise NetworkError("Connection error", url=url) from e
+
+            except requests.exceptions.HTTPError as e:
+                if e.response and e.response.status_code != 429:  # Don't retry non-429 errors
+                    status_code = e.response.status_code if e.response else None
+                    logger.error("HTTP error for %s: %s", url, e)
+                    raise NetworkError(f"HTTP error: {e}", url=url, status_code=status_code) from e
+                retry_count += 1
+
+            except Exception as e:
+                logger.error("Unexpected error fetching %s: %s", url, e)
+                raise BrowserError(f"Unexpected error: {e}", browser_type="requests") from e
+
+        # If we've exhausted all retries
+        raise NetworkError(f"Failed to fetch {url} after {self.retries} retries", url=url)
 
     def get_json(self, url: str) -> Dict[str, Any]:
         """
@@ -168,6 +215,9 @@ class RequestsBrowser(Browser):
         """
         try:
             logger.debug("Fetching JSON from: %s", url)
+
+            # Apply rate limiting
+            self._apply_rate_limit()
 
             response = self.requests_session.get(
                 url,
@@ -210,6 +260,9 @@ class RequestsBrowser(Browser):
         """
         try:
             logger.debug("Downloading file from %s to %s", url, path)
+
+            # Apply rate limiting
+            self._apply_rate_limit()
 
             # Stream the download to handle large files efficiently
             response = self.requests_session.get(

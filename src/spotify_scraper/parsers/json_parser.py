@@ -283,6 +283,12 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                 else:
                     album["release_date"] = album_data["date"]
 
+            # Extract total tracks if available
+            if "totalTracks" in album_data:
+                album["total_tracks"] = album_data["totalTracks"]
+            elif "total_tracks" in album_data:
+                album["total_tracks"] = album_data["total_tracks"]
+
             result["album"] = album
         else:
             # For embed URLs, construct album from visualIdentity if available
