@@ -44,7 +44,12 @@ class SeleniumBrowser(Browser):
     using Selenium for handling dynamic web content.
     """
 
-    def __init__(self, driver: Optional[Any] = None, browser_name: str = "chrome", use_webdriver_manager: bool = True):
+    def __init__(
+        self,
+        driver: Optional[Any] = None,
+        browser_name: str = "chrome",
+        use_webdriver_manager: bool = True,
+    ):
         """
         Initialize the SeleniumBrowser.
 
