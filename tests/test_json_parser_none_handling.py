@@ -1,8 +1,9 @@
 """Test cases for NoneType handling in JSON parser (Issue #71)"""
 
 import pytest
-from spotify_scraper.parsers.json_parser import extract_track_data, get_nested_value
+
 from spotify_scraper.core.exceptions import ParsingError
+from spotify_scraper.parsers.json_parser import extract_track_data, get_nested_value
 
 
 class TestNoneTypeHandling:
