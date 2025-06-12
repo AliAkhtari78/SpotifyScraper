@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.5] - 2025-06-12
+
+### Fixed
+- Fixed critical NoneType error in JSON parser when handling tracks with null values (Issue #71)
+- Added comprehensive null checks throughout track data extraction to prevent "argument of type 'NoneType' is not iterable" errors
+- Improved error messages to clearly indicate when track data is missing or malformed
+
+### Changed
+- Enhanced JSON parser robustness with defensive programming for all dictionary access operations
+- Added specific type checking to ensure track_data is a dictionary before processing
+
+### Added
+- Comprehensive test suite for NoneType handling in JSON parser
+- Better error reporting for debugging track extraction issues
+
+### Technical Details
+- Fixed issue where tracks with null artist, album, or other metadata fields would crash the parser
+- All `in` operator checks now verify the container is not None before checking membership
+- Maintains full backward compatibility while improving reliability
+
 ## [2.1.4] - 2025-06-09
 
 ### Added

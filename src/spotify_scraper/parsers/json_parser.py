@@ -111,8 +111,14 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
     try:
         # Get track data from specified path
         track_data = get_nested_value(json_data, path)
-        if not track_data:
+        if track_data is None:
             raise ParsingError(f"No track data found at path: {path}")
+        if not isinstance(track_data, dict):
+            raise ParsingError(
+                f"Track data at path '{path}' is not a dictionary, got: {type(track_data).__name__}"
+            )
+        if not track_data:
+            raise ParsingError(f"Empty track data found at path: {path}")
 
         # Create a standardized track data object
         # This handles variations in the Spotify data structure
@@ -141,7 +147,7 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
 
         # Extract artists - handle both direct array and nested items structure
         artists_list = []
-        if "artists" in track_data:
+        if "artists" in track_data and track_data["artists"] is not None:
             if isinstance(track_data["artists"], dict) and "items" in track_data["artists"]:
                 # Handle nested structure from test fixtures
                 for artist in track_data["artists"]["items"]:
@@ -149,7 +155,11 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                     artist_uri = artist.get("uri", "")
 
                     # Extract name from profile if present
-                    if "profile" in artist and "name" in artist["profile"]:
+                    if (
+                        "profile" in artist
+                        and artist["profile"] is not None
+                        and "name" in artist["profile"]
+                    ):
                         artist_name = artist["profile"]["name"]
                     else:
                         artist_name = artist.get("name", "")
@@ -182,7 +192,11 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
         elif "artist" in track_data:
             artist = track_data["artist"]
             artist_name = ""
-            if "profile" in artist and "name" in artist["profile"]:
+            if (
+                "profile" in artist
+                and artist["profile"] is not None
+                and "name" in artist["profile"]
+            ):
                 artist_name = artist["profile"]["name"]
             else:
                 artist_name = artist.get("name", "")
@@ -198,7 +212,7 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
             result["artists"] = artists_list
 
         # Extract audio preview - handle both audioPreview object and direct preview_url
-        if "audioPreview" in track_data:
+        if "audioPreview" in track_data and track_data["audioPreview"] is not None:
             if isinstance(track_data["audioPreview"], dict) and "url" in track_data["audioPreview"]:
                 result["preview_url"] = track_data["audioPreview"]["url"]
             elif isinstance(track_data["audioPreview"], str):
@@ -209,7 +223,11 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
         # Extract explicit flag
         if "isExplicit" in track_data:
             result["is_explicit"] = track_data["isExplicit"]
-        elif "contentRating" in track_data and isinstance(track_data["contentRating"], dict):
+        elif (
+            "contentRating" in track_data
+            and track_data["contentRating"] is not None
+            and isinstance(track_data["contentRating"], dict)
+        ):
             result["is_explicit"] = track_data["contentRating"].get("label", "NONE") != "NONE"
         elif "explicit" in track_data:
             result["is_explicit"] = track_data["explicit"]
@@ -241,7 +259,11 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
             # Extract images from various possible locations
             if "images" in album_data:
                 album["images"] = album_data["images"]
-            elif "coverArt" in album_data and "sources" in album_data["coverArt"]:
+            elif (
+                "coverArt" in album_data
+                and album_data["coverArt"] is not None
+                and "sources" in album_data["coverArt"]
+            ):
                 # Convert coverArt sources to images format
                 album["images"] = []
                 for source in album_data["coverArt"]["sources"]:
@@ -292,7 +314,11 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
             result["album"] = album
         else:
             # For embed URLs, construct album from visualIdentity if available
-            if "visualIdentity" in track_data and "image" in track_data["visualIdentity"]:
+            if (
+                "visualIdentity" in track_data
+                and track_data["visualIdentity"] is not None
+                and "image" in track_data["visualIdentity"]
+            ):
                 album: AlbumData = {
                     "name": "",  # Album name not available in embed
                     "type": "album",
@@ -312,7 +338,11 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
                 result["album"] = album
 
         # Extract visual identity data if available (only for album images)
-        if "visualIdentity" in track_data:
+        if (
+            "visualIdentity" in track_data
+            and track_data["visualIdentity"] is not None
+            and isinstance(track_data["visualIdentity"], dict)
+        ):
             visual_identity = track_data["visualIdentity"]
 
             # Extract cover images - format may vary
@@ -370,7 +400,11 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
             result["popularity"] = track_data["popularity"]
 
         # Extract lyrics if available
-        if "lyrics" in track_data:
+        if (
+            "lyrics" in track_data
+            and track_data["lyrics"] is not None
+            and isinstance(track_data["lyrics"], dict)
+        ):
             lyrics_data = track_data["lyrics"]
             # Handle different sync type field names
             sync_type = lyrics_data.get("syncType") or lyrics_data.get("sync_type", "UNSYNCED")
@@ -402,6 +436,13 @@ def extract_track_data(json_data: Dict[str, Any], path: str = TRACK_JSON_PATH) -
             result["lyrics"] = lyrics
 
         return result
+    except TypeError as e:
+        if "NoneType" in str(e) and "iterable" in str(e):
+            logger.error("track_data is None, cannot extract data. Path: %s", path)
+            raise ParsingError(f"Track data is None at path: {path}") from e
+        else:
+            logger.error("TypeError in extract_track_data: %s", e)
+            raise ParsingError(f"Type error extracting track data: {str(e)}") from e
     except Exception as e:
         logger.error("Failed to extract track data: %s", e)
         # Raise ParsingError instead of returning error dict
