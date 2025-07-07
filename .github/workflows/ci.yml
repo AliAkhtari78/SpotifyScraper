@@ -142,7 +142,7 @@ jobs:
         pip install -e ".[dev,selenium]"
     
     - name: Set up Chrome for Selenium
-      uses: browser-actions/setup-chrome@v1
+      uses: browser-actions/setup-chrome@v2
     
     - name: Run integration tests
       run: |
