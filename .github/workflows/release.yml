@@ -20,7 +20,7 @@ jobs:
       url: https://pypi.org/project/spotifyscraper/
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 0  # Full history for changelog
     
@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 0
     
