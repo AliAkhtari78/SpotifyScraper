@@ -72,7 +72,7 @@ jobs:
     
     - name: Comment PR with security findings
       if: github.event_name == 'pull_request' && (failure() || steps.safety.outcome == 'failure')
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |

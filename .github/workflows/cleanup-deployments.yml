@@ -16,7 +16,7 @@ jobs:
     
     steps:
     - name: Cleanup test-pypi deployments
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const environment = 'test-pypi';
@@ -78,7 +78,7 @@ jobs:
           console.log('Cleanup completed');
     
     - name: Mark any failed deployments as inactive
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const environments = ['test-pypi', 'pypi'];
