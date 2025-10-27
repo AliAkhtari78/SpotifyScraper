@@ -60,7 +60,7 @@ jobs:
     
     - name: Upload Bandit Report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: bandit-security-report
         path: bandit-report.json
@@ -116,7 +116,7 @@ jobs:
     
     - name: Upload coverage reports
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-reports
         path: |
@@ -185,7 +185,7 @@ jobs:
       run: twine check dist/*
     
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: dist
         path: dist/
