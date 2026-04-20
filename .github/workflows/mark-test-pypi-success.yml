@@ -16,7 +16,7 @@ jobs:
     
     steps:
     - name: Create successful deployment
-      uses: actions/github-script@v7
+      uses: actions/github-script@v9
       with:
         script: |
           // For releases, we don't need test-pypi, so mark it as successful
