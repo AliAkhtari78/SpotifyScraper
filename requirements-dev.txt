@@ -33,7 +33,7 @@ sphinx>=7.2.0
 sphinx-rtd-theme>=2.0.0
 recommonmark>=0.7.1
 myst-parser>=2.0.0
-sphinx-autodoc-typehints>=2.0.0
+sphinx-autodoc-typehints>=2.3.0
 
 # Development Tools
 pre-commit>=3.5.0
