@@ -21,7 +21,7 @@ flake8-comprehensions>=3.14.0
 flake8-simplify>=0.21.0
 pylint>=3.0.0
 mypy>=1.8.0
-types-requests>=2.31.0
+types-requests>=2.32.4.20260107
 
 # Security
 bandit[toml]>=1.7.7
