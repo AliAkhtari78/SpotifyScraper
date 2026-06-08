@@ -25,7 +25,7 @@ types-requests>=2.31.0
 
 # Security
 bandit[toml]>=1.7.7
-safety>=3.0.0
+safety>=3.8.1
 pip-audit>=2.6.0
 
 # Documentation
