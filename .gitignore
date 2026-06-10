@@ -1,240 +1,32 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# poetry
-poetry.lock
-
-# pdm
-.pdm.toml
-.pdm-python
-.pdm-build/
-
-# PEP 582
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid# SageMath parsed files
-*.sage.py
+dist/
+build/
+.eggs/
 
 # Environments
-.env
-.venv
-env/
+.venv/
 venv/
-ENV/
-env.bak/
-venv.bak/
+.env
 
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
+# Tooling caches
 .mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Project specific
-downloads/
-cache/
-logs/
-*.mp3
-*.jpg
-*.png
-test_output/
-package_build_env/
-test_environment/
-
-# Sensitive files
-.claude/
-CLAUDE.md
-
-# Security - Never commit these
-*cookies.txt
-*cookie*.txt
-*credentials*
-*token*
-cookie_test_results.json
-spotify_auth*
-test_with_real_*
-
-# Private discovery and tool reports
-MCP_TOOLS_REPORT.md
-TOOL_DISCOVERY_REPORT.md
-DISCOVERY_SUMMARY.md
-scripts/automation-summary.md
-scripts/verify-automation.py
-FILESYSTEM_SERVER_ANALYSIS.md
-FILESYSTEM_SERVER_RESOLUTION.md
-COMPLETE_MCP_TOOL_INVENTORY.md
-test_taskmaster/
-.cursorrules
-copilot-instructions.md
-PLANNING.md
-**/PROJECT_COMPLETION_SUMMARY.md
-DOCKER_HUB_SETUP.md
-fix_logging.py
-
-# Any internal analysis or resolution files
-*_ANALYSIS.md
-*_RESOLUTION.md
-*_REPORT.md
-*_INVENTORY.md
-*_SUMMARY.md
-
-# Virtual environments
-venv_security/
-venv_docs/
-venv_publish/
-test_env/
-
-# Wiki and documentation build artifacts
-wiki-repo/
-wiki_update/
-wiki/
-.jekyll-metadata
-_config.yml
-index.html
-
-# Security and CI reports
-bandit-report.json
-github_actions_status.json
-
-# Testing artifacts
-htmlcov/
+.ruff_cache/
+.pytest_cache/
 .coverage
 .coverage.*
-coverage.html
-coverage.json
+htmlcov/
+coverage.xml
 
-# Build artifacts
-build/
-dist/
-*.egg-info/
-src/*.egg-info/
+# Docs build output
+site/
 
-# Cache directories
-.mypy_cache/
-.pytest_cache/
-.tox/
-.nox/
+# Editors & OS
+.idea/
+.vscode/
+.DS_Store
 
-# Example output and demos
-podcast_previews/
-
-# IDE and tool configs that shouldn't be in public repo
-.cursorrules
-copilot-instructions.md
-
-# GitHub workflows added by user tools
-.github/workflows/claude.yml
+# Local Claude Code settings (project settings are committed)
+.claude/settings.local.json

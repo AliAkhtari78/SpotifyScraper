@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run mypy:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv build:*)",
+      "Bash(uv lock:*)",
+      "Bash(make:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh issue view:*)",
+      "Bash(npx -y @fission-ai/openspec:*)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/cookies.txt)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); if [ -n \"$f\" ] && [[ \"$f\" == *.py ]] && command -v uv >/dev/null; then uv run ruff format \"$f\" >/dev/null 2>&1; uv run ruff check --fix \"$f\" >/dev/null 2>&1; fi; exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}

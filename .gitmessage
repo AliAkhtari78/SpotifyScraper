@@ -1,0 +1,6 @@
+# <type>(<scope>): <subject>  (max 72 chars)
+# |<----  conventional commit: feat fix docs style refactor perf test build ci chore  ---->|
+
+# Body: explain *what* and *why* (not how). Wrap at 72 chars.
+
+# Footer: BREAKING CHANGE: <description>, Closes #<issue>

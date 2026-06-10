@@ -1,0 +1,105 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spotifyscraper"
+dynamic = ["version"]
+description = "Extract public Spotify data - tracks, albums, artists, playlists, podcasts - without the official API."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Ali Akhtari", email = "aliakhtari78@hotmail.com" }]
+requires-python = ">=3.10"
+dependencies = ["httpx>=0.27"]
+keywords = ["spotify", "scraper", "music", "metadata", "playlist", "podcast"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Multimedia :: Sound/Audio",
+  "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+media = ["mutagen>=1.47"]
+browser = ["playwright>=1.49"]
+all = ["spotifyscraper[media,browser]"]
+
+[project.urls]
+Homepage = "https://github.com/AliAkhtari78/SpotifyScraper"
+Documentation = "https://spotifyscraper.readthedocs.io"
+Repository = "https://github.com/AliAkhtari78/SpotifyScraper"
+Changelog = "https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CHANGELOG.md"
+Issues = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.14",
+  "pre-commit>=4.0",
+  "pytest>=8.3",
+  "pytest-asyncio>=0.25",
+  "pytest-cov>=6.0",
+  "pytest-timeout>=2.3",
+  "respx>=0.22",
+  "ruff>=0.9",
+  "twine>=6.0",
+]
+
+[tool.hatch.version]
+path = "src/spotify_scraper/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spotify_scraper"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "SIM", # flake8-simplify
+  "RUF", # ruff-specific
+  "S",   # flake8-bandit (security)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S106"] # asserts and dummy credentials are fine in tests
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
+mypy_path = "src"
+packages = ["spotify_scraper"]
+
+[tool.pytest.ini_options]
+addopts = "-m 'not live' --strict-markers"
+markers = [
+  "live: tests that hit live Spotify endpoints (excluded by default; run with -m live)",
+]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+timeout = 60
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+exclude_also = ["if TYPE_CHECKING:", "@overload", "raise NotImplementedError"]
