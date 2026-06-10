@@ -1,0 +1,204 @@
+{
+  "data": {
+    "podcastUnionV2": {
+      "__typename": "Podcast",
+      "accessInfo": null,
+      "consumptionOrderV2": "EPISODIC",
+      "contentRatingV2": {
+        "labels": [
+          "EXPLICIT"
+        ]
+      },
+      "contentType": "CONTENT_TYPE_PODCAST",
+      "coverArt": {
+        "sources": [
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+            "width": 64
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+            "width": 300
+          },
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+            "width": 640
+          }
+        ]
+      },
+      "description": "The official podcast of comedian Joe Rogan.",
+      "episodesV2": {
+        "__typename": "ContextEpisodePage",
+        "items": [
+          {
+            "entity": {
+              "__typename": "EpisodeResponseWrapper",
+              "data": {
+                "__typename": "Episode",
+                "creator": null,
+                "uri": "spotify:episode:07gKzPFkbvGF0cHoeG7ARS"
+              }
+            }
+          }
+        ]
+      },
+      "gatedEntityRelations": [],
+      "htmlDescription": "<p>The official podcast of comedian Joe Rogan.</p>",
+      "id": "4rOoJ6Egrf8K2IrywzwOMk",
+      "mediaType": "MIXED",
+      "musicAndTalk": false,
+      "name": "The Joe Rogan Experience",
+      "playability": {
+        "playable": true,
+        "reason": "PLAYABLE",
+        "unplayabilityReasons": []
+      },
+      "publisher": {
+        "name": "Joe Rogan"
+      },
+      "rating": {
+        "averageRating": {
+          "average": 4.659556190783405,
+          "showAverage": true,
+          "totalRatings": 948741
+        },
+        "canRate": true,
+        "rating": {
+          "rating": 0
+        }
+      },
+      "saved": false,
+      "sharingInfo": {
+        "shareId": "DH3urka-S3aZt49eA87onA",
+        "shareUrl": "https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk?si=DH3urka-S3aZt49eA87onA"
+      },
+      "showTypes": [
+        "SHOW_TYPE_EXCLUSIVE"
+      ],
+      "topics": {
+        "items": [
+          {
+            "__typename": "PodcastTopic",
+            "title": "Comedy",
+            "uri": "spotify:genre:0JQ5DAqbMKFNr6gDrHHVKL"
+          }
+        ]
+      },
+      "trailerV2": null,
+      "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk",
+      "visualIdentity": {
+        "sixteenByNineCoverImage": null,
+        "squareCoverImage": {
+          "__typename": "VisualIdentityImage",
+          "extractedColorSet": {
+            "encoreBaseSetTextColor": {
+              "alpha": 255,
+              "blue": 105,
+              "green": 165,
+              "red": 255
+            },
+            "highContrast": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 52,
+                "red": 142
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 15,
+                "red": 95
+              },
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 151,
+                "green": 192,
+                "red": 255
+              }
+            },
+            "higherContrast": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 17,
+                "red": 99
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 40,
+                "green": 58,
+                "red": 142
+              },
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 96,
+                "green": 215,
+                "red": 30
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 151,
+                "green": 192,
+                "red": 255
+              }
+            },
+            "minContrast": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 60,
+                "green": 125,
+                "red": 227
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 28,
+                "green": 100,
+                "red": 199
+              },
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

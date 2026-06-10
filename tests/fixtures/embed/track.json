@@ -1,0 +1,138 @@
+{
+  "assetPrefix": "https://embed-cdn.spotifycdn.com",
+  "buildId": "daae2c31-b010-4b3a-8253-db7b2835e1d4",
+  "gssp": true,
+  "isExperimentalCompile": false,
+  "isFallback": false,
+  "page": "/track/[id]",
+  "props": {
+    "__N_SSP": true,
+    "pageProps": {
+      "_sentryBaggage": "REDACTED",
+      "_sentryTraceData": "REDACTED",
+      "config": {
+        "clientId": "REDACTED",
+        "correlationId": "REDACTED",
+        "locale": "en",
+        "restrictionId": "",
+        "strings": {
+          "en": {
+            "translation": {}
+          }
+        }
+      },
+      "state": {
+        "data": {
+          "defaultAudioFileObject": {
+            "passthrough": "NONE"
+          },
+          "embeded_entity_uri": "spotify:track:4uLU6hMCjMI75M1A2tKUQC",
+          "entity": {
+            "artists": [
+              {
+                "name": "Rick Astley",
+                "uri": "spotify:artist:0gxyHStUsqpMadRV0Di1Qt"
+              }
+            ],
+            "audioPreview": {
+              "url": "https://p.scdn.co/mp3-preview/b4c682084c3fd05538726d0a126b7e14b6e92c83"
+            },
+            "contentRatings": {
+              "labels": []
+            },
+            "duration": 213573,
+            "hasVideo": false,
+            "id": "4uLU6hMCjMI75M1A2tKUQC",
+            "isExplicit": false,
+            "isNineteenPlus": false,
+            "isPlayable": true,
+            "name": "Never Gonna Give You Up",
+            "playabilityReason": "PLAYABLE",
+            "relatedEntityUri": "spotify:artist:0gxyHStUsqpMadRV0Di1Qt",
+            "releaseDate": {
+              "isoString": "1987-11-12T00:00:00Z"
+            },
+            "title": "Never Gonna Give You Up",
+            "type": "track",
+            "uri": "spotify:track:4uLU6hMCjMI75M1A2tKUQC",
+            "visualIdentity": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 119,
+                "green": 89,
+                "red": 0
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 81,
+                "green": 53,
+                "red": 0
+              },
+              "image": [
+                {
+                  "maxHeight": 300,
+                  "maxWidth": 300,
+                  "url": "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0215ebbedaacef61af244262a8"
+                },
+                {
+                  "maxHeight": 64,
+                  "maxWidth": 64,
+                  "url": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000485115ebbedaacef61af244262a8"
+                },
+                {
+                  "maxHeight": 640,
+                  "maxWidth": 640,
+                  "url": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27315ebbedaacef61af244262a8"
+                }
+              ],
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 251,
+                "green": 217,
+                "red": 125
+              }
+            }
+          }
+        },
+        "machineState": {
+          "currentPreviewTrackIndex": 0,
+          "initialized": false,
+          "platformSupportsEncryptedContent": false,
+          "playbackMode": "unknown",
+          "showOverflowMenu": false
+        },
+        "settings": {
+          "clientId": "REDACTED",
+          "entityContext": "track",
+          "isDarkMode": false,
+          "isIOS": false,
+          "isMobile": false,
+          "isSafari": false,
+          "isTablet": false,
+          "rtl": false,
+          "session": {
+            "accessToken": "REDACTED",
+            "accessTokenExpirationTimestampMs": 1781122107115,
+            "isAnonymous": true
+          }
+        }
+      }
+    }
+  },
+  "query": {
+    "id": "4uLU6hMCjMI75M1A2tKUQC"
+  },
+  "scriptLoader": []
+}

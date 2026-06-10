@@ -1,0 +1,316 @@
+{
+  "assetPrefix": "https://embed-cdn.spotifycdn.com",
+  "buildId": "daae2c31-b010-4b3a-8253-db7b2835e1d4",
+  "gssp": true,
+  "isExperimentalCompile": false,
+  "isFallback": false,
+  "page": "/artist/[id]",
+  "props": {
+    "__N_SSP": true,
+    "pageProps": {
+      "_sentryBaggage": "REDACTED",
+      "_sentryTraceData": "REDACTED",
+      "config": {
+        "clientId": "REDACTED",
+        "correlationId": "REDACTED",
+        "locale": "en",
+        "restrictionId": "",
+        "strings": {
+          "en": {
+            "translation": {}
+          }
+        }
+      },
+      "state": {
+        "data": {
+          "defaultAudioFileObject": {
+            "passthrough": "NONE"
+          },
+          "embeded_entity_uri": "spotify:artist:0gxyHStUsqpMadRV0Di1Qt",
+          "entity": {
+            "duration": 0,
+            "hasVideo": false,
+            "id": "0gxyHStUsqpMadRV0Di1Qt",
+            "isExplicit": false,
+            "isPlayable": true,
+            "name": "Rick Astley",
+            "playabilityReason": "PLAYABLE",
+            "relatedEntityUri": "spotify:artist:0gxyHStUsqpMadRV0Di1Qt",
+            "releaseDate": null,
+            "subtitle": "Top tracks",
+            "title": "Rick Astley",
+            "trackList": [
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/b4c682084c3fd05538726d0a126b7e14b6e92c83"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 213573,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "Never Gonna Give You Up",
+                "uid": "428b9498d3a725999742",
+                "uri": "spotify:track:4PTG3Z6ehGkBFwjybzWkR8"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/218ce9bda2e7ad945f675c8f3cb48cd94b8718fa"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 205533,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "Together Forever",
+                "uid": "df8815b6ba2422a62498",
+                "uri": "spotify:track:00isIFJWVpXIQ8HkGICSQp"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/78aca5f48ea1ddf7f30da1df2eaf4ce9287a6337"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 210373,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "Take Me to Your Heart - 2023 Remaster",
+                "uid": "e5f0e0f7b2b8536bf74b",
+                "uri": "spotify:track:1VpUH3K4UTqgD69QhXYebI"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/ac39ed3db535afcc1eab7e99b254a5a50fed8bc8"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 291800,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "Cry for Help",
+                "uid": "2700ce1c309fea52f42f",
+                "uri": "spotify:track:0WDBs60pTRESRkt7FsMmoQ"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/844a4a77faa91ddce5a806260d5c2b584da73648"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 259733,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "Cry for Help - Single Version",
+                "uid": "af954838296bc62467c4",
+                "uri": "spotify:track:5SmA539btynYIuTdSe8rzP"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/5a48b91ada3df16744493405e1178a58508bc442"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 261786,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "Hold Me in Your Arms - 7\" Version",
+                "uid": "5d2138cd029db1232465",
+                "uri": "spotify:track:2Sh07SXWF7Kx0fMD9Ee6cM"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/37d0ae538df83108ed2b2da8e94a133f9bb1ea56"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 233666,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "Whenever You Need Somebody",
+                "uid": "e77f0ee0b1c5a161181f",
+                "uri": "spotify:track:3X4r1d2VDYjgPYjAEjbEM7"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/dc625698914a347435887e0bfa7f310d929298b3"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 347426,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "Never Gonna Give You Up - Cake Mix",
+                "uid": "c05068a8b0c100fb2075",
+                "uri": "spotify:track:5AErEepoomKZK54EWm5i9a"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/bd040624ed5ba2faf4577d85f811fb6667d23ae9"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 198880,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "She Wants to Dance with Me - 2023 Remaster",
+                "uid": "065f0653eb5876571b4d",
+                "uri": "spotify:track:0sRaIp06gw4ZOt5VevOKnf"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/40d4df455c652c1c0963d43d4de5dabec8c49989"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 220826,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Rick Astley",
+                "title": "It Would Take a Strong Strong Man",
+                "uid": "925c8273c89af1ddbb81",
+                "uri": "spotify:track:29K9hk3LXfbg12O2tH355c"
+              }
+            ],
+            "type": "artist",
+            "uri": "spotify:artist:0gxyHStUsqpMadRV0Di1Qt",
+            "visualIdentity": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 16,
+                "green": 0,
+                "red": 120
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 52,
+                "green": 52,
+                "red": 163
+              },
+              "image": [
+                {
+                  "maxHeight": 320,
+                  "maxWidth": 320,
+                  "url": "https://image-cdn-fa.spotifycdn.com/image/ab67616100005174e834a63a0cfa3c0f57a9a434"
+                },
+                {
+                  "maxHeight": 640,
+                  "maxWidth": 640,
+                  "url": "https://image-cdn-fa.spotifycdn.com/image/ab6761610000e5ebe834a63a0cfa3c0f57a9a434"
+                },
+                {
+                  "maxHeight": 160,
+                  "maxWidth": 160,
+                  "url": "https://image-cdn-fa.spotifycdn.com/image/ab6761610000f178e834a63a0cfa3c0f57a9a434"
+                }
+              ],
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 183,
+                "green": 189,
+                "red": 255
+              }
+            }
+          }
+        },
+        "machineState": {
+          "currentPreviewTrackIndex": 0,
+          "initialized": false,
+          "platformSupportsEncryptedContent": false,
+          "playbackMode": "unknown",
+          "showOverflowMenu": false
+        },
+        "settings": {
+          "clientId": "REDACTED",
+          "entityContext": "artist",
+          "isDarkMode": false,
+          "isIOS": false,
+          "isMobile": false,
+          "isSafari": false,
+          "isTablet": false,
+          "rtl": false,
+          "session": {
+            "accessToken": "REDACTED",
+            "accessTokenExpirationTimestampMs": 1781122107115,
+            "isAnonymous": true
+          }
+        }
+      }
+    }
+  },
+  "query": {
+    "id": "0gxyHStUsqpMadRV0Di1Qt"
+  },
+  "scriptLoader": []
+}

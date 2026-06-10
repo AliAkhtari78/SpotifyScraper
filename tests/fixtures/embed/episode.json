@@ -1,0 +1,183 @@
+{
+  "assetPrefix": "https://embed-cdn.spotifycdn.com",
+  "buildId": "daae2c31-b010-4b3a-8253-db7b2835e1d4",
+  "gssp": true,
+  "isExperimentalCompile": false,
+  "isFallback": false,
+  "page": "/episode/[id]",
+  "props": {
+    "__N_SSP": true,
+    "pageProps": {
+      "_sentryBaggage": "REDACTED",
+      "_sentryTraceData": "REDACTED",
+      "config": {
+        "clientId": "REDACTED",
+        "correlationId": "REDACTED",
+        "locale": "en",
+        "restrictionId": "",
+        "strings": {
+          "en": {
+            "translation": {}
+          }
+        }
+      },
+      "state": {
+        "data": {
+          "defaultAudioFileObject": {
+            "fileId": "87da82247ce77e79e0044c3dd4479c63731272e0",
+            "format": "MP4_128_CBCS",
+            "passthrough": "NONE",
+            "passthroughUrl": "",
+            "url": [
+              "https://audio4-fa.scdn.co/audio/87da82247ce77e79e0044c3dd4479c63731272e0?1781208311_A_iwNxn-vjmT4zbRvMkKOBYSBzBDf2ZLcHcwK3hpvMU=",
+              "https://audio4-ak.spotifycdn.com/audio/87da82247ce77e79e0044c3dd4479c63731272e0?__token__=exp=1781208311~hmac=48f65bc5d2746504471bf54654296ed3ff79a1a60b3a8a138320bd3b427d7dc7"
+            ],
+            "video": [
+              {
+                "manifestId": "8147d27a127f4627a6113833dc4a9440",
+                "requiresDRM": false
+              }
+            ]
+          },
+          "embeded_entity_uri": "spotify:episode:07gKzPFkbvGF0cHoeG7ARS",
+          "entity": {
+            "audioPreview": {
+              "url": "https://p.scdn.co/mp3-preview/6bc023a5b50b990e1c9896418cdefbcf6dda22f4.mp3"
+            },
+            "contentRatings": {
+              "labels": [
+                "EXPLICIT"
+              ]
+            },
+            "duration": 9992617,
+            "hasVideo": true,
+            "id": "07gKzPFkbvGF0cHoeG7ARS",
+            "isAudiobook": false,
+            "isExplicit": true,
+            "isNineteenPlus": false,
+            "isPlayable": true,
+            "isTrailer": false,
+            "name": "#2512 - Joey Diaz",
+            "playabilityReason": "PLAYABLE",
+            "relatedEntityCoverArt": [
+              {
+                "maxHeight": 300,
+                "maxWidth": 300,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab67656300005f1fb1d33eb79d3ecd50b856696e"
+              },
+              {
+                "maxHeight": 640,
+                "maxWidth": 640,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e"
+              },
+              {
+                "maxHeight": 64,
+                "maxWidth": 64,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab6765630000f68db1d33eb79d3ecd50b856696e"
+              }
+            ],
+            "relatedEntityUri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk",
+            "releaseDate": {
+              "isoString": "2026-06-10T17:00:00Z"
+            },
+            "subtitle": "The Joe Rogan Experience",
+            "title": "#2512 - Joey Diaz",
+            "type": "episode",
+            "uri": "spotify:episode:07gKzPFkbvGF0cHoeG7ARS",
+            "videoPreview": {
+              "url": "https://smart-preview-clips.spotifycdn.com/previews/e21315f0645711f1be8d4d842d353634/0/e21315f0645711f1be8d4d842d353634.mp4"
+            },
+            "videoThumbnailImage": [
+              {
+                "maxHeight": 360,
+                "maxWidth": 640,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000015beb4e8eecc429d8e37d552d6ad"
+              },
+              {
+                "maxHeight": 720,
+                "maxWidth": 1280,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab00001692b4e8eecc429d8e37d552d6ad"
+              }
+            ],
+            "visualIdentity": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 51,
+                "red": 143
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 14,
+                "red": 96
+              },
+              "image": [
+                {
+                  "maxHeight": 300,
+                  "maxWidth": 300,
+                  "url": "https://image-cdn-fa.spotifycdn.com/image/ab67656300005f1fc948d2a3af829029d3c8bafb"
+                },
+                {
+                  "maxHeight": 640,
+                  "maxWidth": 640,
+                  "url": "https://image-cdn-fa.spotifycdn.com/image/ab6765630000ba8ac948d2a3af829029d3c8bafb"
+                },
+                {
+                  "maxHeight": 64,
+                  "maxWidth": 64,
+                  "url": "https://image-cdn-fa.spotifycdn.com/image/ab6765630000f68dc948d2a3af829029d3c8bafb"
+                }
+              ],
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 152,
+                "green": 192,
+                "red": 255
+              }
+            }
+          }
+        },
+        "machineState": {
+          "currentPreviewTrackIndex": 0,
+          "initialized": false,
+          "platformSupportsEncryptedContent": false,
+          "playbackMode": "unknown",
+          "showOverflowMenu": false
+        },
+        "settings": {
+          "clientId": "REDACTED",
+          "entityContext": "episode",
+          "isDarkMode": false,
+          "isIOS": false,
+          "isMobile": false,
+          "isSafari": false,
+          "isSpotifyDesktopApp": false,
+          "isTablet": false,
+          "rtl": false,
+          "session": {
+            "accessToken": "REDACTED",
+            "accessTokenExpirationTimestampMs": 1781122109042,
+            "isAnonymous": true
+          }
+        }
+      }
+    }
+  },
+  "query": {
+    "id": "07gKzPFkbvGF0cHoeG7ARS"
+  },
+  "scriptLoader": []
+}

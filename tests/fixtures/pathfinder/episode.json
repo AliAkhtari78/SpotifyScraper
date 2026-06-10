@@ -1,0 +1,257 @@
+{
+  "data": {
+    "episodeUnionV2": {
+      "__typename": "Episode",
+      "accessInfo": null,
+      "audio": {
+        "items": [
+          {
+            "url": "https://p.scdn.co/mp3-preview/d224be8a544c769b1c043958c1dbd4087ebb129d"
+          },
+          {
+            "url": "https://p.scdn.co/mp3-preview/a7942a8461615917f0ccf696a661060ac185c4f2"
+          },
+          {
+            "url": "https://p.scdn.co/mp3-preview/87da82247ce77e79e0044c3dd4479c63731272e0"
+          },
+          {
+            "url": "https://p.scdn.co/mp3-preview/fed10b422a8699f20d27b35f6c1f01f7575c31de"
+          },
+          {
+            "url": "https://p.scdn.co/mp3-preview/278aa8296d5efd3d0d888fe7bc5ccbced157c759"
+          },
+          {
+            "url": "https://p.scdn.co/mp3-preview/5bc9539d151d12d7dffc9aa1c1a206ba50952e7a"
+          }
+        ]
+      },
+      "contentInformation": null,
+      "contentRating": {
+        "label": "EXPLICIT"
+      },
+      "contents": [],
+      "coverArt": {
+        "sources": [
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab6765630000f68dc948d2a3af829029d3c8bafb",
+            "width": 64
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67656300005f1fc948d2a3af829029d3c8bafb",
+            "width": 300
+          },
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab6765630000ba8ac948d2a3af829029d3c8bafb",
+            "width": 640
+          }
+        ]
+      },
+      "creator": null,
+      "description": "Joey Diaz is a stand-up comedian, actor, and writer. He is the host of the podcast \u201cThe Church of What\u2019s Happening Now: The New Testament\u201d and the author of \u201cTremendous: The Life of a Comedy Savage.\u201dwww.youtube.com/@JoeyDiazwww.patreon.com/JoeyDiazwww.joeydiaz.net  Perplexity: Download the app or ask Perplexity anything at https://pplx.ai/rogan.  Use code ROGAN at\u00a0https://BlueChew.com \u00a0to get 10% OFF + Free Overnight Shipping on your first order.  Get 30% off + 2 free gifts at https://ARMRA.com/rogan Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+      "duration": {
+        "totalMilliseconds": 9992617
+      },
+      "gatedEntityRelations": [],
+      "htmlDescription": "<p>Joey Diaz is a stand-up comedian, actor, and writer. He is the host of the podcast \u201cThe Church of What\u2019s Happening Now: The New Testament\u201d and the author of \u201cTremendous: The Life of a Comedy Savage.\u201d<br />www.youtube.com/&#64;JoeyDiaz<br />www.patreon.com/JoeyDiaz<br />www.joeydiaz.net</p><br/><p><br /></p><br/><p>Perplexity: Download the app or ask Perplexity anything at <a href=\"https://pplx.ai/rogan\" rel=\"nofollow\">https://pplx.ai/rogan</a>.</p><br/><p><br /></p><br/><p>Use code ROGAN at\u00a0<a href=\"https://BlueChew.com\" rel=\"nofollow\">https://BlueChew.com</a> \u00a0to get 10% OFF &#43; Free Overnight Shipping on your first order.</p><br/><p><br /></p><br/><p>Get 30% off &#43; 2 free gifts at <a href=\"https://ARMRA.com/rogan\" rel=\"nofollow\">https://ARMRA.com/rogan</a></p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+      "id": "07gKzPFkbvGF0cHoeG7ARS",
+      "mediaTypes": [
+        "VIDEO",
+        "AUDIO"
+      ],
+      "name": "#2512 - Joey Diaz",
+      "playability": {
+        "playable": true,
+        "reason": "PLAYABLE",
+        "unplayabilityReasons": []
+      },
+      "playedState": {
+        "playPositionMilliseconds": 0,
+        "state": "NOT_STARTED"
+      },
+      "podcastV2": {
+        "data": {
+          "__typename": "Podcast",
+          "accessInfo": null,
+          "coverArt": {
+            "sources": [
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                "width": 64
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                "width": 300
+              },
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                "width": 640
+              }
+            ]
+          },
+          "name": "The Joe Rogan Experience",
+          "showTypes": [
+            "SHOW_TYPE_EXCLUSIVE"
+          ],
+          "trailerV2": null,
+          "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+        }
+      },
+      "previewPlayback": {
+        "audioPreview": {
+          "cdnUrl": "https://p.scdn.co/mp3-preview/6bc023a5b50b990e1c9896418cdefbcf6dda22f4.mp3"
+        }
+      },
+      "releaseDate": {
+        "isoString": "2026-06-10T17:00:00Z",
+        "precision": "MINUTE"
+      },
+      "restrictions": {
+        "paywallContent": false
+      },
+      "segments": null,
+      "sharingInfo": {
+        "shareId": "Dkzzh8s5ScmHLkBtqae_Hg",
+        "shareUrl": "https://open.spotify.com/episode/07gKzPFkbvGF0cHoeG7ARS?si=Dkzzh8s5ScmHLkBtqae_Hg"
+      },
+      "transcripts": {
+        "items": []
+      },
+      "type": "PODCAST_EPISODE",
+      "uri": "spotify:episode:07gKzPFkbvGF0cHoeG7ARS",
+      "visualIdentity": {
+        "sixteenByNineCoverImage": {
+          "image": {
+            "data": {
+              "__typename": "ImageV2",
+              "sources": [
+                {
+                  "maxHeight": 360,
+                  "maxWidth": 640,
+                  "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab000015beb4e8eecc429d8e37d552d6ad"
+                },
+                {
+                  "maxHeight": 720,
+                  "maxWidth": 1280,
+                  "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab00001692b4e8eecc429d8e37d552d6ad"
+                }
+              ]
+            }
+          }
+        },
+        "squareCoverImage": {
+          "__typename": "VisualIdentityImage",
+          "extractedColorSet": {
+            "encoreBaseSetTextColor": {
+              "alpha": 255,
+              "blue": 107,
+              "green": 165,
+              "red": 255
+            },
+            "highContrast": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 51,
+                "red": 143
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 14,
+                "red": 96
+              },
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 152,
+                "green": 192,
+                "red": 255
+              }
+            },
+            "higherContrast": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 15,
+                "red": 100
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 40,
+                "green": 57,
+                "red": 143
+              },
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 96,
+                "green": 215,
+                "red": 30
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 152,
+                "green": 192,
+                "red": 255
+              }
+            },
+            "minContrast": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 10,
+                "green": 115,
+                "red": 242
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 88,
+                "red": 213
+              },
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

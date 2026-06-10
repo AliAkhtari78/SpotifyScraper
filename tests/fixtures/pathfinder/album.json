@@ -1,0 +1,1390 @@
+{
+  "data": {
+    "albumUnion": {
+      "__typename": "Album",
+      "artists": {
+        "items": [
+          {
+            "id": "0TnOYISbd1XYRBk9myaseg",
+            "profile": {
+              "name": "Pitbull"
+            },
+            "sharingInfo": {
+              "shareUrl": "https://open.spotify.com/artist/0TnOYISbd1XYRBk9myaseg?si=siVwaoyDTc2O0GBFpjFN1A"
+            },
+            "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg",
+            "visuals": {
+              "avatarImage": {
+                "sources": [
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab6761610000e5eb8d8ac7290d0fe2d12fb6e4d9",
+                    "width": 640
+                  },
+                  {
+                    "height": 160,
+                    "url": "https://i.scdn.co/image/ab6761610000f1788d8ac7290d0fe2d12fb6e4d9",
+                    "width": 160
+                  },
+                  {
+                    "height": 320,
+                    "url": "https://i.scdn.co/image/ab676161000051748d8ac7290d0fe2d12fb6e4d9",
+                    "width": 320
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "totalCount": 1
+      },
+      "copyright": {
+        "items": [
+          {
+            "text": "(P) 2012 RCA Records, a division of Sony Music Entertainment",
+            "type": "P"
+          }
+        ],
+        "totalCount": 1
+      },
+      "courtesyLine": "",
+      "coverArt": {
+        "extractedColors": {
+          "colorDark": {
+            "hex": "#B83028"
+          },
+          "colorLight": {
+            "hex": "#DC3930"
+          },
+          "colorRaw": {
+            "hex": "#B83028"
+          }
+        },
+        "sources": [
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e022c5b24ecfa39523a75c993c4",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d000048512c5b24ecfa39523a75c993c4",
+            "width": 64
+          },
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b2732c5b24ecfa39523a75c993c4",
+            "width": 640
+          }
+        ]
+      },
+      "date": {
+        "isoString": "2012-11-16T00:00:00Z",
+        "precision": "DAY"
+      },
+      "discs": {
+        "items": [
+          {
+            "number": 1,
+            "tracks": {
+              "totalCount": 18
+            }
+          }
+        ],
+        "totalCount": 1
+      },
+      "isPreRelease": false,
+      "label": "Mr.305/Polo Grounds Music/RCA Records",
+      "moreAlbumsByArtist": {
+        "items": [
+          {
+            "discography": {
+              "popularReleasesAlbums": {
+                "items": [
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e021dc7483a9fcfce54822a2f19",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048511dc7483a9fcfce54822a2f19",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2731dc7483a9fcfce54822a2f19",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2011
+                    },
+                    "id": "4rG0MhkU6UojACJxkMHIXB",
+                    "name": "Planet Pit (Deluxe Version)",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "IfkGQyozRg2MF1WaR-uKZw",
+                      "shareUrl": "https://open.spotify.com/album/4rG0MhkU6UojACJxkMHIXB?si=IfkGQyozRg2MF1WaR-uKZw"
+                    },
+                    "type": "ALBUM",
+                    "uri": "spotify:album:4rG0MhkU6UojACJxkMHIXB"
+                  },
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e02e6efeff81a318670a292090f",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d00004851e6efeff81a318670a292090f",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b273e6efeff81a318670a292090f",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2014
+                    },
+                    "id": "4EUf4YyNjuXypWY6W5wEDm",
+                    "name": "Globalization",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "HM-TTLl6SCuuh0rfM280LA",
+                      "shareUrl": "https://open.spotify.com/album/4EUf4YyNjuXypWY6W5wEDm?si=HM-TTLl6SCuuh0rfM280LA"
+                    },
+                    "type": "ALBUM",
+                    "uri": "spotify:album:4EUf4YyNjuXypWY6W5wEDm"
+                  },
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e022ffc2c580b6595a3e675a730",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048512ffc2c580b6595a3e675a730",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2732ffc2c580b6595a3e675a730",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2012
+                    },
+                    "id": "2F7tejLHzTqFq2XLol9ZGy",
+                    "name": "Global Warming: Meltdown (Deluxe Version)",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "Navz25lpSqi2Ml3yxSpS-g",
+                      "shareUrl": "https://open.spotify.com/album/2F7tejLHzTqFq2XLol9ZGy?si=Navz25lpSqi2Ml3yxSpS-g"
+                    },
+                    "type": "ALBUM",
+                    "uri": "spotify:album:2F7tejLHzTqFq2XLol9ZGy"
+                  },
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e025c7fdd07d99c156401073aaa",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048515c7fdd07d99c156401073aaa",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2735c7fdd07d99c156401073aaa",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2011
+                    },
+                    "id": "543NK5YT3RjGmP7nFzWJPm",
+                    "name": "On The Floor",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "UH560e8mSbueZ7TKKrsblw",
+                      "shareUrl": "https://open.spotify.com/album/543NK5YT3RjGmP7nFzWJPm?si=UH560e8mSbueZ7TKKrsblw"
+                    },
+                    "type": "SINGLE",
+                    "uri": "spotify:album:543NK5YT3RjGmP7nFzWJPm"
+                  },
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e02d9adce154235c6c5a5f45807",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d00004851d9adce154235c6c5a5f45807",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b273d9adce154235c6c5a5f45807",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2025
+                    },
+                    "id": "2WzCFW3ywduzHLbPNMrzji",
+                    "name": "Damn I Love Miami",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "zF5_xaxGTY2TytKEYYcNPQ",
+                      "shareUrl": "https://open.spotify.com/album/2WzCFW3ywduzHLbPNMrzji?si=zF5_xaxGTY2TytKEYYcNPQ"
+                    },
+                    "type": "SINGLE",
+                    "uri": "spotify:album:2WzCFW3ywduzHLbPNMrzji"
+                  },
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e0207e80dd12fc157ce0c9f01a1",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d0000485107e80dd12fc157ce0c9f01a1",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b27307e80dd12fc157ce0c9f01a1",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2016
+                    },
+                    "id": "1JCOUDiJmrVr6YmzLXMHkO",
+                    "name": "Ay Mi Dios",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "hnO9Wbp8SMeoBy1MIzLJ-g",
+                      "shareUrl": "https://open.spotify.com/album/1JCOUDiJmrVr6YmzLXMHkO?si=hnO9Wbp8SMeoBy1MIzLJ-g"
+                    },
+                    "type": "SINGLE",
+                    "uri": "spotify:album:1JCOUDiJmrVr6YmzLXMHkO"
+                  },
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e0200650b5e6be3af579ae18e7c",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d0000485100650b5e6be3af579ae18e7c",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b27300650b5e6be3af579ae18e7c",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2004
+                    },
+                    "id": "76N6imyjQ9h5p2NzakHT32",
+                    "name": "M.I.A.M.I.",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "EIUaQnOFSrmESKsaTwPH6A",
+                      "shareUrl": "https://open.spotify.com/album/76N6imyjQ9h5p2NzakHT32?si=EIUaQnOFSrmESKsaTwPH6A"
+                    },
+                    "type": "ALBUM",
+                    "uri": "spotify:album:76N6imyjQ9h5p2NzakHT32"
+                  },
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e024b6e3bb6e298b4477bf2f6f0",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048514b6e3bb6e298b4477bf2f6f0",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2734b6e3bb6e298b4477bf2f6f0",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2007
+                    },
+                    "id": "7m9AYxqeFPagkaqlg6WE0J",
+                    "name": "The Boatlift",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "Lh9n4OvXSBmZ47IcnwfeCw",
+                      "shareUrl": "https://open.spotify.com/album/7m9AYxqeFPagkaqlg6WE0J?si=Lh9n4OvXSBmZ47IcnwfeCw"
+                    },
+                    "type": "ALBUM",
+                    "uri": "spotify:album:7m9AYxqeFPagkaqlg6WE0J"
+                  },
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e022720bfba629070b7c9c37561",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048512720bfba629070b7c9c37561",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2732720bfba629070b7c9c37561",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2017
+                    },
+                    "id": "1wajKdkMTSqLpMinU7KNKe",
+                    "name": "Hey Ma (with Pitbull & J Balvin feat. Camila Cabello)",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "54XH9ajAQdSfRM4pArBtXg",
+                      "shareUrl": "https://open.spotify.com/album/1wajKdkMTSqLpMinU7KNKe?si=54XH9ajAQdSfRM4pArBtXg"
+                    },
+                    "type": "SINGLE",
+                    "uri": "spotify:album:1wajKdkMTSqLpMinU7KNKe"
+                  },
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e021091bce0b9d981cac5e4091c",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048511091bce0b9d981cac5e4091c",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2731091bce0b9d981cac5e4091c",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "year": 2010
+                    },
+                    "id": "0kv3Rm7PODqJBQaVJiezuB",
+                    "name": "I Am Armando - Armando Reloaded",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "UqjInVpEQwyBSZ4utRZWMw",
+                      "shareUrl": "https://open.spotify.com/album/0kv3Rm7PODqJBQaVJiezuB?si=UqjInVpEQwyBSZ4utRZWMw"
+                    },
+                    "type": "ALBUM",
+                    "uri": "spotify:album:0kv3Rm7PODqJBQaVJiezuB"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "name": "Global Warming",
+      "playability": {
+        "playable": true,
+        "reason": "PLAYABLE"
+      },
+      "preReleaseEndDateTime": null,
+      "releases": {
+        "items": [],
+        "totalCount": 0
+      },
+      "saved": false,
+      "sharingInfo": {
+        "shareId": "bZyOh18aT-SOyV8fPmQ6Jw",
+        "shareUrl": "https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy?si=bZyOh18aT-SOyV8fPmQ6Jw"
+      },
+      "tracksV2": {
+        "items": [
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Sensato"
+                    },
+                    "uri": "spotify:artist:7iJrDbKM5fEkGdm5kpjFzS"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "EXPLICIT"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 85400
+              },
+              "name": "Global Warming (feat. Sensato)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "10707285",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 1,
+              "uri": "spotify:track:6OmhkSOpvYBokMKQxpIGx2"
+            },
+            "uid": "ad39a287db5dd9478e7e"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "TJR"
+                    },
+                    "uri": "spotify:artist:2L8yW8GIoirHEdeW4bWQXq"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 1
+                }
+              },
+              "contentRating": {
+                "label": "NONE"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 206120
+              },
+              "name": "Don't Stop the Party (feat. TJR)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "284658375",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 2,
+              "uri": "spotify:track:2iblMMIgSznA464mNov7A8"
+            },
+            "uid": "d967f79ce019a074c54d"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Christina Aguilera"
+                    },
+                    "uri": "spotify:artist:1l7ZsJRRS8wlW3WfJfPfNS"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 1
+                }
+              },
+              "contentRating": {
+                "label": "NONE"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 229506
+              },
+              "name": "Feel This Moment (feat. Christina Aguilera)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "1101089009",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 3,
+              "uri": "spotify:track:4yOn1TEcfsKHUJCL2h1r8I"
+            },
+            "uid": "26b867023e8c67d17407"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 1
+                }
+              },
+              "contentRating": {
+                "label": "NONE"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 207440
+              },
+              "name": "Back in Time - featured in \"Men In Black 3\"",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "114209836",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 4,
+              "uri": "spotify:track:7fmpKF0rLGPnP7kcQ5ZMm7"
+            },
+            "uid": "ccb0ef6a2ede7c9f6f8d"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Chris Brown"
+                    },
+                    "uri": "spotify:artist:7bXgB6jMjp9ATFy66eO08Z"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "NONE"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 221133
+              },
+              "name": "Hope We Meet Again (feat. Chris Brown)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "9230889",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 5,
+              "uri": "spotify:track:3jStb2imKd6oUoBT1zq5lp"
+            },
+            "uid": "edeeed2095cec8bad6c5"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "USHER"
+                    },
+                    "uri": "spotify:artist:23zg3TcAtWQy7J6upgbUnj"
+                  },
+                  {
+                    "profile": {
+                      "name": "AFROJACK"
+                    },
+                    "uri": "spotify:artist:4D75GcNG95ebPtNvoNVXhz"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "EXPLICIT"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 243160
+              },
+              "name": "Party Ain't Over (feat. Usher & Afrojack)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "11753430",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 6,
+              "uri": "spotify:track:6Q4PYJtrq8CBx7YCY5IyRN"
+            },
+            "uid": "4976c203442c1d90a8cb"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Jennifer Lopez"
+                    },
+                    "uri": "spotify:artist:2DlGxzQSjYe5N6G9nkYghR"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "NONE"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 196920
+              },
+              "name": "Drinks for You (Ladies Anthem) (feat. J. Lo)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "5452009",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 7,
+              "uri": "spotify:track:0QTVwqcOsYd73AOkYkk0Hg"
+            },
+            "uid": "4b0969a4a1f7d38a9153"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "The Wanted"
+                    },
+                    "uri": "spotify:artist:2NhdGz9EDv2FeUw6udu2g1"
+                  },
+                  {
+                    "profile": {
+                      "name": "AFROJACK"
+                    },
+                    "uri": "spotify:artist:4D75GcNG95ebPtNvoNVXhz"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "EXPLICIT"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 244920
+              },
+              "name": "Have Some Fun (feat. The Wanted & Afrojack)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "14691518",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 8,
+              "uri": "spotify:track:10Sydb6AAFPdgCzCKOSZuI"
+            },
+            "uid": "699b731683becc3f6252"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Danny Mercer"
+                    },
+                    "uri": "spotify:artist:0e9P96siQmxphVXAwTy2pa"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "EXPLICIT"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 206800
+              },
+              "name": "Outta Nowhere (feat. Danny Mercer)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "16355935",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 9,
+              "uri": "spotify:track:4k61iDqmtX9nI7RfLmp9aq"
+            },
+            "uid": "9c63fa73ea1ddd9aa905"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Enrique Iglesias"
+                    },
+                    "uri": "spotify:artist:7qG3b048QCHVRO5Pv1T5lw"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "EXPLICIT"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 205800
+              },
+              "name": "Tchu Tchu Tcha (feat. Enrique Iglesias)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "13453817",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 10,
+              "uri": "spotify:track:7oGRkL31ElVMcevQDceT99"
+            },
+            "uid": "9e94323631d2467c991e"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "AFROJACK"
+                    },
+                    "uri": "spotify:artist:4D75GcNG95ebPtNvoNVXhz"
+                  },
+                  {
+                    "profile": {
+                      "name": "Havana Brown"
+                    },
+                    "uri": "spotify:artist:1EVWYRr2obCRDoSoD6KSuM"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "EXPLICIT"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 219600
+              },
+              "name": "Last Night (feat. Afrojack & Havana Brown)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "7328158",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 11,
+              "uri": "spotify:track:60xPqMqnHZl7Jfiu6E9q8X"
+            },
+            "uid": "4e725b67e0e0fa9a0f6f"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "EXPLICIT"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 197520
+              },
+              "name": "I'm Off That",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "3790124",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 12,
+              "uri": "spotify:track:1jAdXqOSICyXYLaW9ioSur"
+            },
+            "uid": "1db6442f04ce7c6b8505"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Papayo"
+                    },
+                    "uri": "spotify:artist:5F2Bwl7Is7KVwTbNbMclIS"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "NONE"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 196440
+              },
+              "name": "Echa Pa'lla (Manos Pa'rriba) (feat. Papayo)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "152944825",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 13,
+              "uri": "spotify:track:0fjRYHFz9ealui1lfnN8it"
+            },
+            "uid": "2e9d6eb7cc2371db1ca7"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Akon"
+                    },
+                    "uri": "spotify:artist:0z4gvV4rjIZ9wHck67ucSV"
+                  },
+                  {
+                    "profile": {
+                      "name": "David Rush"
+                    },
+                    "uri": "spotify:artist:5IqWDVLGThjmkm22e3oBU3"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "EXPLICIT"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 257613
+              },
+              "name": "Everybody Fucks (feat. Akon & David Rush)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "30063853",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 14,
+              "uri": "spotify:track:7of35ktwTbL906Z1i3mT4K"
+            },
+            "uid": "19e882be5aea06138ea0"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Shakira"
+                    },
+                    "uri": "spotify:artist:0EmeFodog0BfCgMzAIvKQp"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 1
+                }
+              },
+              "contentRating": {
+                "label": "NONE"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 245920
+              },
+              "name": "Get It Started (feat. Shakira)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "42190200",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 15,
+              "uri": "spotify:track:2JA6A6Y5f4m7PawM58U2Op"
+            },
+            "uid": "c0f0a38e89b9736affc8"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Vein"
+                    },
+                    "uri": "spotify:artist:3BnF35ARlp8mMeyXTjUZsr"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "EXPLICIT"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 217680
+              },
+              "name": "11:59 (feat. Vein)",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "2880769",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 16,
+              "uri": "spotify:track:726qZxwhP0jVyIA0ujnnhb"
+            },
+            "uid": "bda6b24fabf06cc06242"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Marc Anthony"
+                    },
+                    "uri": "spotify:artist:4wLXwxDeWQ8mtUIRPxGiD6"
+                  },
+                  {
+                    "profile": {
+                      "name": "Alle"
+                    },
+                    "uri": "spotify:artist:4MHssKddnziCghmwBHRiEY"
+                  },
+                  {
+                    "profile": {
+                      "name": "Benny Benassi"
+                    },
+                    "uri": "spotify:artist:4Ws2otunReOa6BbwxxpCt6"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "NONE"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 316480
+              },
+              "name": "Rain Over Me (feat. Marc Anthony) - Benny Benassi Remix",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "2055849",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 17,
+              "uri": "spotify:track:6GPER1Sx8MrBiwWxdulg5Q"
+            },
+            "uid": "a9a7d29f64d7ba402e0d"
+          },
+          {
+            "track": {
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Pitbull"
+                    },
+                    "uri": "spotify:artist:0TnOYISbd1XYRBk9myaseg"
+                  },
+                  {
+                    "profile": {
+                      "name": "Chris Brown"
+                    },
+                    "uri": "spotify:artist:7bXgB6jMjp9ATFy66eO08Z"
+                  },
+                  {
+                    "profile": {
+                      "name": "Jump Smokers"
+                    },
+                    "uri": "spotify:artist:5I7l0lSOyusetwCv1aQPMf"
+                  }
+                ]
+              },
+              "associationsV3": {
+                "videoAssociations": {
+                  "totalCount": 0
+                }
+              },
+              "contentRating": {
+                "label": "NONE"
+              },
+              "discNumber": 1,
+              "duration": {
+                "totalMilliseconds": 309626
+              },
+              "name": "International Love (feat. Chris Brown) - Jump Smokers Extended Mix",
+              "playability": {
+                "playable": true
+              },
+              "playcount": "1988802",
+              "relinkingInformation": null,
+              "saved": false,
+              "trackNumber": 18,
+              "uri": "spotify:track:4TWgcICXXfGty8MHGWJ4Ne"
+            },
+            "uid": "6cb1bec0e319268d34a1"
+          }
+        ],
+        "totalCount": 18
+      },
+      "type": "ALBUM",
+      "uri": "spotify:album:4aawyAB9vmqN3uQ7FjRGTy",
+      "visualIdentity": {
+        "squareCoverImage": {
+          "__typename": "VisualIdentityImage",
+          "extractedColorSet": {
+            "encoreBaseSetTextColor": {
+              "alpha": 255,
+              "blue": 148,
+              "green": 162,
+              "red": 255
+            },
+            "highContrast": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 14,
+                "green": 14,
+                "red": 158
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 0,
+                "red": 97
+              },
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 178,
+                "green": 190,
+                "red": 255
+              }
+            },
+            "higherContrast": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 0,
+                "red": 101
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 41,
+                "green": 52,
+                "red": 147
+              },
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 96,
+                "green": 215,
+                "red": 30
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 178,
+                "green": 190,
+                "red": 255
+              }
+            },
+            "minContrast": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 40,
+                "green": 48,
+                "red": 184
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 0,
+                "red": 139
+              },
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              }
+            }
+          }
+        }
+      },
+      "watchFeedEntrypoint": null
+    }
+  }
+}

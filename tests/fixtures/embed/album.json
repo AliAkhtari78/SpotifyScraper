@@ -1,0 +1,487 @@
+{
+  "assetPrefix": "https://embed-cdn.spotifycdn.com",
+  "buildId": "daae2c31-b010-4b3a-8253-db7b2835e1d4",
+  "gssp": true,
+  "isExperimentalCompile": false,
+  "isFallback": false,
+  "page": "/album/[id]",
+  "props": {
+    "__N_SSP": true,
+    "pageProps": {
+      "_sentryBaggage": "REDACTED",
+      "_sentryTraceData": "REDACTED",
+      "config": {
+        "clientId": "REDACTED",
+        "correlationId": "REDACTED",
+        "locale": "en",
+        "restrictionId": "",
+        "strings": {
+          "en": {
+            "translation": {}
+          }
+        }
+      },
+      "state": {
+        "data": {
+          "defaultAudioFileObject": {
+            "passthrough": "NONE"
+          },
+          "embeded_entity_uri": "spotify:album:4aawyAB9vmqN3uQ7FjRGTy",
+          "entity": {
+            "duration": 0,
+            "hasVideo": false,
+            "id": "4aawyAB9vmqN3uQ7FjRGTy",
+            "isExplicit": false,
+            "isPlayable": true,
+            "isPreRelease": false,
+            "name": "Global Warming",
+            "playabilityReason": "PLAYABLE",
+            "relatedEntityUri": "spotify:album:4aawyAB9vmqN3uQ7FjRGTy",
+            "releaseDate": null,
+            "subtitle": "Pitbull",
+            "title": "Global Warming",
+            "trackList": [
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/81b57845f672fa5a0af749489e311ffb9fd552fe"
+                },
+                "contentRatings": {
+                  "labels": [
+                    "EXPLICIT"
+                  ]
+                },
+                "duration": 85400,
+                "entityType": "track",
+                "isExplicit": true,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Sensato",
+                "title": "Global Warming (feat. Sensato)",
+                "uid": "ad39a287db5dd9478e7e",
+                "uri": "spotify:track:6OmhkSOpvYBokMKQxpIGx2"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/4791938e88ca063cb96a5fa8a7a2fad53d0c835e"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 206120,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0TJR",
+                "title": "Don't Stop the Party (feat. TJR)",
+                "uid": "d967f79ce019a074c54d",
+                "uri": "spotify:track:2iblMMIgSznA464mNov7A8"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/b962588e91271bb23b1ae0f7510824dc152a8466"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 229506,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Christina Aguilera",
+                "title": "Feel This Moment (feat. Christina Aguilera)",
+                "uid": "26b867023e8c67d17407",
+                "uri": "spotify:track:4yOn1TEcfsKHUJCL2h1r8I"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/03b7d0b54b19ab95c621633f2761f8285d8f000b"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 207440,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull",
+                "title": "Back in Time - featured in \"Men In Black 3\"",
+                "uid": "ccb0ef6a2ede7c9f6f8d",
+                "uri": "spotify:track:7fmpKF0rLGPnP7kcQ5ZMm7"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/6afce83e02bcbfbc6277e9b310add6179ba5600a"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 221133,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Chris Brown",
+                "title": "Hope We Meet Again (feat. Chris Brown)",
+                "uid": "edeeed2095cec8bad6c5",
+                "uri": "spotify:track:3jStb2imKd6oUoBT1zq5lp"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/c0eef14cc92ec73ae215e73c63474cb0d76ffa39"
+                },
+                "contentRatings": {
+                  "labels": [
+                    "EXPLICIT"
+                  ]
+                },
+                "duration": 243160,
+                "entityType": "track",
+                "isExplicit": true,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0USHER,\u00a0AFROJACK",
+                "title": "Party Ain't Over (feat. Usher & Afrojack)",
+                "uid": "4976c203442c1d90a8cb",
+                "uri": "spotify:track:6Q4PYJtrq8CBx7YCY5IyRN"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/c8dbfd9733901ad89a36bcba5427dd85f37feb40"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 196920,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Jennifer Lopez",
+                "title": "Drinks for You (Ladies Anthem) (feat. J. Lo)",
+                "uid": "4b0969a4a1f7d38a9153",
+                "uri": "spotify:track:0QTVwqcOsYd73AOkYkk0Hg"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/434334202a27a87178fdf76d38c9519bfb4c93fa"
+                },
+                "contentRatings": {
+                  "labels": [
+                    "EXPLICIT"
+                  ]
+                },
+                "duration": 244920,
+                "entityType": "track",
+                "isExplicit": true,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0The Wanted,\u00a0AFROJACK",
+                "title": "Have Some Fun (feat. The Wanted & Afrojack)",
+                "uid": "699b731683becc3f6252",
+                "uri": "spotify:track:10Sydb6AAFPdgCzCKOSZuI"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/3e2bebcc61e6fd8d2c51f556a150374d77b4823d"
+                },
+                "contentRatings": {
+                  "labels": [
+                    "EXPLICIT"
+                  ]
+                },
+                "duration": 206800,
+                "entityType": "track",
+                "isExplicit": true,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Danny Mercer",
+                "title": "Outta Nowhere (feat. Danny Mercer)",
+                "uid": "9c63fa73ea1ddd9aa905",
+                "uri": "spotify:track:4k61iDqmtX9nI7RfLmp9aq"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/4fb82e67fa6458da3702bf6348890d0570a8376e"
+                },
+                "contentRatings": {
+                  "labels": [
+                    "EXPLICIT"
+                  ]
+                },
+                "duration": 205800,
+                "entityType": "track",
+                "isExplicit": true,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Enrique Iglesias",
+                "title": "Tchu Tchu Tcha (feat. Enrique Iglesias)",
+                "uid": "9e94323631d2467c991e",
+                "uri": "spotify:track:7oGRkL31ElVMcevQDceT99"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/c7be10f151dcd40b37cb84c38461cccc84fddff3"
+                },
+                "contentRatings": {
+                  "labels": [
+                    "EXPLICIT"
+                  ]
+                },
+                "duration": 219600,
+                "entityType": "track",
+                "isExplicit": true,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0AFROJACK,\u00a0Havana Brown",
+                "title": "Last Night (feat. Afrojack & Havana Brown)",
+                "uid": "4e725b67e0e0fa9a0f6f",
+                "uri": "spotify:track:60xPqMqnHZl7Jfiu6E9q8X"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/d9eacfc0cfe1d59403294286b68dba07e0e44639"
+                },
+                "contentRatings": {
+                  "labels": [
+                    "EXPLICIT"
+                  ]
+                },
+                "duration": 197520,
+                "entityType": "track",
+                "isExplicit": true,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull",
+                "title": "I'm Off That",
+                "uid": "1db6442f04ce7c6b8505",
+                "uri": "spotify:track:1jAdXqOSICyXYLaW9ioSur"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/8ae1ca3eae6289fc8f40035a8100dd34a351a872"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 196440,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Papayo",
+                "title": "Echa Pa'lla (Manos Pa'rriba) (feat. Papayo)",
+                "uid": "2e9d6eb7cc2371db1ca7",
+                "uri": "spotify:track:0fjRYHFz9ealui1lfnN8it"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/a2c2c6ad931dab7a51df3ba25c6f18ddd10170d1"
+                },
+                "contentRatings": {
+                  "labels": [
+                    "EXPLICIT"
+                  ]
+                },
+                "duration": 257613,
+                "entityType": "track",
+                "isExplicit": true,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Akon,\u00a0David Rush",
+                "title": "Everybody Fucks (feat. Akon & David Rush)",
+                "uid": "19e882be5aea06138ea0",
+                "uri": "spotify:track:7of35ktwTbL906Z1i3mT4K"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/d6f33dcb1f5d117ae266248996db879a5aba9fec"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 245920,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Shakira",
+                "title": "Get It Started (feat. Shakira)",
+                "uid": "c0f0a38e89b9736affc8",
+                "uri": "spotify:track:2JA6A6Y5f4m7PawM58U2Op"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/2b3b9bf5c1c8b7192e4b535f7af11301d1f521af"
+                },
+                "contentRatings": {
+                  "labels": [
+                    "EXPLICIT"
+                  ]
+                },
+                "duration": 217680,
+                "entityType": "track",
+                "isExplicit": true,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Vein",
+                "title": "11:59 (feat. Vein)",
+                "uid": "bda6b24fabf06cc06242",
+                "uri": "spotify:track:726qZxwhP0jVyIA0ujnnhb"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/cad9ce18484c8a1ebf27f0e427e97959e586b8fa"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 316480,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Marc Anthony,\u00a0Alle,\u00a0Benny Benassi",
+                "title": "Rain Over Me (feat. Marc Anthony) - Benny Benassi Remix",
+                "uid": "a9a7d29f64d7ba402e0d",
+                "uri": "spotify:track:6GPER1Sx8MrBiwWxdulg5Q"
+              },
+              {
+                "audioPreview": {
+                  "format": "MP3_96",
+                  "url": "https://p.scdn.co/mp3-preview/c48b3bb6e6497433f0187d201b7ae27cab0f1906"
+                },
+                "contentRatings": {
+                  "labels": []
+                },
+                "duration": 309626,
+                "entityType": "track",
+                "isExplicit": false,
+                "isNineteenPlus": false,
+                "isPlayable": true,
+                "playabilityReason": "PLAYABLE",
+                "subtitle": "Pitbull,\u00a0Chris Brown,\u00a0Jump Smokers",
+                "title": "International Love (feat. Chris Brown) - Jump Smokers Extended Mix",
+                "uid": "6cb1bec0e319268d34a1",
+                "uri": "spotify:track:4TWgcICXXfGty8MHGWJ4Ne"
+              }
+            ],
+            "type": "album",
+            "uri": "spotify:album:4aawyAB9vmqN3uQ7FjRGTy",
+            "visualIdentity": {
+              "backgroundBase": {
+                "alpha": 255,
+                "blue": 14,
+                "green": 14,
+                "red": 158
+              },
+              "backgroundTintedBase": {
+                "alpha": 255,
+                "blue": 0,
+                "green": 0,
+                "red": 97
+              },
+              "image": [
+                {
+                  "maxHeight": 300,
+                  "maxWidth": 300,
+                  "url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e022c5b24ecfa39523a75c993c4"
+                },
+                {
+                  "maxHeight": 64,
+                  "maxWidth": 64,
+                  "url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d000048512c5b24ecfa39523a75c993c4"
+                },
+                {
+                  "maxHeight": 640,
+                  "maxWidth": 640,
+                  "url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2732c5b24ecfa39523a75c993c4"
+                }
+              ],
+              "textBase": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textBrightAccent": {
+                "alpha": 255,
+                "blue": 255,
+                "green": 255,
+                "red": 255
+              },
+              "textSubdued": {
+                "alpha": 255,
+                "blue": 178,
+                "green": 190,
+                "red": 255
+              }
+            }
+          }
+        },
+        "machineState": {
+          "currentPreviewTrackIndex": 0,
+          "initialized": false,
+          "platformSupportsEncryptedContent": false,
+          "playbackMode": "unknown",
+          "showOverflowMenu": false
+        },
+        "settings": {
+          "clientId": "REDACTED",
+          "entityContext": "album",
+          "isDarkMode": false,
+          "isIOS": false,
+          "isMobile": false,
+          "isSafari": false,
+          "isTablet": false,
+          "rtl": false,
+          "session": {
+            "accessToken": "REDACTED",
+            "accessTokenExpirationTimestampMs": 1781122099293,
+            "isAnonymous": true
+          }
+        }
+      }
+    }
+  },
+  "query": {
+    "id": "4aawyAB9vmqN3uQ7FjRGTy"
+  },
+  "scriptLoader": []
+}
