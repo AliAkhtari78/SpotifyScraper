@@ -133,12 +133,11 @@ def main() -> int:
             {
                 "operationName": operation,
                 "variables": json.dumps(build_variables(ENTITIES[kind])),
-                "extensions": json.dumps(
-                    {"persistedQuery": {"version": 1, "sha256Hash": sha256}}
-                ),
+                "extensions": json.dumps({"persistedQuery": {"version": 1, "sha256Hash": sha256}}),
             }
         )
-        body = json.loads(_get(f"https://api-partner.spotify.com/pathfinder/v1/query?{query}", token))
+        url = f"https://api-partner.spotify.com/pathfinder/v1/query?{query}"
+        body = json.loads(_get(url, token))
         if "errors" in body:
             print(f"WARNING pathfinder/{kind}: {body['errors']}", file=sys.stderr)
         out = FIXTURES / "pathfinder" / f"{kind}.json"
