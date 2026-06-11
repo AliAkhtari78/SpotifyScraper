@@ -47,7 +47,7 @@ def test_build_url_extensions_carry_persisted_query_hash() -> None:
 
 def test_build_url_unknown_kind_raises() -> None:
     with pytest.raises(KeyError):
-        build_url("playlist", TRACK_ID)
+        build_url("nonexistent", TRACK_ID)
 
 
 def test_track_operation_table_entry() -> None:

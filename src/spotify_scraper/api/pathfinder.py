@@ -42,15 +42,52 @@ OPERATIONS: dict[str, Operation] = {
         "612585ae06ba435ad26369870deaae23b5c8800a256cd8a57e08eddc25a37294",
         lambda eid: {"uri": f"spotify:track:{eid}"},
     ),
+    "album": Operation(
+        "getAlbum",
+        "b9bfabef66ed756e5e13f68a942deb60bd4125ec1f1be8cc42769dc0259b4b10",
+        lambda eid: {"uri": f"spotify:album:{eid}", "locale": "", "offset": 0, "limit": 50},
+    ),
+    "artist": Operation(
+        "queryArtistOverview",
+        "ae0e2958a4ab645b35ca19ac04d0495ae12d9c5d7b7286217674801a9aab281a",
+        lambda eid: {"uri": f"spotify:artist:{eid}", "locale": "", "includePrerelease": False},
+    ),
+    "playlist": Operation(
+        "fetchPlaylist",
+        "a65e12194ed5fc443a1cdebed5fabe33ca5b07b987185d63c72483867ad13cb4",
+        lambda eid: {
+            "uri": f"spotify:playlist:{eid}",
+            "offset": 0,
+            "limit": 100,
+            "enableWatchFeedEntrypoint": False,
+        },
+    ),
+    "episode": Operation(
+        "getEpisodeOrChapter",
+        "3416929067571ac4b79db16716be3c6ea5f6265f7975a0ee94b1fc5ee1dc1e9d",
+        lambda eid: {"uri": f"spotify:episode:{eid}"},
+    ),
+    "show": Operation(
+        "queryShowMetadataV2",
+        "aaad798a17a43c0f443c45d630a83df39d2ca1062a090c2e4fb045d6b00ab360",
+        lambda eid: {"uri": f"spotify:show:{eid}"},
+    ),
 }
 
 
-def build_url(kind: str, entity_id: str) -> str:
+def build_url(
+    kind: str,
+    entity_id: str,
+    *,
+    variable_overrides: Mapping[str, Any] | None = None,
+) -> str:
     """Build the persisted-query GET URL for an entity.
 
     Args:
         kind: The operation key (e.g. ``"track"``).
         entity_id: The 22-character entity ID.
+        variable_overrides: Optional variables merged over the built ones,
+            used for ``offset``/``limit`` pagination.
 
     Returns:
         The fully URL-encoded pathfinder query URL.
@@ -59,9 +96,12 @@ def build_url(kind: str, entity_id: str) -> str:
         KeyError: If ``kind`` has no registered operation.
     """
     operation = OPERATIONS[kind]
+    variables = operation.build_variables(entity_id)
+    if variable_overrides:
+        variables.update(variable_overrides)
     params = {
         "operationName": operation.name,
-        "variables": json.dumps(operation.build_variables(entity_id), separators=(",", ":")),
+        "variables": json.dumps(variables, separators=(",", ":")),
         "extensions": json.dumps(
             {"persistedQuery": {"version": 1, "sha256Hash": operation.sha256}},
             separators=(",", ":"),
