@@ -13,7 +13,7 @@ authors = [{ name = "Ali Akhtari", email = "aliakhtari78@hotmail.com" }]
 requires-python = ">=3.10"
 # Cap below httpx 1.0: it restructures the public API (e.g. httpx.ConnectError),
 # which this library uses. Relax once 1.0 is released and verified.
-dependencies = ["httpx>=0.27,<1.0"]
+dependencies = ["httpx>=0.28.1,<1.0"]
 keywords = ["spotify", "scraper", "music", "metadata", "playlist", "podcast"]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -31,7 +31,7 @@ classifiers = [
 
 [project.optional-dependencies]
 media = ["mutagen>=1.47"]
-browser = ["playwright>=1.49"]
+browser = ["playwright>=1.60.0"]
 all = ["spotifyscraper[media,browser]"]
 
 [project.urls]
