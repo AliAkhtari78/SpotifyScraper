@@ -38,7 +38,7 @@ from spotify_scraper.models import (
     UserRef,
 )
 
-__version__ = "3.0.0rc1"
+__version__ = "3.0.0"
 
 __all__ = [
     "Album",
