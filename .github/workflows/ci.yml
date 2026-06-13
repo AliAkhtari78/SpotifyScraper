@@ -28,7 +28,9 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-      - run: uv sync --locked
+      # Install all extras so mypy can resolve optional-dependency imports
+      # (e.g. playwright in the browser transport).
+      - run: uv sync --locked --all-extras
       - run: uv run mypy src
 
   test:
