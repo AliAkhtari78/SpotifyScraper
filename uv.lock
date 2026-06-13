@@ -1683,7 +1683,7 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "httpx", specifier = ">=0.27" },
+    { name = "httpx", specifier = ">=0.27,<1.0" },
     { name = "mutagen", marker = "extra == 'all'", specifier = ">=1.47" },
     { name = "mutagen", marker = "extra == 'media'", specifier = ">=1.47" },
     { name = "playwright", marker = "extra == 'all'", specifier = ">=1.49" },
