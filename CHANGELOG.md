@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-06-13
+
+A complete clean-room rewrite. v3 replaces fragile HTML scraping with a
+token-based JSON strategy, returns typed immutable models instead of dicts, and
+raises typed exceptions instead of mixing errors into results.
+
+### Added
+- `SpotifyClient` and `AsyncSpotifyClient` — sync and async facades over one
+  sans-io core, both context managers.
+- `get_track`, `get_album`, `get_artist`, `get_playlist`, `get_episode`, and
+  `get_show`, each accepting a URL, URI, or bare ID and returning a typed model.
+- Automatic pagination: full album track lists, bounded playlist tracks
+  (`max_tracks`), and full show episode listings (`max_episodes`).
+- Typed, frozen dataclass models (`Track`, `Album`, `Artist`, `Playlist`,
+  `Episode`, `Show`, …) with JSON-safe `to_dict()` / `from_dict()`.
+- A two-tier extraction ladder: Spotify's pathfinder GraphQL API (rich data)
+  with automatic degradation to the public embed page (core fields).
+- Media downloads: `download_cover` and `download_preview`, with optional ID3
+  cover embedding via `mutagen` (the `media` extra).
+- Anti-ban resilience: per-host rate limiting (`RateLimit`, `host_rate_limits`),
+  retries with exponential backoff (`RetryPolicy`), transient-403 retry,
+  user-agent rotation, and proxy support.
+- A Playwright browser transport as an optional drop-in fallback (the `browser`
+  extra), injectable via `transport=`.
+- A typed exception hierarchy rooted at `SpotifyScraperError`.
+- A MkDocs Material documentation site with a full v2→v3 migration guide, and a
+  daily CI canary that detects Spotify-side breakage.
+
+### Changed
+- **BREAKING:** every `get_*_info(url)` method is replaced by `get_*(value)`
+  returning a typed model (call `.to_dict()` for the old dict shape).
+- **BREAKING:** failures now raise exceptions instead of returning error strings
+  or dicts.
+- **BREAKING:** the minimum supported Python version is now 3.10.
+- The core depends only on `httpx`; everything else is an optional extra.
+
+### Removed
+- **BREAKING:** `get_all_info` — call the specific `get_*` method instead.
+- The Selenium browser backend (replaced by the Playwright transport extra).
+- Lyrics and the command-line interface are temporarily removed; both return in
+  v3.1 (lyrics require an authenticated cookie + token handshake).
+
+### Migration
+See the [migration guide](https://spotifyscraper.readthedocs.io/en/latest/migration/)
+for a method-by-method map from v2.
+
 ## [2.1.5] - 2025-06-12
 
 ### Fixed

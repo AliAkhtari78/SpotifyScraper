@@ -1,29 +1,110 @@
 # SpotifyScraper
 
-> **v3.0.0 is under active development on this branch.**
-> For the current stable release, see the [`v2.x` branch](https://github.com/AliAkhtari78/SpotifyScraper/tree/v2.x) or install from PyPI: `pip install spotifyscraper`.
+[![PyPI version](https://img.shields.io/pypi/v/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
+[![Python versions](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
+[![CI](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/readthedocs/spotifyscraper)](https://spotifyscraper.readthedocs.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-SpotifyScraper is a Python library for extracting public Spotify data — tracks, albums, artists, playlists, podcasts — without the official API or user credentials.
+**Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — without the official API or any credentials.**
 
-## What's coming in v3
+SpotifyScraper bootstraps an anonymous token from Spotify's own public embed
+pages and reads the same JSON endpoints the web player uses, returning typed,
+immutable models. v3 is a ground-up rewrite focused on reliability and a clean,
+modern API.
 
-A complete, spec-driven rewrite focused on reliability and maintainability:
+> **Upgrading from v2?** See the [migration guide](https://spotifyscraper.readthedocs.io/en/latest/migration/). The previous line lives on the [`v2.x` branch](https://github.com/AliAkhtari78/SpotifyScraper/tree/v2.x).
 
-- **Modern extraction strategy** — anonymous token bootstrap + Spotify's JSON endpoints, with an embed-page fallback tier, instead of fragile HTML parsing.
-- **One runtime dependency** (`httpx`) — media, browser, and CLI features become optional extras.
-- **Sync and async clients** — `SpotifyClient` and `AsyncSpotifyClient` with a shared core.
-- **Typed, frozen data models** with JSON-safe serialization.
-- **Built-in anti-ban resilience** — rate limiting, retries with backoff, user-agent rotation, proxy support.
-- **Daily live canary CI** that detects Spotify page changes before users do.
+## Install
 
-Development follows an [OpenSpec](https://github.com/Fission-AI/OpenSpec) spec-first workflow; specs live in [`openspec/`](openspec/).
+```bash
+pip install spotifyscraper                 # core (only depends on httpx)
+pip install "spotifyscraper[media]"        # + cover/preview embedding (mutagen)
+pip install "spotifyscraper[browser]"      # + Playwright browser fallback
+pip install "spotifyscraper[all]"          # everything
+```
+
+Python 3.10+.
+
+## Quickstart
+
+```python
+from spotify_scraper import SpotifyClient
+
+with SpotifyClient() as client:
+    track = client.get_track("https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC")
+    print(track.name, "—", track.artists[0].name)
+    print(track.duration_ms, "ms |", track.preview_url)
+
+    print(track.to_dict())          # JSON-safe dict, if you prefer dicts
+```
+
+Every entity has its own method — `get_track`, `get_album`, `get_artist`,
+`get_playlist`, `get_episode`, `get_show` — each accepting a URL, URI, or bare
+ID.
+
+### Async
+
+```python
+import asyncio
+from spotify_scraper import AsyncSpotifyClient
+
+async def main():
+    async with AsyncSpotifyClient() as client:
+        track, album = await asyncio.gather(
+            client.get_track("4uLU6hMCjMI75M1A2tKUQC"),
+            client.get_album("4aawyAB9vmqN3uQ7FjRGTy"),
+        )
+        print(track.name, "|", album.name)
+
+asyncio.run(main())
+```
+
+### Download a cover and preview
+
+```python
+from spotify_scraper import SpotifyClient
+
+with SpotifyClient() as client:
+    track = client.get_track("4uLU6hMCjMI75M1A2tKUQC")
+    client.download_cover(track, dest="covers/")
+    client.download_preview(track, dest="previews/", embed_cover=True)  # needs [media]
+```
+
+## Features
+
+- **All core entities + podcasts** — tracks, albums, artists, playlists, shows, episodes.
+- **Sync & async** clients sharing one sans-io core.
+- **Typed, frozen models** with JSON-safe `to_dict()` / `from_dict()`.
+- **Two-tier resilience** — Spotify's GraphQL API with automatic fallback to the embed page.
+- **One core dependency** (`httpx`); media and browser support are optional extras.
+- **Anti-ban built in** — per-host rate limiting, retries with backoff, UA rotation, proxies.
+- **Browser fallback** via Playwright when you need a real browser.
 
 ## Roadmap
 
 | Version | Scope |
 |---------|-------|
-| 3.0.0 | Core library: all entities, media downloads, lyrics (cookie-auth), browser fallback, new docs |
-| 3.1.0 | Command-line interface |
+| **3.0** | The library: all entities, pagination, media downloads, browser fallback, docs |
+| **3.1** | Command-line interface and cookie-authenticated lyrics |
+
+## Documentation
+
+Full docs, guides, and the API reference: **<https://spotifyscraper.readthedocs.io>**
+
+## Legal
+
+SpotifyScraper is an unofficial, independent project, not affiliated with
+Spotify. It reads publicly available data and the ~30-second previews Spotify
+publishes; it does not download full tracks or circumvent DRM. Use it for
+educational and personal purposes, and in line with Spotify's Terms of Service.
+See the [legal notice](https://spotifyscraper.readthedocs.io/en/latest/legal/).
+
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). The project
+is developed spec-first with [OpenSpec](https://github.com/Fission-AI/OpenSpec);
+specs live in [`openspec/`](openspec/).
 
 ## License
 
