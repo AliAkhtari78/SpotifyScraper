@@ -110,7 +110,9 @@ fights it directly:
 
 ## Roadmap
 
-- **v3.1** — a command-line interface, and cookie-authenticated lyrics.
+- **v3.1** — a command-line interface: `pip install "spotifyscraper[cli]"`, then
+  `spotifyscraper track <id>` emits JSON you can pipe straight into `jq`.
+- **Next** — cookie-authenticated lyrics.
 
 ## Get it
 

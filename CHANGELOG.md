@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-06-13
+
+### Added
+- **Command-line interface.** Install with `pip install "spotifyscraper[cli]"`
+  for a `spotifyscraper` command with one subcommand per entity (`track`,
+  `album`, `artist`, `playlist`, `episode`, `show`) plus `download cover` and
+  `download preview`. Commands emit JSON (`--pretty`, `-o FILE`), accept
+  client-tuning options (`--proxy`, `--timeout`, `--rate-limit`,
+  `--max-tracks`/`--max-episodes`), and map library errors to clean messages
+  and exit codes.
+
 ## [3.0.0] - 2026-06-13
 
 A complete clean-room rewrite. v3 replaces fragile HTML scraping with a

@@ -33,11 +33,17 @@ Keep the built-in rate limiting and retries enabled, and consider lowering the
 rate or adding a proxy for heavy workloads. See
 [Anti-ban & resilience](guides/anti-ban.md).
 
-### Where are lyrics and the command-line interface?
+### Is there a command-line interface?
 
-Both are planned for **v3.1**. Lyrics require an authenticated cookie plus a
-rotating token handshake and are being built carefully so they don't destabilize
-the core library; the CLI follows right after.
+Yes. Install the `cli` extra (`pip install "spotifyscraper[cli]"`) to get the
+`spotifyscraper` command, which prints any entity as JSON and downloads cover
+art or previews. See the [CLI guide](guides/cli.md).
+
+### Where are lyrics?
+
+Lyrics are still planned for a later release. They require an authenticated
+cookie plus a rotating token handshake and are being built carefully so they
+don't destabilize the core library; there is no lyrics method yet.
 
 ### Something stopped working — Spotify probably changed their site. What do I do?
 

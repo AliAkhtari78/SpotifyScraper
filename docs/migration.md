@@ -10,7 +10,7 @@ replacement.
     - `client.get_<entity>_info(url)` → `client.get_<entity>(value)` returning a
       typed model.
     - The single argument now accepts a **URL, URI, or bare ID** interchangeably.
-    - Lyrics and the CLI are **not** in v3.0 — they return in **v3.1**.
+    - The CLI is available now via the `cli` extra; lyrics are still upcoming.
     - You read fields off the model (`track.name`) instead of dict keys
       (`info["title"]`).
 
@@ -128,10 +128,17 @@ load-bearing for **cookie-authenticated lyrics in v3.1**.
     `Lyrics` and `LyricsLine` models are already defined but are **not populated**
     in v3.0 — see [Models](reference/models.md).
 
-## Command-line interface (coming in v3.1)
+## Command-line interface
 
-There is **no `spotifyscraper` command** in v3.0. A CLI is planned for **v3.1**.
-Until then, use the Python API shown throughout these docs.
+A `spotifyscraper` command is now available via the `cli` extra:
+
+```bash
+pip install "spotifyscraper[cli]"
+spotifyscraper track 4uLU6hMCjMI75M1A2tKUQC --pretty
+```
+
+It prints any entity as JSON and downloads cover art or previews. See the
+[CLI guide](guides/cli.md) for every command and its options.
 
 ## Python version floor
 

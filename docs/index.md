@@ -1,5 +1,10 @@
 # SpotifyScraper
 
+[![PyPI version](https://img.shields.io/pypi/v/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
+[![Python versions](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
+[![CI](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE)
+
 **Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — with one dependency and no API key.**
 
 SpotifyScraper reads the same public pages your browser does and returns clean,
@@ -108,19 +113,31 @@ asyncio.run(main())
 The async client mirrors the sync one method-for-method. See the
 [Async guide](guides/async.md) for `asyncio.gather` bulk patterns.
 
+## Command-line interface
+
+A `spotifyscraper` command is available now — install the `cli` extra and print
+any entity as JSON or download cover art and previews:
+
+```bash
+pip install "spotifyscraper[cli]"
+spotifyscraper track 4uLU6hMCjMI75M1A2tKUQC | jq -r '.name'
+```
+
+See the [CLI guide](guides/cli.md) for every command, options, and exit codes.
+
 ## Roadmap
 
-SpotifyScraper **v3.0.0** ships the core library — all six entity types, media
-downloads, anti-ban resilience, the browser fallback, and these docs.
+SpotifyScraper ships the core library — all six entity types, media downloads,
+anti-ban resilience, the browser fallback — plus the command-line interface.
 
 | Version | Adds |
 |---|---|
-| 3.0.0 | Core library (this release). |
-| 3.1.0 | A command-line interface and lyrics extraction (cookie-authenticated). |
+| 3.0.0 | Core library. |
+| 3.1.0 | The command-line interface (this release). Lyrics extraction (cookie-authenticated) follows. |
 
-!!! note "Not in v3.0.0"
-    A **CLI** and **lyrics** are planned for **v3.1**. They are not part of this
-    release — there is no `spotifyscraper` command yet, and no lyrics method.
+!!! note "Lyrics still upcoming"
+    **Lyrics** extraction is still planned for a later release — there is no
+    lyrics method yet. The CLI is available now (see above).
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.

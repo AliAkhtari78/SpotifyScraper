@@ -3,7 +3,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![Python versions](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![CI](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml)
-[![Docs](https://img.shields.io/readthedocs/spotifyscraper)](https://spotifyscraper.readthedocs.io)
+[![Docs](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — without the official API or any credentials.**
@@ -21,6 +21,7 @@ modern API.
 pip install spotifyscraper                 # core (only depends on httpx)
 pip install "spotifyscraper[media]"        # + cover/preview embedding (mutagen)
 pip install "spotifyscraper[browser]"      # + Playwright browser fallback
+pip install "spotifyscraper[cli]"          # + the spotifyscraper command-line tool
 pip install "spotifyscraper[all]"          # everything
 ```
 
@@ -81,12 +82,26 @@ with SpotifyClient() as client:
 - **Anti-ban built in** — per-host rate limiting, retries with backoff, UA rotation, proxies.
 - **Browser fallback** via Playwright when you need a real browser.
 
+## Command line
+
+With the `cli` extra installed, a `spotifyscraper` command is available:
+
+```bash
+spotifyscraper track 4uLU6hMCjMI75M1A2tKUQC          # entity metadata as JSON
+spotifyscraper playlist <id> --max-tracks 50 --pretty
+spotifyscraper download preview <id> -o ./previews --embed-cover
+```
+
+Every command emits JSON, so it composes with tools like `jq`. See the
+[CLI guide](https://spotifyscraper.readthedocs.io/en/latest/guides/cli/).
+
 ## Roadmap
 
 | Version | Scope |
 |---------|-------|
 | **3.0** | The library: all entities, pagination, media downloads, browser fallback, docs |
-| **3.1** | Command-line interface and cookie-authenticated lyrics |
+| **3.1** | Command-line interface |
+| next | Cookie-authenticated lyrics |
 
 ## Documentation
 

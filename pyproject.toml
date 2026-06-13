@@ -32,7 +32,11 @@ classifiers = [
 [project.optional-dependencies]
 media = ["mutagen>=1.47"]
 browser = ["playwright>=1.49"]
-all = ["spotifyscraper[media,browser]"]
+cli = ["typer>=0.12"]
+all = ["spotifyscraper[media,browser,cli]"]
+
+[project.scripts]
+spotifyscraper = "spotify_scraper.cli:app"
 
 [project.urls]
 Homepage = "https://github.com/AliAkhtari78/SpotifyScraper"
@@ -53,6 +57,7 @@ dev = [
   "respx>=0.22",
   "ruff>=0.9",
   "twine>=6.0",
+  "typer>=0.12",
 ]
 docs = [
   "mkdocs-material>=9.5",
