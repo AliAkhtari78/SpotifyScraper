@@ -1,0 +1,67 @@
+name: Canary
+
+# Daily live check against real Spotify endpoints. This is the early-warning
+# system: when Spotify changes its pages/JSON and breaks extraction, the live
+# tests fail and a pinned `spotify-breakage` issue is opened or updated.
+
+on:
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: "3.13"
+      - run: uv sync --locked --all-extras
+      - run: uv run playwright install --with-deps chromium
+      - name: Run live tests
+        run: uv run pytest -m live --timeout=120 -p no:cacheprovider -q
+
+  report:
+    needs: [live]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update the breakage issue on failure
+        if: needs.live.result == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          existing="$(gh issue list --repo "$REPO" --label spotify-breakage --state open --json number --jq '.[0].number')"
+          body="The daily canary's live extraction tests failed. Spotify may have changed its site.
+
+          Run: $RUN_URL
+
+          If you are hitting extraction errors, this is likely the cause — a fix is in progress."
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "Canary still failing — $RUN_URL"
+          else
+            gh label create spotify-breakage --repo "$REPO" --color B60205 --description "Live extraction broken (Spotify changed something)" 2>/dev/null || true
+            gh issue create --repo "$REPO" --label spotify-breakage \
+              --title "Canary: live Spotify extraction is failing" --body "$body"
+          fi
+      - name: Close the breakage issue on recovery
+        if: needs.live.result == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          existing="$(gh issue list --repo "$REPO" --label spotify-breakage --state open --json number --jq '.[0].number')"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "Canary recovered — live tests pass again ($RUN_URL). Closing."
+            gh issue close "$existing" --repo "$REPO"
+          fi

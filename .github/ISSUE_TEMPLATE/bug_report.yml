@@ -1,0 +1,58 @@
+name: Bug report
+description: Report something that is broken or behaving unexpectedly.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report! Because SpotifyScraper rides on Spotify's
+        undocumented web endpoints, extraction can break when Spotify changes
+        its site. Please check the pinned **spotify-breakage** issue first.
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I am on the latest release of `spotifyscraper`.
+          required: true
+        - label: I checked the pinned `spotify-breakage` issue and open issues.
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: spotifyscraper version
+      description: Output of `pip show spotifyscraper`.
+      placeholder: "3.0.0"
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "3.12.4"
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Spotify URL / URI / ID
+      description: The entity you were fetching (if applicable).
+      placeholder: "https://open.spotify.com/track/..."
+  - type: textarea
+    id: code
+    attributes:
+      label: Code to reproduce
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Full traceback / error output
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?

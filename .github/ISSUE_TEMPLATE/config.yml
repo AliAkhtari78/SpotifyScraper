@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://spotifyscraper.readthedocs.io
+    about: Guides, the API reference, and the v2 migration guide.
+  - name: Questions & discussions
+    url: https://github.com/AliAkhtari78/SpotifyScraper/discussions
+    about: Ask usage questions or share what you built.

@@ -20,11 +20,11 @@ On canary failure, the workflow SHALL create — or update, if open — a single
 - **WHEN** the canary fails two days in a row
 - **THEN** exactly one `spotify-breakage` issue exists, updated with both runs
 
-### Requirement: Lyrics canary is non-blocking
+### Requirement: Lyrics canary is non-blocking (v3.1)
 
-Lyrics live tests (requiring the `SPOTIFY_SP_DC` secret) SHALL be skipped when the secret is absent and SHALL NOT fail the canary when only lyrics tests fail (separate job or `continue-on-error`).
+Lyrics extraction is deferred to v3.1, so v3.0.0's canary has no lyrics job. When lyrics land, their live tests (requiring the `SPOTIFY_SP_DC` secret) SHALL be skipped when the secret is absent and SHALL NOT fail the canary when only lyrics tests fail (separate job or `continue-on-error`).
 
-#### Scenario: Expired maintainer cookie
+#### Scenario: Expired maintainer cookie (v3.1)
 
-- **WHEN** only the lyrics live test fails
+- **WHEN** lyrics exist and only the lyrics live test fails
 - **THEN** the canary reports success for core extraction and flags lyrics separately
