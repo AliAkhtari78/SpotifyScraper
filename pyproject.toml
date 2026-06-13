@@ -63,6 +63,11 @@ path = "src/spotify_scraper/__init__.py"
 [tool.hatch.build.targets.wheel]
 packages = ["src/spotify_scraper"]
 
+[tool.hatch.build.targets.sdist]
+# Ship a lean source distribution: the package, its tests, docs, and project
+# metadata — not agent/spec tooling or release-only extras.
+exclude = ["/.github", "/.claude", "/openspec", "/extras", "/scripts", "/site"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py310"
