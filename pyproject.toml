@@ -42,19 +42,19 @@ Issues = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
 [dependency-groups]
 dev = [
   "mutagen>=1.47",
-  "mypy>=1.14",
-  "pre-commit>=4.0",
-  "pytest>=8.3",
-  "pytest-asyncio>=0.25",
-  "pytest-cov>=6.0",
-  "pytest-timeout>=2.3",
-  "respx>=0.22",
-  "ruff>=0.9",
-  "twine>=6.0",
+  "mypy>=2.1.0",
+  "pre-commit>=4.6.0",
+  "pytest>=9.0.3",
+  "pytest-asyncio>=1.4.0",
+  "pytest-cov>=7.1.0",
+  "pytest-timeout>=2.4.0",
+  "respx>=0.23.1",
+  "ruff>=0.15.17",
+  "twine>=6.2.0",
 ]
 docs = [
-  "mkdocs-material>=9.5",
-  "mkdocstrings[python]>=0.27",
+  "mkdocs-material>=9.7.6",
+  "mkdocstrings[python]>=1.0.4",
 ]
 
 [tool.hatch.version]
