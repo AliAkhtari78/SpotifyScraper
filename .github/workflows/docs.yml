@@ -1,0 +1,29 @@
+name: Docs
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "src/**"
+      - ".github/workflows/docs.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: "3.13"
+      # All extras so mkdocstrings can import optional-dependency code paths
+      # (e.g. the browser transport) without ImportError during introspection.
+      - run: uv sync --group docs --all-extras
+      # Strict build: any broken link, missing nav target, or mkdocstrings
+      # path error fails CI.
+      - run: uv run mkdocs build --strict

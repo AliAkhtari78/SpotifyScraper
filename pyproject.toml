@@ -52,6 +52,10 @@ dev = [
   "ruff>=0.9",
   "twine>=6.0",
 ]
+docs = [
+  "mkdocs-material>=9.5",
+  "mkdocstrings[python]>=0.27",
+]
 
 [tool.hatch.version]
 path = "src/spotify_scraper/__init__.py"

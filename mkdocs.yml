@@ -1,0 +1,110 @@
+site_name: SpotifyScraper
+site_description: >-
+  Extract public Spotify data - tracks, albums, artists, playlists, podcasts -
+  without the official API.
+site_author: Ali Akhtari
+site_url: https://spotifyscraper.readthedocs.io
+repo_url: https://github.com/AliAkhtari78/SpotifyScraper
+repo_name: AliAkhtari78/SpotifyScraper
+edit_uri: edit/master/docs/
+copyright: Copyright &copy; Ali Akhtari - MIT License
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - navigation.tracking
+    - navigation.indexes
+    - content.code.copy
+    - content.code.annotate
+    - search.highlight
+    - search.suggest
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: green
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: green
+      accent: green
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+            docstring_style: google
+            members_order: source
+            separate_signature: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_signature_annotations: true
+            merge_init_into_class: true
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets:
+      base_path:
+        - .
+      check_paths: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - toc:
+      permalink: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/AliAkhtari78/SpotifyScraper
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/spotifyscraper/
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quickstart: getting-started/quickstart.md
+  - Guides:
+    - Entities: guides/entities.md
+    - Async: guides/async.md
+    - Media downloads: guides/media-downloads.md
+    - Anti-ban & resilience: guides/anti-ban.md
+    - Browser fallback: guides/browser-fallback.md
+    - Error handling: guides/error-handling.md
+  - API Reference:
+    - Client: reference/client.md
+    - Async client: reference/async-client.md
+    - Models: reference/models.md
+    - Errors: reference/errors.md
+    - HTTP & config: reference/http.md
+    - Media: reference/media.md
+  - Migration from v2: migration.md
+  - Project:
+    - Changelog: changelog.md
+    - Contributing: contributing.md
+    - FAQ: faq.md
+    - Legal & ToS: legal.md
