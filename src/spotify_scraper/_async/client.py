@@ -17,7 +17,12 @@ from spotify_scraper import media, urls
 from spotify_scraper.api import parse_embed, parse_entities, pathfinder
 from spotify_scraper.api.parse_embed import EmbedSession
 from spotify_scraper.auth.anonymous import AsyncAnonymousTokenProvider
-from spotify_scraper.errors import ParsingError, SpotifyScraperError, TokenError
+from spotify_scraper.errors import (
+    NetworkError,
+    ParsingError,
+    SpotifyScraperError,
+    TokenError,
+)
 from spotify_scraper.http.ratelimit import RateLimit
 from spotify_scraper.http.retry import RetryPolicy
 from spotify_scraper.http.transport import AsyncHttpxTransport, AsyncTransport, Response
@@ -111,7 +116,7 @@ class AsyncSpotifyClient:
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "track")
-        model, _, _ = await self._get_entity(
+        model, _, _, _ = await self._get_entity(
             "track",
             entity_id,
             "trackUnion",
@@ -136,24 +141,26 @@ class AsyncSpotifyClient:
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "album")
-        album, session, tier1 = await self._get_entity(
+        album, session, tier1, union = await self._get_entity(
             "album",
             entity_id,
             "albumUnion",
             parse_entities.parse_album_gql,
             parse_entities.parse_album_embed,
         )
-        if not tier1:
+        if not tier1 or union is None:
             return album
         tracks = await self._paginate(
             "album",
             entity_id,
             session,
             union_key="albumUnion",
-            collected=len(album.tracks),
-            total=album.total_tracks,
+            container_key="tracksV2",
+            raw_offset=_raw_item_count(union, "tracksV2"),
+            filtered_have=len(album.tracks),
+            total_raw=album.total_tracks,
             page_size=_ALBUM_PAGE,
-            max_tracks=None,
+            max_items=None,
             parse_page=parse_entities.parse_album_tracks_page,
         )
         if not tracks:
@@ -174,7 +181,7 @@ class AsyncSpotifyClient:
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "artist")
-        artist, _, _ = await self._get_entity(
+        artist, _, _, _ = await self._get_entity(
             "artist",
             entity_id,
             "artistUnion",
@@ -198,24 +205,26 @@ class AsyncSpotifyClient:
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "playlist")
-        playlist, session, tier1 = await self._get_entity(
+        playlist, session, tier1, union = await self._get_entity(
             "playlist",
             entity_id,
             "playlistV2",
             lambda union: parse_entities.parse_playlist_gql(union, max_tracks=max_tracks),
             parse_entities.parse_playlist_embed,
         )
-        if not tier1:
+        if not tier1 or union is None:
             return playlist
         tracks = await self._paginate(
             "playlist",
             entity_id,
             session,
             union_key="playlistV2",
-            collected=len(playlist.tracks),
-            total=playlist.total_tracks,
+            container_key="content",
+            raw_offset=_raw_item_count(union, "content"),
+            filtered_have=len(playlist.tracks),
+            total_raw=playlist.total_tracks,
             page_size=_PLAYLIST_PAGE,
-            max_tracks=max_tracks,
+            max_items=max_tracks,
             parse_page=parse_entities.parse_playlist_tracks_page,
         )
         if not tracks:
@@ -236,7 +245,7 @@ class AsyncSpotifyClient:
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "episode")
-        episode, _, _ = await self._get_entity(
+        episode, _, _, _ = await self._get_entity(
             "episode",
             entity_id,
             "episodeUnionV2",
@@ -262,7 +271,7 @@ class AsyncSpotifyClient:
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "show")
-        show, session, tier1 = await self._get_entity(
+        show, session, tier1, _ = await self._get_entity(
             "show",
             entity_id,
             "podcastUnionV2",
@@ -358,10 +367,12 @@ class AsyncSpotifyClient:
                 entity_id,
                 session,
                 union_key="podcastUnionV2",
-                collected=len(episodes),
-                total=total,
+                container_key="episodesV2",
+                raw_offset=_raw_item_count(first, "episodesV2"),
+                filtered_have=len(episodes),
+                total_raw=total,
                 page_size=_SHOW_EPISODES_PAGE,
-                max_tracks=max_episodes,
+                max_items=max_episodes,
                 parse_page=parse_entities.parse_show_episodes_page,
             )
         )
@@ -405,11 +416,13 @@ class AsyncSpotifyClient:
         parse_embed_fn: Callable[[Mapping[str, Any]], _T],
         *,
         merge: Callable[[_T, _T], _T] | None = None,
-    ) -> tuple[_T, EmbedSession, bool]:
+    ) -> tuple[_T, EmbedSession, bool, Mapping[str, Any] | None]:
         """Run the embed-first two-tier ladder for one entity.
 
         Returns the resolved model, the embed session (so callers can paginate
-        with the same token), and a flag that is ``True`` when tier 1 succeeded.
+        with the same token), a flag that is ``True`` when tier 1 succeeded, and
+        the raw tier-1 union (so paginating callers can count raw items) or
+        ``None`` when degraded.
         """
         next_data = await self._fetch_next_data(kind, entity_id)
         embed_model = parse_embed_fn(parse_embed.get_entity(next_data))
@@ -418,12 +431,12 @@ class AsyncSpotifyClient:
         try:
             union = await self._fetch_union(kind, entity_id, union_key, session)
             gql_model = parse_gql(union)
-        except ParsingError as exc:
+        except (ParsingError, NetworkError) as exc:
             _LOGGER.warning("Tier-1 %s fetch degraded to embed page: %s", kind, exc)
-            return embed_model, session, False
+            return embed_model, session, False, None
         if merge is not None:
-            return merge(gql_model, embed_model), session, True
-        return gql_model, session, True
+            return merge(gql_model, embed_model), session, True, union
+        return gql_model, session, True, union
 
     async def _paginate(
         self,
@@ -432,22 +445,28 @@ class AsyncSpotifyClient:
         session: EmbedSession,
         *,
         union_key: str,
-        collected: int,
-        total: int | None,
+        container_key: str,
+        raw_offset: int,
+        filtered_have: int,
+        total_raw: int | None,
         page_size: int,
-        max_tracks: int | None,
+        max_items: int | None,
         parse_page: Callable[[Mapping[str, Any]], tuple[_T, ...]],
     ) -> tuple[_T, ...]:
         """Fetch follow-up pages after the first tier-1 page.
 
-        A mid-loop page failure logs a warning and returns what was collected
-        so far, never losing the already-parsed items.
+        The cursor advances by the number of RAW items each page consumed (not
+        the number kept after filtering non-Track / unavailable items), because
+        Spotify's ``offset`` indexes the raw items array and ``totalCount``
+        counts all items. ``max_items`` bounds the kept results. A mid-loop page
+        failure logs a warning and returns what was collected so far.
         """
         extra: list[_T] = []
-        offset = collected
-        while _wants_more(collected + len(extra), total, max_tracks):
-            limit = _next_limit(collected + len(extra), total, max_tracks, page_size)
-            if limit <= 0:
+        offset = raw_offset
+        while True:
+            if max_items is not None and filtered_have + len(extra) >= max_items:
+                break
+            if total_raw is not None and offset >= total_raw:
                 break
             try:
                 union = await self._fetch_union(
@@ -455,16 +474,19 @@ class AsyncSpotifyClient:
                     entity_id,
                     union_key,
                     session,
-                    overrides={"offset": offset, "limit": limit},
+                    overrides={"offset": offset, "limit": page_size},
                 )
                 page = parse_page(union)
             except (ParsingError, SpotifyScraperError) as exc:
                 _LOGGER.warning("Pagination for %s stopped early: %s", kind, exc)
                 break
-            if not page:
+            raw_count = _raw_item_count(union, container_key)
+            if raw_count == 0:
                 break
             extra.extend(page)
-            offset += len(page)
+            offset += raw_count
+        if max_items is not None:
+            return tuple(extra[: max(0, max_items - filtered_have)])
         return tuple(extra)
 
     async def _fetch_next_data(self, kind: str, entity_id: str) -> dict[str, Any]:
@@ -557,21 +579,14 @@ def _with_playlist_tracks(playlist: Playlist, tracks: tuple[PlaylistTrack, ...])
     )
 
 
-def _wants_more(have: int, total: int | None, max_tracks: int | None) -> bool:
-    if max_tracks is not None and have >= max_tracks:
-        return False
-    if total is None:
-        return False
-    return have < total
-
-
-def _next_limit(have: int, total: int | None, max_tracks: int | None, page_size: int) -> int:
-    limit = page_size
-    if total is not None:
-        limit = min(limit, total - have)
-    if max_tracks is not None:
-        limit = min(limit, max_tracks - have)
-    return limit
+def _raw_item_count(union: Mapping[str, Any], container_key: str) -> int:
+    """Count the raw items in a paginated union page (all item types)."""
+    container = union.get(container_key)
+    if isinstance(container, Mapping):
+        items = container.get("items")
+        if isinstance(items, list):
+            return len(items)
+    return 0
 
 
 def _safe_json(response: Response) -> dict[str, Any] | None:

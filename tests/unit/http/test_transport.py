@@ -13,6 +13,7 @@ import respx
 from spotify_scraper.errors import NetworkError, NotFoundError, RateLimitedError
 from spotify_scraper.http import HttpxTransport, Response, RetryPolicy, Transport
 from spotify_scraper.http.headers import USER_AGENTS
+from spotify_scraper.http.transport import _parse_retry_after
 
 URL = "https://open.spotify.com/embed/track/4uLU6hMCjMI75M1A2tKUQC"
 FIXTURES = Path(__file__).resolve().parents[3] / "tests" / "fixtures"
@@ -196,3 +197,24 @@ def test_custom_object_satisfies_protocol() -> None:
 
     assert isinstance(FakeTransport(), Transport)
     assert not isinstance(object(), Transport)
+
+
+@pytest.mark.parametrize(
+    ("header", "expected"),
+    [
+        (None, None),
+        ("12", 12.0),
+        ("0", 0.0),
+        ("-5", None),  # negative is nonsensical -> ignored
+        ("inf", None),  # non-finite -> ignored
+        ("nan", None),
+        ("garbage", None),
+    ],
+)
+def test_parse_retry_after_is_defensive(header: str | None, expected: float | None) -> None:
+    assert _parse_retry_after(header) == expected
+
+
+def test_parse_retry_after_accepts_http_date() -> None:
+    seconds = _parse_retry_after("Wed, 21 Oct 2099 07:28:00 GMT")
+    assert seconds is not None and seconds > 0

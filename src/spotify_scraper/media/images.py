@@ -109,6 +109,28 @@ def safe_filename(name: str, max_length: int = 150) -> str:
     return cleaned[:max_length].strip()
 
 
+def safe_output_name(filename: str) -> str:
+    """Reduce a caller-supplied filename to a single safe path component.
+
+    Strips any directory parts so a hostile or accidental ``filename`` (e.g.
+    ``"../../etc/passwd"`` or an absolute path) cannot escape the destination
+    directory.
+
+    Args:
+        filename: The caller-supplied output filename.
+
+    Returns:
+        The bare filename component.
+
+    Raises:
+        MediaError: If the filename has no usable component (e.g. ``"."``).
+    """
+    component = Path(filename).name
+    if not component or component in {".", ".."}:
+        raise MediaError(f"Invalid output filename: {filename!r}")
+    return component
+
+
 def extension_from_content_type(content_type: str | None) -> str:
     """Map a response content type to a bare file extension (default ``jpg``)."""
     if not content_type:
@@ -133,7 +155,7 @@ def _write_cover(
         ext = extension_from_content_type(content_type)
         out_name = f"{safe_filename(name)}.{ext}"
     else:
-        out_name = filename
+        out_name = safe_output_name(filename)
     dest.mkdir(parents=True, exist_ok=True)
     path = dest / out_name
     path.write_bytes(body)

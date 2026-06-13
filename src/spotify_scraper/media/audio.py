@@ -11,7 +11,7 @@ import importlib
 from typing import TYPE_CHECKING
 
 from spotify_scraper.errors import MediaError
-from spotify_scraper.media.images import _pick_cover, safe_filename
+from spotify_scraper.media.images import _pick_cover, safe_filename, safe_output_name
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.track import Track
 
@@ -48,7 +48,9 @@ def _artist_for_tags(entity: Previewable) -> str | None:
 
 def _preview_path(entity: Previewable, dest: Path, filename: str | None) -> Path:
     """Resolve the destination MP3 path, creating ``dest`` if missing."""
-    out_name = filename if filename is not None else f"{safe_filename(entity.name)}.mp3"
+    out_name = (
+        safe_output_name(filename) if filename is not None else f"{safe_filename(entity.name)}.mp3"
+    )
     dest.mkdir(parents=True, exist_ok=True)
     return dest / out_name
 

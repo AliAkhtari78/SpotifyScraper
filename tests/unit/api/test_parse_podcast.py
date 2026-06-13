@@ -155,11 +155,12 @@ def test_parse_show_gql_publisher_present(show_union: dict[str, Any]) -> None:
     assert show.media_type == "MIXED"
 
 
-def test_parse_show_gql_episodes_non_empty(show_union: dict[str, Any]) -> None:
+def test_parse_show_gql_omits_metadata_episode_stub(show_union: dict[str, Any]) -> None:
+    # queryShowMetadataV2 carries only a uri-only episode stub; parse_show_gql
+    # must NOT emit a phantom episode from it. The real listing comes from the
+    # separate queryPodcastEpisodes operation.
     show = parse_show_gql(show_union)
-    assert len(show.episodes) > 0
-    assert show.episodes[0].uri == EPISODE_URI
-    assert show.episodes[0].show is None
+    assert show.episodes == ()
 
 
 def test_parse_show_gql_rating_and_topics(show_union: dict[str, Any]) -> None:

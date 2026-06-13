@@ -15,6 +15,7 @@ import respx
 
 from spotify_scraper import SpotifyClient
 from spotify_scraper.errors import NotFoundError, SpotifyScraperError
+from spotify_scraper.http import RetryPolicy
 from spotify_scraper.http.transport import Response
 from spotify_scraper.models.track import Track
 
@@ -91,6 +92,24 @@ def test_degraded_path_returns_embed_track_with_warning(
     assert track.album is None
     assert track.preview_url is not None
     assert any(record.levelno == logging.WARNING for record in caplog.records)
+    assert "degraded" in caplog.text
+
+
+@respx.mock
+def test_network_error_on_tier1_degrades_to_embed(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    # A tier-1 transport failure (not just a parsing error) must degrade to the
+    # already-fetched embed data rather than propagating.
+    respx.get(EMBED_URL).mock(return_value=httpx.Response(200, text=embed_html()))
+    respx.get(PATHFINDER_RE).mock(side_effect=httpx.ConnectError("network down"))
+
+    client = SpotifyClient(retry=RetryPolicy(max_attempts=1, backoff_base=0.0))
+    with caplog.at_level(logging.WARNING, logger="spotify_scraper"), client:
+        track = client.get_track(TRACK_ID)
+
+    assert track.name == "Never Gonna Give You Up"
+    assert track.play_count is None  # tier-2 only
     assert "degraded" in caplog.text
 
 

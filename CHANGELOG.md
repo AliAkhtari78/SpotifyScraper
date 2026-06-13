@@ -44,8 +44,11 @@ raises typed exceptions instead of mixing errors into results.
 ### Removed
 - **BREAKING:** `get_all_info` — call the specific `get_*` method instead.
 - The Selenium browser backend (replaced by the Playwright transport extra).
-- Lyrics and the command-line interface are temporarily removed; both return in
-  v3.1 (lyrics require an authenticated cookie + token handshake).
+
+### Not yet included (returning in v3.1)
+- Lyrics extraction and the command-line interface are not part of v3.0; both
+  ship in v3.1 (lyrics require an authenticated cookie + a token handshake). The
+  `Lyrics` / `LyricsLine` model types are present but not yet populated.
 
 ### Migration
 See the [migration guide](https://spotifyscraper.readthedocs.io/en/latest/migration/)

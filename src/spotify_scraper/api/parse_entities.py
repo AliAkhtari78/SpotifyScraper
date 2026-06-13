@@ -675,7 +675,11 @@ def parse_show_gql(union: Mapping[str, Any]) -> Show:
         media_type=_optional_str(union, "mediaType"),
         images=_cover_art_images(union),
         total_episodes=_total_count(episodes_node) if episodes_node is not None else None,
-        episodes=_show_episodes(episodes_node),
+        # The metadata query's episodesV2 carries only a uri-only stub, which
+        # would parse into a phantom episode (empty name, 0 duration). The real
+        # listing is fetched separately via queryPodcastEpisodes, so leave this
+        # empty rather than emit a bogus entry on the degraded path.
+        episodes=(),
         topics=_topic_titles(union.get("topics")),
         rating=_average_rating(union.get("rating")),
         share_url=_share_url(union),
@@ -1125,7 +1129,7 @@ def _sparse_episode(data: Mapping[str, Any]) -> Episode | None:
         duration_ms=_optional_int(duration, "totalMilliseconds") or 0,
         description=_optional_str(data, "description") or "",
         explicit=_gql_explicit(data),
-        playable=bool(playability.get("playable", True)),
+        playable=bool(playability.get("playable", False)),
         release_date=_iso_date(data.get("releaseDate")),
         images=_cover_art_images(data),
         show=None,

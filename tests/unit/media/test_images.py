@@ -15,6 +15,7 @@ from spotify_scraper.media.images import (
     extension_from_content_type,
     pick_image,
     safe_filename,
+    safe_output_name,
 )
 from spotify_scraper.models.common import AlbumRef, Image
 from spotify_scraper.models.track import Track
@@ -233,3 +234,37 @@ async def test_download_cover_async_writes_file(tmp_path: Path) -> None:
 
     assert path == tmp_path / "Never Gonna Give You Up.jpg"
     assert path.read_bytes() == COVER_BYTES
+
+
+def test_safe_output_name_strips_traversal() -> None:
+    assert safe_output_name("../../etc/passwd") == "passwd"
+    assert safe_output_name("/abs/cover.jpg") == "cover.jpg"
+    assert safe_output_name("plain.png") == "plain.png"
+    with pytest.raises(MediaError):
+        safe_output_name("..")
+
+
+@respx.mock
+def test_download_cover_hostile_filename_stays_in_dest(tmp_path: Path) -> None:
+    from spotify_scraper.models.common import Image
+    from spotify_scraper.models.track import Track
+
+    track = Track(
+        id="x",
+        uri="spotify:track:x",
+        name="t",
+        duration_ms=1,
+        explicit=False,
+        playable=True,
+        preview_url=None,
+        artists=(),
+        images=(Image(url="https://img/c.jpg"),),
+        release_date=None,
+    )
+    respx.get("https://img/c.jpg").mock(return_value=httpx.Response(200, content=b"\xff\xd8\xff"))
+    transport = HttpxTransport()
+    dest = tmp_path / "covers"
+    path = download_cover_sync(transport, track, dest, filename="../../escape.jpg")
+    transport.close()
+    assert path.parent == dest  # did not escape the destination directory
+    assert path.name == "escape.jpg"

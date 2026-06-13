@@ -26,6 +26,13 @@ class RateLimit:
     per_second: float = 2.0
     burst: int = 5
 
+    def __post_init__(self) -> None:
+        """Reject nonsensical limits that would stall or divide by zero."""
+        if self.per_second <= 0:
+            raise ValueError("RateLimit.per_second must be greater than 0")
+        if self.burst < 1:
+            raise ValueError("RateLimit.burst must be at least 1")
+
 
 #: Spotify's pathfinder GraphQL host. Exposed as a constant so callers can
 #: target it in ``host_rate_limits`` if they ever need to throttle it harder

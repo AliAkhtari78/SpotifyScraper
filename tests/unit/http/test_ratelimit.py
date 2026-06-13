@@ -114,3 +114,9 @@ async def test_async_bucket_refills_while_idle() -> None:
     clock.now += 10.0
     await bucket.acquire()
     assert clock.sleeps == []
+
+
+@pytest.mark.parametrize("kwargs", [{"per_second": 0}, {"per_second": -1.0}, {"burst": 0}])
+def test_ratelimit_rejects_invalid(kwargs: dict[str, float]) -> None:
+    with pytest.raises(ValueError):
+        RateLimit(**kwargs)

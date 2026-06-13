@@ -9,8 +9,11 @@ retry with backoff, and mapping of failures onto the library's error types.
 from __future__ import annotations
 
 import asyncio
+import math
 import time
 from collections.abc import Mapping
+from datetime import datetime
+from email.utils import parsedate_to_datetime
 from typing import Any, Protocol, runtime_checkable
 
 import httpx
@@ -86,12 +89,26 @@ _RETRYABLE_ERRORS = (
 
 
 def _parse_retry_after(value: str | None) -> float | None:
+    """Parse a ``Retry-After`` header (delay-seconds or HTTP-date) defensively.
+
+    Returns a non-negative finite number of seconds, or ``None`` if the value
+    is missing, malformed, infinite, or negative.
+    """
     if value is None:
         return None
     try:
-        return float(value)
+        seconds = float(value)
     except ValueError:
+        try:
+            target = parsedate_to_datetime(value)
+        except (TypeError, ValueError):
+            return None
+        if target is None:
+            return None
+        return max(0.0, (target - datetime.now(target.tzinfo)).total_seconds())
+    if not math.isfinite(seconds) or seconds < 0:
         return None
+    return seconds
 
 
 def _error_delay(exc: httpx.HTTPError, url: str, attempt: int, policy: RetryPolicy) -> float:

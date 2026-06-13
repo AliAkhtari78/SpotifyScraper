@@ -335,6 +335,56 @@ def test_show_episode_listing_failure_returns_metadata(
     assert "episode listing" in caplog.text
 
 
+def _mixed_playlist_page(offset: int, limit: int, total: int) -> dict[str, Any]:
+    """A playlistV2 page where every 5th RAW item is a non-Track (dropped)."""
+    body = copy.deepcopy(_pathfinder_body("playlist"))
+    template = body["data"]["playlistV2"]["content"]["items"][0]
+    items: list[dict[str, Any]] = []
+    for raw_index in range(offset, min(offset + limit, total)):
+        item = copy.deepcopy(template)
+        if raw_index % 5 == 0:
+            item["itemV2"]["data"]["__typename"] = "NotPlayable"  # local file / episode
+            item["itemV2"]["data"].pop("uri", None)
+        else:
+            item["itemV2"]["data"]["__typename"] = "Track"
+            item["itemV2"]["data"]["uri"] = f"spotify:track:{raw_index:022d}"
+            item["itemV2"]["data"]["name"] = f"Track {raw_index}"
+        items.append(item)
+    body["data"]["playlistV2"]["content"]["items"] = items
+    body["data"]["playlistV2"]["content"]["totalCount"] = total
+    return body
+
+
+@respx.mock
+def test_playlist_pagination_with_non_track_items_no_dupes_or_skips() -> None:
+    # Regression: the offset cursor must advance by RAW items consumed, not by
+    # the count kept after dropping non-Track items, or pages re-fetch (dupes)
+    # and tail tracks get skipped.
+    total = 250  # raw items; every 5th (0, 5, ... 245 -> 50 of them) is dropped
+    respx.get(_embed_url("playlist", IDS["playlist"])).mock(
+        return_value=httpx.Response(200, text=_embed_html("playlist"))
+    )
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        variables = json.loads(_variables(request.url.query.decode()))
+        return httpx.Response(
+            200, json=_mixed_playlist_page(variables["offset"], variables["limit"], total)
+        )
+
+    route = respx.get(PATHFINDER_RE).mock(side_effect=handler)
+
+    with SpotifyClient() as client:
+        playlist = client.get_playlist(IDS["playlist"], max_tracks=None)
+
+    uris = [track.track.uri for track in playlist.tracks]
+    assert len(uris) == len(set(uris)), "pagination produced duplicate tracks"
+    assert len(playlist.tracks) == 200  # 250 raw minus 50 dropped
+    offsets = [
+        json.loads(_variables(call.request.url.query.decode()))["offset"] for call in route.calls
+    ]
+    assert offsets == [0, 100, 200]  # raw-aligned, not [0, 80, 152, ...]
+
+
 @respx.mock
 def test_album_single_page_does_not_overpaginate() -> None:
     respx.get(_embed_url("album", IDS["album"])).mock(
