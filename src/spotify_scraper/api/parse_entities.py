@@ -17,6 +17,7 @@ from spotify_scraper.models.album import Album
 from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.common import AlbumRef, ArtistRef, Image, ShowRef, UserRef
 from spotify_scraper.models.episode import Episode
+from spotify_scraper.models.lyrics import Lyrics, LyricsLine
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
@@ -29,6 +30,7 @@ __all__ = [
     "parse_artist_gql",
     "parse_episode_embed",
     "parse_episode_gql",
+    "parse_lyrics",
     "parse_playlist_embed",
     "parse_playlist_gql",
     "parse_playlist_tracks_page",
@@ -312,6 +314,59 @@ def _optional_int(container: Mapping[str, Any], key: str) -> int | None:
     if isinstance(value, bool) or not isinstance(value, int):
         return None
     return value
+
+
+# --------------------------------------------------------------------------- #
+# Lyrics
+# --------------------------------------------------------------------------- #
+
+
+def parse_lyrics(payload: Mapping[str, Any]) -> Lyrics:
+    """Build a :class:`Lyrics` from a color-lyrics response.
+
+    Args:
+        payload: The decoded color-lyrics body, i.e. ``{"lyrics": {...}}``.
+
+    Returns:
+        A :class:`Lyrics` whose lines carry millisecond offsets; lines with
+        empty ``words`` are dropped.
+
+    Raises:
+        ParsingError: If the ``lyrics`` object or its ``lines`` are missing.
+    """
+    lyrics = _optional_mapping(payload, "lyrics")
+    if lyrics is None:
+        raise ParsingError(f"Lyrics payload missing 'lyrics'. {_UPDATE_HINT}")
+    raw_lines = lyrics.get("lines")
+    if not isinstance(raw_lines, Sequence):
+        raise ParsingError(f"Lyrics payload missing 'lyrics.lines'. {_UPDATE_HINT}")
+    lines: list[LyricsLine] = []
+    for line in raw_lines:
+        if not isinstance(line, Mapping):
+            continue
+        words = line.get("words")
+        if not isinstance(words, str) or not words:
+            continue
+        lines.append(LyricsLine(start_ms=_start_ms(line.get("startTimeMs")), text=words))
+    return Lyrics(
+        lines=tuple(lines),
+        sync_type=_optional_str(lyrics, "syncType") or "UNSYNCED",
+        provider=_optional_str(lyrics, "provider"),
+        language=_optional_str(lyrics, "language"),
+    )
+
+
+def _start_ms(value: Any) -> int:
+    if isinstance(value, bool):
+        return 0
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value)
+        except ValueError:
+            return 0
+    return 0
 
 
 # --------------------------------------------------------------------------- #

@@ -133,11 +133,13 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 | Version | Adds |
 |---|---|
 | 3.0.0 | Core library. |
-| 3.1.0 | The command-line interface (this release). Lyrics extraction (cookie-authenticated) follows. |
+| 3.1.0 | The command-line interface. |
+| 3.2.0 | Cookie-authenticated **lyrics** extraction (this release). |
 
-!!! note "Lyrics still upcoming"
-    **Lyrics** extraction is still planned for a later release — there is no
-    lyrics method yet. The CLI is available now (see above).
+!!! success "Lyrics are available"
+    Cookie-authenticated **lyrics** extraction has shipped:
+    `client.get_lyrics(track)` and the `spotifyscraper lyrics` command. See the
+    [Lyrics & cookies guide](guides/lyrics-and-cookies.md).
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.

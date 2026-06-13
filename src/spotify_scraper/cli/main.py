@@ -7,6 +7,7 @@ fetches with :class:`SpotifyClient` and emits ``model.to_dict()`` as JSON.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Annotated
 
@@ -38,6 +39,14 @@ TimeoutOpt = Annotated[float, typer.Option("--timeout", help="Per-request timeou
 RateLimitOpt = Annotated[
     float | None,
     typer.Option("--rate-limit", help="Sustained requests per second."),
+]
+CookiesOpt = Annotated[
+    Path | None,
+    typer.Option(
+        "--cookies",
+        help="Path to a Netscape cookies.txt with an 'sp_dc' line "
+        "(falls back to the SPOTIFY_SP_DC environment variable).",
+    ),
 ]
 
 
@@ -210,3 +219,41 @@ def show(
         emit(entity.to_dict(), pretty=pretty, output=output)
 
     run(body)
+
+
+@app.command()
+def lyrics(
+    value: ValueArg,
+    cookies: CookiesOpt = None,
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Fetch a track's lyrics (requires an sp_dc cookie) and emit it as JSON."""
+
+    def body() -> None:
+        source = _resolve_cookies(cookies)
+        rate = RateLimit(per_second=rate_limit) if rate_limit is not None else None
+        with SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate, cookies=source) as client:
+            entity = client.get_lyrics(value)
+        emit(entity.to_dict(), pretty=pretty, output=output)
+
+    run(body)
+
+
+def _resolve_cookies(cookies: Path | None) -> str | Path:
+    """Resolve the cookie source from ``--cookies`` or ``SPOTIFY_SP_DC``.
+
+    Raises:
+        typer.BadParameter: If neither a cookies file nor the env var is set.
+    """
+    if cookies is not None:
+        return cookies
+    env = os.environ.get("SPOTIFY_SP_DC")
+    if env:
+        return env
+    raise typer.BadParameter(
+        "Lyrics require authentication: pass --cookies PATH or set SPOTIFY_SP_DC."
+    )

@@ -112,7 +112,7 @@ fights it directly:
 
 - **v3.1** — a command-line interface: `pip install "spotifyscraper[cli]"`, then
   `spotifyscraper track <id>` emits JSON you can pipe straight into `jq`.
-- **Next** — cookie-authenticated lyrics.
+- **v3.2** — cookie-authenticated lyrics: `client.get_lyrics(track)` with your sp_dc cookie.
 
 ## Get it
 

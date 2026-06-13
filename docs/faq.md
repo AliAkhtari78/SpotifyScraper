@@ -41,9 +41,10 @@ art or previews. See the [CLI guide](guides/cli.md).
 
 ### Where are lyrics?
 
-Lyrics are still planned for a later release. They require an authenticated
-cookie plus a rotating token handshake and are being built carefully so they
-don't destabilize the core library; there is no lyrics method yet.
+Lyrics are available as of v3.2. They require an authenticated `sp_dc` cookie
+(lyrics are a logged-in-only Spotify feature). Build the client with
+`cookies=` and call `get_lyrics(track)`, or use the `spotifyscraper lyrics`
+command. See the [Lyrics & cookies guide](guides/lyrics-and-cookies.md).
 
 ### Something stopped working — Spotify probably changed their site. What do I do?
 

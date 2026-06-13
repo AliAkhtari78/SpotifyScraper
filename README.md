@@ -95,13 +95,30 @@ spotifyscraper download preview <id> -o ./previews --embed-cover
 Every command emits JSON, so it composes with tools like `jq`. See the
 [CLI guide](https://spotifyscraper.readthedocs.io/en/latest/guides/cli/).
 
+## Lyrics
+
+Lyrics need a Spotify account cookie (`sp_dc`); the library handles the token
+handshake for you:
+
+```python
+from spotify_scraper import SpotifyClient
+
+with SpotifyClient(cookies="cookies.txt") as client:   # or cookies={"sp_dc": "..."}
+    lyrics = client.get_lyrics("4uLU6hMCjMI75M1A2tKUQC")
+    for line in lyrics.lines:
+        print(line.start_ms, line.text)
+```
+
+Your cookie is sent only to Spotify and never logged. See the
+[lyrics guide](https://spotifyscraper.readthedocs.io/en/latest/guides/lyrics-and-cookies/).
+
 ## Roadmap
 
 | Version | Scope |
 |---------|-------|
 | **3.0** | The library: all entities, pagination, media downloads, browser fallback, docs |
 | **3.1** | Command-line interface |
-| next | Cookie-authenticated lyrics |
+| **3.2** | Cookie-authenticated lyrics |
 
 ## Documentation
 

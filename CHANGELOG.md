@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-06-13
+
+### Added
+- **Lyrics.** `client.get_lyrics(track)` returns time-synced (or unsynced)
+  lyrics, and a `spotifyscraper lyrics` CLI command emits them as JSON. Lyrics
+  require a user `sp_dc` cookie (`SpotifyClient(cookies=...)` or `--cookies` /
+  the `SPOTIFY_SP_DC` env var); the library performs Spotify's rotating-TOTP
+  `/api/token` handshake internally. Cookies and tokens stay local and are
+  never logged. The `Lyrics` / `LyricsLine` models are now populated.
+
 ## [3.1.0] - 2026-06-13
 
 ### Added

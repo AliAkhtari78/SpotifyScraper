@@ -10,7 +10,8 @@ replacement.
     - `client.get_<entity>_info(url)` → `client.get_<entity>(value)` returning a
       typed model.
     - The single argument now accepts a **URL, URI, or bare ID** interchangeably.
-    - The CLI is available now via the `cli` extra; lyrics are still upcoming.
+    - The CLI is available via the `cli` extra; cookie-authenticated lyrics
+      shipped in v3.2 (`get_lyrics`).
     - You read fields off the model (`track.name`) instead of dict keys
       (`info["title"]`).
 
@@ -45,8 +46,8 @@ Every public method of v2.1.5's `SpotifyClient` and its v3 replacement:
 | v2.1.5 method | v3 replacement | Notes |
 |---|---|---|
 | `get_track_info(url)` | [`get_track(value)`](reference/client.md) → `Track` | Returns a typed [`Track`](reference/models.md) instead of a dict. Read `track.name`, `track.artists`, `track.duration_ms`, etc. |
-| `get_track_lyrics(url)` | *Coming in v3.1* | Cookie-authenticated lyrics are **not** in v3.0. See [Lyrics](#lyrics-coming-in-v31). |
-| `get_track_info_with_lyrics(url)` | `get_track(value)` (info only) + *lyrics in v3.1* | v3.0 returns the track without lyrics; the combined lyrics path returns in v3.1. |
+| `get_track_lyrics(url)` | [`get_lyrics(value)`](reference/client.md) → `Lyrics` | Cookie-authenticated; build the client with `cookies=`. See [Lyrics](#lyrics). |
+| `get_track_info_with_lyrics(url)` | `get_track(value)` + `get_lyrics(value)` | Fetch the track and its lyrics in two calls; the lyrics call needs cookies. |
 | `get_album_info(url)` | [`get_album(value)`](reference/client.md) → `Album` | Returns an [`Album`](reference/models.md) whose full track list is paginated in for you. |
 | `get_artist_info(url)` | [`get_artist(value)`](reference/client.md) → `Artist` | Returns an [`Artist`](reference/models.md) with top tracks, albums, and singles. |
 | `get_playlist_info(url)` | [`get_playlist(value, max_tracks=100)`](reference/client.md) → `Playlist` | Returns a [`Playlist`](reference/models.md). Bound the track count with `max_tracks` (`None` = all). |
@@ -116,17 +117,24 @@ a mapping), and stores them for authenticated features:
 client = SpotifyClient(cookies="cookies.txt")
 ```
 
-In **v3.0** cookies are accepted and stored but **not yet consumed** — every
-public-metadata fetch works anonymously, with no credentials. Cookies become
-load-bearing for **cookie-authenticated lyrics in v3.1**.
+Public-metadata fetches always work anonymously, with no credentials. Cookies
+are load-bearing only for **cookie-authenticated lyrics** (v3.2+).
 
-## Lyrics (coming in v3.1)
+## Lyrics
 
-!!! note "Lyrics are not in v3.0"
-    v2's `get_track_lyrics` and `get_track_info_with_lyrics` have **no v3.0
-    equivalent**. Cookie-authenticated lyrics extraction ships in **v3.1**. The
-    `Lyrics` and `LyricsLine` models are already defined but are **not populated**
-    in v3.0 — see [Models](reference/models.md).
+As of **v3.2**, `get_lyrics(value)` returns a populated [`Lyrics`](reference/models.md)
+model from Spotify's color-lyrics endpoint, using a web-player token derived
+from your `sp_dc` cookie:
+
+```python
+with SpotifyClient(cookies="cookies.txt") as client:
+    lyrics = client.get_lyrics("4uLU6hMCjMI75M1A2tKUQC")
+    for line in lyrics.lines:
+        print(line.start_ms, line.text)
+```
+
+See the [Lyrics & cookies guide](guides/lyrics-and-cookies.md) for how to obtain
+an `sp_dc` cookie and the security implications.
 
 ## Command-line interface
 

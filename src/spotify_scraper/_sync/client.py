@@ -15,11 +15,15 @@ from types import TracebackType
 from typing import Any, TypeVar
 
 from spotify_scraper import media, urls
+from spotify_scraper.api import lyrics as lyrics_api
 from spotify_scraper.api import parse_embed, parse_entities, pathfinder
 from spotify_scraper.api.parse_embed import EmbedSession
 from spotify_scraper.auth.anonymous import AnonymousTokenProvider
+from spotify_scraper.auth.cookies import CookieTokenProvider, load_sp_dc
 from spotify_scraper.errors import (
+    AuthenticationError,
     NetworkError,
+    NotFoundError,
     ParsingError,
     SpotifyScraperError,
     TokenError,
@@ -30,6 +34,7 @@ from spotify_scraper.http.transport import HttpxTransport, Response, Transport
 from spotify_scraper.models.album import Album
 from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.episode import Episode
+from spotify_scraper.models.lyrics import Lyrics
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
@@ -51,7 +56,14 @@ class SpotifyClient:
     :class:`~spotify_scraper.errors.SpotifyScraperError`.
     """
 
-    __slots__ = ("_closed", "_cookies", "_owns_transport", "_tokens", "_transport")
+    __slots__ = (
+        "_closed",
+        "_cookies",
+        "_lyrics_tokens",
+        "_owns_transport",
+        "_tokens",
+        "_transport",
+    )
 
     def __init__(
         self,
@@ -96,6 +108,7 @@ class SpotifyClient:
             self._owns_transport = False
         self._cookies = cookies
         self._tokens = AnonymousTokenProvider(self._transport)
+        self._lyrics_tokens: CookieTokenProvider | None = None
         self._closed = False
 
     def get_track(self, value: str) -> Track:
@@ -282,6 +295,63 @@ class SpotifyClient:
         if not tier1:
             return show
         return self._with_episodes(show, entity_id, session, max_episodes)
+
+    def get_lyrics(self, value: str) -> Lyrics:
+        """Fetch a track's lyrics using the cookie-derived web-player token.
+
+        Lyrics are an authenticated feature: the client must have been built
+        with ``cookies=``. A client without cookies raises
+        :class:`AuthenticationError` immediately, without any HTTP request.
+
+        Args:
+            value: A Spotify track URL, URI, or 22-character ID.
+
+        Returns:
+            The track's :class:`Lyrics` (synced when Spotify provides offsets).
+
+        Raises:
+            AuthenticationError: If no cookies were configured, or the cookie
+                is rejected by the token exchange.
+            NotFoundError: If the track exists but has no lyrics.
+            SpotifyScraperError: If the client is closed.
+        """
+        _, entity_id = self._resolve(value, "track")
+        provider = self._lyrics_provider()
+        token = provider.token()
+        try:
+            return self._fetch_lyrics(entity_id, token)
+        except AuthenticationError:
+            provider.invalidate()
+            return self._fetch_lyrics(entity_id, provider.token())
+
+    def _lyrics_provider(self) -> CookieTokenProvider:
+        self._ensure_open()
+        provider = self._lyrics_tokens
+        if provider is None:
+            if self._cookies is None:
+                raise AuthenticationError(
+                    "Lyrics require authentication; build SpotifyClient(cookies=...) "
+                    "with an 'sp_dc' cookie."
+                )
+            provider = CookieTokenProvider(self._transport, load_sp_dc(self._cookies))
+            self._lyrics_tokens = provider
+        return provider
+
+    def _fetch_lyrics(self, entity_id: str, token: str) -> Lyrics:
+        url = lyrics_api.lyrics_url(entity_id)
+        try:
+            response = self._transport.get(url, headers=lyrics_api.auth_headers(token))
+        except NotFoundError as exc:
+            raise NotFoundError(f"No lyrics for track {entity_id}.") from exc
+        if response.status_code == 401:
+            raise AuthenticationError("Spotify rejected the cookie token for lyrics (HTTP 401).")
+        body = _safe_json(response)
+        if body is None:
+            raise ParsingError(
+                "Lyrics response was not JSON. Spotify may have changed its API; "
+                "check for a library update."
+            )
+        return parse_entities.parse_lyrics(body)
 
     def download_cover(
         self,

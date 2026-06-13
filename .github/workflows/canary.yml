@@ -23,8 +23,26 @@ jobs:
           python-version: "3.13"
       - run: uv sync --locked --all-extras
       - run: uv run playwright install --with-deps chromium
-      - name: Run live tests
-        run: uv run pytest -m live --timeout=120 -p no:cacheprovider -q
+      - name: Run live tests (excluding lyrics)
+        run: uv run pytest -m live -k "not lyrics" --timeout=120 -p no:cacheprovider -q
+
+  # Lyrics depend on a maintainer cookie (SPOTIFY_SP_DC) and Spotify's rotating
+  # TOTP secret; keep them non-blocking so an expired cookie or a rotated secret
+  # never reddens the core extraction canary.
+  lyrics:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: "3.13"
+      - run: uv sync --locked
+      - name: Run live lyrics tests (skipped without the cookie)
+        env:
+          SPOTIFY_SP_DC: ${{ secrets.SPOTIFY_SP_DC }}
+        run: uv run pytest -m live -k lyrics --timeout=120 -p no:cacheprovider -q
 
   report:
     needs: [live]

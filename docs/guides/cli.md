@@ -155,6 +155,14 @@ echo $?   # 3
 
 This makes the CLI safe to use in scripts with `set -e`.
 
-!!! note "Lyrics are still upcoming"
-    A `lyrics` command (cookie-authenticated) is planned for a later release and
-    is not part of this CLI yet.
+## Lyrics
+
+The `lyrics` command fetches time-synced lyrics (cookie-authenticated):
+
+```bash
+spotifyscraper lyrics 4uLU6hMCjMI75M1A2tKUQC --cookies cookies.txt
+# or: export SPOTIFY_SP_DC=... && spotifyscraper lyrics <id>
+```
+
+See the [lyrics & cookies guide](lyrics-and-cookies.md) for how to obtain your
+`sp_dc` cookie.
