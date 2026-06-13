@@ -32,6 +32,7 @@ _LOGGER = logging.getLogger("spotify_scraper")
 
 _PLAYLIST_PAGE = 100
 _ALBUM_PAGE = 50
+_SHOW_EPISODES_PAGE = 50
 
 _T = TypeVar("_T")
 
@@ -56,11 +57,13 @@ class AsyncSpotifyClient:
         timeout: float = 10.0,
         transport: AsyncTransport | None = None,
         cookies: str | Path | Mapping[str, str] | None = None,
+        host_rate_limits: Mapping[str, RateLimit] | None = None,
     ) -> None:
         """Initialize the client.
 
         Args:
-            rate_limit: Token-bucket configuration; defaults to safe limits.
+            rate_limit: Global token-bucket configuration; defaults to safe
+                limits applied per host.
             retry: Retry policy; defaults to :class:`RetryPolicy`.
             proxy: Optional proxy URL for the default transport.
             user_agent: Fixed User-Agent for the default transport.
@@ -69,6 +72,8 @@ class AsyncSpotifyClient:
                 option; the client does not own its lifecycle.
             cookies: User cookies for authenticated features; accepted and
                 stored now, consumed by the lyrics extraction change.
+            host_rate_limits: Optional per-host rate overrides for the default
+                transport (e.g. to throttle ``api-partner.spotify.com``).
         """
         if transport is None:
             self._transport: AsyncTransport = AsyncHttpxTransport(
@@ -77,6 +82,7 @@ class AsyncSpotifyClient:
                 user_agent=user_agent,
                 proxy=proxy,
                 timeout=timeout,
+                host_rate_limits=host_rate_limits,
             )
             self._owns_transport = True
         else:
@@ -143,6 +149,7 @@ class AsyncSpotifyClient:
             "album",
             entity_id,
             session,
+            union_key="albumUnion",
             collected=len(album.tracks),
             total=album.total_tracks,
             page_size=_ALBUM_PAGE,
@@ -204,6 +211,7 @@ class AsyncSpotifyClient:
             "playlist",
             entity_id,
             session,
+            union_key="playlistV2",
             collected=len(playlist.tracks),
             total=playlist.total_tracks,
             page_size=_PLAYLIST_PAGE,
@@ -237,28 +245,69 @@ class AsyncSpotifyClient:
         )
         return episode
 
-    async def get_show(self, value: str) -> Show:
-        """Fetch a podcast show by URL, URI, or bare ID.
+    async def get_show(self, value: str, *, max_episodes: int | None = 50) -> Show:
+        """Fetch a podcast show by URL, URI, or bare ID, listing its episodes.
 
         Args:
             value: A Spotify show URL, URI, or 22-character ID.
+            max_episodes: Upper bound on episodes to collect; ``None`` fetches
+                all of them.
 
         Returns:
-            The richest available :class:`Show`.
+            The richest available :class:`Show`, with ``total_episodes`` and a
+            paginated ``episodes`` listing when tier 1 succeeds.
 
         Raises:
             NotFoundError: If the show does not exist.
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "show")
-        show, _, _ = await self._get_entity(
+        show, session, tier1 = await self._get_entity(
             "show",
             entity_id,
             "podcastUnionV2",
             parse_entities.parse_show_gql,
             parse_entities.parse_show_embed,
         )
-        return show
+        if not tier1:
+            return show
+        return await self._with_episodes(show, entity_id, session, max_episodes)
+
+    async def _with_episodes(
+        self, show: Show, entity_id: str, session: EmbedSession, max_episodes: int | None
+    ) -> Show:
+        first_limit = (
+            _SHOW_EPISODES_PAGE if max_episodes is None else min(max_episodes, _SHOW_EPISODES_PAGE)
+        )
+        try:
+            first = await self._fetch_union(
+                "show_episodes",
+                entity_id,
+                "podcastUnionV2",
+                session,
+                overrides={"offset": 0, "limit": first_limit},
+            )
+        except (ParsingError, SpotifyScraperError) as exc:
+            _LOGGER.warning("Show episode listing for %s failed: %s", entity_id, exc)
+            return show
+        total = parse_entities.show_episodes_total(first)
+        episodes: list[Episode] = list(parse_entities.parse_show_episodes_page(first))
+        episodes.extend(
+            await self._paginate(
+                "show_episodes",
+                entity_id,
+                session,
+                union_key="podcastUnionV2",
+                collected=len(episodes),
+                total=total,
+                page_size=_SHOW_EPISODES_PAGE,
+                max_tracks=max_episodes,
+                parse_page=parse_entities.parse_show_episodes_page,
+            )
+        )
+        if max_episodes is not None:
+            episodes = episodes[:max_episodes]
+        return _with_show_episodes(show, tuple(episodes), total)
 
     async def aclose(self) -> None:
         """Close the owned transport and mark the client closed."""
@@ -322,18 +371,18 @@ class AsyncSpotifyClient:
         entity_id: str,
         session: EmbedSession,
         *,
+        union_key: str,
         collected: int,
         total: int | None,
         page_size: int,
         max_tracks: int | None,
         parse_page: Callable[[Mapping[str, Any]], tuple[_T, ...]],
     ) -> tuple[_T, ...]:
-        """Fetch follow-up track pages after the first tier-1 page.
+        """Fetch follow-up pages after the first tier-1 page.
 
         A mid-loop page failure logs a warning and returns what was collected
-        so far, never losing the already-parsed tracks.
+        so far, never losing the already-parsed items.
         """
-        union_key = "albumUnion" if kind == "album" else "playlistV2"
         extra: list[_T] = []
         offset = collected
         while _wants_more(collected + len(extra), total, max_tracks):
@@ -413,6 +462,23 @@ def _with_album_tracks(album: Album, tracks: tuple[Track, ...]) -> Album:
         tracks=tracks,
         copyrights=album.copyrights,
         share_url=album.share_url,
+    )
+
+
+def _with_show_episodes(show: Show, episodes: tuple[Episode, ...], total: int | None) -> Show:
+    return Show(
+        id=show.id,
+        uri=show.uri,
+        name=show.name,
+        description=show.description,
+        publisher=show.publisher,
+        media_type=show.media_type,
+        images=show.images,
+        total_episodes=total if total is not None else show.total_episodes,
+        episodes=episodes,
+        topics=show.topics,
+        rating=show.rating,
+        share_url=show.share_url,
     )
 
 

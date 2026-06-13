@@ -116,15 +116,49 @@ async def test_get_episode_happy_path() -> None:
     assert episode.duration_ms > 0
 
 
+def _show_episodes_page(offset: int, limit: int, total: int) -> dict[str, Any]:
+    body = copy.deepcopy(_pathfinder_body("show_episodes"))
+    node = body["data"]["podcastUnionV2"]["episodesV2"]
+    template = node["items"][0]
+    items: list[dict[str, Any]] = []
+    for index in range(offset, min(offset + limit, total)):
+        item = copy.deepcopy(template)
+        item["entity"]["data"]["uri"] = f"spotify:episode:{index:022d}"
+        item["entity"]["data"]["name"] = f"Episode {index}"
+        items.append(item)
+    node["items"] = items
+    node["totalCount"] = total
+    return body
+
+
+def _show_router(metadata: dict[str, Any], *, total: int) -> Any:
+    def handler(request: httpx.Request) -> httpx.Response:
+        query = request.url.query.decode()
+        operation = parse_qs(query)["operationName"][0]
+        if operation == "queryShowMetadataV2":
+            return httpx.Response(200, json=metadata)
+        variables = json.loads(_variables(query))
+        return httpx.Response(
+            200, json=_show_episodes_page(variables["offset"], variables["limit"], total)
+        )
+
+    return handler
+
+
 @respx.mock
 async def test_get_show_happy_path() -> None:
-    _mock("show", pathfinder=_pathfinder_body("show"))
+    respx.get(_embed_url("show", IDS["show"])).mock(
+        return_value=httpx.Response(200, text=_embed_html("show"))
+    )
+    respx.get(PATHFINDER_RE).mock(side_effect=_show_router(_pathfinder_body("show"), total=2707))
     async with AsyncSpotifyClient() as client:
-        show = await client.get_show(IDS["show"])
+        show = await client.get_show(IDS["show"], max_episodes=120)
     assert isinstance(show, Show)
     assert show.name == "The Joe Rogan Experience"
     assert show.publisher is not None
     assert show.publisher != ""
+    assert show.total_episodes == 2707
+    assert len(show.episodes) == 120
 
 
 @respx.mock

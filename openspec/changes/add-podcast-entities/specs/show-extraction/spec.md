@@ -11,16 +11,11 @@
 - **WHEN** tier 1 succeeds for a popular show
 - **THEN** the `Show` includes `publisher` and `topics`
 
-### Requirement: Episode count and listing are best-effort
+### Requirement: Metadata operation carries no episode listing
 
-The `queryShowMetadataV2` operation does not return a full episode listing or a reliable episode count: it carries an `episodesV2` block without `totalCount` and with at most a single uri-only episode stub. `get_show` SHALL therefore populate `total_episodes` and `episodes` only when the payload actually provides them, leaving `total_episodes` as `None` and `episodes` empty otherwise — without raising. A complete, paginated episode listing is out of scope for v3.0.0 (it would require a separate podcast-episodes operation) and is a candidate for a later minor release.
+The `queryShowMetadataV2` operation used by this capability does not return a full episode listing or a reliable episode count (its `episodesV2` block lacks `totalCount` and carries at most a uri-only stub). The complete, paginated episode listing is specified separately by the `show-episodes` capability, which `get_show` uses to populate `total_episodes` and `episodes`.
 
-#### Scenario: Count present in payload
+#### Scenario: Metadata alone
 
-- **WHEN** a show payload includes `episodesV2.totalCount`
-- **THEN** `show.total_episodes` equals that count
-
-#### Scenario: Count absent in payload
-
-- **WHEN** a show payload omits `episodesV2.totalCount` (the common case today)
-- **THEN** `show.total_episodes` is `None`, `show.episodes` is empty, and no error is raised
+- **WHEN** only the `queryShowMetadataV2` response is parsed (no episode-listing pass)
+- **THEN** `total_episodes` is `None` and `episodes` is empty, without error

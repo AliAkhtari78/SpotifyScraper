@@ -9,10 +9,17 @@ Requirements: Python 3.10+, [uv](https://docs.astral.sh/uv/), git.
 ```bash
 git clone https://github.com/AliAkhtari78/SpotifyScraper.git
 cd SpotifyScraper
-uv sync                      # creates .venv with all dev dependencies
+make dev                     # uv sync + macOS .pth repair (see note below)
 uv run pre-commit install --hook-type pre-commit --hook-type commit-msg
 git config commit.template .gitmessage
 ```
+
+> **macOS note:** `uv` can leave the `UF_HIDDEN` flag on the venv's `*.pth`
+> files, and CPython's `site` module silently skips hidden `.pth` files — so
+> `uv run python -c "import spotify_scraper"` may fail with `ModuleNotFoundError`
+> even though `pytest` passes (pytest uses `pythonpath = ["src"]`). `make dev`
+> clears the flag; re-run it if ad-hoc imports break after a `uv sync`. CI
+> (Linux) is unaffected.
 
 ## Quality gates
 

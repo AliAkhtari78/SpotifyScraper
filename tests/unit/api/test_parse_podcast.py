@@ -1,10 +1,11 @@
 """Tests for episode and show parsing from real pathfinder and embed fixtures.
 
-Fixture note: the captured ``pathfinder/show.json`` is a ``queryShowMetadataV2``
-response. It carries no ``episodesV2.totalCount`` and only a uri-only episode
-stub, so ``total_episodes`` is ``None`` and the single episode is sparse. The
-asserts below therefore match the real captured payload rather than the larger
-listing implied by the design's ">1000 episodes" wording.
+Fixture note: ``pathfinder/show.json`` is a ``queryShowMetadataV2`` response,
+which carries no ``episodesV2.totalCount`` and only a uri-only episode stub, so
+``parse_show_gql`` alone leaves ``total_episodes`` ``None``. The full listing
+comes from the separate ``queryPodcastEpisodes`` operation, captured in
+``pathfinder/show_episodes.json`` and parsed by ``parse_show_episodes_page`` /
+``show_episodes_total`` (tested at the bottom of this file).
 """
 
 from __future__ import annotations
@@ -20,7 +21,9 @@ from spotify_scraper.api.parse_entities import (
     parse_episode_embed,
     parse_episode_gql,
     parse_show_embed,
+    parse_show_episodes_page,
     parse_show_gql,
+    show_episodes_total,
 )
 from spotify_scraper.errors import ParsingError
 
@@ -210,3 +213,25 @@ def test_parse_episode_gql_truncated_missing_duration_raises() -> None:
 def test_parse_show_gql_truncated_missing_name_raises() -> None:
     with pytest.raises(ParsingError, match=r"podcastUnionV2\.name"):
         parse_show_gql({"uri": SHOW_URI})
+
+
+@pytest.fixture
+def show_episodes_union() -> dict[str, Any]:
+    union: dict[str, Any] = _load("pathfinder/show_episodes.json")["data"]["podcastUnionV2"]
+    return union
+
+
+def test_show_episodes_total(show_episodes_union: dict[str, Any]) -> None:
+    assert show_episodes_total(show_episodes_union) == 2707
+
+
+def test_parse_show_episodes_page(show_episodes_union: dict[str, Any]) -> None:
+    episodes = parse_show_episodes_page(show_episodes_union)
+    assert len(episodes) == 10
+    assert all(ep.name for ep in episodes)
+    assert all(ep.duration_ms > 0 for ep in episodes)
+
+
+def test_parse_show_episodes_page_empty_is_safe() -> None:
+    assert parse_show_episodes_page({}) == ()
+    assert show_episodes_total({}) is None

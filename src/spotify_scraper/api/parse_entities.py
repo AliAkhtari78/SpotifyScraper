@@ -33,9 +33,11 @@ __all__ = [
     "parse_playlist_gql",
     "parse_playlist_tracks_page",
     "parse_show_embed",
+    "parse_show_episodes_page",
     "parse_show_gql",
     "parse_track_embed",
     "parse_track_gql",
+    "show_episodes_total",
 ]
 
 _UPDATE_HINT = "Spotify may have changed its payload format; check for a library update."
@@ -712,6 +714,31 @@ def parse_show_embed(entity: Mapping[str, Any]) -> Show:
         name=_embed_name(entity),
         images=_visual_identity_images(entity),
     )
+
+
+def parse_show_episodes_page(union: Mapping[str, Any]) -> tuple[Episode, ...]:
+    """Parse one page of a ``queryPodcastEpisodes`` ``podcastUnionV2`` response.
+
+    Args:
+        union: The ``body["data"]["podcastUnionV2"]`` object of an episodes page.
+
+    Returns:
+        The page's episodes (empty if the page carries none).
+    """
+    return _show_episodes(_optional_mapping(union, "episodesV2"))
+
+
+def show_episodes_total(union: Mapping[str, Any]) -> int | None:
+    """Return the show's full episode count from an episodes-page response.
+
+    Args:
+        union: The ``body["data"]["podcastUnionV2"]`` object of an episodes page.
+
+    Returns:
+        The ``episodesV2.totalCount`` when present, else ``None``.
+    """
+    node = _optional_mapping(union, "episodesV2")
+    return _total_count(node) if node is not None else None
 
 
 # --------------------------------------------------------------------------- #

@@ -128,13 +128,19 @@ def test_get_episode_happy_path() -> None:
 
 @respx.mock
 def test_get_show_happy_path() -> None:
-    _mock("show", pathfinder=_pathfinder_body("show"))
+    respx.get(_embed_url("show", IDS["show"])).mock(
+        return_value=httpx.Response(200, text=_embed_html("show"))
+    )
+    respx.get(PATHFINDER_RE).mock(side_effect=_show_router(_pathfinder_body("show"), total=2707))
     with SpotifyClient() as client:
         show = client.get_show(IDS["show"])
     assert isinstance(show, Show)
     assert show.name == "The Joe Rogan Experience"
     assert show.publisher is not None
     assert show.publisher != ""
+    assert show.total_episodes == 2707
+    assert len(show.episodes) == 50  # default max_episodes
+    assert all(ep.name for ep in show.episodes)
 
 
 @respx.mock
@@ -254,6 +260,79 @@ def test_playlist_pagination_tail_failure_returns_collected(
 
     assert len(playlist.tracks) == 25
     assert "stopped early" in caplog.text
+
+
+def _show_episodes_page(offset: int, limit: int, total: int) -> dict[str, Any]:
+    """Build a one-page podcastUnionV2 episodes body with synthetic episodes."""
+    body = copy.deepcopy(_pathfinder_body("show_episodes"))
+    node = body["data"]["podcastUnionV2"]["episodesV2"]
+    template = node["items"][0]
+    items: list[dict[str, Any]] = []
+    for index in range(offset, min(offset + limit, total)):
+        item = copy.deepcopy(template)
+        item["entity"]["data"]["uri"] = f"spotify:episode:{index:022d}"
+        item["entity"]["data"]["name"] = f"Episode {index}"
+        items.append(item)
+    node["items"] = items
+    node["totalCount"] = total
+    return body
+
+
+def _show_router(metadata: dict[str, Any], *, total: int) -> Any:
+    """respx side_effect routing show metadata vs. paginated episode pages."""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        query = request.url.query.decode()
+        operation = parse_qs(query)["operationName"][0]
+        if operation == "queryShowMetadataV2":
+            return httpx.Response(200, json=metadata)
+        variables = json.loads(_variables(query))
+        return httpx.Response(
+            200, json=_show_episodes_page(variables["offset"], variables["limit"], total)
+        )
+
+    return handler
+
+
+@respx.mock
+def test_show_episode_pagination_spans_pages() -> None:
+    respx.get(_embed_url("show", IDS["show"])).mock(
+        return_value=httpx.Response(200, text=_embed_html("show"))
+    )
+    route = respx.get(PATHFINDER_RE).mock(
+        side_effect=_show_router(_pathfinder_body("show"), total=2707)
+    )
+
+    with SpotifyClient() as client:
+        show = client.get_show(IDS["show"], max_episodes=120)
+
+    assert show.total_episodes == 2707
+    assert len(show.episodes) == 120
+    # metadata (1) + episode pages at offsets 0/50/100 (3) = 4 pathfinder calls
+    assert route.call_count == 4
+
+
+@respx.mock
+def test_show_episode_listing_failure_returns_metadata(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    respx.get(_embed_url("show", IDS["show"])).mock(
+        return_value=httpx.Response(200, text=_embed_html("show"))
+    )
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        operation = parse_qs(request.url.query.decode())["operationName"][0]
+        if operation == "queryShowMetadataV2":
+            return httpx.Response(200, json=_pathfinder_body("show"))
+        return httpx.Response(200, json={"errors": [{"message": "PersistedQueryNotFound"}]})
+
+    respx.get(PATHFINDER_RE).mock(side_effect=handler)
+
+    with caplog.at_level(logging.WARNING, logger="spotify_scraper"), SpotifyClient() as client:
+        show = client.get_show(IDS["show"])
+
+    assert show.name == "The Joe Rogan Experience"
+    assert "episode listing" in caplog.text
 
 
 @respx.mock

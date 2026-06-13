@@ -72,6 +72,11 @@ OPERATIONS: dict[str, Operation] = {
         "aaad798a17a43c0f443c45d630a83df39d2ca1062a090c2e4fb045d6b00ab360",
         lambda eid: {"uri": f"spotify:show:{eid}"},
     ),
+    "show_episodes": Operation(
+        "queryPodcastEpisodes",
+        "06046f9b939d56c8eb7cdbb687da938de1164c006871aec91dc26e4dc7d8eb08",
+        lambda eid: {"uri": f"spotify:show:{eid}", "offset": 0, "limit": 50},
+    ),
 }
 
 

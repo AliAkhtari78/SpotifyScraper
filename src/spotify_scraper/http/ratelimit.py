@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 import threading
 import time
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass
 
 
@@ -25,6 +25,37 @@ class RateLimit:
 
     per_second: float = 2.0
     burst: int = 5
+
+
+#: Spotify's pathfinder GraphQL host. Exposed as a constant so callers can
+#: target it in ``host_rate_limits`` if they ever need to throttle it harder
+#: (e.g. behind a shared IP). Measured behavior (June 2026): it tolerates dozens
+#: of rapid anonymous requests, so the library does not throttle it by default;
+#: transient 403s are retried instead.
+PARTNER_API_HOST = "api-partner.spotify.com"
+
+
+def resolve_rate_limit(
+    host: str,
+    default: RateLimit | None,
+    overrides: Mapping[str, RateLimit],
+) -> RateLimit:
+    """Pick the rate limit for a host.
+
+    An explicit per-host override wins; otherwise the global default (or the
+    built-in :class:`RateLimit` when none was supplied) applies.
+
+    Args:
+        host: Destination host name.
+        default: Caller-supplied global rate, or ``None`` for the built-in.
+        overrides: Per-host rate overrides (always win).
+
+    Returns:
+        The :class:`RateLimit` to throttle ``host`` with.
+    """
+    if host in overrides:
+        return overrides[host]
+    return default or RateLimit()
 
 
 def consume(

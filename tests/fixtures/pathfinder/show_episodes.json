@@ -1,0 +1,2605 @@
+{
+  "data": {
+    "podcastUnionV2": {
+      "__typename": "Podcast",
+      "episodesV2": {
+        "__typename": "ContextEpisodePage",
+        "items": [
+          {
+            "entity": {
+              "_uri": "spotify:episode:4WCwCqaEbLrlxBX1kyo71Z",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/1604963aea414bfab88f7ca7a8a7f27565113385"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/603714155ded1e2d21eee50d4e792791e87dd76d"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/0c5cab256a6019b64a22bdb2fc8ac991a8c92041"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/26caeb9cf2e07bdf99c767ecc012f1a9545ba489"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/ea8f69b67b87517fe23998e3123007aa5d95cc16"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/d285d29d29f5f960f3b878dc5e320d2f6b8ef1dd"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68dcd6c8b777c1e122b9e9e0a0d",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1fcd6c8b777c1e122b9e9e0a0d",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8acd6c8b777c1e122b9e9e0a0d",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Cameron Hanes is a bowhunter, outdoorsman, endurance athlete, author, and host of the podcasts \u201cKeep Hammering Collective,\u201d \u201cSh*t Talkers Weekly,\u201d and \u201cLift. Run. Shoot.\u201d His most recent book is \u201cUndeniable: How to Reach the Top and Stay There.\u201dwww.youtube.com/@cameronhaneshttps://us.macmillan.com/books/9781250365941/undeniable/www.cameronhanes.com  Perplexity: Download the app or ask Perplexity anything at https://pplx.ai/rogan.  Don\u2019t miss out on all the action this week at DraftKings! Download the DraftKings app today! Sign-up using https://dkng.co/rogan or through my promo code ROGAN. Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 10426175
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Cameron Hanes is a bowhunter, outdoorsman, endurance athlete, author, and host of the podcasts \u201cKeep Hammering Collective,\u201d \u201cSh*t Talkers Weekly,\u201d and \u201cLift. Run. Shoot.\u201d His most recent book is \u201cUndeniable: How to Reach the Top and Stay There.\u201d<br />www.youtube.com/&#64;cameronhanes<br /><a href=\"https://us.macmillan.com/books/9781250365941/undeniable/\" rel=\"nofollow\">https://us.macmillan.com/books/9781250365941/undeniable/</a><br />www.cameronhanes.com</p><br/><p><br /></p><br/><p>Perplexity: Download the app or ask Perplexity anything at <a href=\"https://pplx.ai/rogan\" rel=\"nofollow\">https://pplx.ai/rogan</a>.</p><br/><p><br /></p><br/><p>Don\u2019t miss out on all the action this week at DraftKings! Download the DraftKings app today! Sign-up using <a href=\"https://dkng.co/rogan\" rel=\"nofollow\">https://dkng.co/rogan</a> or through my promo code ROGAN.</p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "4WCwCqaEbLrlxBX1kyo71Z",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "#2514 - Cameron Hanes",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": null,
+                "releaseDate": {
+                  "isoString": "2026-06-12T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "8__ZigiJTjG9HL_1CihXzw",
+                  "shareUrl": "https://open.spotify.com/episode/4WCwCqaEbLrlxBX1kyo71Z?si=8__ZigiJTjG9HL_1CihXzw"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:4WCwCqaEbLrlxBX1kyo71Z",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab000015bef61686934638a5f8616af62a"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab00001692f61686934638a5f8616af62a"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 110,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 48,
+                          "red": 145
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 9,
+                          "red": 97
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 10,
+                          "red": 101
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 40,
+                          "green": 55,
+                          "red": 144
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 111,
+                          "red": 247
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 83,
+                          "red": 217
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "ed4b763719b91fce1e40"
+          },
+          {
+            "entity": {
+              "_uri": "spotify:episode:2c50dZKpJcLjAfGXhOMRxD",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/0b7af5cc95d4e4e95a843f10b319cc04a6053aa7"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/c732c78b1a4347e5dfb451b18c20b44dbb3ef6e6"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/ef46b34ead207c81349eda29d6294f2b82c02cf1"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/cee6c5e1e574847f5969ba59024d1682c0530db8"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/b655e93b3c78d0d641172ce6ca01da1f80d3d642"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/c5000cbde84bf760184f3b990a7e7394623f9f67"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68d22eb53bab47a0cc20678b2c7",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1f22eb53bab47a0cc20678b2c7",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8a22eb53bab47a0cc20678b2c7",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Dean Radin, PhD, is Chief Scientist at the Institute of Noetic Sciences (IONS), Associate Distinguished Professor at the California Institute of Integral Studies, and co-founder and chairman of the neuroengineering company Cognigenics. His latest book is \u201cThe Science of Magic: How the Mind Weaves the Fabric of Reality.\u201dwww.youtube.com/@InstituteofNoeticScienceswww.penguinrandomhouse.com/books/750262/the-science-of-magic-by-dean-radin-phd/www.deanradin.com  Perplexity: Download the app or ask Perplexity anything at https://pplx.ai/rogan.  Switch today at\u00a0https://www.Visible.com\u00a0for just 25/mo. Or Save $10 on your first month of Visible+ Pro with code ROGAN.\u00a0  This video is sponsored by BetterHelp. Visit https://BetterHelp.com/JRE Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 9474623
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Dean Radin, PhD, is Chief Scientist at the Institute of Noetic Sciences (IONS), Associate Distinguished Professor at the California Institute of Integral Studies, and co-founder and chairman of the neuroengineering company Cognigenics. His latest book is \u201cThe Science of Magic: How the Mind Weaves the Fabric of Reality.\u201d<br />www.youtube.com/&#64;InstituteofNoeticSciences<br />www.penguinrandomhouse.com/books/750262/the-science-of-magic-by-dean-radin-phd/<br />www.deanradin.com</p><br/><p><br /></p><br/><p>Perplexity: Download the app or ask Perplexity anything at <a href=\"https://pplx.ai/rogan\" rel=\"nofollow\">https://pplx.ai/rogan</a>.</p><br/><p><br /></p><br/><p>Switch today at\u00a0<a href=\"https://www.Visible.com\" rel=\"nofollow\">https://www.Visible.com</a>\u00a0for just 25/mo. Or Save $10 on your first month of Visible&#43; Pro with code ROGAN.\u00a0</p><br/><p><br /></p><br/><p>This video is sponsored by BetterHelp. Visit <a href=\"https://BetterHelp.com/JRE\" rel=\"nofollow\">https://BetterHelp.com/JRE</a></p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "2c50dZKpJcLjAfGXhOMRxD",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "#2513 - Dean Radin",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": {
+                  "audioPreview": {
+                    "cdnUrl": "https://p.scdn.co/mp3-preview/13e9efb8e36223c37a0df23622741c6822dfed30.mp3"
+                  }
+                },
+                "releaseDate": {
+                  "isoString": "2026-06-11T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "is2MOn6kRzOBvkXupDwcQA",
+                  "shareUrl": "https://open.spotify.com/episode/2c50dZKpJcLjAfGXhOMRxD?si=is2MOn6kRzOBvkXupDwcQA"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:2c50dZKpJcLjAfGXhOMRxD",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab000015be691aa01e47fa727753bbcdf4"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab00001692691aa01e47fa727753bbcdf4"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 110,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 48,
+                          "red": 145
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 9,
+                          "red": 97
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 10,
+                          "red": 101
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 40,
+                          "green": 55,
+                          "red": 144
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 111,
+                          "red": 247
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 83,
+                          "red": 217
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "7bdd8f6c7d66020f19a8"
+          },
+          {
+            "entity": {
+              "_uri": "spotify:episode:07gKzPFkbvGF0cHoeG7ARS",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/d224be8a544c769b1c043958c1dbd4087ebb129d"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/a7942a8461615917f0ccf696a661060ac185c4f2"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/87da82247ce77e79e0044c3dd4479c63731272e0"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/fed10b422a8699f20d27b35f6c1f01f7575c31de"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/278aa8296d5efd3d0d888fe7bc5ccbced157c759"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/5bc9539d151d12d7dffc9aa1c1a206ba50952e7a"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68dc948d2a3af829029d3c8bafb",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1fc948d2a3af829029d3c8bafb",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8ac948d2a3af829029d3c8bafb",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Joey Diaz is a stand-up comedian, actor, and writer. He is the host of the podcast \u201cThe Church of What\u2019s Happening Now: The New Testament\u201d and the author of \u201cTremendous: The Life of a Comedy Savage.\u201dwww.youtube.com/@JoeyDiazwww.patreon.com/JoeyDiazwww.joeydiaz.net  Perplexity: Download the app or ask Perplexity anything at https://pplx.ai/rogan.  Use code ROGAN at\u00a0https://BlueChew.com \u00a0to get 10% OFF + Free Overnight Shipping on your first order.  Get 30% off + 2 free gifts at https://ARMRA.com/rogan Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 9992617
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Joey Diaz is a stand-up comedian, actor, and writer. He is the host of the podcast \u201cThe Church of What\u2019s Happening Now: The New Testament\u201d and the author of \u201cTremendous: The Life of a Comedy Savage.\u201d<br />www.youtube.com/&#64;JoeyDiaz<br />www.patreon.com/JoeyDiaz<br />www.joeydiaz.net</p><br/><p><br /></p><br/><p>Perplexity: Download the app or ask Perplexity anything at <a href=\"https://pplx.ai/rogan\" rel=\"nofollow\">https://pplx.ai/rogan</a>.</p><br/><p><br /></p><br/><p>Use code ROGAN at\u00a0<a href=\"https://BlueChew.com\" rel=\"nofollow\">https://BlueChew.com</a> \u00a0to get 10% OFF &#43; Free Overnight Shipping on your first order.</p><br/><p><br /></p><br/><p>Get 30% off &#43; 2 free gifts at <a href=\"https://ARMRA.com/rogan\" rel=\"nofollow\">https://ARMRA.com/rogan</a></p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "07gKzPFkbvGF0cHoeG7ARS",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "#2512 - Joey Diaz",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": {
+                  "audioPreview": {
+                    "cdnUrl": "https://p.scdn.co/mp3-preview/10cbbdd00df88655658a363edde723fbc575af9a.mp3"
+                  }
+                },
+                "releaseDate": {
+                  "isoString": "2026-06-10T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "yvo-5j3STHmqqhBtsi34vA",
+                  "shareUrl": "https://open.spotify.com/episode/07gKzPFkbvGF0cHoeG7ARS?si=yvo-5j3STHmqqhBtsi34vA"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:07gKzPFkbvGF0cHoeG7ARS",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000015beb4e8eecc429d8e37d552d6ad"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab00001692b4e8eecc429d8e37d552d6ad"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 107,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 51,
+                          "red": 143
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 14,
+                          "red": 96
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 152,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 15,
+                          "red": 100
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 40,
+                          "green": 57,
+                          "red": 143
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 152,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 10,
+                          "green": 115,
+                          "red": 242
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 88,
+                          "red": 213
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "98b81019244c706ce1bc"
+          },
+          {
+            "entity": {
+              "_uri": "spotify:episode:0Zn6XR8I047mUcq37vU8zU",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/e85467f16e3db8fee00f6a1ae7cdee41d79b0404"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/a9992a076220309922dfe34ca7ae4c5e7d3abb35"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/92cabc122dc8976d9149ee2ea24f96b7acae8559"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/f8b424bb81d7e367a7fb3ef395ca8783a90424d8"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/bb3c01ee1a34a1c5543533a2e5dfd1fee6729de3"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/a8f122849b703fd36a2f8ff5e623120eb5f83383"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68d235eee65ffb936a447678a4b",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1f235eee65ffb936a447678a4b",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8a235eee65ffb936a447678a4b",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Terry Bradshaw is a retired NFL quarterback whose 14 seasons with the Pittsburgh Steelers included four Super Bowl wins, leading to his induction into the Pro Football Hall of Fame. Bradshaw is also a musician, actor, author, entrepreneur, commentator, and co-host of \u201cFox NFL Sunday.\u201dwww.foxsports.com/personalities/terry-bradshawwww.steelers.com/history/bios/bradshaw_terrywww.bradshawbourbon.com  Perplexity: Download the app or ask Perplexity anything at https://pplx.ai/rogan.  Don\u2019t miss out on all the action this week at DraftKings! Download the DraftKings app today! Sign-up using https://dkng.co/rogan or through my promo code ROGAN.  This video is sponsored by BetterHelp. Visit https://BetterHelp.com/JRE  Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 9456489
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Terry Bradshaw is a retired NFL quarterback whose 14 seasons with the Pittsburgh Steelers included four Super Bowl wins, leading to his induction into the Pro Football Hall of Fame. Bradshaw is also a musician, actor, author, entrepreneur, commentator, and co-host of \u201cFox NFL Sunday.\u201d<br />www.foxsports.com/personalities/terry-bradshaw<br />www.steelers.com/history/bios/bradshaw_terry<br />www.bradshawbourbon.com</p><br/><p><br /></p><br/><p>Perplexity: Download the app or ask Perplexity anything at <a href=\"https://pplx.ai/rogan\" rel=\"nofollow\">https://pplx.ai/rogan</a>.</p><br/><p><br /></p><br/><p>Don\u2019t miss out on all the action this week at DraftKings! Download the DraftKings app today! Sign-up using <a href=\"https://dkng.co/rogan\" rel=\"nofollow\">https://dkng.co/rogan</a> or through my promo code ROGAN.</p><br/><p><br /></p><br/><p>This video is sponsored by BetterHelp. Visit <a href=\"https://BetterHelp.com/JRE\" rel=\"nofollow\">https://BetterHelp.com/JRE</a></p><br/><p><br /></p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "0Zn6XR8I047mUcq37vU8zU",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "#2511 - Terry Bradshaw",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": {
+                  "audioPreview": {
+                    "cdnUrl": "https://p.scdn.co/mp3-preview/db6bf182eb6e05f3ff83a55bfcd5da77b561831d.mp3"
+                  }
+                },
+                "releaseDate": {
+                  "isoString": "2026-06-09T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "RVBXWSQuQzaHqbd0-HQL3A",
+                  "shareUrl": "https://open.spotify.com/episode/0Zn6XR8I047mUcq37vU8zU?si=RVBXWSQuQzaHqbd0-HQL3A"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:0Zn6XR8I047mUcq37vU8zU",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000015be46f6ef2c74ce68aa504068af"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab0000169246f6ef2c74ce68aa504068af"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 110,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 48,
+                          "red": 145
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 9,
+                          "red": 97
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 10,
+                          "red": 101
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 40,
+                          "green": 55,
+                          "red": 144
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 111,
+                          "red": 247
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 83,
+                          "red": 217
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "7b0f2a062cf7b463a31d"
+          },
+          {
+            "entity": {
+              "_uri": "spotify:episode:6AHseG7kZhsZ2lsFOCElzN",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/7e52f1287d329747610fe81287533bb579960d83"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/2a3aece57be0dcc20a6b0105db9267d7f43e0243"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/416bf74193f6ab65a642bfd2bce10f165516ee6b"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/92477fc1a74a783d0490ae7c471930c55c2ac1c0"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/b7f81465e0683528535df152bf079929a3fffc7a"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/da09f746e714bfec7806e412b5ec7c562dba992c"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68dd1a86ed36825e4f77962ece3",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1fd1a86ed36825e4f77962ece3",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8ad1a86ed36825e4f77962ece3",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Devon Larratt is a veteran of the Canadian Armed Forces and a professional arm wrestler who is widely considered one of the sport\u2019s greatest competitors.www.youtube.com/@devlarratthttps://armbet.nethttps://linktr.ee/devonlarratt   Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 9769770
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Devon Larratt is a veteran of the Canadian Armed Forces and a professional arm wrestler who is widely considered one of the sport\u2019s greatest competitors.<br />www.youtube.com/&#64;devlarratt<br /><a href=\"https://armbet.net/\" rel=\"nofollow\">https://armbet.net</a><br /><a href=\"https://linktr.ee/devonlarratt\" rel=\"nofollow\">https://linktr.ee/devonlarratt</a></p><br/><p><br /></p><br/><p><br /></p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "6AHseG7kZhsZ2lsFOCElzN",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "#2510 - Devon Larratt",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": {
+                  "audioPreview": {
+                    "cdnUrl": "https://p.scdn.co/mp3-preview/788d3c5cf688cbbbf3a8aaf7e8338976b1fef938.mp3"
+                  }
+                },
+                "releaseDate": {
+                  "isoString": "2026-06-05T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "FopS1N4qT5-OkpxS1fBAwQ",
+                  "shareUrl": "https://open.spotify.com/episode/6AHseG7kZhsZ2lsFOCElzN?si=FopS1N4qT5-OkpxS1fBAwQ"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:6AHseG7kZhsZ2lsFOCElzN",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000015bed51522b1be80d4b62fd808ec"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab00001692d51522b1be80d4b62fd808ec"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 114,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 46,
+                          "red": 147
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 4,
+                          "red": 97
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 155,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 6,
+                          "red": 101
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 41,
+                          "green": 54,
+                          "red": 146
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 155,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 104,
+                          "red": 240
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 76,
+                          "red": 210
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "40fa6ddec50f575b91ae"
+          },
+          {
+            "entity": {
+              "_uri": "spotify:episode:4Zuskpj6tHUtxUjtE7wV25",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/a485e2913d582e1009ea411386e06170ef403db2"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/9ce53687d97664abc4c6b87f4ae29ea2b747698c"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/98b4a635680b6c6a6c5e82db7b6b857ac9ed4f7f"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/e3512571ddac8ac8c7881f9f6948724d1a1d100f"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/1da2994d5844d8778e05ce79d4438157970e254b"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/93d7fc5b5858bb4c53bf4f10f8278a4e903f7c76"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68d984ac9f1d25117d9387f0bae",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1f984ac9f1d25117d9387f0bae",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8a984ac9f1d25117d9387f0bae",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Caleb Hammer is a YouTuber and host of the program \u201cFinancial Audit.\u201dwww.youtube.com/c/calebhammerwww.patreon.com/calebhammerwww.calebhammer.com Perplexity: Download the app or ask Perplexity anything at https://pplx.ai/rogan. Take 50% off a SimpliSafe system at https://simplisafe.com/ROGAN Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 8103870
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Caleb Hammer is a YouTuber and host of the program \u201cFinancial Audit.\u201d<br />www.youtube.com/c/calebhammer<br />www.patreon.com/calebhammer<br />www.calebhammer.com<br /></p><br/><p>Perplexity: Download the app or ask Perplexity anything at <a href=\"https://pplx.ai/rogan\" rel=\"nofollow\">https://pplx.ai/rogan</a>.</p><br/><p>Take 50% off a SimpliSafe system at <a href=\"https://simplisafe.com/ROGAN\" rel=\"nofollow\">https://simplisafe.com/ROGAN</a></p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "4Zuskpj6tHUtxUjtE7wV25",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "#2509 - Caleb Hammer",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": {
+                  "audioPreview": {
+                    "cdnUrl": "https://p.scdn.co/mp3-preview/01309ee59b09584fc856dcc65dcf7e086516d3e8.mp3"
+                  }
+                },
+                "releaseDate": {
+                  "isoString": "2026-06-04T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "JtdybD0dTHmfiSFAYHTIZg",
+                  "shareUrl": "https://open.spotify.com/episode/4Zuskpj6tHUtxUjtE7wV25?si=JtdybD0dTHmfiSFAYHTIZg"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:4Zuskpj6tHUtxUjtE7wV25",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000015bec964d3d3aae933658bab0c07"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab00001692c964d3d3aae933658bab0c07"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 110,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 48,
+                          "red": 145
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 9,
+                          "red": 97
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 10,
+                          "red": 101
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 40,
+                          "green": 55,
+                          "red": 144
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 111,
+                          "red": 247
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 83,
+                          "red": 217
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "98d29806474c76d53a13"
+          },
+          {
+            "entity": {
+              "_uri": "spotify:episode:5KpJjDe9B9ZBtoQGpp0MRh",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/ed757055bdbf45fc43c9d52f295df8f1d67ad366"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/676d69db6e42ce28edd7347971c7994b4fed8c37"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/133354e568c200fa189af36647e36e43fbd0a90e"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/8ebc5fecce99ff1ac61ec937ae975504b6731e83"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/f4812a8c90e467208fe1d658a44008e1a95648d9"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/10476fb4050814181004d2cfc537122436adec61"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68d97aba1788cfd99505c2d5afb",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1f97aba1788cfd99505c2d5afb",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8a97aba1788cfd99505c2d5afb",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Joe Eszterhas is an author, former journalist for \u201cRolling Stone,\u201d and screenwriter known for films such as \u201cBasic Instinct,\u201d \u201cSliver,\u201d \u201cShowgirls,\u201d and \u201cFlashdance.\u201dwww.imdb.com/name/nm0000390/  Perplexity: Download the app or ask Perplexity anything at https://pplx.ai/rogan.  Use code ROGAN at https://BlueChew.com  to get 10% OFF + Free Overnight Shipping on your first order.  Open an account in minutes at https://Chime.com/Rogan Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 7919423
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Joe Eszterhas is an author, former journalist for \u201cRolling Stone,\u201d and screenwriter known for films such as \u201cBasic Instinct,\u201d \u201cSliver,\u201d \u201cShowgirls,\u201d and \u201cFlashdance.\u201d<br />www.imdb.com/name/nm0000390/</p><br/><p><br /></p><br/><p>Perplexity: Download the app or ask Perplexity anything at <a href=\"https://pplx.ai/rogan\" rel=\"nofollow\">https://pplx.ai/rogan</a>.</p><br/><p><br /></p><br/><p>Use code ROGAN at <a href=\"https://BlueChew.com\" rel=\"nofollow\">https://BlueChew.com</a>  to get 10% OFF &#43; Free Overnight Shipping on your first order.</p><br/><p><br /></p><br/><p>Open an account in minutes at <a href=\"https://Chime.com/Rogan\" rel=\"nofollow\">https://Chime.com/Rogan</a></p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "5KpJjDe9B9ZBtoQGpp0MRh",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "#2508 - Joe Eszterhas",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": {
+                  "audioPreview": {
+                    "cdnUrl": "https://p.scdn.co/mp3-preview/02eceafbd82cd043f60f5ddb684c4273a21022e7.mp3"
+                  }
+                },
+                "releaseDate": {
+                  "isoString": "2026-06-03T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "A-kMvHotRbCu_b-rVpou7Q",
+                  "shareUrl": "https://open.spotify.com/episode/5KpJjDe9B9ZBtoQGpp0MRh?si=A-kMvHotRbCu_b-rVpou7Q"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:5KpJjDe9B9ZBtoQGpp0MRh",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000015be8244bb93d30a9f4b2f483dd2"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000016928244bb93d30a9f4b2f483dd2"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 110,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 48,
+                          "red": 145
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 9,
+                          "red": 97
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 10,
+                          "red": 101
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 40,
+                          "green": 55,
+                          "red": 144
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 111,
+                          "red": 247
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 83,
+                          "red": 217
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "f59c956c9538629e9122"
+          },
+          {
+            "entity": {
+              "_uri": "spotify:episode:10JAK7y5qD0Dr3bt5tIBjB",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/63ba466f56e0a6283744d7f24a3dba81dae18c83"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/4e723c2514dab17453a35be90f541d41feb7f94a"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/3d92e415e067b91d98a8129088efb4db05bd606f"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/1ea92fb0c7a087bbb22220d50e28ea490ad780be"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/6c91050930aa18f6dadb31a68cab0100785ee075"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/044cd917dd35d1083edb0da255fddd27818c6b8b"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68d5107691b9150338a4fa11f23",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1f5107691b9150338a4fa11f23",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8a5107691b9150338a4fa11f23",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Joe sits down with Daniel Rodriguez, a professional mixed martial artist competing in the Ultimate Fighting Championship\u2019s welterweight division.www.ufc.com/athlete/daniel-rodriguez      Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 8166719
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Joe sits down with Daniel Rodriguez, a professional mixed martial artist competing in the Ultimate Fighting Championship\u2019s welterweight division.<br />www.ufc.com/athlete/daniel-rodriguez<br /></p><br/><p><br /><a href=\"https://pplx.ai/rogan\" rel=\"nofollow\"><br /></a><br /></p><br/><p><br /></p><br/><p><br /><a href=\"https://dkng.co/rogan\" rel=\"nofollow\"><br /></a><br /></p><br/><p><br /></p><br/><p><br /><a href=\"https://BetterHelp.com/JRE\" rel=\"nofollow\"><br /></a></p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "10JAK7y5qD0Dr3bt5tIBjB",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "JRE MMA Show #180 with Daniel Rodriguez",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": {
+                  "audioPreview": {
+                    "cdnUrl": "https://p.scdn.co/mp3-preview/3919b53d1296a32066a17ca1947b573b1ec7d001.mp3"
+                  }
+                },
+                "releaseDate": {
+                  "isoString": "2026-06-02T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "LuqY2DcCQmiBS46Hwjsx-Q",
+                  "shareUrl": "https://open.spotify.com/episode/10JAK7y5qD0Dr3bt5tIBjB?si=LuqY2DcCQmiBS46Hwjsx-Q"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:10JAK7y5qD0Dr3bt5tIBjB",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab000015be7a807aae7f7ab600504e5536"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab000016927a807aae7f7ab600504e5536"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 110,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 48,
+                          "red": 145
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 9,
+                          "red": 97
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 10,
+                          "red": 101
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 40,
+                          "green": 55,
+                          "red": 144
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 111,
+                          "red": 247
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 83,
+                          "red": 217
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "437c97fe6dca0f061a10"
+          },
+          {
+            "entity": {
+              "_uri": "spotify:episode:62ehDou07zrd6LDFhgxbNY",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/a253333e996e8ecb9d085f64b195830b51491f8e"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/591e045cc9e879b56134a73c8fef748e645d6130"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/a1015548dabebb8a6430c5ba3ee225686112cf43"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/6b7fcf9d98b4f015a743bca8eda601bf80eea0da"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/02655cad6669cea3a69cea68b62516110526c4ed"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/91ee93edf21640aed01e9fd274eccc04f61b4d66"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68ddc1cceb3bbe99734b1caf0c3",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1fdc1cceb3bbe99734b1caf0c3",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8adc1cceb3bbe99734b1caf0c3",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Harland Williams is a comedian, author, actor, musician, filmmaker, and host of \u201cThe Harland Highway\u201d podcast. His new movie, \u201cWingman,\u201d is available now on all streaming services.www.youtube.com/@HarlandHighwayPodcastwww.harlandwilliams.com  Perplexity: Download the app or ask Perplexity anything at https://pplx.ai/rogan.  Get tickets now at https://MastersoftheUniverse.movie  Get a free welcome kit with your first subscription of AG1 at https://drinkag1.com/joerogan Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 11613438
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Harland Williams is a comedian, author, actor, musician, filmmaker, and host of \u201cThe Harland Highway\u201d podcast. His new movie, \u201cWingman,\u201d is available now on all streaming services.<br />www.youtube.com/&#64;HarlandHighwayPodcast<br />www.harlandwilliams.com</p><br/><p><br /></p><br/><p>Perplexity: Download the app or ask Perplexity anything at <a href=\"https://pplx.ai/rogan\" rel=\"nofollow\">https://pplx.ai/rogan</a>.</p><br/><p><br /></p><br/><p>Get tickets now at <a href=\"https://MastersoftheUniverse.movie\" rel=\"nofollow\">https://MastersoftheUniverse.movie</a></p><br/><p><br /></p><br/><p>Get a free welcome kit with your first subscription of AG1 at <a href=\"https://drinkag1.com/joerogan\" rel=\"nofollow\">https://drinkag1.com/joerogan</a></p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "62ehDou07zrd6LDFhgxbNY",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "#2507 - Harland Williams",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": {
+                  "audioPreview": {
+                    "cdnUrl": "https://p.scdn.co/mp3-preview/8ccaf026fe2d020d5f66c256793007ebab431eda.mp3"
+                  }
+                },
+                "releaseDate": {
+                  "isoString": "2026-05-29T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "86zvXHbuRG6rPArK3DkPqA",
+                  "shareUrl": "https://open.spotify.com/episode/62ehDou07zrd6LDFhgxbNY?si=86zvXHbuRG6rPArK3DkPqA"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:62ehDou07zrd6LDFhgxbNY",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000015be15a9a287b4be56aae8fbe9ea"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab0000169215a9a287b4be56aae8fbe9ea"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 110,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 48,
+                          "red": 145
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 9,
+                          "red": 97
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 10,
+                          "red": 101
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 40,
+                          "green": 55,
+                          "red": 144
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 111,
+                          "red": 247
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 83,
+                          "red": 217
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "24b34084f02a6ba9d551"
+          },
+          {
+            "entity": {
+              "_uri": "spotify:episode:46MudXmYxlZldT0NIXjlb6",
+              "data": {
+                "__typename": "Episode",
+                "accessInfo": null,
+                "audio": {
+                  "items": [
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/cd95e810e88b88c3db24859c2083e13f272e28f8"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/9f62e46d2ab2298141840623098be66825ebf020"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/08a928e11fb1bd7eb9f57c950a89509a415d79cd"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/8dccc846f3bd48a022527fb0faf764f797957611"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/3ecd4bb5ddfedf478f60bdf31710ae652dff2644"
+                    },
+                    {
+                      "url": "https://p.scdn.co/mp3-preview/b7a41f64786a69ca17c7f89c15814706301c4397"
+                    }
+                  ]
+                },
+                "contentInformation": null,
+                "contentRating": {
+                  "label": "EXPLICIT"
+                },
+                "contents": [],
+                "coverArt": {
+                  "sources": [
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab6765630000f68d7e8d4211aa95fe30f43d93a7",
+                      "width": 64
+                    },
+                    {
+                      "height": 300,
+                      "url": "https://i.scdn.co/image/ab67656300005f1f7e8d4211aa95fe30f43d93a7",
+                      "width": 300
+                    },
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6765630000ba8a7e8d4211aa95fe30f43d93a7",
+                      "width": 640
+                    }
+                  ]
+                },
+                "creator": null,
+                "description": "Michelle Thaller, PhD, is an astrophysicist, award-winning science communicator, and retired NASA executive who worked at NASA\u2019s Goddard Space Flight Center and NASA Headquarters. Her work has appeared in documentaries, podcasts, and television programs on The Science Channel, History Channel, Discovery, National Geographic, NPR, and many other platforms.www.youtube.com/@mlthallerwww.drmichellethaller.com Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+                "duration": {
+                  "totalMilliseconds": 9451476
+                },
+                "gatedEntityRelations": [],
+                "htmlDescription": "<p>Michelle Thaller, PhD, is an astrophysicist, award-winning science communicator, and retired NASA executive who worked at NASA\u2019s Goddard Space Flight Center and NASA Headquarters. Her work has appeared in documentaries, podcasts, and television programs on The Science Channel, History Channel, Discovery, National Geographic, NPR, and many other platforms.<br />www.youtube.com/&#64;mlthaller<br />www.drmichellethaller.com</p><p> </p><p>Learn more about your ad choices. Visit <a href=\"https://podcastchoices.com/adchoices\" rel=\"nofollow\">podcastchoices.com/adchoices</a></p>",
+                "id": "46MudXmYxlZldT0NIXjlb6",
+                "mediaTypes": [
+                  "VIDEO",
+                  "AUDIO"
+                ],
+                "name": "#2506 - Michelle Thaller",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE",
+                  "unplayabilityReasons": []
+                },
+                "playedState": {
+                  "playPositionMilliseconds": 0,
+                  "state": "NOT_STARTED"
+                },
+                "podcastV2": {
+                  "data": {
+                    "__typename": "Podcast",
+                    "accessInfo": null,
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab6765630000f68db1d33eb79d3ecd50b856696e",
+                          "width": 64
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67656300005f1fb1d33eb79d3ecd50b856696e",
+                          "width": 300
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab6765630000ba8ab1d33eb79d3ecd50b856696e",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "name": "The Joe Rogan Experience",
+                    "showTypes": [
+                      "SHOW_TYPE_EXCLUSIVE"
+                    ],
+                    "trailerV2": null,
+                    "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+                  }
+                },
+                "previewPlayback": {
+                  "audioPreview": {
+                    "cdnUrl": "https://p.scdn.co/mp3-preview/b4edb56043a51899cf4c1934e6c9fe25f3d240a7.mp3"
+                  }
+                },
+                "releaseDate": {
+                  "isoString": "2026-05-28T17:00:00Z",
+                  "precision": "MINUTE"
+                },
+                "restrictions": {
+                  "paywallContent": false
+                },
+                "segments": null,
+                "sharingInfo": {
+                  "shareId": "x0y3vr9jTJGvCKvUzy4-kg",
+                  "shareUrl": "https://open.spotify.com/episode/46MudXmYxlZldT0NIXjlb6?si=x0y3vr9jTJGvCKvUzy4-kg"
+                },
+                "transcripts": {
+                  "items": []
+                },
+                "type": "PODCAST_EPISODE",
+                "uri": "spotify:episode:46MudXmYxlZldT0NIXjlb6",
+                "visualIdentity": {
+                  "sixteenByNineCoverImage": {
+                    "image": {
+                      "data": {
+                        "__typename": "ImageV2",
+                        "sources": [
+                          {
+                            "maxHeight": 360,
+                            "maxWidth": 640,
+                            "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab000015be5bc7df586488d856408847aa"
+                          },
+                          {
+                            "maxHeight": 720,
+                            "maxWidth": 1280,
+                            "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab000016925bc7df586488d856408847aa"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "squareCoverImage": {
+                    "__typename": "VisualIdentityImage",
+                    "extractedColorSet": {
+                      "encoreBaseSetTextColor": {
+                        "alpha": 255,
+                        "blue": 110,
+                        "green": 165,
+                        "red": 255
+                      },
+                      "highContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 48,
+                          "red": 145
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 9,
+                          "red": 97
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "higherContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 10,
+                          "red": 101
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 40,
+                          "green": 55,
+                          "red": 144
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 96,
+                          "green": 215,
+                          "red": 30
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 154,
+                          "green": 192,
+                          "red": 255
+                        }
+                      },
+                      "minContrast": {
+                        "backgroundBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 111,
+                          "red": 247
+                        },
+                        "backgroundTintedBase": {
+                          "alpha": 255,
+                          "blue": 0,
+                          "green": 83,
+                          "red": 217
+                        },
+                        "textBase": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textBrightAccent": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        },
+                        "textSubdued": {
+                          "alpha": 255,
+                          "blue": 255,
+                          "green": 255,
+                          "red": 255
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "uid": "b9e251ebcf9149d3ca72"
+          }
+        ],
+        "pagingInfo": {
+          "nextOffset": 10
+        },
+        "totalCount": 2707
+      },
+      "id": "4rOoJ6Egrf8K2IrywzwOMk",
+      "name": "The Joe Rogan Experience",
+      "uri": "spotify:show:4rOoJ6Egrf8K2IrywzwOMk"
+    }
+  }
+}

@@ -62,6 +62,30 @@ def test_5xx_exhausted_raises_network_error() -> None:
 
 
 @respx.mock
+def test_403_then_200_retries_transparently(transport: HttpxTransport) -> None:
+    route = respx.get(URL).mock(
+        side_effect=[httpx.Response(403), httpx.Response(200, json=TRACK_PAYLOAD)]
+    )
+
+    response = transport.get(URL)
+
+    assert response.status_code == 200
+    assert route.call_count == 2
+
+
+@respx.mock
+def test_403_exhausted_raises_network_error() -> None:
+    route = respx.get(URL).mock(return_value=httpx.Response(403))
+    transport = HttpxTransport(retry=RetryPolicy(max_attempts=2, backoff_base=0.0))
+
+    with pytest.raises(NetworkError) as excinfo:
+        transport.get(URL)
+
+    assert excinfo.value.request_url == URL
+    assert route.call_count == 2
+
+
+@respx.mock
 def test_429_hard_raise_carries_retry_after(transport: HttpxTransport) -> None:
     route = respx.get(URL).mock(return_value=httpx.Response(429, headers={"Retry-After": "47231"}))
 
