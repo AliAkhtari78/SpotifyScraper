@@ -61,3 +61,16 @@ jobs:
           enable-cache: true
       - run: uv build
       - run: uv run --no-project --with twine twine check dist/*
+
+  browser:
+    # Non-blocking: drives a real Chromium browser; no other job depends on it.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: "3.13"
+      - run: uv sync --locked --extra browser
+      - run: uv run playwright install --with-deps chromium
+      - run: uv run pytest -m browser

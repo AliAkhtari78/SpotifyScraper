@@ -1,5 +1,11 @@
 # Proposal: add-cookie-auth-lyrics
 
+> **Status: deferred to v3.1.** Spotify's `/api/token` now requires a rotating
+> TOTP handshake (the fragility behind v2's issue #86). To keep v3.0.0's core
+> rock-solid and verifiable, lyrics ships in v3.1 alongside the CLI, with the
+> TOTP secret/version isolated in one module for easy refresh and live
+> verification against a maintainer `sp_dc` cookie.
+
 ## Why
 
 Lyrics are the one feature that genuinely requires user credentials (Spotify serves them only to logged-in sessions). v2's implementation silently broke (issue #86). v3 isolates lyrics as an explicitly authenticated feature: user-supplied `sp_dc` cookie in, clear `AuthenticationError` out when it's missing or expired — never a silent failure.

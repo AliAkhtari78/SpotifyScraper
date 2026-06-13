@@ -1320,6 +1320,7 @@ media = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "mutagen" },
     { name = "mypy" },
     { name = "pre-commit" },
     { name = "pytest" },
@@ -1343,6 +1344,7 @@ provides-extras = ["all", "browser", "media"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "mutagen", specifier = ">=1.47" },
     { name = "mypy", specifier = ">=1.14" },
     { name = "pre-commit", specifier = ">=4.0" },
     { name = "pytest", specifier = ">=8.3" },

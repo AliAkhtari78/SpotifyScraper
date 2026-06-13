@@ -41,6 +41,7 @@ Issues = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
 
 [dependency-groups]
 dev = [
+  "mutagen>=1.47",
   "mypy>=1.14",
   "pre-commit>=4.0",
   "pytest>=8.3",
@@ -88,9 +89,10 @@ packages = ["spotify_scraper"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-addopts = "-m 'not live' --strict-markers"
+addopts = "-m 'not live and not browser' --strict-markers"
 markers = [
   "live: tests that hit live Spotify endpoints (excluded by default; run with -m live)",
+  "browser: tests that drive a real Playwright browser (excluded by default; run with -m browser)",
 ]
 asyncio_mode = "auto"
 testpaths = ["tests"]
@@ -99,6 +101,9 @@ timeout = 60
 [tool.coverage.run]
 source = ["src"]
 branch = true
+# The Playwright transport requires a real browser; it is exercised by the
+# `browser`-marked suite in its own CI job, not the default coverage run.
+omit = ["src/spotify_scraper/browser/playwright.py"]
 
 [tool.coverage.report]
 fail_under = 85

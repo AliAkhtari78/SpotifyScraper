@@ -14,7 +14,7 @@ from pathlib import Path
 from types import TracebackType
 from typing import Any, TypeVar
 
-from spotify_scraper import urls
+from spotify_scraper import media, urls
 from spotify_scraper.api import parse_embed, parse_entities, pathfinder
 from spotify_scraper.api.parse_embed import EmbedSession
 from spotify_scraper.auth.anonymous import AnonymousTokenProvider
@@ -273,6 +273,66 @@ class SpotifyClient:
         if not tier1:
             return show
         return self._with_episodes(show, entity_id, session, max_episodes)
+
+    def download_cover(
+        self,
+        entity: media.HasImagesAndName,
+        dest: str | Path = ".",
+        *,
+        size: media.ImageSize = "largest",
+        filename: str | None = None,
+    ) -> Path:
+        """Download an entity's cover art to ``dest`` and return its path.
+
+        Args:
+            entity: Any fetched model carrying ``name`` and ``images`` (a
+                :class:`Track` falls back to its album's images when empty).
+            dest: Destination directory; created if it does not exist.
+            size: ``"largest"`` or ``"smallest"`` of the available images.
+            filename: Explicit filename; defaults to a sanitized
+                ``<name>.<ext>`` (extension from the response content type).
+
+        Returns:
+            The path of the written image.
+
+        Raises:
+            MediaError: If the entity has no images.
+            SpotifyScraperError: If the client is closed.
+        """
+        self._ensure_open()
+        return media.download_cover_sync(
+            self._transport, entity, Path(dest), size=size, filename=filename
+        )
+
+    def download_preview(
+        self,
+        entity: Track | Episode,
+        dest: str | Path = ".",
+        *,
+        filename: str | None = None,
+        embed_cover: bool = False,
+    ) -> Path:
+        """Download a track or episode preview MP3 and return its path.
+
+        Args:
+            entity: A :class:`Track` or :class:`Episode` with a ``preview_url``.
+            dest: Destination directory; created if it does not exist.
+            filename: Explicit filename; defaults to a sanitized ``<name>.mp3``.
+            embed_cover: When ``True``, embed the entity's cover art and basic
+                tags via mutagen (the ``media`` extra).
+
+        Returns:
+            The path of the written MP3.
+
+        Raises:
+            MediaError: If no preview exists, or ``embed_cover`` is requested
+                without mutagen installed.
+            SpotifyScraperError: If the client is closed.
+        """
+        self._ensure_open()
+        return media.download_preview_sync(
+            self._transport, entity, Path(dest), filename=filename, embed_cover=embed_cover
+        )
 
     def _with_episodes(
         self, show: Show, entity_id: str, session: EmbedSession, max_episodes: int | None
