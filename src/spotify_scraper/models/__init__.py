@@ -10,6 +10,7 @@ from spotify_scraper.models.lyrics import Lyrics, LyricsLine
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
+from spotify_scraper.models.transcript import Transcript, TranscriptLine
 
 __all__ = [
     "Album",
@@ -25,5 +26,7 @@ __all__ = [
     "Show",
     "ShowRef",
     "Track",
+    "Transcript",
+    "TranscriptLine",
     "UserRef",
 ]

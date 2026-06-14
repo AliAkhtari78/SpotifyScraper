@@ -243,6 +243,28 @@ def lyrics(
     run(body)
 
 
+@app.command()
+def transcript(
+    value: ValueArg,
+    cookies: CookiesOpt = None,
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Fetch an episode's transcript (requires an sp_dc cookie) and emit JSON."""
+
+    def body() -> None:
+        source = _resolve_cookies(cookies)
+        rate = RateLimit(per_second=rate_limit) if rate_limit is not None else None
+        with SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate, cookies=source) as client:
+            entity = client.get_transcript(value)
+        emit(entity.to_dict(), pretty=pretty, output=output)
+
+    run(body)
+
+
 def _resolve_cookies(cookies: Path | None) -> str | Path:
     """Resolve the cookie source from ``--cookies`` or ``SPOTIFY_SP_DC``.
 
@@ -255,5 +277,5 @@ def _resolve_cookies(cookies: Path | None) -> str | Path:
     if env:
         return env
     raise typer.BadParameter(
-        "Lyrics require authentication: pass --cookies PATH or set SPOTIFY_SP_DC."
+        "This feature requires authentication: pass --cookies PATH or set SPOTIFY_SP_DC."
     )

@@ -17,6 +17,7 @@ from typing import Any, TypeVar
 from spotify_scraper import media, urls
 from spotify_scraper.api import lyrics as lyrics_api
 from spotify_scraper.api import parse_embed, parse_entities, pathfinder
+from spotify_scraper.api import transcripts as transcripts_api
 from spotify_scraper.api.parse_embed import EmbedSession
 from spotify_scraper.auth.anonymous import AnonymousTokenProvider
 from spotify_scraper.auth.cookies import CookieTokenProvider, load_sp_dc
@@ -38,6 +39,7 @@ from spotify_scraper.models.lyrics import Lyrics
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
+from spotify_scraper.models.transcript import Transcript
 
 _LOGGER = logging.getLogger("spotify_scraper")
 
@@ -58,8 +60,8 @@ class SpotifyClient:
 
     __slots__ = (
         "_closed",
+        "_cookie_tokens",
         "_cookies",
-        "_lyrics_tokens",
         "_owns_transport",
         "_tokens",
         "_transport",
@@ -108,7 +110,7 @@ class SpotifyClient:
             self._owns_transport = False
         self._cookies = cookies
         self._tokens = AnonymousTokenProvider(self._transport)
-        self._lyrics_tokens: CookieTokenProvider | None = None
+        self._cookie_tokens: CookieTokenProvider | None = None
         self._closed = False
 
     def get_track(self, value: str) -> Track:
@@ -316,7 +318,7 @@ class SpotifyClient:
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "track")
-        provider = self._lyrics_provider()
+        provider = self._cookie_provider()
         token = provider.token()
         try:
             return self._fetch_lyrics(entity_id, token)
@@ -324,17 +326,45 @@ class SpotifyClient:
             provider.invalidate()
             return self._fetch_lyrics(entity_id, provider.token())
 
-    def _lyrics_provider(self) -> CookieTokenProvider:
+    def get_transcript(self, value: str) -> Transcript:
+        """Fetch an episode's transcript using the cookie-derived token.
+
+        Transcripts are an authenticated feature: the client must have been
+        built with ``cookies=``. A client without cookies raises
+        :class:`AuthenticationError` immediately, without any HTTP request.
+
+        Args:
+            value: A Spotify episode URL, URI, or 22-character ID.
+
+        Returns:
+            The episode's :class:`Transcript` with millisecond-offset lines.
+
+        Raises:
+            AuthenticationError: If no cookies were configured, or the cookie
+                is rejected by the token exchange.
+            NotFoundError: If the episode exists but has no transcript.
+            SpotifyScraperError: If the client is closed.
+        """
+        _, entity_id = self._resolve(value, "episode")
+        provider = self._cookie_provider()
+        token = provider.token()
+        try:
+            return self._fetch_transcript(entity_id, token)
+        except AuthenticationError:
+            provider.invalidate()
+            return self._fetch_transcript(entity_id, provider.token())
+
+    def _cookie_provider(self) -> CookieTokenProvider:
         self._ensure_open()
-        provider = self._lyrics_tokens
+        provider = self._cookie_tokens
         if provider is None:
             if self._cookies is None:
                 raise AuthenticationError(
-                    "Lyrics require authentication; build SpotifyClient(cookies=...) "
+                    "This feature requires authentication; build SpotifyClient(cookies=...) "
                     "with an 'sp_dc' cookie."
                 )
             provider = CookieTokenProvider(self._transport, load_sp_dc(self._cookies))
-            self._lyrics_tokens = provider
+            self._cookie_tokens = provider
         return provider
 
     def _fetch_lyrics(self, entity_id: str, token: str) -> Lyrics:
@@ -352,6 +382,24 @@ class SpotifyClient:
                 "check for a library update."
             )
         return parse_entities.parse_lyrics(body)
+
+    def _fetch_transcript(self, entity_id: str, token: str) -> Transcript:
+        url = transcripts_api.transcript_url(entity_id)
+        try:
+            response = self._transport.get(url, headers=transcripts_api.auth_headers(token))
+        except NotFoundError as exc:
+            raise NotFoundError(f"No transcript for episode {entity_id}.") from exc
+        if response.status_code == 401:
+            raise AuthenticationError(
+                "Spotify rejected the cookie token for transcripts (HTTP 401)."
+            )
+        body = _safe_json(response)
+        if body is None:
+            raise ParsingError(
+                "Transcript response was not JSON. Spotify may have changed its API; "
+                "check for a library update."
+            )
+        return parse_entities.parse_transcript(transcripts_api.decode_envelope(body))
 
     def download_cover(
         self,

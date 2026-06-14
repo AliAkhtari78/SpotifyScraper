@@ -35,6 +35,8 @@ from spotify_scraper.models import (
     Show,
     ShowRef,
     Track,
+    Transcript,
+    TranscriptLine,
     UserRef,
 )
 
@@ -66,6 +68,8 @@ __all__ = [
     "SpotifyScraperError",
     "TokenError",
     "Track",
+    "Transcript",
+    "TranscriptLine",
     "URLError",
     "UserRef",
     "__version__",
