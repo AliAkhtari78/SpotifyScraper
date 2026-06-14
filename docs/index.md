@@ -1,9 +1,15 @@
 # SpotifyScraper
 
+[![Live demo](https://img.shields.io/badge/Live_demo-try_it_now-1DB954?logo=spotify&logoColor=white)](https://aliakhtari.com/spotify/)
 [![PyPI version](https://img.shields.io/pypi/v/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![Python versions](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![CI](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE)
+
+!!! tip "Try it live"
+    Paste any Spotify link into the **[browser demo](https://aliakhtari.com/spotify/)**
+    and watch SpotifyScraper return typed data, cover art, and a preview — with
+    the exact Python that produced it.
 
 **Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — with one dependency and no API key.**
 
