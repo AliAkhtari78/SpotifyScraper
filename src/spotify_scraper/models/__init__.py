@@ -8,6 +8,7 @@ from spotify_scraper.models.common import AlbumRef, ArtistRef, Image, ShowRef, U
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics, LyricsLine
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
+from spotify_scraper.models.search import SearchResults
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
 
@@ -22,6 +23,7 @@ __all__ = [
     "LyricsLine",
     "Playlist",
     "PlaylistTrack",
+    "SearchResults",
     "Show",
     "ShowRef",
     "Track",

@@ -1,0 +1,1153 @@
+{
+  "data": {
+    "searchV2": {
+      "tracksV2": {
+        "items": [
+          {
+            "item": {
+              "__typename": "TrackResponseWrapper",
+              "data": {
+                "__typename": "Track",
+                "albumOfTrack": {
+                  "coverArt": {
+                    "sources": [
+                      {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/ab67616d00001e021e81bff9807a9e629fce5ade",
+                        "width": 300
+                      },
+                      {
+                        "height": 64,
+                        "url": "https://i.scdn.co/image/ab67616d000048511e81bff9807a9e629fce5ade",
+                        "width": 64
+                      },
+                      {
+                        "height": 640,
+                        "url": "https://i.scdn.co/image/ab67616d0000b2731e81bff9807a9e629fce5ade",
+                        "width": 640
+                      }
+                    ]
+                  },
+                  "id": "2noRn2Aes5aoNVsU6iWThc",
+                  "name": "Discovery",
+                  "uri": "spotify:album:2noRn2Aes5aoNVsU6iWThc"
+                },
+                "artists": {
+                  "items": [
+                    {
+                      "profile": {
+                        "name": "Daft Punk"
+                      },
+                      "uri": "spotify:artist:4tZwfgrHOc3mvqYlEYSvVi"
+                    }
+                  ]
+                },
+                "associationsV3": {
+                  "audioAssociations": {
+                    "totalCount": 0
+                  },
+                  "videoAssociations": {
+                    "totalCount": 0
+                  }
+                },
+                "contentRating": {
+                  "label": "NONE"
+                },
+                "duration": {
+                  "totalMilliseconds": 320357
+                },
+                "id": "0DiWol3AO6WpXZgp0goxAV",
+                "trackMediaType": "AUDIO",
+                "name": "One More Time",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE"
+                },
+                "uri": "spotify:track:0DiWol3AO6WpXZgp0goxAV"
+              }
+            },
+            "matchedFields": []
+          },
+          {
+            "item": {
+              "__typename": "TrackResponseWrapper",
+              "data": {
+                "__typename": "Track",
+                "albumOfTrack": {
+                  "coverArt": {
+                    "sources": [
+                      {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/ab67616d00001e021e81bff9807a9e629fce5ade",
+                        "width": 300
+                      },
+                      {
+                        "height": 64,
+                        "url": "https://i.scdn.co/image/ab67616d000048511e81bff9807a9e629fce5ade",
+                        "width": 64
+                      },
+                      {
+                        "height": 640,
+                        "url": "https://i.scdn.co/image/ab67616d0000b2731e81bff9807a9e629fce5ade",
+                        "width": 640
+                      }
+                    ]
+                  },
+                  "id": "2noRn2Aes5aoNVsU6iWThc",
+                  "name": "Discovery",
+                  "uri": "spotify:album:2noRn2Aes5aoNVsU6iWThc"
+                },
+                "artists": {
+                  "items": [
+                    {
+                      "profile": {
+                        "name": "Daft Punk"
+                      },
+                      "uri": "spotify:artist:4tZwfgrHOc3mvqYlEYSvVi"
+                    }
+                  ]
+                },
+                "associationsV3": {
+                  "audioAssociations": {
+                    "totalCount": 0
+                  },
+                  "videoAssociations": {
+                    "totalCount": 1
+                  }
+                },
+                "contentRating": {
+                  "label": "NONE"
+                },
+                "duration": {
+                  "totalMilliseconds": 226413
+                },
+                "id": "5W3cjX2J3tjhG8zb6u0qHn",
+                "trackMediaType": "AUDIO",
+                "name": "Harder, Better, Faster, Stronger",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE"
+                },
+                "uri": "spotify:track:5W3cjX2J3tjhG8zb6u0qHn"
+              }
+            },
+            "matchedFields": []
+          },
+          {
+            "item": {
+              "__typename": "TrackResponseWrapper",
+              "data": {
+                "__typename": "Track",
+                "albumOfTrack": {
+                  "coverArt": {
+                    "sources": [
+                      {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/ab67616d00001e029b9b36b0e22870b9f542d937",
+                        "width": 300
+                      },
+                      {
+                        "height": 64,
+                        "url": "https://i.scdn.co/image/ab67616d000048519b9b36b0e22870b9f542d937",
+                        "width": 64
+                      },
+                      {
+                        "height": 640,
+                        "url": "https://i.scdn.co/image/ab67616d0000b2739b9b36b0e22870b9f542d937",
+                        "width": 640
+                      }
+                    ]
+                  },
+                  "id": "4m2880jivSbbyEGAKfITCa",
+                  "name": "Random Access Memories",
+                  "uri": "spotify:album:4m2880jivSbbyEGAKfITCa"
+                },
+                "artists": {
+                  "items": [
+                    {
+                      "profile": {
+                        "name": "Daft Punk"
+                      },
+                      "uri": "spotify:artist:4tZwfgrHOc3mvqYlEYSvVi"
+                    },
+                    {
+                      "profile": {
+                        "name": "Pharrell Williams"
+                      },
+                      "uri": "spotify:artist:2RdwBSPQiwcmiDo9kixcl8"
+                    },
+                    {
+                      "profile": {
+                        "name": "Nile Rodgers"
+                      },
+                      "uri": "spotify:artist:3yDIp0kaq9EFKe07X1X2rz"
+                    }
+                  ]
+                },
+                "associationsV3": {
+                  "audioAssociations": {
+                    "totalCount": 0
+                  },
+                  "videoAssociations": {
+                    "totalCount": 0
+                  }
+                },
+                "contentRating": {
+                  "label": "NONE"
+                },
+                "duration": {
+                  "totalMilliseconds": 369626
+                },
+                "id": "69kOkLUCkxIZYexIgSG8rq",
+                "trackMediaType": "AUDIO",
+                "name": "Get Lucky (feat. Pharrell Williams and Nile Rodgers)",
+                "playability": {
+                  "playable": true,
+                  "reason": "PLAYABLE"
+                },
+                "uri": "spotify:track:69kOkLUCkxIZYexIgSG8rq"
+              }
+            },
+            "matchedFields": []
+          }
+        ],
+        "totalCount": 1000
+      },
+      "albumsV2": {
+        "__typename": "AlbumOrPrereleasePage",
+        "items": [
+          {
+            "__typename": "AlbumResponseWrapper",
+            "data": {
+              "__typename": "Album",
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Daft Punk"
+                    },
+                    "uri": "spotify:artist:4tZwfgrHOc3mvqYlEYSvVi"
+                  }
+                ]
+              },
+              "coverArt": {
+                "sources": [
+                  {
+                    "height": 300,
+                    "url": "https://i.scdn.co/image/ab67616d00001e029b9b36b0e22870b9f542d937",
+                    "width": 300
+                  },
+                  {
+                    "height": 64,
+                    "url": "https://i.scdn.co/image/ab67616d000048519b9b36b0e22870b9f542d937",
+                    "width": 64
+                  },
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab67616d0000b2739b9b36b0e22870b9f542d937",
+                    "width": 640
+                  }
+                ]
+              },
+              "date": {
+                "year": 2013
+              },
+              "isAlbumPreRelease": false,
+              "name": "Random Access Memories",
+              "playability": {
+                "playable": true,
+                "reason": "PLAYABLE"
+              },
+              "preReleaseEndDateTime": null,
+              "type": "ALBUM",
+              "uri": "spotify:album:4m2880jivSbbyEGAKfITCa"
+            }
+          },
+          {
+            "__typename": "AlbumResponseWrapper",
+            "data": {
+              "__typename": "Album",
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Daft Punk"
+                    },
+                    "uri": "spotify:artist:4tZwfgrHOc3mvqYlEYSvVi"
+                  }
+                ]
+              },
+              "coverArt": {
+                "sources": [
+                  {
+                    "height": 300,
+                    "url": "https://i.scdn.co/image/ab67616d00001e021e81bff9807a9e629fce5ade",
+                    "width": 300
+                  },
+                  {
+                    "height": 64,
+                    "url": "https://i.scdn.co/image/ab67616d000048511e81bff9807a9e629fce5ade",
+                    "width": 64
+                  },
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab67616d0000b2731e81bff9807a9e629fce5ade",
+                    "width": 640
+                  }
+                ]
+              },
+              "date": {
+                "year": 2001
+              },
+              "isAlbumPreRelease": false,
+              "name": "Discovery",
+              "playability": {
+                "playable": true,
+                "reason": "PLAYABLE"
+              },
+              "preReleaseEndDateTime": null,
+              "type": "ALBUM",
+              "uri": "spotify:album:2noRn2Aes5aoNVsU6iWThc"
+            }
+          },
+          {
+            "__typename": "AlbumResponseWrapper",
+            "data": {
+              "__typename": "Album",
+              "artists": {
+                "items": [
+                  {
+                    "profile": {
+                      "name": "Daft Punk"
+                    },
+                    "uri": "spotify:artist:4tZwfgrHOc3mvqYlEYSvVi"
+                  }
+                ]
+              },
+              "coverArt": {
+                "sources": [
+                  {
+                    "height": 300,
+                    "url": "https://i.scdn.co/image/ab67616d00001e02673288fb985e5c194536ae27",
+                    "width": 300
+                  },
+                  {
+                    "height": 64,
+                    "url": "https://i.scdn.co/image/ab67616d00004851673288fb985e5c194536ae27",
+                    "width": 64
+                  },
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab67616d0000b273673288fb985e5c194536ae27",
+                    "width": 640
+                  }
+                ]
+              },
+              "date": {
+                "year": 2007
+              },
+              "isAlbumPreRelease": false,
+              "name": "Alive 2007",
+              "playability": {
+                "playable": true,
+                "reason": "PLAYABLE"
+              },
+              "preReleaseEndDateTime": null,
+              "type": "ALBUM",
+              "uri": "spotify:album:7u6zL7kqpgLPISZYXNTgYk"
+            }
+          }
+        ],
+        "totalCount": 897
+      },
+      "artists": {
+        "items": [
+          {
+            "__typename": "ArtistResponseWrapper",
+            "data": {
+              "__typename": "Artist",
+              "onPlatformReputationTrait": {
+                "verification": {
+                  "isVerified": true
+                }
+              },
+              "profile": {
+                "name": "Daft Punk"
+              },
+              "uri": "spotify:artist:4tZwfgrHOc3mvqYlEYSvVi",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebd3aa7cc0e419b6c459b08e8e",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178d3aa7cc0e419b6c459b08e8e",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174d3aa7cc0e419b6c459b08e8e",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "__typename": "ArtistResponseWrapper",
+            "data": {
+              "__typename": "Artist",
+              "onPlatformReputationTrait": {
+                "verification": {
+                  "isVerified": true
+                }
+              },
+              "profile": {
+                "name": "Thomas Bangalter"
+              },
+              "uri": "spotify:artist:41vv2Tj1knysv6MuFUmdwi",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb21d3d979f54b6f9348df55bd",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f17821d3d979f54b6f9348df55bd",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab6761610000517421d3d979f54b6f9348df55bd",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "__typename": "ArtistResponseWrapper",
+            "data": {
+              "__typename": "Artist",
+              "onPlatformReputationTrait": {
+                "verification": {
+                  "isVerified": true
+                }
+              },
+              "profile": {
+                "name": "The Chemical Brothers"
+              },
+              "uri": "spotify:artist:1GhPHrq36VKCY3ucVaZCfo",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebae05213e52565bfd7e7489b3",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178ae05213e52565bfd7e7489b3",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174ae05213e52565bfd7e7489b3",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "totalCount": 821
+      },
+      "playlists": {
+        "items": [
+          {
+            "__typename": "PlaylistResponseWrapper",
+            "data": {
+              "__typename": "Playlist",
+              "attributes": [],
+              "description": "Best hits of this awesome band!",
+              "format": "",
+              "images": {
+                "items": [
+                  {
+                    "sources": [
+                      {
+                        "height": null,
+                        "url": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000d72cbb071380835cf25eafa2f681",
+                        "width": null
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "Daft Punk Greatest Hits",
+              "ownerV2": {
+                "__typename": "UserResponseWrapper",
+                "data": {
+                  "__typename": "User",
+                  "avatar": {
+                    "sources": [
+                      {
+                        "height": 64,
+                        "url": "https://i.scdn.co/image/ab67757000003b8221b0217a2544bb8532533056",
+                        "width": 64
+                      },
+                      {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/ab6775700000ee8521b0217a2544bb8532533056",
+                        "width": 300
+                      }
+                    ]
+                  },
+                  "name": "Red Franzen",
+                  "uri": "spotify:user:brunejos",
+                  "username": "brunejos"
+                }
+              },
+              "uri": "spotify:playlist:2jTy5QwqWJ1ZUv2XeJPYbn"
+            }
+          },
+          {
+            "__typename": "PlaylistResponseWrapper",
+            "data": {
+              "__typename": "Playlist",
+              "attributes": [
+                {
+                  "key": "request_id",
+                  "value": "ssp~065437b69a16477d245063e2c1966950a3bc"
+                },
+                {
+                  "key": "should_show_promo_disclosure",
+                  "value": "true"
+                },
+                {
+                  "key": "send-impression-for-rows",
+                  "value": "true"
+                },
+                {
+                  "key": "correlation-id",
+                  "value": "ssp~065437b69a16477d245063e2c1966950a3bc"
+                }
+              ],
+              "description": "<a href=spotify:playlist:37i9dQZF1EIWrM8JSlHPeE>Modjo</a>, <a href=spotify:playlist:37i9dQZF1EIUFjCG9oFx2k>Gorillaz</a> and <a href=spotify:playlist:37i9dQZF1EIYuUepGmHW88>Stardust</a>",
+              "format": "artist-mix-reader",
+              "images": {
+                "items": [
+                  {
+                    "sources": [
+                      {
+                        "height": null,
+                        "url": "https://pickasso.spotifycdn.com/image/ab67c0de0000deef/dt/v1/img/artistmix/4tZwfgrHOc3mvqYlEYSvVi/en",
+                        "width": null
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "Daft Punk Mix",
+              "ownerV2": {
+                "__typename": "UserResponseWrapper",
+                "data": {
+                  "__typename": "User",
+                  "avatar": {
+                    "sources": [
+                      {
+                        "height": 64,
+                        "url": "https://i.scdn.co/image/ab67757000003b8255c25988a6ac314394d3fbf5",
+                        "width": 64
+                      },
+                      {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/ab6775700000ee8555c25988a6ac314394d3fbf5",
+                        "width": 300
+                      }
+                    ]
+                  },
+                  "name": "Spotify",
+                  "uri": "spotify:user:spotify",
+                  "username": "spotify"
+                }
+              },
+              "uri": "spotify:playlist:37i9dQZF1EIZvbvrhfHXQ5"
+            }
+          },
+          {
+            "__typename": "PlaylistResponseWrapper",
+            "data": {
+              "__typename": "Playlist",
+              "attributes": [
+                {
+                  "key": "request_id",
+                  "value": "ssp~065437c64b7c12a7a78163651e904e6c5518"
+                },
+                {
+                  "key": "should_show_promo_disclosure",
+                  "value": "true"
+                },
+                {
+                  "key": "send-impression-for-rows",
+                  "value": "true"
+                },
+                {
+                  "key": "correlation-id",
+                  "value": "ssp~065437c64b7c12a7a78163651e904e6c5518"
+                }
+              ],
+              "description": "With Gorillaz, Modjo, Tame Impala and more",
+              "format": "inspiredby-mix",
+              "images": {
+                "items": [
+                  {
+                    "sources": [
+                      {
+                        "height": null,
+                        "url": "https://pickasso.spotifycdn.com/image/ab67c0de0000deef/dt/v1/img/radio/artist/4tZwfgrHOc3mvqYlEYSvVi/en",
+                        "width": null
+                      }
+                    ]
+                  }
+                ]
+              },
+              "name": "Daft Punk Radio",
+              "ownerV2": {
+                "__typename": "UserResponseWrapper",
+                "data": {
+                  "__typename": "User",
+                  "avatar": {
+                    "sources": [
+                      {
+                        "height": 64,
+                        "url": "https://i.scdn.co/image/ab67757000003b8255c25988a6ac314394d3fbf5",
+                        "width": 64
+                      },
+                      {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/ab6775700000ee8555c25988a6ac314394d3fbf5",
+                        "width": 300
+                      }
+                    ]
+                  },
+                  "name": "Spotify",
+                  "uri": "spotify:user:spotify",
+                  "username": "spotify"
+                }
+              },
+              "uri": "spotify:playlist:37i9dQZF1E4ow1baELNnKm"
+            }
+          }
+        ],
+        "totalCount": 904
+      },
+      "podcasts": {
+        "items": [
+          {
+            "__typename": "PodcastResponseWrapper",
+            "data": {
+              "__typename": "Podcast",
+              "coverArt": {
+                "sources": [
+                  {
+                    "height": 64,
+                    "url": "https://i.scdn.co/image/ab6765630000f68d839fac35bee8aaecd911c550",
+                    "width": 64
+                  },
+                  {
+                    "height": 300,
+                    "url": "https://i.scdn.co/image/ab67656300005f1f839fac35bee8aaecd911c550",
+                    "width": 300
+                  },
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab6765630000ba8a839fac35bee8aaecd911c550",
+                    "width": 640
+                  }
+                ]
+              },
+              "mediaType": "AUDIO",
+              "name": "Daft Punk, le secret des robots | Wondery+",
+              "publisher": {
+                "name": "Amazon Originals"
+              },
+              "topics": {
+                "items": [
+                  {
+                    "__typename": "PodcastTopic",
+                    "title": "Culture",
+                    "uri": "spotify:genre:0JQ5DAqbMKFLFBJyefzcxG"
+                  },
+                  {
+                    "__typename": "PodcastTopic",
+                    "title": "Music",
+                    "uri": "spotify:genre:music_interviews_podcasts-page"
+                  },
+                  {
+                    "__typename": "PodcastTopic",
+                    "title": "Society",
+                    "uri": "spotify:genre:0JQ5DAqbMKFLFBJyefzcxG"
+                  }
+                ]
+              },
+              "uri": "spotify:show:54WLkpC52fstLCptFS72qS"
+            }
+          },
+          {
+            "__typename": "PodcastResponseWrapper",
+            "data": {
+              "__typename": "Podcast",
+              "coverArt": {
+                "sources": [
+                  {
+                    "height": 64,
+                    "url": "https://i.scdn.co/image/ab6765630000f68d8bab886089ff549e2a30cea2",
+                    "width": 64
+                  },
+                  {
+                    "height": 300,
+                    "url": "https://i.scdn.co/image/ab67656300005f1f8bab886089ff549e2a30cea2",
+                    "width": 300
+                  },
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab6765630000ba8a8bab886089ff549e2a30cea2",
+                    "width": 640
+                  }
+                ]
+              },
+              "mediaType": "AUDIO",
+              "name": "Daft Punk",
+              "publisher": {
+                "name": "Gabo Jolly"
+              },
+              "topics": {
+                "items": [
+                  {
+                    "__typename": "PodcastTopic",
+                    "title": "Music",
+                    "uri": "spotify:genre:music_interviews_podcasts-page"
+                  }
+                ]
+              },
+              "uri": "spotify:show:7BJuiIp6JWJa8HBVIZCGua"
+            }
+          },
+          {
+            "__typename": "PodcastResponseWrapper",
+            "data": {
+              "__typename": "Podcast",
+              "coverArt": {
+                "sources": [
+                  {
+                    "height": 64,
+                    "url": "https://i.scdn.co/image/ab6765630000f68d8506600d4bed18d909237221",
+                    "width": 64
+                  },
+                  {
+                    "height": 300,
+                    "url": "https://i.scdn.co/image/ab67656300005f1f8506600d4bed18d909237221",
+                    "width": 300
+                  },
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab6765630000ba8a8506600d4bed18d909237221",
+                    "width": 640
+                  }
+                ]
+              },
+              "mediaType": "AUDIO",
+              "name": "Daft Punk, le secret des robots",
+              "publisher": {
+                "name": "Amazon Originals"
+              },
+              "topics": {
+                "items": [
+                  {
+                    "__typename": "PodcastTopic",
+                    "title": "Culture",
+                    "uri": "spotify:genre:0JQ5DAqbMKFLFBJyefzcxG"
+                  },
+                  {
+                    "__typename": "PodcastTopic",
+                    "title": "Society",
+                    "uri": "spotify:genre:0JQ5DAqbMKFLFBJyefzcxG"
+                  }
+                ]
+              },
+              "uri": "spotify:show:0wxzoqBV4cE4F0i2hbBw4k"
+            }
+          }
+        ],
+        "totalCount": 761
+      },
+      "episodes": {
+        "items": [
+          {
+            "__typename": "EpisodeResponseWrapper",
+            "data": {
+              "__typename": "Episode",
+              "contentRating": {
+                "label": "NONE"
+              },
+              "coverArt": {
+                "sources": [
+                  {
+                    "height": 64,
+                    "url": "https://i.scdn.co/image/ab6765630000f68d3b939dc43d7854b716ab2289",
+                    "width": 64
+                  },
+                  {
+                    "height": 300,
+                    "url": "https://i.scdn.co/image/ab67656300005f1f3b939dc43d7854b716ab2289",
+                    "width": 300
+                  },
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab6765630000ba8a3b939dc43d7854b716ab2289",
+                    "width": 640
+                  }
+                ]
+              },
+              "description": "We’re taking a brief intermission from our Daft Punk season - but don’t worry, we’re still talking Daft Punk in a special episode of Last Song Standing, the show where Cole and Charles Holmes debate an artist’s catalog to determine their single best song. In this episode, Cole and Charles nominate the tracks from Homework and Discovery they believe deserve a spot in the conversation. Then, after the season finale, they’ll return for Part 2 to cover Human After All, Alive 2007, and Random Access Memories - where the final nominees will battle it out until one remains: the last song standing. Connecting Changes Everything.⁠ https://www.att.com/connecttochange/⁠ Visit us in stores and online ⁠https://Warbyparker.com/DISSECT⁠ Follow @dissectpodcast on⁠⁠ Instagram⁠⁠,⁠⁠ TikTok⁠⁠, and⁠⁠ Twitter⁠⁠. Hosts: Cole Cuchna & Charles Holmes Editor: Kevin Pooler Theme: Birocratic Additional Production: Justin Sayles Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+              "duration": {
+                "totalMilliseconds": 6230869
+              },
+              "gatedEntityRelations": [],
+              "mediaTypes": [
+                "VIDEO",
+                "AUDIO"
+              ],
+              "name": "What is Daft Punk's Best Song Ever? [Season Intermission]",
+              "playability": {
+                "reason": "PLAYABLE"
+              },
+              "playedState": {
+                "playPositionMilliseconds": 0,
+                "state": "NOT_STARTED"
+              },
+              "podcastV2": {
+                "__typename": "PodcastResponseWrapper",
+                "data": {
+                  "__typename": "Podcast",
+                  "coverArt": {
+                    "sources": [
+                      {
+                        "height": 64,
+                        "url": "https://i.scdn.co/image/ab6765630000f68db1bddf54d0effae5e91ba12a",
+                        "width": 64
+                      },
+                      {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/ab67656300005f1fb1bddf54d0effae5e91ba12a",
+                        "width": 300
+                      },
+                      {
+                        "height": 640,
+                        "url": "https://i.scdn.co/image/ab6765630000ba8ab1bddf54d0effae5e91ba12a",
+                        "width": 640
+                      }
+                    ]
+                  },
+                  "mediaType": "MIXED",
+                  "name": "Dissect",
+                  "publisher": {
+                    "name": "Spotify Studios"
+                  },
+                  "uri": "spotify:show:2b025hq3gJ17tQdxS3aV43"
+                }
+              },
+              "releaseDate": {
+                "isoString": "2026-05-12T10:01:00Z",
+                "precision": "MINUTE"
+              },
+              "restrictions": {
+                "paywallContent": false
+              },
+              "uri": "spotify:episode:4q6WrMpLrvsm03PoXgAS3A",
+              "videoPreviewThumbnail": {
+                "__typename": "VideoThumbnailImage",
+                "imagePreview": {
+                  "data": {
+                    "__typename": "ImageV2",
+                    "sources": [
+                      {
+                        "maxHeight": 720,
+                        "maxWidth": 1280,
+                        "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000030ae61c715667ecdc99987737c7f"
+                      },
+                      {
+                        "maxHeight": 360,
+                        "maxWidth": 640,
+                        "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab0000e0e761c715667ecdc99987737c7f"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "__typename": "EpisodeResponseWrapper",
+            "data": {
+              "__typename": "Episode",
+              "contentRating": {
+                "label": "NONE"
+              },
+              "coverArt": {
+                "sources": [
+                  {
+                    "height": 64,
+                    "url": "https://i.scdn.co/image/ab6765630000f68d02ad90c58f438769b0ef4acb",
+                    "width": 64
+                  },
+                  {
+                    "height": 300,
+                    "url": "https://i.scdn.co/image/ab67656300005f1f02ad90c58f438769b0ef4acb",
+                    "width": 300
+                  },
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab6765630000ba8a02ad90c58f438769b0ef4acb",
+                    "width": 640
+                  }
+                ]
+              },
+              "description": "Our season-long dissection of Daft Punk continues with a turning point in their catalog, as we unpack the stark minimalism and dystopian vision of 2005's Human After All. We explore how the album’s cold, mechanical sound and Orwellian themes reframe the duo’s robot personas. Then, we trace how those ideas are expanded on stage in the groundbreaking Alive 2007 tour, where Daft Punk fuse their entire discography into a single, story-driven performance. Connecting Changes Everything.⁠ https://www.att.com/connecttochange/⁠ Follow @dissectpodcast on⁠⁠ Instagram⁠⁠,⁠⁠ TikTok⁠⁠, and⁠⁠ Twitter⁠⁠. Host/Writer/EP: Cole Cuchna Editors: Kevin Pooler & Iulia Ciobanu Theme Music: Birocratic Additional Production: Justin Sayles Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+              "duration": {
+                "totalMilliseconds": 3408704
+              },
+              "gatedEntityRelations": [],
+              "mediaTypes": [
+                "VIDEO",
+                "AUDIO"
+              ],
+              "name": "E9 - 'Human After All' & 'Alive 2007' by Daft Punk",
+              "playability": {
+                "reason": "PLAYABLE"
+              },
+              "playedState": {
+                "playPositionMilliseconds": 0,
+                "state": "NOT_STARTED"
+              },
+              "podcastV2": {
+                "__typename": "PodcastResponseWrapper",
+                "data": {
+                  "__typename": "Podcast",
+                  "coverArt": {
+                    "sources": [
+                      {
+                        "height": 64,
+                        "url": "https://i.scdn.co/image/ab6765630000f68db1bddf54d0effae5e91ba12a",
+                        "width": 64
+                      },
+                      {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/ab67656300005f1fb1bddf54d0effae5e91ba12a",
+                        "width": 300
+                      },
+                      {
+                        "height": 640,
+                        "url": "https://i.scdn.co/image/ab6765630000ba8ab1bddf54d0effae5e91ba12a",
+                        "width": 640
+                      }
+                    ]
+                  },
+                  "mediaType": "MIXED",
+                  "name": "Dissect",
+                  "publisher": {
+                    "name": "Spotify Studios"
+                  },
+                  "uri": "spotify:show:2b025hq3gJ17tQdxS3aV43"
+                }
+              },
+              "releaseDate": {
+                "isoString": "2026-05-26T10:01:00Z",
+                "precision": "MINUTE"
+              },
+              "restrictions": {
+                "paywallContent": false
+              },
+              "uri": "spotify:episode:5msbTX0jTdibOyR0YK5pUT",
+              "videoPreviewThumbnail": {
+                "__typename": "VideoThumbnailImage",
+                "imagePreview": {
+                  "data": {
+                    "__typename": "ImageV2",
+                    "sources": [
+                      {
+                        "maxHeight": 720,
+                        "maxWidth": 1280,
+                        "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000030aec7c79ebda74c17ceee28b533"
+                      },
+                      {
+                        "maxHeight": 360,
+                        "maxWidth": 640,
+                        "url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab0000e0e7c7c79ebda74c17ceee28b533"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "__typename": "EpisodeResponseWrapper",
+            "data": {
+              "__typename": "Episode",
+              "contentRating": {
+                "label": "NONE"
+              },
+              "coverArt": {
+                "sources": [
+                  {
+                    "height": 64,
+                    "url": "https://i.scdn.co/image/ab6765630000f68d0fdfdac02a1695f361f0fdb2",
+                    "width": 64
+                  },
+                  {
+                    "height": 300,
+                    "url": "https://i.scdn.co/image/ab67656300005f1f0fdfdac02a1695f361f0fdb2",
+                    "width": 300
+                  },
+                  {
+                    "height": 640,
+                    "url": "https://i.scdn.co/image/ab6765630000ba8a0fdfdac02a1695f361f0fdb2",
+                    "width": 640
+                  }
+                ]
+              },
+              "description": "Our dissection of Random Access Memories continues with a journey through “Within,” “Instant Crush,” “Lose Yourself to Dance,” and the album’s emotional centerpiece, “Touch.” Connecting Changes Everything. https://www.att.com/connecttochange/ Follow @dissectpodcast on Instagram, TikTok, and Twitter. Host/Writer/EP: Cole Cuchna Editors: Kevin Pooler & Iulia Ciobanu Theme Music: Birocratic Additional Production: Justin Sayles Learn more about your ad choices. Visit podcastchoices.com/adchoices",
+              "duration": {
+                "totalMilliseconds": 2649322
+              },
+              "gatedEntityRelations": [],
+              "mediaTypes": [
+                "VIDEO",
+                "AUDIO"
+              ],
+              "name": "E11 - 'Random Access Memories' by Daft Punk [PART 2]",
+              "playability": {
+                "reason": "PLAYABLE"
+              },
+              "playedState": {
+                "playPositionMilliseconds": 0,
+                "state": "NOT_STARTED"
+              },
+              "podcastV2": {
+                "__typename": "PodcastResponseWrapper",
+                "data": {
+                  "__typename": "Podcast",
+                  "coverArt": {
+                    "sources": [
+                      {
+                        "height": 64,
+                        "url": "https://i.scdn.co/image/ab6765630000f68db1bddf54d0effae5e91ba12a",
+                        "width": 64
+                      },
+                      {
+                        "height": 300,
+                        "url": "https://i.scdn.co/image/ab67656300005f1fb1bddf54d0effae5e91ba12a",
+                        "width": 300
+                      },
+                      {
+                        "height": 640,
+                        "url": "https://i.scdn.co/image/ab6765630000ba8ab1bddf54d0effae5e91ba12a",
+                        "width": 640
+                      }
+                    ]
+                  },
+                  "mediaType": "MIXED",
+                  "name": "Dissect",
+                  "publisher": {
+                    "name": "Spotify Studios"
+                  },
+                  "uri": "spotify:show:2b025hq3gJ17tQdxS3aV43"
+                }
+              },
+              "releaseDate": {
+                "isoString": "2026-06-09T10:01:00Z",
+                "precision": "MINUTE"
+              },
+              "restrictions": {
+                "paywallContent": false
+              },
+              "uri": "spotify:episode:0OIwOckvD30IzpSAGTdnKT",
+              "videoPreviewThumbnail": {
+                "__typename": "VideoThumbnailImage",
+                "imagePreview": {
+                  "data": {
+                    "__typename": "ImageV2",
+                    "sources": [
+                      {
+                        "maxHeight": 720,
+                        "maxWidth": 1280,
+                        "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab000030ae247b24129a35f32eaee116b0"
+                      },
+                      {
+                        "maxHeight": 360,
+                        "maxWidth": 640,
+                        "url": "https://image-cdn-ak.spotifycdn.com/image/ab6772ab0000e0e7247b24129a35f32eaee116b0"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "totalCount": 1000
+      },
+      "audiobooks": {
+        "items": [],
+        "totalCount": 0
+      },
+      "chipOrder": {
+        "items": [
+          {
+            "typeName": "TRACKS"
+          },
+          {
+            "typeName": "ARTISTS"
+          },
+          {
+            "typeName": "PLAYLISTS"
+          },
+          {
+            "typeName": "ALBUMS"
+          },
+          {
+            "typeName": "USERS"
+          },
+          {
+            "typeName": "EPISODES"
+          },
+          {
+            "typeName": "PODCASTS"
+          },
+          {
+            "typeName": "AUDIOBOOKS"
+          },
+          {
+            "typeName": "GENRES"
+          },
+          {
+            "typeName": "AUTHORS"
+          }
+        ]
+      }
+    }
+  }
+}

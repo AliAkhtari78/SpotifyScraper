@@ -8,7 +8,7 @@ helpers, so the two facades stay thin and behaviourally identical.
 from __future__ import annotations
 
 import logging
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from types import TracebackType
 from typing import Any, TypeVar
@@ -26,6 +26,7 @@ from spotify_scraper.errors import (
     ParsingError,
     SpotifyScraperError,
     TokenError,
+    URLError,
 )
 from spotify_scraper.http.ratelimit import RateLimit
 from spotify_scraper.http.retry import RetryPolicy
@@ -35,6 +36,7 @@ from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
+from spotify_scraper.models.search import SearchResults
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
 
@@ -43,6 +45,7 @@ _LOGGER = logging.getLogger("spotify_scraper")
 _PLAYLIST_PAGE = 100
 _ALBUM_PAGE = 50
 _SHOW_EPISODES_PAGE = 50
+_SEARCH_TYPES = ("track", "album", "artist", "playlist", "show", "episode")
 
 _T = TypeVar("_T")
 
@@ -323,6 +326,41 @@ class AsyncSpotifyClient:
             provider.invalidate()
             return await self._fetch_lyrics(entity_id, await provider.token())
 
+    async def search(
+        self,
+        query: str,
+        *,
+        types: Sequence[str] = _SEARCH_TYPES,
+        limit: int = 20,
+    ) -> SearchResults:
+        """Search Spotify for tracks, albums, artists, playlists, shows, episodes.
+
+        Search is anonymous and tier-1-only: it uses the same anonymous bearer
+        token as the entity getters, with no cookie and no embed page. A query
+        that matches nothing returns an empty :class:`SearchResults`, not an
+        error.
+
+        Args:
+            query: The free-text search term.
+            types: Which entity sections to return; the accepted values are
+                ``"track"``, ``"album"``, ``"artist"``, ``"playlist"``,
+                ``"show"``, and ``"episode"``.
+            limit: Maximum hits per section requested from Spotify.
+
+        Returns:
+            A :class:`SearchResults` whose tuples for the requested ``types`` are
+            populated; unrequested types stay empty.
+
+        Raises:
+            URLError: If ``types`` contains an unrecognized entity type.
+            SpotifyScraperError: If the client is closed.
+        """
+        self._ensure_open()
+        wanted = _validate_search_types(types)
+        union = await self._search_union(query, limit)
+        results = parse_entities.parse_search_results(union, query=query)
+        return _filter_search_results(results, wanted)
+
     def _lyrics_provider(self) -> AsyncCookieTokenProvider:
         self._ensure_open()
         provider = self._lyrics_tokens
@@ -598,6 +636,58 @@ class AsyncSpotifyClient:
         response = await self._transport.get(url, headers=pathfinder.auth_headers(token))
         body = _safe_json(response)
         return pathfinder.classify_response(response.status_code, body)
+
+    async def _search_union(self, query: str, limit: int) -> Mapping[str, Any]:
+        overrides = {"limit": limit}
+        try:
+            data = await self._search_request(query, await self._tokens.token(), overrides)
+        except TokenError:
+            self._tokens.invalidate()
+            data = await self._search_request(query, await self._tokens.token(), overrides)
+        union = data.get("searchV2")
+        if not isinstance(union, Mapping):
+            raise ParsingError(
+                "Pathfinder response missing 'data.searchV2'. "
+                "Spotify may have changed its API; check for a library update."
+            )
+        return union
+
+    async def _search_request(
+        self,
+        query: str,
+        token: str,
+        overrides: Mapping[str, Any] | None,
+    ) -> dict[str, Any]:
+        url = pathfinder.build_search_url(query, variable_overrides=overrides)
+        response = await self._transport.get(url, headers=pathfinder.auth_headers(token))
+        body = _safe_json(response)
+        return pathfinder.classify_response(response.status_code, body)
+
+
+def _validate_search_types(types: Sequence[str]) -> frozenset[str]:
+    """Return the requested types as a set, raising on an unknown entry."""
+    wanted = frozenset(types)
+    unknown = wanted - frozenset(_SEARCH_TYPES)
+    if unknown:
+        raise URLError(
+            f"Unknown search type(s): {', '.join(sorted(unknown))}. "
+            f"Accepted types are: {', '.join(_SEARCH_TYPES)}."
+        )
+    return wanted
+
+
+def _filter_search_results(results: SearchResults, wanted: frozenset[str]) -> SearchResults:
+    """Blank out the sections whose type was not requested."""
+    return SearchResults(
+        query=results.query,
+        tracks=results.tracks if "track" in wanted else (),
+        artists=results.artists if "artist" in wanted else (),
+        albums=results.albums if "album" in wanted else (),
+        playlists=results.playlists if "playlist" in wanted else (),
+        shows=results.shows if "show" in wanted else (),
+        episodes=results.episodes if "episode" in wanted else (),
+        total=results.total,
+    )
 
 
 def _with_album_tracks(album: Album, tracks: tuple[Track, ...]) -> Album:

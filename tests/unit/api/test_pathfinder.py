@@ -11,7 +11,9 @@ import pytest
 from spotify_scraper.api.pathfinder import (
     OPERATIONS,
     PATHFINDER_URL,
+    SEARCH_OPERATION,
     auth_headers,
+    build_search_url,
     build_url,
     classify_response,
 )
@@ -19,6 +21,7 @@ from spotify_scraper.errors import NotFoundError, ParsingError, TokenError
 
 TRACK_ID = "4uLU6hMCjMI75M1A2tKUQC"
 TRACK_HASH = "612585ae06ba435ad26369870deaae23b5c8800a256cd8a57e08eddc25a37294"
+SEARCH_HASH = "eff59fa0a3d026b88b56fddbcf4bdfa16a186b8175a5c1a358c072e053c2e5b0"
 
 
 def _query(url: str) -> dict[str, str]:
@@ -55,6 +58,41 @@ def test_track_operation_table_entry() -> None:
     assert operation.name == "getTrack"
     assert operation.sha256 == TRACK_HASH
     assert operation.build_variables(TRACK_ID) == {"uri": f"spotify:track:{TRACK_ID}"}
+
+
+def test_build_search_url_targets_pathfinder_endpoint() -> None:
+    url = build_search_url("daft punk")
+    split = urlsplit(url)
+    assert f"{split.scheme}://{split.netloc}{split.path}" == PATHFINDER_URL
+
+
+def test_build_search_url_operation_name() -> None:
+    assert _query(build_search_url("daft punk"))["operationName"] == "searchDesktop"
+
+
+def test_build_search_url_variables_encode_query() -> None:
+    variables = json.loads(_query(build_search_url("daft punk"))["variables"])
+    assert variables["searchTerm"] == "daft punk"
+    assert variables["limit"] == 10
+
+
+def test_build_search_url_extensions_carry_persisted_query_hash() -> None:
+    extensions = json.loads(_query(build_search_url("daft punk"))["extensions"])
+    assert extensions == {"persistedQuery": {"version": 1, "sha256Hash": SEARCH_HASH}}
+
+
+def test_build_search_url_overrides_win() -> None:
+    variables = json.loads(
+        _query(build_search_url("x", variable_overrides={"limit": 5}))["variables"]
+    )
+    assert variables["limit"] == 5
+    assert variables["searchTerm"] == "x"
+
+
+def test_search_operation_entry() -> None:
+    assert SEARCH_OPERATION.name == "searchDesktop"
+    assert SEARCH_OPERATION.sha256 == SEARCH_HASH
+    assert SEARCH_OPERATION.build_variables("x")["searchTerm"] == "x"
 
 
 def test_auth_headers() -> None:
