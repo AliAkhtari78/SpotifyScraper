@@ -28,9 +28,15 @@ EMBED_URL = f"https://open.spotify.com/embed/track/{TRACK_ID}"
 BOOTSTRAP_URL = f"https://open.spotify.com/embed/track/{DEFAULT_BOOTSTRAP_ID}"
 PATHFINDER_RE = re.compile(r"https://api-partner\.spotify\.com/pathfinder/v1/query.*")
 
-EMBED_NEXT_DATA: dict[str, Any] = json.loads((FIXTURES / "embed" / "track.json").read_text())
-PATHFINDER_BODY: dict[str, Any] = json.loads((FIXTURES / "pathfinder" / "track.json").read_text())
-SEARCH_BODY: dict[str, Any] = json.loads((FIXTURES / "pathfinder" / "search.json").read_text())
+EMBED_NEXT_DATA: dict[str, Any] = json.loads(
+    (FIXTURES / "embed" / "track.json").read_text(encoding="utf-8")
+)
+PATHFINDER_BODY: dict[str, Any] = json.loads(
+    (FIXTURES / "pathfinder" / "track.json").read_text(encoding="utf-8")
+)
+SEARCH_BODY: dict[str, Any] = json.loads(
+    (FIXTURES / "pathfinder" / "search.json").read_text(encoding="utf-8")
+)
 
 
 def _embed_html(*, token: str = "EMBED_TOKEN") -> str:  # noqa: S107
