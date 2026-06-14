@@ -51,7 +51,8 @@ classifiers = [
 media = ["mutagen>=1.47"]
 browser = ["playwright>=1.49"]
 cli = ["typer>=0.12"]
-all = ["spotifyscraper[media,browser,cli]"]
+keyring = ["keyring>=24"]
+all = ["spotifyscraper[media,browser,cli,keyring]"]
 
 [project.scripts]
 spotifyscraper = "spotify_scraper.cli:app"
@@ -146,9 +147,13 @@ timeout = 60
 [tool.coverage.run]
 source = ["src"]
 branch = true
-# The Playwright transport requires a real browser; it is exercised by the
-# `browser`-marked suite in its own CI job, not the default coverage run.
-omit = ["src/spotify_scraper/browser/playwright.py"]
+# The Playwright transport and the headed login helper require a real browser;
+# they are exercised by the `browser`-marked suite in its own CI job, not the
+# default coverage run.
+omit = [
+  "src/spotify_scraper/browser/login.py",
+  "src/spotify_scraper/browser/playwright.py",
+]
 
 [tool.coverage.report]
 fail_under = 85

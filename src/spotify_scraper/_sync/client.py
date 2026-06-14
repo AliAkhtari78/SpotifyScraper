@@ -21,6 +21,7 @@ from spotify_scraper.api import transcripts as transcripts_api
 from spotify_scraper.api.parse_embed import EmbedSession
 from spotify_scraper.auth.anonymous import AnonymousTokenProvider
 from spotify_scraper.auth.cookies import CookieTokenProvider, load_sp_dc
+from spotify_scraper.auth.session import SessionStore
 from spotify_scraper.errors import (
     AuthenticationError,
     NetworkError,
@@ -112,6 +113,83 @@ class SpotifyClient:
         self._tokens = AnonymousTokenProvider(self._transport)
         self._cookie_tokens: CookieTokenProvider | None = None
         self._closed = False
+
+    def login(
+        self,
+        *,
+        save: bool = True,
+        store: str = "file",
+        timeout: float = 300.0,
+        proxy: str | None = None,
+        session_path: Path | None = None,
+    ) -> None:
+        """Open a headed browser, capture an ``sp_dc`` cookie, and authenticate.
+
+        A real Chromium window opens; the user signs into Spotify by hand. The
+        captured cookie is wired into this client (resetting the cached
+        cookie-token provider so the next authenticated call re-exchanges) and,
+        when ``save`` is set, persisted for later :meth:`from_saved_session`
+        reuse. This method performs no HTTP request itself.
+
+        Importing the client does not require Playwright; the browser import is
+        method-level and lazy, so the ``browser`` extra is only needed here.
+
+        Args:
+            save: Persist the captured cookie to ``session_path`` (default).
+            store: Session backend, ``"file"`` (default) or ``"keyring"``.
+            timeout: Seconds to wait for the manual login to yield a cookie.
+            proxy: Optional proxy URL for the login browser. Neither client
+                retains the constructor proxy, so pass it explicitly here.
+            session_path: Override for where the session is saved.
+
+        Raises:
+            AuthenticationError: If no cookie is captured before the timeout.
+            ImportError: If the ``browser`` extra is not installed.
+            SpotifyScraperError: If the client is closed.
+        """
+        self._ensure_open()
+        from spotify_scraper.browser import capture_sp_dc
+
+        sp_dc = capture_sp_dc(timeout=timeout, proxy=proxy)
+        self._cookies = sp_dc
+        self._cookie_tokens = None
+        if save:
+            SessionStore(store).save(sp_dc, path=session_path)
+
+    @classmethod
+    def from_saved_session(
+        cls,
+        *,
+        store: str = "file",
+        session_path: Path | None = None,
+        **kwargs: Any,
+    ) -> SpotifyClient:
+        """Build a client from a previously saved session, no browser required.
+
+        Args:
+            store: Session backend, ``"file"`` (default) or ``"keyring"``.
+            session_path: Override for the session file to load.
+            **kwargs: Forwarded to :class:`SpotifyClient` (e.g. ``rate_limit``,
+                ``retry``, ``proxy``, ``timeout``, ``transport``).
+
+        Returns:
+            A client wired with the saved ``sp_dc`` cookie.
+
+        Raises:
+            SessionError: If no usable saved session exists.
+        """
+        session = SessionStore(store).load(path=session_path)
+        return cls(cookies=session.sp_dc, **kwargs)
+
+    @classmethod
+    def logout(cls, *, store: str = "file", session_path: Path | None = None) -> None:
+        """Remove the saved session for local revocation; idempotent.
+
+        Args:
+            store: Session backend, ``"file"`` (default) or ``"keyring"``.
+            session_path: Override for the session file to clear.
+        """
+        SessionStore(store).clear(path=session_path)
 
     def get_track(self, value: str) -> Track:
         """Fetch a track by URL, URI, or bare ID.

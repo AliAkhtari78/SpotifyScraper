@@ -73,3 +73,7 @@ class ParsingError(SpotifyScraperError):
 
 class MediaError(SpotifyScraperError):
     """Media download or tagging failed."""
+
+
+class SessionError(SpotifyScraperError):
+    """A saved session is missing, unreadable, insecurely permissioned, or expired."""

@@ -15,8 +15,10 @@ import typer
 
 import spotify_scraper
 from spotify_scraper import RateLimit, SpotifyClient
+from spotify_scraper.auth.session import SessionStore, default_session_path
 from spotify_scraper.cli._output import emit, run
 from spotify_scraper.cli.download import download_app
+from spotify_scraper.errors import SpotifyScraperError
 
 app = typer.Typer(
     name="spotifyscraper",
@@ -261,6 +263,51 @@ def transcript(
         with SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate, cookies=source) as client:
             entity = client.get_transcript(value)
         emit(entity.to_dict(), pretty=pretty, output=output)
+
+    run(body)
+
+
+StoreOpt = Annotated[
+    str,
+    typer.Option("--store", help="Where to keep the cookie: 'file' (default) or 'keyring'."),
+]
+
+
+@app.command()
+def login(
+    store: StoreOpt = "file",
+    timeout: Annotated[
+        float, typer.Option("--timeout", help="Seconds to wait for the manual login.")
+    ] = 300.0,
+    proxy: ProxyOpt = None,
+) -> None:
+    """Open a browser to sign in and save the captured session.
+
+    Only the saved session path is printed; the cookie is never displayed.
+    """
+
+    def body() -> None:
+        try:
+            from spotify_scraper.browser import capture_sp_dc
+        except ImportError as exc:
+            raise SpotifyScraperError(
+                "Browser login requires the 'browser' extra: "
+                "pip install spotifyscraper[browser] && playwright install chromium"
+            ) from exc
+        sp_dc = capture_sp_dc(timeout=timeout, proxy=proxy)
+        path = SessionStore(store).save(sp_dc)
+        typer.echo(f"Saved session to {path}")
+
+    run(body)
+
+
+@app.command()
+def logout(store: StoreOpt = "file") -> None:
+    """Clear the saved session (idempotent); prints only the cleared path."""
+
+    def body() -> None:
+        SessionStore(store).clear()
+        typer.echo(f"Cleared session at {default_session_path()}")
 
     run(body)
 
