@@ -50,8 +50,9 @@ command. See the [Lyrics & cookies guide](guides/lyrics-and-cookies.md).
 
 Because the library rides on Spotify's undocumented endpoints, occasional
 breakage is expected. Update to the latest release first. If it still fails,
-check the pinned `spotify-breakage` issue, and open a bug report with your
-`spotifyscraper` version, the URL, and the full traceback.
+check for an open issue with the `spotify-breakage` label — the daily canary
+files one automatically when extraction breaks — then open a bug report with
+your `spotifyscraper` version, the URL, and the full traceback.
 
 ### Sync or async?
 

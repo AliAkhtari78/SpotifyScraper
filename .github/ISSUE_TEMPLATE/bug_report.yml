@@ -7,7 +7,7 @@ body:
       value: |
         Thanks for the report! Because SpotifyScraper rides on Spotify's
         undocumented web endpoints, extraction can break when Spotify changes
-        its site. Please check the pinned **spotify-breakage** issue first.
+        its site. Please check open issues for the **spotify-breakage** label first.
   - type: checkboxes
     id: preflight
     attributes:
@@ -15,7 +15,7 @@ body:
       options:
         - label: I am on the latest release of `spotifyscraper`.
           required: true
-        - label: I checked the pinned `spotify-breakage` issue and open issues.
+        - label: I searched open issues, including any with the `spotify-breakage` label.
           required: true
   - type: input
     id: version

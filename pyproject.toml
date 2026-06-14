@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "spotifyscraper"
 dynamic = ["version"]
-description = "Extract public Spotify data - tracks, albums, artists, playlists, podcasts - without the official API."
+description = "Extract public Spotify data — tracks, albums, artists, playlists, podcasts, and lyrics — without the official API. Sync + async, typed, one dependency."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -14,10 +14,26 @@ requires-python = ">=3.10"
 # Cap below httpx 1.0: it restructures the public API (e.g. httpx.ConnectError),
 # which this library uses. Relax once 1.0 is released and verified.
 dependencies = ["httpx>=0.27,<1.0"]
-keywords = ["spotify", "scraper", "music", "metadata", "playlist", "podcast"]
+keywords = [
+  "spotify",
+  "scraper",
+  "web-scraping",
+  "music",
+  "metadata",
+  "playlist",
+  "podcast",
+  "lyrics",
+  "async",
+  "spotify-api",
+  "spotify-downloader",
+  "no-api-key",
+  "httpx",
+]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
+  "Framework :: AsyncIO",
+  "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
@@ -25,7 +41,9 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
   "Topic :: Multimedia :: Sound/Audio",
+  "Topic :: Software Development :: Libraries :: Python Modules",
   "Typing :: Typed",
 ]
 
@@ -73,7 +91,18 @@ packages = ["src/spotify_scraper"]
 [tool.hatch.build.targets.sdist]
 # Ship a lean source distribution: the package, its tests, docs, and project
 # metadata — not agent/spec tooling or release-only extras.
-exclude = ["/.github", "/.claude", "/openspec", "/extras", "/scripts", "/site"]
+exclude = [
+  "/.github",
+  "/.claude",
+  "/openspec",
+  "/extras",
+  "/scripts",
+  "/site",
+  "/CLAUDE.md",
+  "/.gitmessage",
+  "/.python-version",
+  "/.pre-commit-config.yaml",
+]
 
 [tool.ruff]
 line-length = 100

@@ -5,7 +5,7 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![CI](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE)
 
 **Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — without the official API or any credentials.**
 
@@ -149,10 +149,10 @@ See the [legal notice](https://spotifyscraper.readthedocs.io/en/latest/legal/).
 
 ## Contributing
 
-Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). The project
+Contributions are welcome — see [CONTRIBUTING.md](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CONTRIBUTING.md). The project
 is developed spec-first with [OpenSpec](https://github.com/Fission-AI/OpenSpec);
-specs live in [`openspec/`](openspec/).
+specs live in [`openspec/`](https://github.com/AliAkhtari78/SpotifyScraper/tree/master/openspec).
 
 ## License
 
-[MIT](LICENSE) © Ali Akhtari
+[MIT](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE) © Ali Akhtari

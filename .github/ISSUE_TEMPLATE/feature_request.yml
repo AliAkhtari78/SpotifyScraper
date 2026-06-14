@@ -24,5 +24,5 @@ body:
     attributes:
       label: Roadmap check
       options:
-        - label: I checked that this isn't already planned (lyrics and a CLI are coming in v3.1).
+        - label: I checked the roadmap and open issues that this isn't already planned or shipped.
           required: true

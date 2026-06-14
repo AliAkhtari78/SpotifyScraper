@@ -1,9 +1,9 @@
 site_name: SpotifyScraper
 site_description: >-
-  Extract public Spotify data - tracks, albums, artists, playlists, podcasts -
-  without the official API.
+  Extract public Spotify data — tracks, albums, artists, playlists, podcasts,
+  and lyrics — without the official API. Sync and async, typed, one dependency.
 site_author: Ali Akhtari
-site_url: https://spotifyscraper.readthedocs.io
+site_url: https://spotifyscraper.readthedocs.io/en/latest/
 repo_url: https://github.com/AliAkhtari78/SpotifyScraper
 repo_name: AliAkhtari78/SpotifyScraper
 edit_uri: edit/master/docs/
