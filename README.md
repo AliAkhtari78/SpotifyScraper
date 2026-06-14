@@ -75,6 +75,26 @@ with SpotifyClient() as client:
     client.download_preview(track, dest="previews/", embed_cover=True)  # needs [media]
 ```
 
+### Localized display names
+
+Pass `locale` — an ISO-3166 alpha-2 code (`"DE"`) or a language tag (`"ja-JP"`) —
+to localize the *language* of display names. Set it per client or override it per
+call:
+
+```python
+with SpotifyClient(locale="ja-JP") as client:        # default for every call
+    track = client.get_track("4uLU6hMCjMI75M1A2tKUQC")
+    other = client.get_track("4uLU6hMCjMI75M1A2tKUQC", locale="de-DE")  # per-call wins
+```
+
+It is sent as the `Accept-Language` header and changes only how names are
+*spelled*. It does **not** filter regional **availability** or vary **preview
+URLs** — anonymous Spotify resolves country from the request IP, and its
+pathfinder silently ignores a `market` variable. True market/availability
+filtering requires the authenticated Web API, which this library does not
+implement; for region-specific results, point the client's `proxy` at the
+target region.
+
 ## Features
 
 - **All core entities + podcasts** — tracks, albums, artists, playlists, shows, episodes.

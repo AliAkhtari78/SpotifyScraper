@@ -5,7 +5,15 @@ from __future__ import annotations
 import pytest
 
 from spotify_scraper.errors import URLError
-from spotify_scraper.urls import ENTITY_TYPES, EntityType, embed_url, entity_uri, entity_url, parse
+from spotify_scraper.urls import (
+    ENTITY_TYPES,
+    EntityType,
+    embed_url,
+    entity_uri,
+    entity_url,
+    normalize_locale,
+    parse,
+)
 
 TRACK_ID = "4uLU6hMCjMI75M1A2tKUQC"
 ALBUM_ID = "4aawyAB9vmqN3uQ7FjRGTy"
@@ -154,3 +162,41 @@ def test_url_construction_round_trips(entity_type: EntityType, entity_id: str) -
 
 def test_embed_url_for_token_bootstrap() -> None:
     assert embed_url("track", TRACK_ID) == f"https://open.spotify.com/embed/track/{TRACK_ID}"
+
+
+# --------------------------------------------------------------------------- #
+# normalize_locale
+# --------------------------------------------------------------------------- #
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("de", "DE"),
+        ("DE", "DE"),
+        ("us", "US"),
+        ("GB", "GB"),
+        ("  jp  ", "JP"),
+        ("ja-JP", "ja-JP"),
+        ("en-US", "en-US"),
+        ("pt-BR", "pt-BR"),
+        ("zh-Hant-TW", "zh-Hant-TW"),
+        ("  de-DE  ", "de-DE"),
+    ],
+)
+def test_normalize_locale_accepts(value: str, expected: str) -> None:
+    assert normalize_locale(value) == expected
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["", "   ", "USA", "u1", "123", "x_y", "x-y-z", "d", "deutsch", "ja--JP", "en-"],
+)
+def test_normalize_locale_rejects(value: str) -> None:
+    with pytest.raises(URLError):
+        normalize_locale(value)
+
+
+def test_normalize_locale_error_names_value() -> None:
+    with pytest.raises(URLError, match="USA"):
+        normalize_locale("USA")

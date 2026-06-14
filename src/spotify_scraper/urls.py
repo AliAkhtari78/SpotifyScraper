@@ -22,6 +22,8 @@ ENTITY_TYPES: frozenset[str] = frozenset(
 _HOSTS = frozenset({"open.spotify.com", "play.spotify.com"})
 _ID_RE = re.compile(r"[0-9A-Za-z]{22}")
 _INTL_RE = re.compile(r"intl-[A-Za-z]+(?:-[A-Za-z]+)?")
+_MARKET_RE = re.compile(r"[A-Za-z]{2}")
+_LOCALE_RE = re.compile(r"[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})+")
 
 
 def parse(value: str, *, type_hint: EntityType | None = None) -> tuple[EntityType, str]:
@@ -50,6 +52,39 @@ def parse(value: str, *, type_hint: EntityType | None = None) -> tuple[EntityTyp
     if text.startswith("spotify:"):
         return _parse_uri(text)
     return _parse_url(text)
+
+
+def normalize_locale(value: str) -> str:
+    """Validate and normalize a locale for the ``Accept-Language`` header.
+
+    Accepts either a bare ISO-3166 alpha-2 country code (case-insensitive,
+    returned upper-cased, e.g. ``"de"`` -> ``"DE"``) or a full language-region
+    tag (returned unchanged, e.g. ``"ja-JP"``, ``"en-US"``).
+
+    This sets the *display language* of localized names only; on the anonymous
+    ladder it does NOT filter regional availability or vary preview URLs (the
+    pathfinder ``market`` variable is inert and the token's country is
+    IP-bound). True market/availability requires the authenticated Web API.
+
+    Args:
+        value: A country code or language tag.
+
+    Returns:
+        The normalized locale string.
+
+    Raises:
+        URLError: If ``value`` is neither a valid alpha-2 code nor a valid
+            language-region tag.
+    """
+    text = value.strip()
+    if _MARKET_RE.fullmatch(text):
+        return text.upper()
+    if _LOCALE_RE.fullmatch(text):
+        return text
+    raise URLError(
+        f"Invalid locale {value!r}: expected an ISO-3166 alpha-2 code "
+        "(e.g. 'US') or a language tag (e.g. 'ja-JP')."
+    )
 
 
 def entity_url(entity_type: EntityType, entity_id: str) -> str:
