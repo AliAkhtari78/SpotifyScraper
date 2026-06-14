@@ -45,7 +45,7 @@ from spotify_scraper import (
 | `NotFoundError` | Spotify returned 404 — the entity does not exist or is unavailable. | Verify the ID. |
 | `ParsingError` | Spotify's payload had an unexpected shape (their API changed). | Update the library; check for a release. |
 | `TokenError` | The anonymous token could not be bootstrapped or refreshed. | Usually transient; retry. May indicate a needed update. |
-| `AuthenticationError` | A feature requiring user credentials lacked valid ones. | Provide valid credentials (relevant to features coming in v3.1). |
+| `AuthenticationError` | A feature requiring user credentials lacked valid ones (e.g. `get_lyrics` without a valid `sp_dc` cookie). | Provide valid credentials — see the [Lyrics & cookies guide](lyrics-and-cookies.md). |
 | `MediaError` | A download failed: no preview/image exists, or `embed_cover` was requested without `mutagen`. | Check `preview_url`/`images`; install `[media]`. |
 
 ## Catch everything
