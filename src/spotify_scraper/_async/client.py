@@ -27,6 +27,7 @@ from spotify_scraper.errors import (
     SpotifyScraperError,
     TokenError,
 )
+from spotify_scraper.http.cache import AsyncCachingTransport, CacheConfig
 from spotify_scraper.http.ratelimit import RateLimit
 from spotify_scraper.http.retry import RetryPolicy
 from spotify_scraper.http.transport import AsyncHttpxTransport, AsyncTransport, Response
@@ -75,6 +76,7 @@ class AsyncSpotifyClient:
         transport: AsyncTransport | None = None,
         cookies: str | Path | Mapping[str, str] | None = None,
         host_rate_limits: Mapping[str, RateLimit] | None = None,
+        cache: CacheConfig | None = None,
     ) -> None:
         """Initialize the client.
 
@@ -91,15 +93,25 @@ class AsyncSpotifyClient:
                 stored now, consumed by the lyrics extraction change.
             host_rate_limits: Optional per-host rate overrides for the default
                 transport (e.g. to throttle ``api-partner.spotify.com``).
+            cache: Optional response-cache configuration (opt-in, off by
+                default). When supplied and no custom ``transport`` is given,
+                the default transport is wrapped in an
+                :class:`~spotify_scraper.http.cache.AsyncCachingTransport` and
+                the client owns and closes the whole stack. Ignored when a
+                custom ``transport`` is supplied, exactly as ``rate_limit``/
+                ``retry``/``proxy`` are.
         """
         if transport is None:
-            self._transport: AsyncTransport = AsyncHttpxTransport(
+            base: AsyncTransport = AsyncHttpxTransport(
                 rate_limit=rate_limit,
                 retry=retry,
                 user_agent=user_agent,
                 proxy=proxy,
                 timeout=timeout,
                 host_rate_limits=host_rate_limits,
+            )
+            self._transport: AsyncTransport = (
+                AsyncCachingTransport(base, cache) if cache is not None else base
             )
             self._owns_transport = True
         else:
