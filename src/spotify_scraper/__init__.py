@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from spotify_scraper._async import AsyncSpotifyClient
 from spotify_scraper._sync import SpotifyClient
+from spotify_scraper.batch import BatchItem
 from spotify_scraper.errors import (
     AuthenticationError,
     MediaError,
@@ -47,6 +48,7 @@ __all__ = [
     "ArtistRef",
     "AsyncSpotifyClient",
     "AuthenticationError",
+    "BatchItem",
     "Episode",
     "Image",
     "Lyrics",
