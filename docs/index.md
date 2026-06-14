@@ -142,6 +142,19 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 | 3.1.0 | The command-line interface. |
 | 3.2.0 | Cookie-authenticated **lyrics** extraction (this release). |
 
+### Planned
+
+Upcoming work is tracked in the GitHub
+[milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones):
+
+| Version | Adds |
+|---|---|
+| 3.3 | Podcast [transcripts](https://github.com/AliAkhtari78/SpotifyScraper/issues/127) and first-class [authenticated sessions](https://github.com/AliAkhtari78/SpotifyScraper/issues/128) — browser-assisted login with a persistent cookie store (no stored passwords). |
+| 3.4 | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type and [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support. |
+| 3.5 | Optional [response caching](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) and [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
+
+Scope is subject to change — 👍 the issues that matter most to you.
+
 !!! success "Lyrics are available"
     Cookie-authenticated **lyrics** extraction has shipped:
     `client.get_lyrics(track)` and the `spotifyscraper lyrics` command. See the
