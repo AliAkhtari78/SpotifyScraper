@@ -24,8 +24,12 @@ FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 BOOTSTRAP_URL = f"https://open.spotify.com/embed/track/{DEFAULT_BOOTSTRAP_ID}"
 PATHFINDER_RE = re.compile(r"https://api-partner\.spotify\.com/pathfinder/v1/query.*")
 
-SEARCH_BODY: dict[str, Any] = json.loads((FIXTURES / "pathfinder" / "search.json").read_text())
-EMBED_NEXT_DATA: dict[str, Any] = json.loads((FIXTURES / "embed" / "track.json").read_text())
+SEARCH_BODY: dict[str, Any] = json.loads(
+    (FIXTURES / "pathfinder" / "search.json").read_text(encoding="utf-8")
+)
+EMBED_NEXT_DATA: dict[str, Any] = json.loads(
+    (FIXTURES / "embed" / "track.json").read_text(encoding="utf-8")
+)
 
 
 def _bootstrap_html(*, token: str = "ANON_TOKEN") -> str:  # noqa: S107
