@@ -90,6 +90,8 @@ nav:
     - Quickstart: getting-started/quickstart.md
   - Guides:
     - Entities: guides/entities.md
+    - Search: guides/search.md
+    - Localization: guides/localization.md
     - CLI: guides/cli.md
     - Lyrics & cookies: guides/lyrics-and-cookies.md
     - Authenticated sessions: guides/authentication.md

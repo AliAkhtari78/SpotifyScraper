@@ -131,6 +131,19 @@ spotifyscraper track 4uLU6hMCjMI75M1A2tKUQC | jq -r '.name'
 
 See the [CLI guide](guides/cli.md) for every command, options, and exit codes.
 
+## Search
+
+`search()` runs one anonymous, aggregate query across every entity type and
+returns a typed `SearchResults`:
+
+```python
+results = client.search("daft punk", types=("track", "artist"), limit=5)
+for track in results.tracks:
+    print(track.name)
+```
+
+See the [Search guide](guides/search.md) for the result shape and filtering.
+
 ## Roadmap
 
 SpotifyScraper ships the core library — all six entity types, media downloads,
@@ -142,6 +155,7 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 | 3.1.0 | The command-line interface. |
 | 3.2.0 | Cookie-authenticated **lyrics** extraction. |
 | 3.3 | Cookie-authenticated podcast **transcripts** (`get_transcript`), **browser-assisted login** with a persistent cookie store, and **account-awareness** (`get_account`/`is_premium`). |
+| 3.4 | **Search** across every entity type (`search()`) and display-language **localization** (`locale`). |
 
 ### Planned
 
@@ -150,7 +164,6 @@ Upcoming work is tracked in the GitHub
 
 | Version | Adds |
 |---|---|
-| 3.4 | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type and [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support. |
 | 3.5 | Optional [response caching](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) and [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
 
 Scope is subject to change — 👍 the issues that matter most to you.
@@ -168,6 +181,16 @@ Scope is subject to change — 👍 the issues that matter most to you.
     `is_premium()` report the logged-in account, and `session_info()` checks a
     saved session without exposing the cookie. See the
     [authenticated sessions guide](guides/authentication.md).
+
+!!! success "Search has shipped"
+    `client.search(query, types=..., limit=...)` returns a typed
+    `SearchResults` across every entity type. See the
+    [Search guide](guides/search.md).
+
+!!! success "Localization has shipped"
+    Pass `locale` (a BCP-47 **language** tag like `"ja-JP"`) per client or per
+    call to localize display-name language. It is not a market/country toggle —
+    see the [Localization guide](guides/localization.md).
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.

@@ -8,7 +8,7 @@ helpers, so the two facades stay thin and behaviourally identical.
 from __future__ import annotations
 
 import logging
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from types import TracebackType
 from typing import Any, TypeVar
@@ -30,6 +30,7 @@ from spotify_scraper.errors import (
     SessionError,
     SpotifyScraperError,
     TokenError,
+    URLError,
 )
 from spotify_scraper.http.ratelimit import RateLimit
 from spotify_scraper.http.retry import RetryPolicy
@@ -40,6 +41,7 @@ from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
+from spotify_scraper.models.search import SearchResults
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
 from spotify_scraper.models.transcript import Transcript
@@ -49,6 +51,7 @@ _LOGGER = logging.getLogger("spotify_scraper")
 _PLAYLIST_PAGE = 100
 _ALBUM_PAGE = 50
 _SHOW_EPISODES_PAGE = 50
+_SEARCH_TYPES = ("track", "album", "artist", "playlist", "show", "episode")
 
 _T = TypeVar("_T")
 
@@ -65,6 +68,7 @@ class AsyncSpotifyClient:
         "_closed",
         "_cookie_tokens",
         "_cookies",
+        "_locale",
         "_owns_transport",
         "_tokens",
         "_transport",
@@ -81,6 +85,7 @@ class AsyncSpotifyClient:
         transport: AsyncTransport | None = None,
         cookies: str | Path | Mapping[str, str] | None = None,
         host_rate_limits: Mapping[str, RateLimit] | None = None,
+        locale: str | None = None,
     ) -> None:
         """Initialize the client.
 
@@ -97,6 +102,15 @@ class AsyncSpotifyClient:
                 stored now, consumed by the lyrics extraction change.
             host_rate_limits: Optional per-host rate overrides for the default
                 transport (e.g. to throttle ``api-partner.spotify.com``).
+            locale: Default display-language for localized names, a BCP-47
+                language tag — a bare language subtag (e.g. ``"de"``, ``"ja"``)
+                or a language-region tag (e.g. ``"ja-JP"``) — sent as the
+                ``Accept-Language`` header. Localizes display-name LANGUAGE only;
+                a bare country code like ``"US"`` is not a language and is
+                ignored. It does NOT filter regional availability or vary preview
+                URLs (those require the authenticated Web API). A per-call
+                ``locale`` overrides it. Raises
+                :class:`~spotify_scraper.errors.URLError` if invalid.
         """
         if transport is None:
             self._transport: AsyncTransport = AsyncHttpxTransport(
@@ -112,9 +126,13 @@ class AsyncSpotifyClient:
             self._transport = transport
             self._owns_transport = False
         self._cookies = cookies
+        self._locale = urls.normalize_locale(locale) if locale is not None else None
         self._tokens = AsyncAnonymousTokenProvider(self._transport)
         self._cookie_tokens: AsyncCookieTokenProvider | None = None
         self._closed = False
+
+    def _effective_locale(self, locale: str | None) -> str | None:
+        return urls.normalize_locale(locale) if locale is not None else self._locale
 
     async def login(
         self,
@@ -237,7 +255,7 @@ class AsyncSpotifyClient:
         """
         return SessionStore(store).info(path=session_path)
 
-    async def get_track(self, value: str) -> Track:
+    async def get_track(self, value: str, *, locale: str | None = None) -> Track:
         """Fetch a track by URL, URI, or bare ID.
 
         The embed page is fetched first: it supplies the tier-2 fallback
@@ -247,15 +265,19 @@ class AsyncSpotifyClient:
 
         Args:
             value: A Spotify track URL, URI, or 22-character ID.
+            locale: Per-call display-language override (``Accept-Language``);
+                localizes display-name LANGUAGE only, not availability/preview.
 
         Returns:
             The richest available :class:`Track`.
 
         Raises:
+            URLError: If ``locale`` is invalid.
             NotFoundError: If the track does not exist.
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "track")
+        effective = self._effective_locale(locale)
         model, _, _, _ = await self._get_entity(
             "track",
             entity_id,
@@ -263,30 +285,36 @@ class AsyncSpotifyClient:
             parse_entities.parse_track_gql,
             parse_entities.parse_track_embed,
             merge=parse_entities._merge_tracks,
+            locale=effective,
         )
         return model
 
-    async def get_album(self, value: str) -> Album:
+    async def get_album(self, value: str, *, locale: str | None = None) -> Album:
         """Fetch an album by URL, URI, or bare ID, paginating its tracks.
 
         Args:
             value: A Spotify album URL, URI, or 22-character ID.
+            locale: Per-call display-language override (``Accept-Language``);
+                localizes display-name LANGUAGE only, not availability/preview.
 
         Returns:
             The richest available :class:`Album` with as many tracks as the
             pathfinder pages provided (all of them by default).
 
         Raises:
+            URLError: If ``locale`` is invalid.
             NotFoundError: If the album does not exist.
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "album")
+        effective = self._effective_locale(locale)
         album, session, tier1, union = await self._get_entity(
             "album",
             entity_id,
             "albumUnion",
             parse_entities.parse_album_gql,
             parse_entities.parse_album_embed,
+            locale=effective,
         )
         if not tier1 or union is None:
             return album
@@ -302,55 +330,68 @@ class AsyncSpotifyClient:
             page_size=_ALBUM_PAGE,
             max_items=None,
             parse_page=parse_entities.parse_album_tracks_page,
+            locale=effective,
         )
         if not tracks:
             return album
         return _with_album_tracks(album, (*album.tracks, *tracks))
 
-    async def get_artist(self, value: str) -> Artist:
+    async def get_artist(self, value: str, *, locale: str | None = None) -> Artist:
         """Fetch an artist by URL, URI, or bare ID.
 
         Args:
             value: A Spotify artist URL, URI, or 22-character ID.
+            locale: Per-call display-language override (``Accept-Language``);
+                localizes display-name LANGUAGE only, not availability/preview.
 
         Returns:
             The richest available :class:`Artist`.
 
         Raises:
+            URLError: If ``locale`` is invalid.
             NotFoundError: If the artist does not exist.
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "artist")
+        effective = self._effective_locale(locale)
         artist, _, _, _ = await self._get_entity(
             "artist",
             entity_id,
             "artistUnion",
             parse_entities.parse_artist_gql,
             parse_entities.parse_artist_embed,
+            locale=effective,
         )
         return artist
 
-    async def get_playlist(self, value: str, *, max_tracks: int | None = 100) -> Playlist:
+    async def get_playlist(
+        self, value: str, *, max_tracks: int | None = 100, locale: str | None = None
+    ) -> Playlist:
         """Fetch a playlist by URL, URI, or bare ID, paginating its tracks.
 
         Args:
             value: A Spotify playlist URL, URI, or 22-character ID.
             max_tracks: Upper bound on tracks to collect; ``None`` fetches all.
+            locale: Per-call display-language override (``Accept-Language``);
+                localizes display-name LANGUAGE only, not availability/preview.
 
         Returns:
             The richest available :class:`Playlist`.
 
         Raises:
+            URLError: If ``locale`` is invalid.
             NotFoundError: If the playlist does not exist.
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "playlist")
+        effective = self._effective_locale(locale)
         playlist, session, tier1, union = await self._get_entity(
             "playlist",
             entity_id,
             "playlistV2",
             lambda union: parse_entities.parse_playlist_gql(union, max_tracks=max_tracks),
             parse_entities.parse_playlist_embed,
+            locale=effective,
         )
         if not tier1 or union is None:
             return playlist
@@ -366,61 +407,74 @@ class AsyncSpotifyClient:
             page_size=_PLAYLIST_PAGE,
             max_items=max_tracks,
             parse_page=parse_entities.parse_playlist_tracks_page,
+            locale=effective,
         )
         if not tracks:
             return playlist
         return _with_playlist_tracks(playlist, (*playlist.tracks, *tracks))
 
-    async def get_episode(self, value: str) -> Episode:
+    async def get_episode(self, value: str, *, locale: str | None = None) -> Episode:
         """Fetch a podcast episode by URL, URI, or bare ID.
 
         Args:
             value: A Spotify episode URL, URI, or 22-character ID.
+            locale: Per-call display-language override (``Accept-Language``);
+                localizes display-name LANGUAGE only, not availability/preview.
 
         Returns:
             The richest available :class:`Episode`.
 
         Raises:
+            URLError: If ``locale`` is invalid.
             NotFoundError: If the episode does not exist.
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "episode")
+        effective = self._effective_locale(locale)
         episode, _, _, _ = await self._get_entity(
             "episode",
             entity_id,
             "episodeUnionV2",
             parse_entities.parse_episode_gql,
             parse_entities.parse_episode_embed,
+            locale=effective,
         )
         return episode
 
-    async def get_show(self, value: str, *, max_episodes: int | None = 50) -> Show:
+    async def get_show(
+        self, value: str, *, max_episodes: int | None = 50, locale: str | None = None
+    ) -> Show:
         """Fetch a podcast show by URL, URI, or bare ID, listing its episodes.
 
         Args:
             value: A Spotify show URL, URI, or 22-character ID.
             max_episodes: Upper bound on episodes to collect; ``None`` fetches
                 all of them.
+            locale: Per-call display-language override (``Accept-Language``);
+                localizes display-name LANGUAGE only, not availability/preview.
 
         Returns:
             The richest available :class:`Show`, with ``total_episodes`` and a
             paginated ``episodes`` listing when tier 1 succeeds.
 
         Raises:
+            URLError: If ``locale`` is invalid.
             NotFoundError: If the show does not exist.
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "show")
+        effective = self._effective_locale(locale)
         show, session, tier1, _ = await self._get_entity(
             "show",
             entity_id,
             "podcastUnionV2",
             parse_entities.parse_show_gql,
             parse_entities.parse_show_embed,
+            locale=effective,
         )
         if not tier1:
             return show
-        return await self._with_episodes(show, entity_id, session, max_episodes)
+        return await self._with_episodes(show, entity_id, session, max_episodes, locale=effective)
 
     async def get_lyrics(self, value: str) -> Lyrics:
         """Fetch a track's lyrics using the cookie-derived web-player token.
@@ -509,6 +563,46 @@ class AsyncSpotifyClient:
         Convenience for ``(await get_account()).is_premium``; same auth needs.
         """
         return (await self.get_account()).is_premium
+
+    async def search(
+        self,
+        query: str,
+        *,
+        types: Sequence[str] = _SEARCH_TYPES,
+        limit: int = 20,
+        locale: str | None = None,
+    ) -> SearchResults:
+        """Search Spotify for tracks, albums, artists, playlists, shows, episodes.
+
+        Search is anonymous and tier-1-only: it uses the same anonymous bearer
+        token as the entity getters, with no cookie and no embed page. A query
+        that matches nothing returns an empty :class:`SearchResults`, not an
+        error.
+
+        Args:
+            query: The free-text search term.
+            types: Which entity sections to return; the accepted values are
+                ``"track"``, ``"album"``, ``"artist"``, ``"playlist"``,
+                ``"show"``, and ``"episode"``.
+            limit: Maximum hits per section requested from Spotify.
+            locale: Per-call display-language override (``Accept-Language``);
+                localizes display-name LANGUAGE only, not availability/preview.
+
+        Returns:
+            A :class:`SearchResults` whose tuples for the requested ``types`` are
+            populated; unrequested types stay empty.
+
+        Raises:
+            URLError: If ``types`` contains an unrecognized entity type, or
+                ``locale`` is invalid.
+            SpotifyScraperError: If the client is closed.
+        """
+        self._ensure_open()
+        wanted = _validate_search_types(types)
+        effective = self._effective_locale(locale)
+        union = await self._search_union(query, limit, locale=effective)
+        results = parse_entities.parse_search_results(union, query=query)
+        return _filter_search_results(results, wanted)
 
     def _cookie_provider(self) -> AsyncCookieTokenProvider:
         self._ensure_open()
@@ -641,7 +735,13 @@ class AsyncSpotifyClient:
         )
 
     async def _with_episodes(
-        self, show: Show, entity_id: str, session: EmbedSession, max_episodes: int | None
+        self,
+        show: Show,
+        entity_id: str,
+        session: EmbedSession,
+        max_episodes: int | None,
+        *,
+        locale: str | None = None,
     ) -> Show:
         first_limit = (
             _SHOW_EPISODES_PAGE if max_episodes is None else min(max_episodes, _SHOW_EPISODES_PAGE)
@@ -653,6 +753,7 @@ class AsyncSpotifyClient:
                 "podcastUnionV2",
                 session,
                 overrides={"offset": 0, "limit": first_limit},
+                locale=locale,
             )
         except (ParsingError, SpotifyScraperError) as exc:
             _LOGGER.warning("Show episode listing for %s failed: %s", entity_id, exc)
@@ -672,6 +773,7 @@ class AsyncSpotifyClient:
                 page_size=_SHOW_EPISODES_PAGE,
                 max_items=max_episodes,
                 parse_page=parse_entities.parse_show_episodes_page,
+                locale=locale,
             )
         )
         if max_episodes is not None:
@@ -714,6 +816,7 @@ class AsyncSpotifyClient:
         parse_embed_fn: Callable[[Mapping[str, Any]], _T],
         *,
         merge: Callable[[_T, _T], _T] | None = None,
+        locale: str | None = None,
     ) -> tuple[_T, EmbedSession, bool, Mapping[str, Any] | None]:
         """Run the embed-first two-tier ladder for one entity.
 
@@ -722,12 +825,12 @@ class AsyncSpotifyClient:
         the raw tier-1 union (so paginating callers can count raw items) or
         ``None`` when degraded.
         """
-        next_data = await self._fetch_next_data(kind, entity_id)
+        next_data = await self._fetch_next_data(kind, entity_id, locale=locale)
         embed_model = parse_embed_fn(parse_embed.get_entity(next_data))
         session = parse_embed.get_session(next_data)
 
         try:
-            union = await self._fetch_union(kind, entity_id, union_key, session)
+            union = await self._fetch_union(kind, entity_id, union_key, session, locale=locale)
             gql_model = parse_gql(union)
         except (ParsingError, NetworkError) as exc:
             _LOGGER.warning("Tier-1 %s fetch degraded to embed page: %s", kind, exc)
@@ -750,6 +853,7 @@ class AsyncSpotifyClient:
         page_size: int,
         max_items: int | None,
         parse_page: Callable[[Mapping[str, Any]], tuple[_T, ...]],
+        locale: str | None = None,
     ) -> tuple[_T, ...]:
         """Fetch follow-up pages after the first tier-1 page.
 
@@ -773,6 +877,7 @@ class AsyncSpotifyClient:
                     union_key,
                     session,
                     overrides={"offset": offset, "limit": page_size},
+                    locale=locale,
                 )
                 page = parse_page(union)
             except (ParsingError, SpotifyScraperError) as exc:
@@ -787,8 +892,13 @@ class AsyncSpotifyClient:
             return tuple(extra[: max(0, max_items - filtered_have)])
         return tuple(extra)
 
-    async def _fetch_next_data(self, kind: str, entity_id: str) -> dict[str, Any]:
-        response: Response = await self._transport.get(urls.embed_url(kind, entity_id))  # type: ignore[arg-type]
+    async def _fetch_next_data(
+        self, kind: str, entity_id: str, *, locale: str | None = None
+    ) -> dict[str, Any]:
+        response: Response = await self._transport.get(
+            urls.embed_url(kind, entity_id),  # type: ignore[arg-type]
+            headers=_lang_header(locale),
+        )
         return parse_embed.extract_next_data(response.text)
 
     async def _fetch_union(
@@ -799,13 +909,16 @@ class AsyncSpotifyClient:
         session: EmbedSession,
         *,
         overrides: Mapping[str, Any] | None = None,
+        locale: str | None = None,
     ) -> Mapping[str, Any]:
         try:
-            data = await self._pathfinder_request(kind, entity_id, session.access_token, overrides)
+            data = await self._pathfinder_request(
+                kind, entity_id, session.access_token, overrides, locale
+            )
         except TokenError:
             self._tokens.invalidate()
             data = await self._pathfinder_request(
-                kind, entity_id, await self._tokens.token(), overrides
+                kind, entity_id, await self._tokens.token(), overrides, locale
             )
         union = data.get(union_key)
         if not isinstance(union, Mapping):
@@ -821,11 +934,80 @@ class AsyncSpotifyClient:
         entity_id: str,
         token: str,
         overrides: Mapping[str, Any] | None,
+        locale: str | None = None,
     ) -> dict[str, Any]:
         url = pathfinder.build_url(kind, entity_id, variable_overrides=overrides)
-        response = await self._transport.get(url, headers=pathfinder.auth_headers(token))
+        headers = {**pathfinder.auth_headers(token), **_lang_header(locale)}
+        response = await self._transport.get(url, headers=headers)
         body = _safe_json(response)
         return pathfinder.classify_response(response.status_code, body)
+
+    async def _search_union(
+        self, query: str, limit: int, *, locale: str | None = None
+    ) -> Mapping[str, Any]:
+        overrides = {"limit": limit}
+        try:
+            data = await self._search_request(query, await self._tokens.token(), overrides, locale)
+        except TokenError:
+            self._tokens.invalidate()
+            data = await self._search_request(query, await self._tokens.token(), overrides, locale)
+        union = data.get("searchV2")
+        if not isinstance(union, Mapping):
+            raise ParsingError(
+                "Pathfinder response missing 'data.searchV2'. "
+                "Spotify may have changed its API; check for a library update."
+            )
+        return union
+
+    async def _search_request(
+        self,
+        query: str,
+        token: str,
+        overrides: Mapping[str, Any] | None,
+        locale: str | None = None,
+    ) -> dict[str, Any]:
+        url = pathfinder.build_search_url(query, variable_overrides=overrides)
+        headers = {**pathfinder.auth_headers(token), **_lang_header(locale)}
+        response = await self._transport.get(url, headers=headers)
+        body = _safe_json(response)
+        return pathfinder.classify_response(response.status_code, body)
+
+
+def _lang_header(locale: str | None) -> dict[str, str]:
+    """Return a per-request ``Accept-Language`` override, or empty when unset.
+
+    The override wins over the transport default (``Accept-Language: en``) in
+    ``transport.get``, localizing display-name LANGUAGE only.
+    """
+    return {"Accept-Language": locale} if locale is not None else {}
+
+
+def _validate_search_types(types: Sequence[str]) -> frozenset[str]:
+    """Return the requested types as a set, raising on an unknown entry."""
+    wanted = frozenset(types)
+    unknown = wanted - frozenset(_SEARCH_TYPES)
+    if unknown:
+        raise URLError(
+            f"Unknown search type(s): {', '.join(sorted(unknown))}. "
+            f"Accepted types are: {', '.join(_SEARCH_TYPES)}."
+        )
+    return wanted
+
+
+def _filter_search_results(results: SearchResults, wanted: frozenset[str]) -> SearchResults:
+    """Blank out the sections whose type was not requested."""
+    return SearchResults(
+        query=results.query,
+        tracks=results.tracks if "track" in wanted else (),
+        artists=results.artists if "artist" in wanted else (),
+        albums=results.albums if "album" in wanted else (),
+        playlists=results.playlists if "playlist" in wanted else (),
+        shows=results.shows if "show" in wanted else (),
+        episodes=results.episodes if "episode" in wanted else (),
+        # total is the tracks-section count; clear it when tracks weren't asked
+        # for, so a non-track search never reports a misleading count.
+        total=results.total if "track" in wanted else None,
+    )
 
 
 def _with_album_tracks(album: Album, tracks: tuple[Track, ...]) -> Album:

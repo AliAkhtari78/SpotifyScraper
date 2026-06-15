@@ -20,6 +20,7 @@ from spotify_scraper.models.common import AlbumRef, ArtistRef, Image, ShowRef, U
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics, LyricsLine
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
+from spotify_scraper.models.search import SearchResults
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
 from spotify_scraper.models.transcript import Transcript, TranscriptLine
@@ -37,6 +38,7 @@ __all__ = [
     "parse_playlist_embed",
     "parse_playlist_gql",
     "parse_playlist_tracks_page",
+    "parse_search_results",
     "parse_show_embed",
     "parse_show_episodes_page",
     "parse_show_gql",
@@ -897,6 +899,204 @@ def show_episodes_total(union: Mapping[str, Any]) -> int | None:
     """
     node = _optional_mapping(union, "episodesV2")
     return _total_count(node) if node is not None else None
+
+
+# --------------------------------------------------------------------------- #
+# Search
+# --------------------------------------------------------------------------- #
+
+
+def parse_search_results(union: Mapping[str, Any], *, query: str) -> SearchResults:
+    """Build :class:`SearchResults` from a ``searchDesktop`` ``searchV2`` union.
+
+    The nesting is not uniform: ``tracksV2`` items wrap the entity at
+    ``items[].item.data`` while every other section wraps it at ``items[].data``.
+    Empty or absent sections yield empty tuples; a section that is not a mapping
+    or an item missing its ``uri``/``name`` is skipped rather than raising, so a
+    zero-hit search returns an empty :class:`SearchResults`, never an error.
+
+    Args:
+        union: The ``body["data"]["searchV2"]`` object.
+        query: The original search term, echoed back on the model.
+
+    Returns:
+        A :class:`SearchResults` populated from the present sections.
+
+    Raises:
+        ParsingError: If ``union`` is not a mapping.
+    """
+    if not isinstance(union, Mapping):
+        raise ParsingError(f"Search response 'searchV2' was not an object. {_UPDATE_HINT}")
+    return SearchResults(
+        query=query,
+        tracks=_search_tracks(union.get("tracksV2")),
+        artists=_search_artists(union.get("artists")),
+        albums=_search_albums(union.get("albumsV2")),
+        playlists=_search_playlists(union.get("playlists")),
+        shows=_search_shows(union.get("podcasts")),
+        episodes=_search_episodes(union.get("episodes")),
+        total=_total_count(_optional_mapping(union, "tracksV2")),
+    )
+
+
+def _search_section_entities(node: Any, *, nested: bool) -> list[Mapping[str, Any]]:
+    """Return each section item's entity node (``items[].data`` or nested)."""
+    if not isinstance(node, Mapping):
+        return []
+    entities: list[Mapping[str, Any]] = []
+    for item in _items(node):
+        wrapper = _optional_mapping(item, "item") if nested else item
+        if wrapper is None:
+            continue
+        data = _optional_mapping(wrapper, "data")
+        if data is not None:
+            entities.append(data)
+    return entities
+
+
+def _search_tracks(node: Any) -> tuple[Track, ...]:
+    tracks: list[Track] = []
+    for data in _search_section_entities(node, nested=True):
+        track = _search_track(data)
+        if track is not None:
+            tracks.append(track)
+    return tuple(tracks)
+
+
+def _search_track(data: Mapping[str, Any]) -> Track | None:
+    uri = _optional_str(data, "uri")
+    name = _optional_str(data, "name")
+    if not uri or not name:
+        return None
+    duration = _optional_mapping(data, "duration") or {}
+    playability = _optional_mapping(data, "playability") or {}
+    album_node = _optional_mapping(data, "albumOfTrack")
+    album = _search_album_ref(album_node) if album_node is not None else None
+    images = _cover_art_images(album_node) if album_node is not None else ()
+    return Track(
+        id=_optional_str(data, "id") or _id_from_uri(uri),
+        uri=uri,
+        name=name,
+        duration_ms=_optional_int(duration, "totalMilliseconds") or 0,
+        explicit=_gql_explicit(data),
+        playable=bool(playability.get("playable", False)),
+        preview_url=None,
+        artists=_artist_items(data.get("artists")),
+        images=images,
+        release_date=None,
+        album=album,
+    )
+
+
+def _search_album_ref(album_node: Mapping[str, Any]) -> AlbumRef | None:
+    """Lenient :class:`AlbumRef` for a search hit: ``None`` on a partial album.
+
+    Unlike :func:`_album_ref_lenient` (which raises, as its playlist-track caller
+    requires), a search track must never abort the whole result set just because
+    one hit's ``albumOfTrack`` is present but missing its ``uri``/``name``.
+    """
+    uri = _optional_str(album_node, "uri")
+    name = _optional_str(album_node, "name")
+    if not uri or not name:
+        return None
+    return AlbumRef(
+        id=_optional_str(album_node, "id") or _id_from_uri(uri),
+        uri=uri,
+        name=name,
+        images=_cover_art_images(album_node),
+    )
+
+
+def _search_artists(node: Any) -> tuple[Artist, ...]:
+    artists: list[Artist] = []
+    for data in _search_section_entities(node, nested=False):
+        artist = _search_artist(data)
+        if artist is not None:
+            artists.append(artist)
+    return tuple(artists)
+
+
+def _search_artist(data: Mapping[str, Any]) -> Artist | None:
+    uri = _optional_str(data, "uri")
+    profile = _optional_mapping(data, "profile") or {}
+    name = _optional_str(profile, "name")
+    if not uri or not name:
+        return None
+    return Artist(
+        id=_optional_str(data, "id") or _id_from_uri(uri),
+        uri=uri,
+        name=name,
+        images=_avatar_images(data),
+    )
+
+
+def _search_albums(node: Any) -> tuple[AlbumRef, ...]:
+    albums: list[AlbumRef] = []
+    for data in _search_section_entities(node, nested=False):
+        uri = _optional_str(data, "uri")
+        name = _optional_str(data, "name")
+        if not uri or not name:
+            continue
+        albums.append(
+            AlbumRef(
+                id=_optional_str(data, "id") or _id_from_uri(uri),
+                uri=uri,
+                name=name,
+                images=_cover_art_images(data),
+            )
+        )
+    return tuple(albums)
+
+
+def _search_playlists(node: Any) -> tuple[Playlist, ...]:
+    playlists: list[Playlist] = []
+    for data in _search_section_entities(node, nested=False):
+        uri = _optional_str(data, "uri")
+        name = _optional_str(data, "name")
+        if not uri or not name:
+            continue
+        playlists.append(
+            Playlist(
+                id=_optional_str(data, "id") or _id_from_uri(uri),
+                uri=uri,
+                name=name,
+                description=_optional_str(data, "description") or "",
+                owner=_owner_ref(data.get("ownerV2")),
+                images=_playlist_images(data),
+            )
+        )
+    return tuple(playlists)
+
+
+def _search_shows(node: Any) -> tuple[ShowRef, ...]:
+    shows: list[ShowRef] = []
+    for data in _search_section_entities(node, nested=False):
+        uri = _optional_str(data, "uri")
+        name = _optional_str(data, "name")
+        if not uri or not name:
+            continue
+        shows.append(
+            ShowRef(
+                id=_optional_str(data, "id") or _id_from_uri(uri),
+                uri=uri,
+                name=name,
+                publisher=_publisher_name(data.get("publisher")),
+                images=_cover_art_images(data),
+            )
+        )
+    return tuple(shows)
+
+
+def _search_episodes(node: Any) -> tuple[Episode, ...]:
+    episodes: list[Episode] = []
+    for data in _search_section_entities(node, nested=False):
+        episode = _sparse_episode(data)
+        if episode is None:
+            continue
+        if not episode.name:
+            continue
+        episodes.append(episode)
+    return tuple(episodes)
 
 
 # --------------------------------------------------------------------------- #

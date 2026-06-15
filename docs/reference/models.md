@@ -59,6 +59,10 @@ JSON-safe `to_dict()`.
 
 ::: spotify_scraper.models.UserRef
 
+## SearchResults
+
+::: spotify_scraper.models.SearchResults
+
 ## Lyrics
 
 ::: spotify_scraper.models.Lyrics

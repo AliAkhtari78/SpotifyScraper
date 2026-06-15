@@ -22,6 +22,8 @@ ENTITY_TYPES: frozenset[str] = frozenset(
 _HOSTS = frozenset({"open.spotify.com", "play.spotify.com"})
 _ID_RE = re.compile(r"[0-9A-Za-z]{22}")
 _INTL_RE = re.compile(r"intl-[A-Za-z]+(?:-[A-Za-z]+)?")
+_LANG_RE = re.compile(r"[A-Za-z]{2,3}")
+_LANG_REGION_RE = re.compile(r"[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})+")
 
 
 def parse(value: str, *, type_hint: EntityType | None = None) -> tuple[EntityType, str]:
@@ -50,6 +52,41 @@ def parse(value: str, *, type_hint: EntityType | None = None) -> tuple[EntityTyp
     if text.startswith("spotify:"):
         return _parse_uri(text)
     return _parse_url(text)
+
+
+def normalize_locale(value: str) -> str:
+    """Validate and normalize a display-language tag for ``Accept-Language``.
+
+    ``locale`` here is a **BCP-47 language tag**, not a country/market code. It
+    accepts either a bare primary language subtag (2-3 letters, normalized to
+    lower-case, e.g. ``"de"``, ``"en"``, ``"por"``) or a language-region tag
+    (returned unchanged, e.g. ``"ja-JP"``, ``"en-US"``).
+
+    It sets the *display language* of localized names only. It does NOT filter
+    regional availability or vary preview URLs: a bare country code like ``"US"``
+    is meaningless as a language and is silently ignored by Spotify. On the
+    anonymous ladder the pathfinder ``market`` variable is inert and the token's
+    country is IP-bound, so true market/availability requires the authenticated
+    Web API (not implemented here).
+
+    Args:
+        value: A BCP-47 language tag (e.g. ``"en"``, ``"ja-JP"``).
+
+    Returns:
+        The normalized language tag (bare subtags lower-cased).
+
+    Raises:
+        URLError: If ``value`` is not a valid language or language-region tag.
+    """
+    text = value.strip()
+    if _LANG_REGION_RE.fullmatch(text):
+        return text
+    if _LANG_RE.fullmatch(text):
+        return text.lower()
+    raise URLError(
+        f"Invalid language tag {value!r}: expected a BCP-47 language tag "
+        "like 'en', 'ja', or 'ja-JP'."
+    )
 
 
 def entity_url(entity_type: EntityType, entity_id: str) -> str:

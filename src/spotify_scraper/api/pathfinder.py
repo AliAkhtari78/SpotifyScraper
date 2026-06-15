@@ -80,6 +80,30 @@ OPERATIONS: dict[str, Operation] = {
 }
 
 
+SEARCH_OPERATION = Operation(
+    "searchDesktop",
+    "eff59fa0a3d026b88b56fddbcf4bdfa16a186b8175a5c1a358c072e053c2e5b0",
+    lambda query: {
+        "searchTerm": query,
+        "offset": 0,
+        "limit": 10,
+        "numberOfTopResults": 5,
+        "includeAudiobooks": True,
+        "includePreReleases": True,
+        "includeAlbumPreReleases": False,
+        "includeAuthors": False,
+        "includeEpisodeContentRatingsV2": False,
+    },
+)
+"""The anonymous aggregate-search operation.
+
+This is the ONLY place the ``searchDesktop`` persisted-query hash may live; a
+Spotify rotation is a one-line edit here. The ``build_variables`` argument is the
+free-text query (not an entity ID), so it is deliberately kept out of the entity
+``OPERATIONS`` table whose builders take an entity ID.
+"""
+
+
 def build_url(
     kind: str,
     entity_id: str,
@@ -109,6 +133,38 @@ def build_url(
         "variables": json.dumps(variables, separators=(",", ":")),
         "extensions": json.dumps(
             {"persistedQuery": {"version": 1, "sha256Hash": operation.sha256}},
+            separators=(",", ":"),
+        ),
+    }
+    return f"{PATHFINDER_URL}?{urlencode(params)}"
+
+
+def build_search_url(
+    query: str,
+    *,
+    variable_overrides: Mapping[str, Any] | None = None,
+) -> str:
+    """Build the persisted-query GET URL for an aggregate search.
+
+    Mirrors :func:`build_url` but is driven by a free-text query rather than an
+    entity ID, using the dedicated :data:`SEARCH_OPERATION`.
+
+    Args:
+        query: The free-text search term.
+        variable_overrides: Optional variables merged over the built ones,
+            used for ``limit``/``offset`` paging.
+
+    Returns:
+        The fully URL-encoded pathfinder search query URL.
+    """
+    variables = SEARCH_OPERATION.build_variables(query)
+    if variable_overrides:
+        variables.update(variable_overrides)
+    params = {
+        "operationName": SEARCH_OPERATION.name,
+        "variables": json.dumps(variables, separators=(",", ":")),
+        "extensions": json.dumps(
+            {"persistedQuery": {"version": 1, "sha256Hash": SEARCH_OPERATION.sha256}},
             separators=(",", ":"),
         ),
     }

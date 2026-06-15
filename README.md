@@ -76,9 +76,32 @@ with SpotifyClient() as client:
     client.download_preview(track, dest="previews/", embed_cover=True)  # needs [media]
 ```
 
+### Localized display names
+
+Pass `locale` — a BCP-47 **language** tag: a bare language subtag (`"de"`,
+`"ja"`) or a language-region tag (`"ja-JP"`) — to localize the *language* of
+display names. Set it per client or override it per call:
+
+```python
+with SpotifyClient(locale="ja-JP") as client:        # default for every call
+    track = client.get_track("4uLU6hMCjMI75M1A2tKUQC")
+    other = client.get_track("4uLU6hMCjMI75M1A2tKUQC", locale="de-DE")  # per-call wins
+```
+
+It is sent as the `Accept-Language` header and changes only how names are
+*spelled*. It is **not** a country/market code — a bare `"US"` is meaningless as
+a language and is ignored — and it does **not** filter regional **availability**
+or vary **preview URLs**: anonymous Spotify resolves country from the request IP,
+and its pathfinder silently ignores a `market` variable. True market/availability
+filtering requires the authenticated Web API, which this library does not
+implement; for region-specific results, point the client's `proxy` at the target
+region. See the
+[localization guide](https://spotifyscraper.readthedocs.io/en/latest/guides/localization/).
+
 ## Features
 
 - **All core entities + podcasts** — tracks, albums, artists, playlists, shows, episodes.
+- **Search** across every entity type, returning one typed `SearchResults`.
 - **Lyrics & podcast transcripts** — cookie-authenticated, time-synced, one token for both.
 - **Browser-assisted login + session persistence** — log in once, then run headless (no stored passwords).
 - **Account-aware** — `get_account()` / `is_premium()`, plus cookie-free `session_info()`.
@@ -101,6 +124,25 @@ spotifyscraper download preview <id> -o ./previews --embed-cover
 
 Every command emits JSON, so it composes with tools like `jq`. See the
 [CLI guide](https://spotifyscraper.readthedocs.io/en/latest/guides/cli/).
+
+## Search
+
+`search()` runs one anonymous, aggregate query across every entity type and
+returns a typed `SearchResults`:
+
+```python
+from spotify_scraper import SpotifyClient
+
+with SpotifyClient() as client:
+    results = client.search("daft punk", types=("track", "artist"), limit=5)
+    print(results.total, "track matches")
+    for track in results.tracks:
+        print(track.name, "—", track.artists[0].name)
+```
+
+Hits are sparse (pass an `id` to `get_album()`/`get_show()` for the full entity);
+`total` is the track-match count. See the
+[search guide](https://spotifyscraper.readthedocs.io/en/latest/guides/search/).
 
 ## Lyrics & transcripts
 
@@ -162,12 +204,12 @@ cookie. See the
 | **3.1** | Command-line interface |
 | **3.2** | Cookie-authenticated lyrics |
 | **3.3** | Cookie-authenticated podcast transcripts (`get_transcript`); browser-assisted login, session persistence & account-awareness (`get_account`/`is_premium`) |
+| **3.4** | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type (`search()`) · display-language [localization](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) (`locale`) |
 
 **Planned** — tracked in [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones); 👍 or weigh in on the issues to help prioritize:
 
 | Version | Scope |
 |---------|-------|
-| **3.4** | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type · [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support |
 | **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) · [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency |
 
 Planned scope is subject to change.
