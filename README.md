@@ -7,14 +7,16 @@
 [![Docs](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE)
 
-**Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — without the official API or any credentials.**
+**Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — without the official API or an API key.**
 
 > 🎧 **[Try it live in your browser →](https://aliakhtari.com/spotify/)** — paste any Spotify link and watch SpotifyScraper pull typed data, cover art, and a preview, with the exact Python that does it. ([How it was built](https://aliakhtari.com/work/spotify-scraper/).)
 
 SpotifyScraper bootstraps an anonymous token from Spotify's own public embed
 pages and reads the same JSON endpoints the web player uses, returning typed,
 immutable models. v3 is a ground-up rewrite focused on reliability and a clean,
-modern API.
+modern API. Public data needs no login; the opt-in **logged-in** features
+(lyrics, podcast transcripts, and account info) add your own Spotify `sp_dc`
+cookie — never a password or an API key.
 
 > **Upgrading from v2?** See the [migration guide](https://spotifyscraper.readthedocs.io/en/latest/migration/). The previous line lives on the [`v2.x` branch](https://github.com/AliAkhtari78/SpotifyScraper/tree/v2.x).
 
@@ -102,6 +104,7 @@ region. See the
 
 - **All core entities + podcasts** — tracks, albums, artists, playlists, shows, episodes.
 - **Search** across every entity type, returning one typed `SearchResults`.
+- **Localized display names** — pass a BCP-47 language tag (`locale`) to set the language of names.
 - **Lyrics & podcast transcripts** — cookie-authenticated, time-synced, one token for both.
 - **Browser-assisted login + session persistence** — log in once, then run headless (no stored passwords).
 - **Account-aware** — `get_account()` / `is_premium()`, plus cookie-free `session_info()`.

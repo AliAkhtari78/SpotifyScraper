@@ -78,7 +78,9 @@ pip install spotifyscraper
 |---|---|
 | `spotifyscraper` | Core library: all entities, cover/preview downloads (no tagging). |
 | `spotifyscraper[media]` | Adds [`mutagen`](https://mutagen.readthedocs.io/) so previews can embed cover art and ID3 tags. |
-| `spotifyscraper[browser]` | Adds a Playwright Chromium transport for sites that challenge plain HTTP clients. |
+| `spotifyscraper[browser]` | Adds a Playwright Chromium transport (and browser-assisted `login()`). |
+| `spotifyscraper[cli]` | Adds the `spotifyscraper` command-line tool ([Typer](https://typer.tiangolo.com/)). |
+| `spotifyscraper[keyring]` | Stores the captured login cookie in the OS keyring instead of a file. |
 | `spotifyscraper[all]` | Everything above. |
 
 See [Installation](getting-started/installation.md) for `uv`, extras, and the
