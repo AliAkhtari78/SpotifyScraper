@@ -8,6 +8,7 @@ fetches with :class:`SpotifyClient` and emits ``model.to_dict()`` as JSON.
 from __future__ import annotations
 
 import os
+import time
 from pathlib import Path
 from typing import Annotated
 
@@ -65,6 +66,10 @@ def build_client(proxy: str | None, timeout: float, rate_limit: float | None) ->
     """
     rate = RateLimit(per_second=rate_limit) if rate_limit is not None else None
     return SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate)
+
+
+def _now_ms() -> int:
+    return time.time_ns() // 1_000_000
 
 
 def _parse_max(value: str) -> int | None:
@@ -276,17 +281,29 @@ StoreOpt = Annotated[
 @app.command()
 def login(
     store: StoreOpt = "file",
+    reuse: Annotated[
+        bool,
+        typer.Option(
+            "--reuse/--no-reuse",
+            help="Reuse a valid saved session and skip the browser when present.",
+        ),
+    ] = True,
     timeout: Annotated[
         float, typer.Option("--timeout", help="Seconds to wait for the manual login.")
     ] = 300.0,
     proxy: ProxyOpt = None,
 ) -> None:
-    """Open a browser to sign in and save the captured session.
+    """Sign in and save the session, reusing a valid one when present.
 
-    Only the saved session path is printed; the cookie is never displayed.
+    With ``--reuse`` (the default), a valid saved session skips the browser
+    entirely. Only the session path is printed; the cookie is never displayed.
     """
 
     def body() -> None:
+        backend = SessionStore(store)
+        if reuse and backend.has_session():
+            typer.echo(f"Reused existing session at {default_session_path()}")
+            return
         try:
             from spotify_scraper.browser import capture_sp_dc
         except ImportError as exc:
@@ -295,7 +312,7 @@ def login(
                 "pip install spotifyscraper[browser] && playwright install chromium"
             ) from exc
         sp_dc = capture_sp_dc(timeout=timeout, proxy=proxy)
-        path = SessionStore(store).save(sp_dc)
+        path = backend.save(sp_dc)
         typer.echo(f"Saved session to {path}")
 
     run(body)
@@ -308,6 +325,29 @@ def logout(store: StoreOpt = "file") -> None:
     def body() -> None:
         SessionStore(store).clear()
         typer.echo(f"Cleared session at {default_session_path()}")
+
+    run(body)
+
+
+@app.command()
+def session(store: StoreOpt = "file") -> None:
+    """Print the saved session's status; never displays the cookie.
+
+    Reports existence, validity, when it was saved, and (when the cookie's
+    expiry is known) how many days remain.
+    """
+
+    def body() -> None:
+        info = SessionStore(store).info()
+        typer.echo(f"exists: {info.exists}")
+        typer.echo(f"valid: {info.valid}")
+        typer.echo(f"saved_at_ms: {info.saved_at_ms}")
+        typer.echo(f"sp_dc_expires_ms: {info.sp_dc_expires_ms}")
+        if info.sp_dc_expires_ms is not None:
+            days = (info.sp_dc_expires_ms - _now_ms()) / 86_400_000
+            typer.echo(f"days_remaining: {days:.1f}")
+        if info.reason:
+            typer.echo(f"reason: {info.reason}")
 
     run(body)
 

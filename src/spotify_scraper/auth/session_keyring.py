@@ -22,8 +22,10 @@ from typing import TYPE_CHECKING, Any
 
 from spotify_scraper.auth.session import (
     Session,
+    SessionInfo,
     load_session,
     save_session,
+    session_info,
 )
 from spotify_scraper.auth.session import (
     clear_session as _clear_file_session,
@@ -150,3 +152,24 @@ def clear_keyring(*, path: Path | None = None) -> None:
     with contextlib.suppress(Exception):
         keyring.delete_password(_SERVICE, _USERNAME)
     _clear_file_session(path=path)
+
+
+def keyring_info(*, path: Path | None = None, now_ms: int | None = None) -> SessionInfo:
+    """Report the keyring-backed session's status WITHOUT exposing the cookie.
+
+    The keyring backend keeps only the secret in the OS keyring and all
+    non-secret metadata (existence, permissions, expiry) in the same JSON file
+    the file backend writes, so validity is governed entirely by that metadata
+    file. This therefore delegates to the file-backed
+    :func:`~spotify_scraper.auth.session.session_info`, which already performs
+    the local existence / permission / parse / expiry checks and never raises.
+    The keyring is not imported here, so introspection needs no extra.
+
+    Args:
+        path: Metadata file path; defaults to the file backend's default.
+        now_ms: Injectable clock (Unix ms) for the expiry comparison.
+
+    Returns:
+        A cookie-free :class:`SessionInfo`.
+    """
+    return session_info(path=path, now_ms=now_ms)

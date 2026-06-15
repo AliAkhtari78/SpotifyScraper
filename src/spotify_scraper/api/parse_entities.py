@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import Any
 
 from spotify_scraper.errors import ParsingError
+from spotify_scraper.models.account import Account
 from spotify_scraper.models.album import Album
 from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.common import AlbumRef, ArtistRef, Image, ShowRef, UserRef
@@ -24,6 +25,7 @@ from spotify_scraper.models.track import Track
 from spotify_scraper.models.transcript import Transcript, TranscriptLine
 
 __all__ = [
+    "parse_account",
     "parse_album_embed",
     "parse_album_gql",
     "parse_album_tracks_page",
@@ -316,6 +318,56 @@ def _optional_int(container: Mapping[str, Any], key: str) -> int | None:
     if isinstance(value, bool) or not isinstance(value, int):
         return None
     return value
+
+
+# --------------------------------------------------------------------------- #
+# Account
+# --------------------------------------------------------------------------- #
+
+
+def parse_account(payload: Mapping[str, Any]) -> Account:
+    """Build an :class:`Account` from a flat product-state body.
+
+    This is the one place the product-state hyphen→snake key mapping lives
+    (``on-demand``→``on_demand``, ``preferred-locale``→``preferred_locale``,
+    ``selected-language``→``selected_language``). The body is flat and every
+    field is independently optional, so there is no shape gate: a partial or
+    empty object yields an :class:`Account` of ``None`` fields rather than
+    raising. ``on-demand`` is coerced tolerantly because product-state has
+    historically sent booleans as strings (``"1"`` / ``"true"``).
+
+    Args:
+        payload: The decoded product-state body.
+
+    Returns:
+        An :class:`Account` mirroring the wire body.
+    """
+    return Account(
+        product=_optional_str(payload, "product"),
+        catalogue=_optional_str(payload, "catalogue"),
+        country=_optional_str(payload, "country"),
+        on_demand=_account_bool(payload.get("on-demand")),
+        preferred_locale=_optional_str(payload, "preferred-locale"),
+        selected_language=_optional_str(payload, "selected-language"),
+    )
+
+
+def _account_bool(value: Any) -> bool | None:
+    """Coerce a product-state boolean tolerantly: stringy ``"1"``/``"true"`` too.
+
+    Returns ``True`` for ``True`` / ``"1"`` / ``"true"``, ``False`` for
+    ``False`` / ``"0"`` / ``"false"`` (case-insensitive), and ``None`` for an
+    absent or unrecognized value.
+    """
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        lowered = value.strip().lower()
+        if lowered in ("1", "true"):
+            return True
+        if lowered in ("0", "false"):
+            return False
+    return None
 
 
 # --------------------------------------------------------------------------- #

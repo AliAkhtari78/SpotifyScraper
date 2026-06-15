@@ -176,3 +176,34 @@ def test_session_store_keyring_backend_round_trips(
     store.clear(path=path)
     assert ("spotifyscraper", "sp_dc") not in fake_keyring._store  # type: ignore[attr-defined]
     assert not path.exists()
+
+
+# --- keyring-backed introspection (cookie-free) -------------------------------
+
+
+def test_keyring_info_reports_status_without_cookie(
+    fake_keyring: types.ModuleType, tmp_path: Path
+) -> None:
+    path = tmp_path / "session.json"
+    session_keyring.save_to_keyring(SECRET, path=path, now_ms=1000)
+    _secured(path)
+
+    info = session_keyring.keyring_info(path=path)
+    assert info.exists is True
+    assert info.valid is True
+    assert info.saved_at_ms == 1000
+    assert SECRET not in repr(info)
+
+
+def test_session_store_keyring_info_and_has_session(
+    fake_keyring: types.ModuleType, tmp_path: Path
+) -> None:
+    store = SessionStore("keyring")
+    path = tmp_path / "session.json"
+    assert store.has_session(path=path) is False
+    store.save(SECRET, path=path, now_ms=1000)
+    _secured(path)
+    assert store.has_session(path=path) is True
+    info = store.info(path=path)
+    assert info.valid is True
+    assert SECRET not in repr(info)

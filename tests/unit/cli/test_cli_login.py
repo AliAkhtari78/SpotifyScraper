@@ -67,6 +67,50 @@ def test_logout_is_idempotent_when_absent(_config_dir: Path) -> None:
     assert result.exit_code == 0, result.output
 
 
+def test_login_reuse_skips_browser_when_session_exists(
+    monkeypatch: pytest.MonkeyPatch, _config_dir: Path
+) -> None:
+    from spotify_scraper.auth.session import save_session
+
+    save_session(FAKE_SP_DC, path=_config_dir / "session.json")
+
+    # No fake browser injected, so if capture were attempted it would fail.
+    result = runner.invoke(app, ["login", "--reuse"])
+    assert result.exit_code == 0, result.output
+    assert "Reused" in result.output
+    assert FAKE_SP_DC not in result.output
+
+
+def test_login_no_reuse_captures_even_with_session(fake_browser: None, _config_dir: Path) -> None:
+    from spotify_scraper.auth.session import save_session
+
+    save_session("old_cookie_value", path=_config_dir / "session.json")
+    result = runner.invoke(app, ["login", "--no-reuse"])
+    assert result.exit_code == 0, result.output
+    assert "Saved session" in result.output
+    assert FAKE_SP_DC not in result.output
+
+
+def test_session_command_prints_status_never_cookie(_config_dir: Path) -> None:
+    from spotify_scraper.auth.session import save_session
+
+    save_session(FAKE_SP_DC, sp_dc_expires_ms=10_000_000_000_000, path=_config_dir / "session.json")
+    result = runner.invoke(app, ["session"])
+    assert result.exit_code == 0, result.output
+    assert "exists: True" in result.output
+    assert "valid: True" in result.output
+    assert "days_remaining:" in result.output
+    assert FAKE_SP_DC not in result.output
+
+
+def test_session_command_reports_missing(_config_dir: Path) -> None:
+    result = runner.invoke(app, ["session"])
+    assert result.exit_code == 0, result.output
+    assert "exists: False" in result.output
+    assert "valid: False" in result.output
+    assert FAKE_SP_DC not in result.output
+
+
 def test_login_missing_browser_extra_message(
     monkeypatch: pytest.MonkeyPatch, _config_dir: Path
 ) -> None:

@@ -112,6 +112,35 @@ class Session:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class SessionInfo:
+    """A cookie-free snapshot of a saved session, safe to print or log.
+
+    Unlike :class:`Session`, this object never carries the ``sp_dc`` secret: it
+    holds only a validity verdict plus non-secret metadata, so it is safe to
+    surface to a CLI or a caller asking "is there a usable saved session, and how
+    long is it good for?". ``reason`` carries the existing cookie-free hint when
+    the session is absent, insecure, corrupt, or expired.
+
+    Attributes:
+        exists: Whether a saved session file is present at all.
+        valid: Whether the session exists, is securely permissioned (POSIX),
+            parses, and has not passed ``sp_dc_expires_ms`` when that is known.
+        saved_at_ms: When the session was saved (Unix ms), if known.
+        sp_dc_expires_ms: The cookie's expiry (Unix ms), if it was captured.
+        reason: A cookie-free explanation when the session is unusable.
+    """
+
+    exists: bool
+    valid: bool
+    saved_at_ms: int | None = None
+    sp_dc_expires_ms: int | None = None
+    reason: str | None = None
+
+
+_EXPIRED_HINT = "Saved session's cookie has expired; log in again to refresh it."
+
+
 def _default_now_ms() -> int:
     return time.time_ns() // 1_000_000
 
@@ -246,6 +275,54 @@ def clear_session(*, path: Path | None = None) -> None:
         return
 
 
+def session_info(*, path: Path | None = None, now_ms: int | None = None) -> SessionInfo:
+    """Report a saved session's status WITHOUT exposing the cookie.
+
+    This never raises for the common missing / corrupt / insecure / expired
+    cases: it catches the :class:`SessionError` that :func:`load_session` would
+    raise and turns it into ``exists`` / ``valid`` flags plus the existing
+    cookie-free hint as ``reason``. Validity is a purely local check — file
+    exists, securely permissioned (POSIX), parseable, and not past
+    ``sp_dc_expires_ms`` when that expiry is known — so it cannot detect a
+    Spotify-side revocation.
+
+    Args:
+        path: Source file; defaults to :func:`default_session_path`.
+        now_ms: Injectable clock (Unix ms) for the expiry comparison.
+
+    Returns:
+        A cookie-free :class:`SessionInfo`.
+    """
+    source = _resolve_path(path)
+    exists = source.exists()
+    try:
+        session = load_session(path=path)
+    except SessionError as exc:
+        # The hint is cookie-free by construction (see _MISSING_HINT etc.); the
+        # bare path is the most it reveals.
+        return SessionInfo(exists=exists, valid=False, reason=str(exc))
+    now = _default_now_ms() if now_ms is None else now_ms
+    if session.sp_dc_expires_ms is not None and now >= session.sp_dc_expires_ms:
+        return SessionInfo(
+            exists=True,
+            valid=False,
+            saved_at_ms=session.saved_at_ms,
+            sp_dc_expires_ms=session.sp_dc_expires_ms,
+            reason=_EXPIRED_HINT,
+        )
+    return SessionInfo(
+        exists=True,
+        valid=True,
+        saved_at_ms=session.saved_at_ms,
+        sp_dc_expires_ms=session.sp_dc_expires_ms,
+    )
+
+
+def has_saved_session(*, path: Path | None = None, now_ms: int | None = None) -> bool:
+    """Return ``True`` when a valid saved session exists (cookie-free check)."""
+    return session_info(path=path, now_ms=now_ms).valid
+
+
 class SessionStore:
     """Backend indirection selecting where the ``sp_dc`` secret is kept.
 
@@ -304,6 +381,22 @@ class SessionStore:
             session_keyring.clear_keyring(path=path)
             return
         clear_session(path=path)
+
+    def info(self, *, path: Path | None = None, now_ms: int | None = None) -> SessionInfo:
+        """Report the saved session's status via the selected backend.
+
+        The result is cookie-free and never raises for missing / corrupt /
+        insecure / expired sessions.
+        """
+        if self._backend == "keyring":
+            from spotify_scraper.auth import session_keyring
+
+            return session_keyring.keyring_info(path=path, now_ms=now_ms)
+        return session_info(path=path, now_ms=now_ms)
+
+    def has_session(self, *, path: Path | None = None, now_ms: int | None = None) -> bool:
+        """Return ``True`` when a valid saved session exists for this backend."""
+        return self.info(path=path, now_ms=now_ms).valid
 
     def __repr__(self) -> str:
         """Return a credential-free representation."""

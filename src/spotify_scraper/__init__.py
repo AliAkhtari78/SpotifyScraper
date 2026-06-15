@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from spotify_scraper._async import AsyncSpotifyClient
 from spotify_scraper._sync import SpotifyClient
+from spotify_scraper.auth.session import SessionInfo
 from spotify_scraper.errors import (
     AuthenticationError,
     MediaError,
@@ -23,6 +24,7 @@ from spotify_scraper.errors import (
 )
 from spotify_scraper.http import RateLimit, RetryPolicy
 from spotify_scraper.models import (
+    Account,
     Album,
     AlbumRef,
     Artist,
@@ -44,6 +46,7 @@ from spotify_scraper.models import (
 __version__ = "3.2.0"
 
 __all__ = [
+    "Account",
     "Album",
     "AlbumRef",
     "Artist",
@@ -64,6 +67,7 @@ __all__ = [
     "RateLimitedError",
     "RetryPolicy",
     "SessionError",
+    "SessionInfo",
     "Show",
     "ShowRef",
     "SpotifyClient",

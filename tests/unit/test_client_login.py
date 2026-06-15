@@ -57,7 +57,8 @@ def test_login_wires_cookie_and_resets_provider_without_network(
     with respx.mock(assert_all_mocked=True) as router, SpotifyClient() as client:
         # Pretend a provider was already cached; login must reset it.
         client._cookie_tokens = object()  # type: ignore[assignment]
-        client.login(save=False, timeout=5.0, proxy="http://p:1")
+        # reuse=False forces the capture path regardless of any saved session.
+        client.login(reuse=False, save=False, timeout=5.0, proxy="http://p:1")
         assert client._cookies == FAKE_SP_DC
         assert client._cookie_tokens is None
         assert len(router.calls) == 0
@@ -70,7 +71,8 @@ async def test_async_login_wires_cookie_without_network(
     async with AsyncSpotifyClient() as client:
         with respx.mock(assert_all_mocked=True) as router:
             client._cookie_tokens = object()  # type: ignore[assignment]
-            await client.login(save=False, timeout=9.0)
+            # reuse=False forces the capture path regardless of any saved session.
+            await client.login(reuse=False, save=False, timeout=9.0)
             assert client._cookies == FAKE_SP_DC
             assert client._cookie_tokens is None
             assert len(router.calls) == 0
