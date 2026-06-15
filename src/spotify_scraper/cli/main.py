@@ -294,8 +294,8 @@ def login(
                 "Browser login requires the 'browser' extra: "
                 "pip install spotifyscraper[browser] && playwright install chromium"
             ) from exc
-        sp_dc = capture_sp_dc(timeout=timeout, proxy=proxy)
-        path = SessionStore(store).save(sp_dc)
+        captured = capture_sp_dc(timeout=timeout, proxy=proxy)
+        path = SessionStore(store).save(captured.sp_dc, sp_dc_expires_ms=captured.sp_dc_expires_ms)
         typer.echo(f"Saved session to {path}")
 
     run(body)

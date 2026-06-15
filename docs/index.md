@@ -141,7 +141,7 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 | 3.0.0 | Core library. |
 | 3.1.0 | The command-line interface. |
 | 3.2.0 | Cookie-authenticated **lyrics** extraction. |
-| 3.3 | Cookie-authenticated podcast **transcripts** (`get_transcript`). |
+| 3.3 | Cookie-authenticated podcast **transcripts** (`get_transcript`) and **browser-assisted login** with a persistent cookie store. |
 
 ### Planned
 
@@ -150,7 +150,6 @@ Upcoming work is tracked in the GitHub
 
 | Version | Adds |
 |---|---|
-| 3.3 | First-class [authenticated sessions](https://github.com/AliAkhtari78/SpotifyScraper/issues/128) — browser-assisted login with a persistent cookie store (no stored passwords). |
 | 3.4 | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type and [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support. |
 | 3.5 | Optional [response caching](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) and [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
 
@@ -161,6 +160,11 @@ Scope is subject to change — 👍 the issues that matter most to you.
     `client.get_lyrics(track)` / `client.get_transcript(episode)` and the
     `spotifyscraper lyrics` / `spotifyscraper transcript` commands. See the
     [Lyrics & cookies guide](guides/lyrics-and-cookies.md).
+
+!!! success "Browser-assisted login has shipped"
+    `client.login()` opens a real browser, captures your `sp_dc` cookie (no
+    password), and persists it; `SpotifyClient.from_saved_session()` reconnects
+    headlessly. See the [authenticated sessions guide](guides/authentication.md).
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.

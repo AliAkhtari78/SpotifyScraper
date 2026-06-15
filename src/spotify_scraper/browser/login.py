@@ -24,7 +24,7 @@ import shutil
 import tempfile
 import time
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import Any, NamedTuple
 
 from playwright.async_api import Error as AsyncPlaywrightError
 from playwright.async_api import async_playwright
@@ -44,33 +44,54 @@ _NO_COOKIE_HINT = (
 )
 
 
+class CapturedLogin(NamedTuple):
+    """A captured browser login: the ``sp_dc`` cookie plus its expiry.
+
+    ``sp_dc_expires_ms`` is the cookie's expiry in Unix milliseconds, or ``None``
+    for a session cookie (Playwright reports ``expires == -1``).
+    """
+
+    sp_dc: str
+    sp_dc_expires_ms: int | None
+
+
 def _proxy_settings(proxy: str | None) -> ProxySettings | None:
     return {"server": proxy} if proxy else None
 
 
-def _extract_sp_dc(cookies: Sequence[Mapping[str, Any]]) -> str | None:
+def _expires_ms(expires: Any) -> int | None:
+    """Convert a Playwright cookie ``expires`` (Unix seconds, -1 = session) to ms."""
+    if isinstance(expires, (int, float)) and not isinstance(expires, bool) and expires > 0:
+        return int(expires * 1000)
+    return None
+
+
+def _extract_sp_dc(cookies: Sequence[Mapping[str, Any]]) -> CapturedLogin | None:
     for cookie in cookies:
         if cookie.get("name") == "sp_dc":
             value = cookie.get("value")
             if isinstance(value, str) and value:
-                return value
+                return CapturedLogin(value, _expires_ms(cookie.get("expires")))
     return None
 
 
-def capture_sp_dc(*, timeout: float = _DEFAULT_TIMEOUT_S, proxy: str | None = None) -> str:
+def capture_sp_dc(
+    *, timeout: float = _DEFAULT_TIMEOUT_S, proxy: str | None = None
+) -> CapturedLogin:
     """Open a headed browser and capture the ``sp_dc`` cookie after manual login.
 
     A real Chromium window opens at the Spotify login page. The user signs in
     interactively; this helper polls the browser cookies until an ``sp_dc``
-    value is present on ``.spotify.com`` and returns it. The browser is always
-    torn down before returning.
+    value is present on ``.spotify.com`` and returns it together with the
+    cookie's expiry. The browser is always torn down before returning.
 
     Args:
         timeout: Seconds to wait for the cookie before giving up.
         proxy: Optional proxy URL (e.g. ``http://host:port``) for the browser.
 
     Returns:
-        The bare ``sp_dc`` cookie value.
+        A :class:`CapturedLogin` carrying the bare ``sp_dc`` value and its
+        expiry in Unix milliseconds (``None`` for a session cookie).
 
     Raises:
         AuthenticationError: If no cookie is captured before the timeout, or any
@@ -91,9 +112,9 @@ def capture_sp_dc(*, timeout: float = _DEFAULT_TIMEOUT_S, proxy: str | None = No
         page = context.pages[0] if context.pages else context.new_page()
         page.goto(LOGIN_URL)
         while time.monotonic() < deadline:
-            sp_dc = _extract_sp_dc(context.cookies(HOME_URL))
-            if sp_dc is not None:
-                return sp_dc
+            captured = _extract_sp_dc(context.cookies(HOME_URL))
+            if captured is not None:
+                return captured
             time.sleep(_POLL_INTERVAL_S)
         raise AuthenticationError(_NO_COOKIE_HINT)
     except SyncPlaywrightError:
@@ -109,7 +130,7 @@ def capture_sp_dc(*, timeout: float = _DEFAULT_TIMEOUT_S, proxy: str | None = No
 
 async def capture_sp_dc_async(
     *, timeout: float = _DEFAULT_TIMEOUT_S, proxy: str | None = None
-) -> str:
+) -> CapturedLogin:
     """Async mirror of :func:`capture_sp_dc`.
 
     Args:
@@ -117,7 +138,8 @@ async def capture_sp_dc_async(
         proxy: Optional proxy URL for the browser.
 
     Returns:
-        The bare ``sp_dc`` cookie value.
+        A :class:`CapturedLogin` carrying the bare ``sp_dc`` value and its
+        expiry in Unix milliseconds (``None`` for a session cookie).
 
     Raises:
         AuthenticationError: If no cookie is captured before the timeout, or any
@@ -137,9 +159,9 @@ async def capture_sp_dc_async(
         page = context.pages[0] if context.pages else await context.new_page()
         await page.goto(LOGIN_URL)
         while time.monotonic() < deadline:
-            sp_dc = _extract_sp_dc(await context.cookies(HOME_URL))
-            if sp_dc is not None:
-                return sp_dc
+            captured = _extract_sp_dc(await context.cookies(HOME_URL))
+            if captured is not None:
+                return captured
             await asyncio.sleep(_POLL_INTERVAL_S)
         raise AuthenticationError(_NO_COOKIE_HINT)
     except AsyncPlaywrightError:

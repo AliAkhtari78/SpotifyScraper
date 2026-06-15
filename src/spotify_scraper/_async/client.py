@@ -149,11 +149,13 @@ class AsyncSpotifyClient:
         self._ensure_open()
         from spotify_scraper.browser import capture_sp_dc_async
 
-        sp_dc = await capture_sp_dc_async(timeout=timeout, proxy=proxy)
-        self._cookies = sp_dc
+        captured = await capture_sp_dc_async(timeout=timeout, proxy=proxy)
+        self._cookies = captured.sp_dc
         self._cookie_tokens = None
         if save:
-            SessionStore(store).save(sp_dc, path=session_path)
+            SessionStore(store).save(
+                captured.sp_dc, sp_dc_expires_ms=captured.sp_dc_expires_ms, path=session_path
+            )
 
     @classmethod
     def from_saved_session(

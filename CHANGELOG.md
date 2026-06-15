@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   same `sp_dc` cookie and token handshake as lyrics — one exchange serves both.
   An episode without a transcript (a 404, or a 200 with no spoken text) raises
   `NotFoundError`; an unexpected payload shape raises `ParsingError`.
+- **Browser-assisted login & session persistence.** `client.login()` opens a
+  real (headed) browser, captures the `sp_dc` cookie after you sign in by hand
+  (no password is ever collected or stored), and persists it — with the cookie's
+  real expiry — to an owner-only (0600) file or, with `store="keyring"` and the
+  new `keyring` extra, the OS keyring. `SpotifyClient.from_saved_session()`
+  reconnects headlessly; `logout()` revokes the local copy. A `spotifyscraper
+  login` / `logout` CLI mirrors it. The cookie never appears in a `repr`, log, or
+  error message.
 
 ## [3.2.0] - 2026-06-13
 

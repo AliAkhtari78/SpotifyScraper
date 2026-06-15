@@ -19,7 +19,9 @@ extra is absent.
 #### Scenario: Cookie captured after manual login
 
 - **WHEN** the user completes login and an `sp_dc` cookie appears on `.spotify.com`
-- **THEN** `capture_sp_dc` returns the bare `sp_dc` value, captured by polling the browser context cookies (not by asserting a redirect URL)
+- **THEN** `capture_sp_dc` returns the bare `sp_dc` value together with the
+  cookie's expiry in Unix milliseconds (`None` for a session cookie), captured by
+  polling the browser context cookies (not by asserting a redirect URL)
 
 #### Scenario: No login within the timeout
 
@@ -50,10 +52,22 @@ and SHALL support clearing for revocation.
 - **WHEN** `SPOTIFYSCRAPER_CONFIG_DIR` is set
 - **THEN** `default_config_dir()` resolves under it, ahead of `XDG_CONFIG_HOME` and the OS default
 
+#### Scenario: Captured cookie expiry is persisted
+
+- **WHEN** a browser login captures an `sp_dc` cookie carrying an expiry and `save=True`
+- **THEN** that expiry is threaded into `save_session` and persisted as
+  `sp_dc_expires_ms`, rather than discarded
+
 #### Scenario: Revocation
 
 - **WHEN** `clear_session()` (or `logout()`) is called
 - **THEN** the session file is removed if present and the call is idempotent when absent
+
+#### Scenario: Undeletable session file
+
+- **WHEN** `clear_session()` cannot delete an existing file (e.g. a permission
+  error), distinct from the file simply being absent
+- **THEN** `SessionError` is raised rather than a raw `OSError` leaking
 
 ### Requirement: Secrets never leak through repr, errors, logs, or fixtures
 
@@ -117,7 +131,22 @@ a lazy import and helpful `ImportError`, and SHALL fall back to the file backend
 #### Scenario: No OS keyring available
 
 - **WHEN** the keyring backend is requested on a host with no Secret Service
-- **THEN** the file backend is used with a warning and no exception is raised
+- **THEN** the file backend is used with a warning naming the resolved session
+  path (never `None`) and no exception is raised
+
+#### Scenario: Keyring secret gone
+
+- **WHEN** the keyring backend loads a session whose metadata file is present but
+  whose `sp_dc` secret is absent from the OS keyring (e.g. deleted externally)
+- **THEN** `SessionError` is raised advising the user to log in again, rather
+  than returning a `Session` with an empty cookie
+
+#### Scenario: Keyring backend error
+
+- **WHEN** a present OS keyring raises a non-`NoKeyringError` failure during a
+  secret read or write (e.g. a locked keychain)
+- **THEN** that failure is surfaced as `SessionError` (not a raw backend error,
+  and never including the cookie value)
 
 ### Requirement: Client login and saved-session entry points
 

@@ -167,3 +167,23 @@
       desktop only (needs a display); `from_saved_session()` is the headless-server
       path; the keyring extra; the "don't click Log out" warning; revocation via
       `logout()`/`clear_session()` or deleting the file.
+
+## 10. Review fixes
+
+- [x] 10.1 `load_from_keyring` raises `SessionError` when no `sp_dc` secret is
+      recoverable (keyring entry gone, file metadata-only) instead of returning an
+      empty-cookie `Session`.
+- [x] 10.2 Capture the Playwright cookie `expires` (seconds, -1 = session) as
+      `CapturedLogin.sp_dc_expires_ms` and thread it through client/CLI `login`
+      into `save_session`, so the persisted `sp_dc_expires_ms` is real.
+- [x] 10.3 Wrap a non-`NoKeyringError` keyring failure (read or write) and a
+      non-`FileNotFoundError` `clear_session` OSError as `SessionError`.
+- [x] 10.4 Keyring fallback warnings log the resolved session path, never `None`;
+      hoist the `_no_keyring_error` `_NeverMatches` sentinel to module level.
+- [x] 10.5 Tests: keyring secret-gone → SessionError; keyring backend-error →
+      SessionError; clear_session OSError → SessionError; login→from_saved_session
+      keyring round-trip; captured-expiry persistence; `_extract_sp_dc` expiry
+      conversion (browser-marked).
+- [ ] 10.6 Docs: new `guides/authentication.md` (browser login, saved sessions,
+      keyring extra incl. ImportError, revocation, captured expiry) + nav + README
+      + index roadmap + CHANGELOG.

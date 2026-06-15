@@ -92,6 +92,7 @@ nav:
     - Entities: guides/entities.md
     - CLI: guides/cli.md
     - Lyrics & cookies: guides/lyrics-and-cookies.md
+    - Authenticated sessions: guides/authentication.md
     - Async: guides/async.md
     - Media downloads: guides/media-downloads.md
     - Anti-ban & resilience: guides/anti-ban.md

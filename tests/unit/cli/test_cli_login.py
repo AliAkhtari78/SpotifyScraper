@@ -12,7 +12,7 @@ import builtins
 import sys
 import types
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 import pytest
 from typer.testing import CliRunner
@@ -22,6 +22,14 @@ from spotify_scraper.cli.main import app
 runner = CliRunner()
 
 FAKE_SP_DC = "fake_cli_sp_dc_secret_value"
+FAKE_EXPIRES_MS = 1_900_000_000_000
+
+
+class _FakeCapture(NamedTuple):
+    """Mirror of ``browser.CapturedLogin`` without importing the Playwright module."""
+
+    sp_dc: str
+    sp_dc_expires_ms: int | None
 
 
 @pytest.fixture(autouse=True)
@@ -34,8 +42,8 @@ def _config_dir(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
 def fake_browser(monkeypatch: pytest.MonkeyPatch) -> None:
     module = types.ModuleType("spotify_scraper.browser")
 
-    def capture_sp_dc(*, timeout: float = 300.0, proxy: str | None = None) -> str:
-        return FAKE_SP_DC
+    def capture_sp_dc(*, timeout: float = 300.0, proxy: str | None = None) -> _FakeCapture:
+        return _FakeCapture(FAKE_SP_DC, FAKE_EXPIRES_MS)
 
     module.capture_sp_dc = capture_sp_dc  # type: ignore[attr-defined]
     monkeypatch.setitem(sys.modules, "spotify_scraper.browser", module)

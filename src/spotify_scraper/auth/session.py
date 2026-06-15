@@ -238,12 +238,18 @@ def clear_session(*, path: Path | None = None) -> None:
 
     Args:
         path: Session file to remove; defaults to :func:`default_session_path`.
+
+    Raises:
+        SessionError: If the file exists but cannot be deleted (e.g. a
+            permission error); an absent file is not an error.
     """
     target = _resolve_path(path)
     try:
         target.unlink()
     except FileNotFoundError:
         return
+    except OSError as exc:
+        raise SessionError(f"Could not delete the saved session ({target}).") from exc
 
 
 class SessionStore:

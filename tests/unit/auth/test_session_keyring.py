@@ -176,3 +176,64 @@ def test_session_store_keyring_backend_round_trips(
     store.clear(path=path)
     assert ("spotifyscraper", "sp_dc") not in fake_keyring._store  # type: ignore[attr-defined]
     assert not path.exists()
+
+
+# --- secret gone from the keyring (metadata-only file) ------------------------
+
+
+def test_load_from_keyring_secret_gone_raises(
+    fake_keyring: types.ModuleType, tmp_path: Path
+) -> None:
+    path = tmp_path / "session.json"
+    session_keyring.save_to_keyring(SECRET, path=path, now_ms=5)
+    # The OS keyring entry was deleted out from under us; only the metadata
+    # file (with an empty sp_dc) remains. Loading must refuse, not return "".
+    fake_keyring._store.clear()  # type: ignore[attr-defined]
+    with pytest.raises(SessionError, match="log in again"):
+        session_keyring.load_from_keyring(path=path)
+
+
+# --- a real keyring backend error becomes SessionError ------------------------
+
+
+def _make_erroring_keyring() -> types.ModuleType:
+    module = types.ModuleType("keyring")
+    module.errors = _FakeKeyringErrors  # type: ignore[attr-defined]
+
+    def _boom(*args: Any, **kwargs: Any) -> Any:
+        raise RuntimeError("keyring backend failure")
+
+    module.set_password = _boom  # type: ignore[attr-defined]
+    module.get_password = _boom  # type: ignore[attr-defined]
+    module.delete_password = _boom  # type: ignore[attr-defined]
+    return module
+
+
+def test_save_to_keyring_backend_error_raises_session_error(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setitem(sys.modules, "keyring", _make_erroring_keyring())
+    with pytest.raises(SessionError):
+        session_keyring.save_to_keyring(SECRET, path=tmp_path / "s.json")
+
+
+def test_load_from_keyring_backend_error_raises_session_error(
+    fake_keyring: types.ModuleType, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    path = tmp_path / "session.json"
+    session_keyring.save_to_keyring(SECRET, path=path)  # writes a valid metadata file
+    _secured(path)
+    monkeypatch.setitem(sys.modules, "keyring", _make_erroring_keyring())
+    with pytest.raises(SessionError):
+        session_keyring.load_from_keyring(path=path)
+
+
+# --- warning logs the resolved path, never None ------------------------------
+
+
+def test_meta_path_resolves_none_to_default(tmp_path: Path) -> None:
+    from spotify_scraper.auth.session import default_session_path
+
+    explicit = tmp_path / "session.json"
+    assert session_keyring._meta_path(explicit) == explicit
+    assert session_keyring._meta_path(None) == default_session_path()
