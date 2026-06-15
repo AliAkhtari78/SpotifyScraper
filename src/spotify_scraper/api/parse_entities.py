@@ -872,7 +872,7 @@ def _search_track(data: Mapping[str, Any]) -> Track | None:
     duration = _optional_mapping(data, "duration") or {}
     playability = _optional_mapping(data, "playability") or {}
     album_node = _optional_mapping(data, "albumOfTrack")
-    album = _album_ref_lenient(album_node) if album_node is not None else None
+    album = _search_album_ref(album_node) if album_node is not None else None
     images = _cover_art_images(album_node) if album_node is not None else ()
     return Track(
         id=_optional_str(data, "id") or _id_from_uri(uri),
@@ -886,6 +886,25 @@ def _search_track(data: Mapping[str, Any]) -> Track | None:
         images=images,
         release_date=None,
         album=album,
+    )
+
+
+def _search_album_ref(album_node: Mapping[str, Any]) -> AlbumRef | None:
+    """Lenient :class:`AlbumRef` for a search hit: ``None`` on a partial album.
+
+    Unlike :func:`_album_ref_lenient` (which raises, as its playlist-track caller
+    requires), a search track must never abort the whole result set just because
+    one hit's ``albumOfTrack`` is present but missing its ``uri``/``name``.
+    """
+    uri = _optional_str(album_node, "uri")
+    name = _optional_str(album_node, "name")
+    if not uri or not name:
+        return None
+    return AlbumRef(
+        id=_optional_str(album_node, "id") or _id_from_uri(uri),
+        uri=uri,
+        name=name,
+        images=_cover_art_images(album_node),
     )
 
 

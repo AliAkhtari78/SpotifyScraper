@@ -686,7 +686,9 @@ def _filter_search_results(results: SearchResults, wanted: frozenset[str]) -> Se
         playlists=results.playlists if "playlist" in wanted else (),
         shows=results.shows if "show" in wanted else (),
         episodes=results.episodes if "episode" in wanted else (),
-        total=results.total,
+        # total is the tracks-section count; clear it when tracks weren't asked
+        # for, so a non-track search never reports a misleading count.
+        total=results.total if "track" in wanted else None,
     )
 
 
