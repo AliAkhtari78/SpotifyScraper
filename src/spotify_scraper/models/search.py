@@ -21,6 +21,10 @@ class SearchResults(ModelBase):
     the search payload stay ``None``/``()``. Albums and shows are returned as the
     lightweight :class:`AlbumRef`/:class:`ShowRef` (search returns no
     tracklist/discography for them).
+
+    ``total`` is the number of **track** matches Spotify reports for the query
+    (the tracks section's ``totalCount``); it is ``None`` when tracks were not
+    among the requested ``types``. The other sections do not surface a count.
     """
 
     query: str

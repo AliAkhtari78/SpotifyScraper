@@ -130,6 +130,31 @@ def test_items_missing_uri_are_skipped() -> None:
     assert parse_search_results(union, query=QUERY).tracks == ()
 
 
+def test_track_with_partial_album_does_not_abort_search() -> None:
+    # A track hit whose albumOfTrack is present but missing its name must NOT
+    # raise (which would abort the entire result set) — the track is kept with
+    # album=None, honouring the skip-don't-raise contract.
+    union = {
+        "tracksV2": {
+            "items": [
+                {
+                    "item": {
+                        "data": {
+                            "uri": "spotify:track:abc",
+                            "name": "Song",
+                            "albumOfTrack": {"uri": "spotify:album:xyz"},  # no name
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    results = parse_search_results(union, query=QUERY)
+    assert len(results.tracks) == 1
+    assert results.tracks[0].name == "Song"
+    assert results.tracks[0].album is None
+
+
 def test_non_mapping_section_is_ignored() -> None:
     union = {"tracksV2": "broken", "artists": None}
     results = parse_search_results(union, query=QUERY)

@@ -92,6 +92,8 @@ def test_search_types_filter_restricts_sections() -> None:
     assert results.playlists == ()
     assert results.shows == ()
     assert results.episodes == ()
+    # total is the tracks count; it must be cleared when tracks weren't requested.
+    assert results.total is None
 
 
 @respx.mock
