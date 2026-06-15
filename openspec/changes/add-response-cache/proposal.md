@@ -47,10 +47,12 @@ cache is **fully hermetically testable** with no network.
     file per sha256 key under a base dir, JSON envelope with base64'd body,
     atomic `tmp + os.replace` writes, `clear()` for invalidation. No `pickle`.
 - **Cacheability is URL-pattern driven** and enforced in one private
-  `_is_cacheable(url)` predicate. Only `open.spotify.com/embed/*` and
-  `api-partner.spotify.com/pathfinder/*` are cacheable. Everything else passes
-  straight through to the inner transport and is **never read from or written
-  to** the store (see `cache_design` for the exact rule).
+  `_is_cacheable(url)` predicate. Only the token-free `api-partner.spotify.com/
+  pathfinder/*` host is cacheable by default; the `open.spotify.com/embed/*`
+  pages are deliberately NOT cached because their `__NEXT_DATA__` carries the
+  anonymous access token. Everything else passes straight through to the inner
+  transport and is **never read from or written to** the store (see
+  `cache_design` for the exact rule).
 - **Only successful (`status_code == 200`) returned responses are stored.** The
   inner transport raises `NotFoundError`/`RateLimitedError`/`NetworkError` for
   non-success cases — those propagate uncaught and are **never cached**.

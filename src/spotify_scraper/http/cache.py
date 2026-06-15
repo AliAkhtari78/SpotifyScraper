@@ -6,12 +6,16 @@ The cache is a thin wrapper transport that structurally satisfies the existing
 drop-in for the ``transport=`` constructor override and composes with rate
 limiting, retries, and locale handling without re-implementing any of them.
 
-Only safe GETs to the public-data hosts are cacheable
-(``open.spotify.com/embed/*`` and ``api-partner.spotify.com/pathfinder/*``);
-the short-lived token endpoints (``open.spotify.com/api/*``) and the
-cookie-authenticated lyrics/transcript host (``spclient.wg.spotify.com``) are
-never read from or written to the store. Only ``status_code == 200`` responses
-are stored; inner-transport errors propagate uncaught and are never cached.
+Only safe GETs to the token-free pathfinder host
+(``api-partner.spotify.com/pathfinder/*``) are cacheable by default. The embed
+pages (``open.spotify.com/embed/*``) are deliberately NOT cached: their
+``__NEXT_DATA__`` carries the short-lived anonymous access token, so caching
+them would both persist a credential to disk and re-serve an expired token once
+it rotated (breaking tier-1 extraction for the whole TTL). The token endpoints
+(``open.spotify.com/api/*``) and the cookie-authenticated lyrics/transcript host
+(``spclient.wg.spotify.com``) are likewise never cached. Only ``status_code ==
+200`` responses are stored; inner-transport errors propagate uncaught and are
+never cached.
 
 The default :class:`FileCache` is stdlib-only (no new runtime dependency) and
 plugs in behind the :class:`DiskCache` protocol, so callers can substitute any
@@ -30,7 +34,7 @@ import os
 import tempfile
 import time
 from collections.abc import Mapping
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol, cast, runtime_checkable
 
@@ -40,9 +44,11 @@ from spotify_scraper.http.transport import AsyncTransport, Response, Transport
 
 _LOGGER = logging.getLogger("spotify_scraper")
 
-_DEFAULT_CACHEABLE_HOSTS: frozenset[str] = frozenset(
-    {"api-partner.spotify.com", "open.spotify.com"}
-)
+# Only the token-free pathfinder host is cached by default. Embed pages on
+# open.spotify.com carry the anonymous access token in their __NEXT_DATA__, so
+# caching them would persist a credential and re-serve a stale token once it
+# rotates; they are excluded deliberately. Do NOT add token-bearing hosts here.
+_DEFAULT_CACHEABLE_HOSTS: frozenset[str] = frozenset({"api-partner.spotify.com"})
 _DEFAULT_DENIED_PATH_PREFIXES: frozenset[str] = frozenset({"/api/"})
 _DEFAULT_TTL_SECONDS = 86_400.0
 
@@ -58,18 +64,12 @@ class CachedResponse:
 
     status_code: int
     content: bytes
-    _headers: Mapping[str, str]
-    _encoding: str = "utf-8"
-
-    @property
-    def headers(self) -> Mapping[str, str]:
-        """Response headers."""
-        return self._headers
+    headers: Mapping[str, str]
 
     @property
     def text(self) -> str:
         """Decoded response body."""
-        return self.content.decode(self._encoding, errors="replace")
+        return self.content.decode("utf-8", errors="replace")
 
     def json(self) -> Any:
         """Parse the body as JSON.
@@ -98,15 +98,18 @@ class CacheConfig:
     Attributes:
         store: The pluggable :class:`DiskCache` backend.
         ttl_seconds: Entry lifetime; an entry older than this is a miss.
-        cacheable_hosts: Hosts whose GETs may be cached.
+        cacheable_hosts: Hosts whose GETs may be cached. Defaults to the
+            token-free pathfinder host only; never add a token-bearing host
+            (e.g. ``open.spotify.com``, whose embed pages carry the anonymous
+            access token), or the cache will persist and re-serve a credential.
         denied_path_prefixes: Path prefixes that are never cached even on an
             otherwise-cacheable host (e.g. ``/api/`` token endpoints).
     """
 
     store: DiskCache
     ttl_seconds: float = _DEFAULT_TTL_SECONDS
-    cacheable_hosts: frozenset[str] = field(default=_DEFAULT_CACHEABLE_HOSTS)
-    denied_path_prefixes: frozenset[str] = field(default=_DEFAULT_DENIED_PATH_PREFIXES)
+    cacheable_hosts: frozenset[str] = _DEFAULT_CACHEABLE_HOSTS
+    denied_path_prefixes: frozenset[str] = _DEFAULT_DENIED_PATH_PREFIXES
 
 
 @runtime_checkable
@@ -153,6 +156,10 @@ class FileCache:
         """
         self._dir = dir if dir is not None else Path.home() / ".cache" / "spotify_scraper"
         self._dir.mkdir(parents=True, exist_ok=True)
+        # Owner-only: cached metadata bodies and the sha256 entry filenames are
+        # not world-business. chmod (a no-op on Windows) hardens a pre-existing dir.
+        with contextlib.suppress(OSError):
+            self._dir.chmod(0o700)
 
     def _path(self, key: str) -> Path:
         return self._dir / key

@@ -39,21 +39,26 @@ CacheConfig` client kwarg.
 
 ### Requirement: Only public-data GETs are cacheable
 
-The cache SHALL store responses **only** for safe GETs to the public-data hosts
-and paths: `open.spotify.com/embed/*` and
-`api-partner.spotify.com/pathfinder/*`. It SHALL **never** read from or write to
-the store for any other request. In particular it SHALL never cache the
-token-exchange endpoints (`open.spotify.com/api/token`,
-`open.spotify.com/api/server-time`) nor any request to the cookie-authenticated
-host `spclient.wg.spotify.com` (lyrics, transcripts). Non-cacheable requests
-SHALL pass straight through to the inner transport.
+The cache SHALL store responses **only** for safe GETs to the token-free
+pathfinder host and path: `api-partner.spotify.com/pathfinder/*`. It SHALL
+**never** read from or write to the store for any other request. In particular it
+SHALL never cache the embed pages (`open.spotify.com/embed/*`), whose
+`__NEXT_DATA__` carries the short-lived anonymous access token; the token-exchange
+endpoints (`open.spotify.com/api/token`, `open.spotify.com/api/server-time`); nor
+any request to the cookie-authenticated host `spclient.wg.spotify.com` (lyrics,
+transcripts). Non-cacheable requests SHALL pass straight through to the inner
+transport.
 
-#### Scenario: Embed and pathfinder are cached
+#### Scenario: Pathfinder is cached; the token-bearing embed page is not
 
-- **WHEN** a GET to `https://open.spotify.com/embed/track/<id>` or
-  `https://api-partner.spotify.com/pathfinder/v1/query?...` succeeds with 200
+- **WHEN** a GET to `https://api-partner.spotify.com/pathfinder/v1/query?...`
+  succeeds with 200
 - **THEN** the response is stored and a subsequent identical GET is served from
   the store with no network call
+- **WHEN** a GET to `https://open.spotify.com/embed/track/<id>` succeeds with 200
+- **THEN** it passes straight through, nothing is written to the store, and a
+  subsequent identical GET hits the inner transport again (the anonymous token is
+  never persisted)
 
 #### Scenario: Token endpoints are never cached
 

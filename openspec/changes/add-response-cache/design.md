@@ -62,12 +62,12 @@ return u.host in config.cacheable_hosts \
    and not any(u.path.startswith(p) for p in config.denied_path_prefixes)
 ```
 
-`cacheable_hosts = {"api-partner.spotify.com", "open.spotify.com"}`,
+`cacheable_hosts = {"api-partner.spotify.com"}`,
 `denied_path_prefixes = {"/api/"}`. This single rule realizes the whole §4 table:
 
 | Caller (file) | URL | Decision |
 |---|---|---|
-| embed (`urls.embed_url`; `_fetch_next_data`; `anonymous.py` bootstrap) | `open.spotify.com/embed/<type>/<id>` | **CACHE** (host allowed, path not `/api/`) |
+| embed (`urls.embed_url`; `_fetch_next_data`; `anonymous.py` bootstrap) | `open.spotify.com/embed/<type>/<id>` | **NEVER** (host not allowed — embed `__NEXT_DATA__` carries the anonymous token) |
 | pathfinder (`pathfinder.PATHFINDER_URL`) | `api-partner.spotify.com/pathfinder/v1/query?...` | **CACHE** |
 | server-time (`cookies.SERVER_TIME_URL`) | `open.spotify.com/api/server-time` | **NEVER** (path `/api/` denied) |
 | token (`cookies.TOKEN_URL`) | `open.spotify.com/api/token?...` | **NEVER** (path `/api/` denied) |
@@ -76,17 +76,21 @@ return u.host in config.cacheable_hosts \
 | CDN images/audio (`media/*`, host from payload) | `*.scdn.co` | **NEVER** (host not allowed; binaries belong on disk via `download_*`) |
 
 Important subtlety: the anonymous-token **bootstrap** reads an embed page
-(`anonymous.py`), which IS a cacheable embed URL. That is acceptable — the embed
-page's token is short-lived and `AnonymousTokenProvider.is_stale`/`invalidate`
-already re-fetch when the token rotates; the cached HTML still yields a usable
-fresh token on first parse, and TTL bounds staleness. The credential **exchange**
-(`/api/token`, `/api/server-time`) is denied by the `/api/` prefix, so no
-short-lived secret is ever persisted.
+(`anonymous.py`), whose `__NEXT_DATA__` carries the short-lived anonymous access
+token. The embed host is therefore **excluded** from `cacheable_hosts`: caching
+it would (a) persist a credential to disk and (b) re-serve an expired token after
+it rotated, since the re-bootstrap would re-read the same cached HTML —
+hard-failing tier-1 extraction for the whole TTL. Only the token-free pathfinder
+host is cached by default; the credential **exchange** (`/api/token`,
+`/api/server-time`) is additionally denied by the `/api/` prefix. (Originally the
+embed host was cached; a review caught the stale-token / persisted-secret defect
+and it was removed.)
 
 ## Key derivation
 
-sha256 of the full URL + the cache-relevant header (`Accept-Language`, since
-`_lang_header` varies pathfinder/embed responses by locale). `Authorization` is
+sha256 of the full URL + the cache-relevant `Accept-Language` header (locale
+varies the public pathfinder response when that header reaches the cache layer).
+`Authorization` is
 **excluded** from the key: pathfinder uses the rotating anonymous token, which
 does not change the public response, so including it would defeat the cache.
 Authenticated hosts are already denied at `_is_cacheable`, so no user secret can

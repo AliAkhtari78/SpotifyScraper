@@ -10,6 +10,7 @@ locale-sensitive key, ``Authorization`` exclusion, corrupt-file silent miss,
 from __future__ import annotations
 
 import json
+import os
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, cast
@@ -133,14 +134,27 @@ def test_first_get_records_second_served_from_disk(tmp_path: Path) -> None:
     assert second.json() == PAYLOAD
 
 
-def test_embed_url_is_cached(tmp_path: Path) -> None:
+def test_embed_url_is_not_cached(tmp_path: Path) -> None:
+    # The embed page's __NEXT_DATA__ carries the short-lived anonymous access
+    # token, so it must pass straight through and never be written to disk
+    # (caching it would persist a credential and re-serve a stale token).
     stub = _StubTransport()
     cache = CachingTransport(stub, _config(tmp_path))
 
     cache.get(EMBED_URL)
     cache.get(EMBED_URL)
 
-    assert len(stub.calls) == 1
+    assert len(stub.calls) == 2  # every call hits the inner transport
+    assert list(tmp_path.iterdir()) == []  # token never persisted
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX file modes")
+def test_cache_dir_is_owner_only(tmp_path: Path) -> None:
+    from spotify_scraper.http.cache import FileCache
+
+    cache_dir = tmp_path / "store"
+    FileCache(cache_dir)
+    assert (cache_dir.stat().st_mode & 0o777) == 0o700
 
 
 # --- never-cache rules -----------------------------------------------------
