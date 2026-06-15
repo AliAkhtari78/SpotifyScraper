@@ -226,6 +226,34 @@ def test_playlist_pagination_collects_all_pages() -> None:
 
 
 @respx.mock
+def test_playlist_pagination_carries_locale_on_every_page() -> None:
+    # A per-client locale must reach the SECOND (pagination) pathfinder request,
+    # not only the first.
+    first = _playlist_page(range(0, 25))
+    second = _playlist_page(range(25, 50))
+    embed = respx.get(_embed_url("playlist", IDS["playlist"])).mock(
+        return_value=httpx.Response(200, text=_embed_html("playlist"))
+    )
+    pathfinder_route = respx.get(PATHFINDER_RE).mock(
+        side_effect=[
+            httpx.Response(200, json=first),
+            httpx.Response(200, json=second),
+        ]
+    )
+
+    with SpotifyClient(locale="ja-JP") as client:
+        playlist = client.get_playlist(IDS["playlist"], max_tracks=None)
+
+    assert len(playlist.tracks) == 50
+    assert pathfinder_route.call_count == 2
+    # Both pages — and the embed bootstrap — carry the Accept-Language header.
+    assert embed.calls.last.request.headers["Accept-Language"] == "ja-JP"
+    assert all(
+        call.request.headers["Accept-Language"] == "ja-JP" for call in pathfinder_route.calls
+    )
+
+
+@respx.mock
 def test_playlist_pagination_stops_at_max_tracks() -> None:
     respx.get(_embed_url("playlist", IDS["playlist"])).mock(
         return_value=httpx.Response(200, text=_embed_html("playlist"))

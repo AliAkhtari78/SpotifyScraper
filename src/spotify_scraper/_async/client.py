@@ -96,13 +96,15 @@ class AsyncSpotifyClient:
                 stored now, consumed by the lyrics extraction change.
             host_rate_limits: Optional per-host rate overrides for the default
                 transport (e.g. to throttle ``api-partner.spotify.com``).
-            locale: Default display-language for localized names, an ISO-3166
-                alpha-2 code (e.g. ``"DE"``) or a language tag (e.g.
-                ``"ja-JP"``), sent as the ``Accept-Language`` header. Localizes
-                display-name LANGUAGE only; it does NOT filter regional
-                availability or vary preview URLs (those require the
-                authenticated Web API). A per-call ``locale`` overrides it.
-                Raises :class:`~spotify_scraper.errors.URLError` if invalid.
+            locale: Default display-language for localized names, a BCP-47
+                language tag — a bare language subtag (e.g. ``"de"``, ``"ja"``)
+                or a language-region tag (e.g. ``"ja-JP"``) — sent as the
+                ``Accept-Language`` header. Localizes display-name LANGUAGE only;
+                a bare country code like ``"US"`` is not a language and is
+                ignored. It does NOT filter regional availability or vary preview
+                URLs (those require the authenticated Web API). A per-call
+                ``locale`` overrides it. Raises
+                :class:`~spotify_scraper.errors.URLError` if invalid.
         """
         if transport is None:
             self._transport: AsyncTransport = AsyncHttpxTransport(

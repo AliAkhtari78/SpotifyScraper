@@ -4,14 +4,15 @@
 
 ### Requirement: Optional display-language localization
 
-The clients SHALL accept an optional `locale` (an ISO-3166 alpha-2 code or a
-language-region tag such as `ja-JP`) at the client level
-(`SpotifyClient(locale=...)`) and as a per-call override on every entity getter
-and on `search`. When provided, the library SHALL send it as the
-`Accept-Language` HTTP header on the underlying requests so Spotify returns
-localized display names. When omitted, behavior SHALL be byte-identical to today
-(the transport's default `Accept-Language: en`). A per-call `locale` SHALL
-override the per-client default.
+The clients SHALL accept an optional `locale` — a BCP-47 **language** tag (a bare
+language subtag such as `de`, or a language-region tag such as `ja-JP`), not a
+country/market code — at the client level (`SpotifyClient(locale=...)`) and as a
+per-call override on every entity getter and on `search`. When provided, the
+library SHALL send it as the `Accept-Language` HTTP header on the underlying
+requests (including pagination requests) so Spotify returns localized display
+names. When omitted, behavior SHALL be byte-identical to today (the transport's
+default `Accept-Language: en`). A per-call `locale` SHALL override the per-client
+default.
 
 #### Scenario: Per-client default
 
@@ -32,25 +33,28 @@ override the per-client default.
 
 ### Requirement: Locale validation
 
-A `locale` SHALL be validated as either an ISO-3166 alpha-2 country code
-(case-insensitive, normalized to upper-case) or a language-region tag. Invalid
-input SHALL raise `URLError` before any network request, at both client
-construction (per-client default) and per call (override).
+A `locale` SHALL be validated as a BCP-47 language tag: either a bare primary
+language subtag (2-3 letters, case-insensitive, normalized to **lower-case**) or
+a language-region tag (returned unchanged). Invalid input SHALL raise `URLError`
+before any network request, at both client construction (per-client default) and
+per call (override). A bare country code is NOT special-cased: it is either a
+syntactically-valid language subtag (sent verbatim as an ineffective
+`Accept-Language`) or invalid — it never selects a market.
 
-#### Scenario: Bare country code normalized
+#### Scenario: Bare language subtag normalized
 
-- **WHEN** `locale="de"` is supplied
-- **THEN** it is accepted and used as `DE`
+- **WHEN** `locale="DE"` (or `"por"`) is supplied
+- **THEN** it is accepted and used lower-cased as `de` (resp. `por`)
 
-#### Scenario: Language tag accepted
+#### Scenario: Language-region tag accepted
 
 - **WHEN** `locale="en-US"` is supplied
 - **THEN** it is accepted unchanged
 
-#### Scenario: Invalid code rejected before I/O
+#### Scenario: Invalid tag rejected before I/O
 
-- **WHEN** `locale="USA"` (or `""`, `"u1"`, `"123"`) is supplied at construction
-  or per call
+- **WHEN** `locale="deutsch"` (or `""`, `"u1"`, `"123"`, `"x_y"`) is supplied at
+  construction or per call
 - **THEN** `URLError` is raised and no HTTP request is issued
 
 ### Requirement: Anonymous market/availability is not supported

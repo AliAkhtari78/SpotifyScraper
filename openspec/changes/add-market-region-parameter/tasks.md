@@ -102,3 +102,18 @@
 - [x] 7.2 `@pytest.mark.live` negative-scope guard: assert that two locales return
       the SAME `playability`/availability-shaped fields (documents that locale is
       language-only, not market) — keeps the limitation honest under `make live`.
+
+## 8. Review fixes (locale-vs-market decision: language-only / honest)
+
+- [x] 8.1 `normalize_locale` reframed as a BCP-47 **language** tag: accepts bare
+      language subtags (2-3 letters, lower-cased) and language-region tags; drops
+      the "ISO-3166 alpha-2 country code"/upper-case/`US` framing. Now accepts
+      bare 3-letter language codes (e.g. `por`); error message says "language tag".
+- [x] 8.2 Client `__init__` docstrings reframed to "BCP-47 language tag" (no
+      "ISO-3166 country code"); README "Localized display names" reframed.
+- [x] 8.3 Tests: bare subtag lower-cased on the wire (sync + async); bare 3-letter
+      language accepted; multi-page pagination carries `Accept-Language` on page 2;
+      `search` invalid-locale async parity; updated accept/reject vectors.
+- [x] 8.4 Docs: new `guides/localization.md` (language-only, not market) + nav;
+      index roadmap (3.4 localization shipped) + success admonition; CHANGELOG;
+      spec reframed to language-only (lower-case normalization).

@@ -22,8 +22,8 @@ ENTITY_TYPES: frozenset[str] = frozenset(
 _HOSTS = frozenset({"open.spotify.com", "play.spotify.com"})
 _ID_RE = re.compile(r"[0-9A-Za-z]{22}")
 _INTL_RE = re.compile(r"intl-[A-Za-z]+(?:-[A-Za-z]+)?")
-_MARKET_RE = re.compile(r"[A-Za-z]{2}")
-_LOCALE_RE = re.compile(r"[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})+")
+_LANG_RE = re.compile(r"[A-Za-z]{2,3}")
+_LANG_REGION_RE = re.compile(r"[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})+")
 
 
 def parse(value: str, *, type_hint: EntityType | None = None) -> tuple[EntityType, str]:
@@ -55,35 +55,37 @@ def parse(value: str, *, type_hint: EntityType | None = None) -> tuple[EntityTyp
 
 
 def normalize_locale(value: str) -> str:
-    """Validate and normalize a locale for the ``Accept-Language`` header.
+    """Validate and normalize a display-language tag for ``Accept-Language``.
 
-    Accepts either a bare ISO-3166 alpha-2 country code (case-insensitive,
-    returned upper-cased, e.g. ``"de"`` -> ``"DE"``) or a full language-region
-    tag (returned unchanged, e.g. ``"ja-JP"``, ``"en-US"``).
+    ``locale`` here is a **BCP-47 language tag**, not a country/market code. It
+    accepts either a bare primary language subtag (2-3 letters, normalized to
+    lower-case, e.g. ``"de"``, ``"en"``, ``"por"``) or a language-region tag
+    (returned unchanged, e.g. ``"ja-JP"``, ``"en-US"``).
 
-    This sets the *display language* of localized names only; on the anonymous
-    ladder it does NOT filter regional availability or vary preview URLs (the
-    pathfinder ``market`` variable is inert and the token's country is
-    IP-bound). True market/availability requires the authenticated Web API.
+    It sets the *display language* of localized names only. It does NOT filter
+    regional availability or vary preview URLs: a bare country code like ``"US"``
+    is meaningless as a language and is silently ignored by Spotify. On the
+    anonymous ladder the pathfinder ``market`` variable is inert and the token's
+    country is IP-bound, so true market/availability requires the authenticated
+    Web API (not implemented here).
 
     Args:
-        value: A country code or language tag.
+        value: A BCP-47 language tag (e.g. ``"en"``, ``"ja-JP"``).
 
     Returns:
-        The normalized locale string.
+        The normalized language tag (bare subtags lower-cased).
 
     Raises:
-        URLError: If ``value`` is neither a valid alpha-2 code nor a valid
-            language-region tag.
+        URLError: If ``value`` is not a valid language or language-region tag.
     """
     text = value.strip()
-    if _MARKET_RE.fullmatch(text):
-        return text.upper()
-    if _LOCALE_RE.fullmatch(text):
+    if _LANG_REGION_RE.fullmatch(text):
         return text
+    if _LANG_RE.fullmatch(text):
+        return text.lower()
     raise URLError(
-        f"Invalid locale {value!r}: expected an ISO-3166 alpha-2 code "
-        "(e.g. 'US') or a language tag (e.g. 'ja-JP')."
+        f"Invalid language tag {value!r}: expected a BCP-47 language tag "
+        "like 'en', 'ja', or 'ja-JP'."
     )
 
 

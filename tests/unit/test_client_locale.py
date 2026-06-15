@@ -84,11 +84,11 @@ def test_per_call_locale_overrides_per_client() -> None:
 
 
 @respx.mock
-def test_bare_country_code_is_upper_cased_on_the_wire() -> None:
+def test_bare_language_subtag_is_lower_cased_on_the_wire() -> None:
     pathfinder = _mock_track()
     with SpotifyClient() as client:
-        client.get_track(TRACK_ID, locale="de")
-    assert pathfinder.calls.last.request.headers["Accept-Language"] == "DE"
+        client.get_track(TRACK_ID, locale="DE")
+    assert pathfinder.calls.last.request.headers["Accept-Language"] == "de"
 
 
 @respx.mock
@@ -103,8 +103,8 @@ def test_omitted_locale_sends_default_en_only() -> None:
 def test_invalid_per_call_locale_raises_before_any_request() -> None:
     pathfinder = respx.get(PATHFINDER_RE).mock(return_value=httpx.Response(200, json={}))
     embed = respx.get(EMBED_URL).mock(return_value=httpx.Response(200, text=_embed_html()))
-    with SpotifyClient() as client, pytest.raises(URLError, match="USA"):
-        client.get_track(TRACK_ID, locale="USA")
+    with SpotifyClient() as client, pytest.raises(URLError, match="deutsch"):
+        client.get_track(TRACK_ID, locale="deutsch")
     assert pathfinder.call_count == 0
     assert embed.call_count == 0
 
@@ -168,8 +168,8 @@ async def test_invalid_per_call_locale_raises_before_any_request_async() -> None
     pathfinder = respx.get(PATHFINDER_RE).mock(return_value=httpx.Response(200, json={}))
     embed = respx.get(EMBED_URL).mock(return_value=httpx.Response(200, text=_embed_html()))
     async with AsyncSpotifyClient() as client:
-        with pytest.raises(URLError, match="USA"):
-            await client.get_track(TRACK_ID, locale="USA")
+        with pytest.raises(URLError, match="deutsch"):
+            await client.get_track(TRACK_ID, locale="deutsch")
     assert pathfinder.call_count == 0
     assert embed.call_count == 0
 
@@ -185,3 +185,20 @@ async def test_search_carries_resolved_locale_async() -> None:
     async with AsyncSpotifyClient(locale="de") as client:
         await client.search("daft punk", locale="ja-JP")
     assert pathfinder.calls.last.request.headers["Accept-Language"] == "ja-JP"
+
+
+@respx.mock
+async def test_bare_language_subtag_is_lower_cased_on_the_wire_async() -> None:
+    pathfinder = _mock_track()
+    async with AsyncSpotifyClient() as client:
+        await client.get_track(TRACK_ID, locale="DE")
+    assert pathfinder.calls.last.request.headers["Accept-Language"] == "de"
+
+
+@respx.mock
+async def test_search_invalid_locale_raises_before_request_async() -> None:
+    pathfinder = respx.get(PATHFINDER_RE).mock(return_value=httpx.Response(200, json={}))
+    async with AsyncSpotifyClient() as client:
+        with pytest.raises(URLError):
+            await client.search("daft punk", locale="123")
+    assert pathfinder.call_count == 0

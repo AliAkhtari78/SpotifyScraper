@@ -172,11 +172,13 @@ def test_embed_url_for_token_bootstrap() -> None:
 @pytest.mark.parametrize(
     ("value", "expected"),
     [
-        ("de", "DE"),
-        ("DE", "DE"),
-        ("us", "US"),
-        ("GB", "GB"),
-        ("  jp  ", "JP"),
+        # Bare language subtags are normalized to lower-case (BCP-47 convention).
+        ("de", "de"),
+        ("DE", "de"),
+        ("en", "en"),
+        ("  ja  ", "ja"),
+        ("por", "por"),  # a valid bare 3-letter language subtag
+        # Language-region tags are returned unchanged.
         ("ja-JP", "ja-JP"),
         ("en-US", "en-US"),
         ("pt-BR", "pt-BR"),
@@ -190,7 +192,7 @@ def test_normalize_locale_accepts(value: str, expected: str) -> None:
 
 @pytest.mark.parametrize(
     "value",
-    ["", "   ", "USA", "u1", "123", "x_y", "x-y-z", "d", "deutsch", "ja--JP", "en-"],
+    ["", "   ", "u1", "123", "x_y", "x-y-z", "d", "deutsch", "ja--JP", "en-"],
 )
 def test_normalize_locale_rejects(value: str) -> None:
     with pytest.raises(URLError):
@@ -198,5 +200,5 @@ def test_normalize_locale_rejects(value: str) -> None:
 
 
 def test_normalize_locale_error_names_value() -> None:
-    with pytest.raises(URLError, match="USA"):
-        normalize_locale("USA")
+    with pytest.raises(URLError, match="deutsch"):
+        normalize_locale("deutsch")

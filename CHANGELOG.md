@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ShowRef` for albums/shows). `total` is Spotify's track-match count (`None`
   when tracks aren't requested). A no-match query returns empty results, not an
   error; an unrecognized type raises `URLError` before any request.
+- **Display-language localization.** An optional `locale` (a BCP-47 language tag
+  such as `"de"` or `"ja-JP"`) on the constructor and on every entity getter and
+  `search()` sets the `Accept-Language` header so Spotify returns localized
+  display names (per-call overrides the per-client default; invalid tags raise
+  `URLError` before any request). `locale` is a *language* preference, not a
+  country/market code — a bare `"US"` is ignored — and does not filter regional
+  availability; anonymous market filtering is intentionally not offered (the
+  pathfinder `market` variable is inert and country is IP-bound).
 
 ## [3.2.0] - 2026-06-13
 
