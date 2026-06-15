@@ -156,18 +156,14 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 | 3.2.0 | Cookie-authenticated **lyrics** extraction. |
 | 3.3 | Cookie-authenticated podcast **transcripts** (`get_transcript`), **browser-assisted login** with a persistent cookie store, and **account-awareness** (`get_account`/`is_premium`). |
 | 3.4 | **Search** across every entity type (`search()`) and display-language **localization** (`locale`). |
-| 3.5 | Optional persistent **response cache** (`cache=CacheConfig(...)`). |
+| 3.5 | Optional persistent **response cache** (`cache=CacheConfig(...)`) and **batch helpers** (`get_*s([...])`) with managed concurrency. |
 
-### Planned
+### What's next
 
-Upcoming work is tracked in the GitHub
-[milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones):
-
-| Version | Adds |
-|---|---|
-| 3.5 | [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
-
-Scope is subject to change — 👍 the issues that matter most to you.
+The v3.3–3.5 work above completes the published roadmap. Future ideas are tracked
+in the GitHub [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones)
+and [issues](https://github.com/AliAkhtari78/SpotifyScraper/issues) — 👍 the ones
+that matter most to you. Scope is subject to change.
 
 !!! success "Lyrics & transcripts are available"
     Cookie-authenticated **lyrics** and podcast **transcripts** have shipped:
@@ -197,6 +193,11 @@ Scope is subject to change — 👍 the issues that matter most to you.
     Opt in with `SpotifyClient(cache=CacheConfig(store=FileCache()))`. Only
     token-free pathfinder responses are cached (never the token-bearing embed
     pages). See the [caching guide](guides/caching.md).
+
+!!! success "Batch helpers have shipped"
+    Plural `client.get_tracks([...])` / `get_albums([...])` / … return one
+    partial-failure-safe `BatchItem` per input; the async client bounds
+    concurrency with `max_concurrency`. See the [batch guide](guides/batch.md).
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.

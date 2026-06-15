@@ -105,6 +105,7 @@ region. See the
 - **Lyrics & podcast transcripts** — cookie-authenticated, time-synced, one token for both.
 - **Browser-assisted login + session persistence** — log in once, then run headless (no stored passwords).
 - **Account-aware** — `get_account()` / `is_premium()`, plus cookie-free `session_info()`.
+- **Batch helpers** — plural `get_*s([...])` with partial-failure-safe results and managed concurrency.
 - **Sync & async** clients sharing one sans-io core.
 - **Typed, frozen models** with JSON-safe `to_dict()` / `from_dict()`.
 - **Two-tier resilience** — Spotify's GraphQL API with automatic fallback to the embed page.
@@ -125,6 +126,21 @@ spotifyscraper download preview <id> -o ./previews --embed-cover
 
 Every command emits JSON, so it composes with tools like `jq`. See the
 [CLI guide](https://spotifyscraper.readthedocs.io/en/latest/guides/cli/).
+
+## Batch helpers
+
+Each getter has a plural sibling (`get_tracks`, `get_albums`, …) that fetches
+many inputs and returns one `BatchItem` per input — index-aligned, and a dead
+input never aborts the rest:
+
+```python
+items = client.get_tracks(["4uLU6hMCjMI75M1A2tKUQC", "bad-id"])
+ok = [i.result for i in items if i.ok]
+failed = {i.value: i.error for i in items if not i.ok}
+```
+
+The async client runs them concurrently, bounded by `max_concurrency` (default
+5). See the [batch guide](https://spotifyscraper.readthedocs.io/en/latest/guides/batch/).
 
 ## Response caching
 
@@ -223,15 +239,13 @@ cookie. See the
 | **3.2** | Cookie-authenticated lyrics |
 | **3.3** | Cookie-authenticated podcast transcripts (`get_transcript`); browser-assisted login, session persistence & account-awareness (`get_account`/`is_premium`) |
 | **3.4** | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type (`search()`) · display-language [localization](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) (`locale`) |
-| **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) (`cache=CacheConfig(...)`) |
+| **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) (`cache=CacheConfig(...)`) · [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency |
 
-**Planned** — tracked in [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones); 👍 or weigh in on the issues to help prioritize:
-
-| Version | Scope |
-|---------|-------|
-| **3.5** | [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency |
-
-Planned scope is subject to change.
+**What's next** — the v3.3–3.5 work above completes the published roadmap. Future
+ideas are tracked in the GitHub
+[milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones) and
+[issues](https://github.com/AliAkhtari78/SpotifyScraper/issues) — 👍 or weigh in
+on the ones that matter most to you. Scope is subject to change.
 
 ## Documentation
 

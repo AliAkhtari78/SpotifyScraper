@@ -23,6 +23,7 @@ from spotify_scraper.api.parse_embed import EmbedSession
 from spotify_scraper.auth.anonymous import AnonymousTokenProvider
 from spotify_scraper.auth.cookies import CookieTokenProvider, load_sp_dc
 from spotify_scraper.auth.session import SessionInfo, SessionStore
+from spotify_scraper.batch import BatchItem
 from spotify_scraper.errors import (
     AuthenticationError,
     NetworkError,
@@ -482,6 +483,127 @@ class SpotifyClient:
         if not tier1:
             return show
         return self._with_episodes(show, entity_id, session, max_episodes, locale=effective)
+
+    def get_tracks(self, values: Sequence[str]) -> Sequence[BatchItem[Track]]:
+        """Fetch many tracks, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify track URLs, URIs, or 22-character IDs.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return self._batch(values, self.get_track)
+
+    def get_albums(self, values: Sequence[str]) -> Sequence[BatchItem[Album]]:
+        """Fetch many albums, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify album URLs, URIs, or 22-character IDs.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return self._batch(values, self.get_album)
+
+    def get_artists(self, values: Sequence[str]) -> Sequence[BatchItem[Artist]]:
+        """Fetch many artists, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify artist URLs, URIs, or 22-character IDs.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return self._batch(values, self.get_artist)
+
+    def get_episodes(self, values: Sequence[str]) -> Sequence[BatchItem[Episode]]:
+        """Fetch many episodes, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify episode URLs, URIs, or 22-character IDs.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return self._batch(values, self.get_episode)
+
+    def get_playlists(
+        self, values: Sequence[str], *, max_tracks: int | None = 100
+    ) -> Sequence[BatchItem[Playlist]]:
+        """Fetch many playlists, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify playlist URLs, URIs, or 22-character IDs.
+            max_tracks: Forwarded to each :meth:`get_playlist`; ``None`` fetches
+                all tracks.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return self._batch(values, lambda value: self.get_playlist(value, max_tracks=max_tracks))
+
+    def get_shows(
+        self, values: Sequence[str], *, max_episodes: int | None = 50
+    ) -> Sequence[BatchItem[Show]]:
+        """Fetch many shows, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify show URLs, URIs, or 22-character IDs.
+            max_episodes: Forwarded to each :meth:`get_show`; ``None`` fetches
+                all episodes.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return self._batch(values, lambda value: self.get_show(value, max_episodes=max_episodes))
+
+    def _batch(self, values: Sequence[str], fetch: Callable[[str], _T]) -> Sequence[BatchItem[_T]]:
+        """Fetch every value sequentially, capturing per-item library errors.
+
+        The per-host :class:`TokenBucket` throttles each underlying request, so
+        a sequential loop is already rate-limited without threads. Only
+        :class:`SpotifyScraperError` is captured per item; anything else
+        (cancellation, programming bugs) propagates and aborts the batch.
+        """
+        self._ensure_open()
+        out: list[BatchItem[_T]] = []
+        for value in values:
+            try:
+                out.append(BatchItem(value, result=fetch(value)))
+            except SpotifyScraperError as exc:
+                out.append(BatchItem(value, error=exc))
+        return out
 
     def get_lyrics(self, value: str) -> Lyrics:
         """Fetch a track's lyrics using the cookie-derived web-player token.

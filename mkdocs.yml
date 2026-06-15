@@ -96,6 +96,7 @@ nav:
     - Lyrics & cookies: guides/lyrics-and-cookies.md
     - Authenticated sessions: guides/authentication.md
     - Async: guides/async.md
+    - Batch helpers: guides/batch.md
     - Media downloads: guides/media-downloads.md
     - Response caching: guides/caching.md
     - Anti-ban & resilience: guides/anti-ban.md

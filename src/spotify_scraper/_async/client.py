@@ -7,11 +7,13 @@ helpers, so the two facades stay thin and behaviourally identical.
 
 from __future__ import annotations
 
+import asyncio
 import logging
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from pathlib import Path
 from types import TracebackType
 from typing import Any, TypeVar
+from weakref import WeakKeyDictionary
 
 from spotify_scraper import media, urls
 from spotify_scraper.api import account as account_api
@@ -22,6 +24,7 @@ from spotify_scraper.api.parse_embed import EmbedSession
 from spotify_scraper.auth.anonymous import AsyncAnonymousTokenProvider
 from spotify_scraper.auth.cookies import AsyncCookieTokenProvider, load_sp_dc
 from spotify_scraper.auth.session import SessionInfo, SessionStore
+from spotify_scraper.batch import BatchItem
 from spotify_scraper.errors import (
     AuthenticationError,
     NetworkError,
@@ -70,7 +73,9 @@ class AsyncSpotifyClient:
         "_cookie_tokens",
         "_cookies",
         "_locale",
+        "_max_concurrency",
         "_owns_transport",
+        "_semaphores",
         "_tokens",
         "_transport",
     )
@@ -88,6 +93,7 @@ class AsyncSpotifyClient:
         host_rate_limits: Mapping[str, RateLimit] | None = None,
         cache: CacheConfig | None = None,
         locale: str | None = None,
+        max_concurrency: int = 5,
     ) -> None:
         """Initialize the client.
 
@@ -120,7 +126,25 @@ class AsyncSpotifyClient:
                 URLs (those require the authenticated Web API). A per-call
                 ``locale`` overrides it. Raises
                 :class:`~spotify_scraper.errors.URLError` if invalid.
+            max_concurrency: Caps how many entity pipelines run concurrently in
+                the plural ``get_*s`` helpers; bounds open sockets and
+                bucket-lock contention while the rate limiter still governs
+                request rate. Must be at least 1. Defaults to 5, matching the
+                default :attr:`RateLimit.burst`.
+
+        Raises:
+            ValueError: If ``max_concurrency`` is less than 1.
         """
+        if max_concurrency < 1:
+            raise ValueError("max_concurrency must be at least 1")
+        self._max_concurrency = max_concurrency
+        # One semaphore per running event loop: an asyncio.Semaphore binds to the
+        # loop it first suspends on, so a single shared instance would raise
+        # "bound to a different event loop" when the client is reused across
+        # asyncio.run() boundaries. The weak keys let finished loops be collected.
+        self._semaphores: WeakKeyDictionary[asyncio.AbstractEventLoop, asyncio.Semaphore] = (
+            WeakKeyDictionary()
+        )
         if transport is None:
             base: AsyncTransport = AsyncHttpxTransport(
                 rate_limit=rate_limit,
@@ -487,6 +511,153 @@ class AsyncSpotifyClient:
         if not tier1:
             return show
         return await self._with_episodes(show, entity_id, session, max_episodes, locale=effective)
+
+    async def get_tracks(self, values: Sequence[str]) -> Sequence[BatchItem[Track]]:
+        """Fetch many tracks, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify track URLs, URIs, or 22-character IDs.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return await self._batch(values, self.get_track)
+
+    async def get_albums(self, values: Sequence[str]) -> Sequence[BatchItem[Album]]:
+        """Fetch many albums, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify album URLs, URIs, or 22-character IDs.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return await self._batch(values, self.get_album)
+
+    async def get_artists(self, values: Sequence[str]) -> Sequence[BatchItem[Artist]]:
+        """Fetch many artists, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify artist URLs, URIs, or 22-character IDs.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return await self._batch(values, self.get_artist)
+
+    async def get_episodes(self, values: Sequence[str]) -> Sequence[BatchItem[Episode]]:
+        """Fetch many episodes, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify episode URLs, URIs, or 22-character IDs.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return await self._batch(values, self.get_episode)
+
+    async def get_playlists(
+        self, values: Sequence[str], *, max_tracks: int | None = 100
+    ) -> Sequence[BatchItem[Playlist]]:
+        """Fetch many playlists, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify playlist URLs, URIs, or 22-character IDs.
+            max_tracks: Forwarded to each :meth:`get_playlist`; ``None`` fetches
+                all tracks.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return await self._batch(
+            values, lambda value: self.get_playlist(value, max_tracks=max_tracks)
+        )
+
+    async def get_shows(
+        self, values: Sequence[str], *, max_episodes: int | None = 50
+    ) -> Sequence[BatchItem[Show]]:
+        """Fetch many shows, one ordered :class:`BatchItem` per input.
+
+        Args:
+            values: Spotify show URLs, URIs, or 22-character IDs.
+            max_episodes: Forwarded to each :meth:`get_show`; ``None`` fetches
+                all episodes.
+
+        Returns:
+            An ordered sequence of :class:`BatchItem`, index-aligned with
+            ``values``; a per-item :class:`SpotifyScraperError` is captured in
+            ``error`` and never raised mid-batch.
+
+        Raises:
+            SpotifyScraperError: Only if the client is already closed.
+        """
+        return await self._batch(
+            values, lambda value: self.get_show(value, max_episodes=max_episodes)
+        )
+
+    def _loop_semaphore(self) -> asyncio.Semaphore:
+        """Return this client's concurrency semaphore for the running loop.
+
+        Created lazily per event loop and cached weakly, so overlapping batches
+        on the same loop share one budget while reuse across separate
+        ``asyncio.run()`` calls never hits a cross-loop binding error.
+        """
+        loop = asyncio.get_running_loop()
+        semaphore = self._semaphores.get(loop)
+        if semaphore is None:
+            semaphore = asyncio.Semaphore(self._max_concurrency)
+            self._semaphores[loop] = semaphore
+        return semaphore
+
+    async def _batch(
+        self, values: Sequence[str], fetch: Callable[[str], Awaitable[_T]]
+    ) -> Sequence[BatchItem[_T]]:
+        """Fetch every value concurrently, bounded by ``max_concurrency``.
+
+        Each per-item coroutine is gated by this client's per-loop semaphore, so
+        the number of in-flight entity pipelines never exceeds the configured
+        limit while the :class:`AsyncTokenBucket` still governs request rate.
+        Order is preserved by :func:`asyncio.gather`. Only
+        :class:`SpotifyScraperError` is captured per item; cancellation and
+        programming bugs are not subclasses, so they propagate and abort the
+        batch.
+        """
+        self._ensure_open()
+        semaphore = self._loop_semaphore()
+
+        async def one(value: str) -> BatchItem[_T]:
+            async with semaphore:
+                try:
+                    return BatchItem(value, result=await fetch(value))
+                except SpotifyScraperError as exc:
+                    return BatchItem(value, error=exc)
+
+        return list(await asyncio.gather(*(one(value) for value in values)))
 
     async def get_lyrics(self, value: str) -> Lyrics:
         """Fetch a track's lyrics using the cookie-derived web-player token.
