@@ -10,7 +10,7 @@ import pytest
 import respx
 
 from spotify_scraper import AsyncSpotifyClient, SpotifyClient
-from spotify_scraper.errors import AuthenticationError, NotFoundError
+from spotify_scraper.errors import AuthenticationError, NotFoundError, ParsingError
 
 EPISODE_ID = "512ojhOuo1ktJprKbVcKyQ"
 SP_DC = "sp_dc_secret_value"
@@ -121,7 +121,66 @@ def test_no_transcript_raises_not_found() -> None:
     respx.get(TOKEN_RE).mock(return_value=httpx.Response(200, json=_token_body()))
     respx.get(TRANSCRIPT_RE).mock(return_value=httpx.Response(404))
 
-    with SpotifyClient(cookies=SP_DC) as client, pytest.raises(NotFoundError):
+    with (
+        SpotifyClient(cookies=SP_DC) as client,
+        pytest.raises(NotFoundError, match="No transcript for episode"),
+    ):
+        client.get_transcript(EPISODE_ID)
+
+
+# --- 200 with no spoken text (speaker labels only) -> NotFoundError -----------
+
+
+@respx.mock
+def test_label_only_200_raises_not_found() -> None:
+    # A 200 whose cue container holds only speaker-label cues (no text) means the
+    # episode has no transcript content; the contract reports that as NotFoundError.
+    _mock_token_handshake()
+    respx.get(TOKEN_RE).mock(return_value=httpx.Response(200, json=_token_body()))
+    label_only = {"language": "en", "section": [{"startMs": 0, "title": {"title": "Speaker 1"}}]}
+    respx.get(TRANSCRIPT_RE).mock(return_value=httpx.Response(200, json=label_only))
+
+    with (
+        SpotifyClient(cookies=SP_DC) as client,
+        pytest.raises(NotFoundError, match="No transcript for episode"),
+    ):
+        client.get_transcript(EPISODE_ID)
+
+
+@respx.mock
+async def test_async_label_only_200_raises_not_found() -> None:
+    _mock_token_handshake()
+    respx.get(TOKEN_RE).mock(return_value=httpx.Response(200, json=_token_body()))
+    label_only = {"language": "en", "section": [{"startMs": 0, "title": {"title": "Speaker 1"}}]}
+    respx.get(TRANSCRIPT_RE).mock(return_value=httpx.Response(200, json=label_only))
+
+    async with AsyncSpotifyClient(cookies=SP_DC) as client:
+        with pytest.raises(NotFoundError, match="No transcript for episode"):
+            await client.get_transcript(EPISODE_ID)
+
+
+# --- malformed 200 -> ParsingError --------------------------------------------
+
+
+@respx.mock
+def test_non_json_200_raises_parsing_error() -> None:
+    _mock_token_handshake()
+    respx.get(TOKEN_RE).mock(return_value=httpx.Response(200, json=_token_body()))
+    respx.get(TRANSCRIPT_RE).mock(return_value=httpx.Response(200, text="<html>not json</html>"))
+
+    with SpotifyClient(cookies=SP_DC) as client, pytest.raises(ParsingError):
+        client.get_transcript(EPISODE_ID)
+
+
+@respx.mock
+def test_no_cue_container_200_raises_parsing_error() -> None:
+    # A JSON 200 that carries no recognized cue container is an unexpected shape
+    # (Spotify changed its format), which is ParsingError, not "no transcript".
+    _mock_token_handshake()
+    respx.get(TOKEN_RE).mock(return_value=httpx.Response(200, json=_token_body()))
+    respx.get(TRANSCRIPT_RE).mock(return_value=httpx.Response(200, json={"language": "en"}))
+
+    with SpotifyClient(cookies=SP_DC) as client, pytest.raises(ParsingError):
         client.get_transcript(EPISODE_ID)
 
 

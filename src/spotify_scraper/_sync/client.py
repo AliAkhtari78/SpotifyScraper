@@ -477,7 +477,14 @@ class SpotifyClient:
                 "Transcript response was not JSON. Spotify may have changed its API; "
                 "check for a library update."
             )
-        return parse_entities.parse_transcript(transcripts_api.decode_envelope(body))
+        transcript = parse_entities.parse_transcript(transcripts_api.decode_envelope(body))
+        # A 200 whose cue container holds only speaker labels (no spoken text)
+        # is "the episode has no transcript", which the contract reports as
+        # NotFoundError. A genuinely unrecognized shape (no container at all)
+        # has already raised ParsingError inside parse_transcript.
+        if not transcript.lines:
+            raise NotFoundError(f"No transcript for episode {entity_id}.")
+        return transcript
 
     def download_cover(
         self,
