@@ -1,9 +1,9 @@
 """Live smoke tests for cookie-authenticated transcripts (network + credentials).
 
-NOTE: The transcript envelope shape is unconfirmed (see
-``openspec/changes/add-podcast-transcripts/design.md``). This test is the real
-confirmation that ``decode_envelope`` matches Spotify's live response; pick an
-episode that shows "Read along" in the web player.
+The transcript-read-along envelope is confirmed plain JSON (a ``section`` array
+of ``text.sentence`` cues; see ``openspec/changes/add-podcast-transcripts/``).
+``EPISODE_ID`` must point at an episode that shows "Read along" in the web
+player; override it with ``SPOTIFY_TRANSCRIPT_EPISODE`` for a current one.
 """
 
 from __future__ import annotations
@@ -14,8 +14,8 @@ import pytest
 
 from spotify_scraper import AsyncSpotifyClient, SpotifyClient
 
-# An episode known to carry a transcript in the web player.
-EPISODE_ID = os.environ.get("SPOTIFY_TRANSCRIPT_EPISODE", "512ojhOuo1ktJprKbVcKyQ")
+# A Joe Rogan Experience episode confirmed to carry a "Read along" transcript.
+EPISODE_ID = os.environ.get("SPOTIFY_TRANSCRIPT_EPISODE", "2c50dZKpJcLjAfGXhOMRxD")
 _SP_DC = os.environ.get("SPOTIFY_SP_DC")
 
 pytestmark = pytest.mark.skipif(not _SP_DC, reason="SPOTIFY_SP_DC env var not set")
