@@ -12,7 +12,7 @@ import os
 import sys
 import types
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 import pytest
 import respx
@@ -28,6 +28,14 @@ from spotify_scraper.auth.session import (
 
 SECRET = "sp_dc_super_secret_cookie_value"  # noqa: S105
 
+
+class _FakeCapture(NamedTuple):
+    """Mirror of ``browser.CapturedLogin`` without importing the Playwright module."""
+
+    sp_dc: str
+    sp_dc_expires_ms: int | None
+
+
 _POSIX_ONLY = pytest.mark.skipif(os.name != "posix", reason="POSIX permission bits only")
 
 
@@ -40,6 +48,22 @@ def test_missing_session_is_absent_and_invalid(tmp_path: Path) -> None:
     assert info.valid is False
     assert SECRET not in (info.reason or "")
     assert has_saved_session(path=tmp_path / "nope.json") is False
+
+
+def test_session_info_to_dict_is_cookie_free(tmp_path: Path) -> None:
+    save_session(
+        SECRET, sp_dc_expires_ms=9_000_000_000_000, path=tmp_path / "session.json", now_ms=7
+    )
+    info = session_info(path=tmp_path / "session.json")
+    data = info.to_dict()
+    assert data == {
+        "exists": True,
+        "valid": True,
+        "saved_at_ms": 7,
+        "sp_dc_expires_ms": 9_000_000_000_000,
+        "reason": None,
+    }
+    assert SECRET not in str(data)
 
 
 def test_freshly_saved_no_expiry_is_valid(tmp_path: Path) -> None:
@@ -129,13 +153,15 @@ def fake_browser(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
     calls: dict[str, Any] = {"sync": [], "async": []}
     module = types.ModuleType("spotify_scraper.browser")
 
-    def capture_sp_dc(*, timeout: float = 300.0, proxy: str | None = None) -> str:
+    def capture_sp_dc(*, timeout: float = 300.0, proxy: str | None = None) -> _FakeCapture:
         calls["sync"].append({"timeout": timeout, "proxy": proxy})
-        return "freshly_captured_cookie"
+        return _FakeCapture("freshly_captured_cookie", None)
 
-    async def capture_sp_dc_async(*, timeout: float = 300.0, proxy: str | None = None) -> str:
+    async def capture_sp_dc_async(
+        *, timeout: float = 300.0, proxy: str | None = None
+    ) -> _FakeCapture:
         calls["async"].append({"timeout": timeout, "proxy": proxy})
-        return "freshly_captured_cookie"
+        return _FakeCapture("freshly_captured_cookie", None)
 
     module.capture_sp_dc = capture_sp_dc  # type: ignore[attr-defined]
     module.capture_sp_dc_async = capture_sp_dc_async  # type: ignore[attr-defined]
@@ -204,6 +230,31 @@ async def test_async_login_reuse_captures_when_no_session(
     fake_browser: dict[str, Any], tmp_path: Path
 ) -> None:
     path = tmp_path / "session.json"
+    async with AsyncSpotifyClient() as client:
+        await client.login(reuse=True, save=False, session_path=path)
+        assert client._cookies == "freshly_captured_cookie"
+    assert len(fake_browser["async"]) == 1
+
+
+def test_login_reuse_falls_through_when_secret_empty(
+    fake_browser: dict[str, Any], tmp_path: Path
+) -> None:
+    # A metadata-valid session whose stored secret is empty (e.g. the keyring
+    # entry vanished) must NOT be reused as an empty cookie; reuse falls through
+    # to a fresh capture rather than wiring sp_dc="".
+    path = tmp_path / "session.json"
+    save_session("", path=path)
+    with SpotifyClient() as client:
+        client.login(reuse=True, save=False, session_path=path)
+        assert client._cookies == "freshly_captured_cookie"
+    assert len(fake_browser["sync"]) == 1
+
+
+async def test_async_login_reuse_falls_through_when_secret_empty(
+    fake_browser: dict[str, Any], tmp_path: Path
+) -> None:
+    path = tmp_path / "session.json"
+    save_session("", path=path)
     async with AsyncSpotifyClient() as client:
         await client.login(reuse=True, save=False, session_path=path)
         assert client._cookies == "freshly_captured_cookie"

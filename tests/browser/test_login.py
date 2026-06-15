@@ -23,3 +23,37 @@ def test_capture_times_out_without_login() -> None:
     message = str(excinfo.value)
     assert "sp_dc" in message
     assert "Traceback" not in message
+
+
+@pytest.mark.browser
+def test_extract_sp_dc_captures_value_and_expiry() -> None:
+    """A Playwright cookie's value and (seconds) expiry become a CapturedLogin (ms)."""
+    from spotify_scraper.browser.login import _extract_sp_dc
+
+    captured = _extract_sp_dc(
+        [
+            {"name": "other", "value": "x"},
+            {"name": "sp_dc", "value": "ABC", "expires": 1_900_000_000.0},
+        ]
+    )
+    assert captured is not None
+    assert captured.sp_dc == "ABC"
+    assert captured.sp_dc_expires_ms == 1_900_000_000_000
+
+
+@pytest.mark.browser
+def test_extract_sp_dc_session_cookie_has_no_expiry() -> None:
+    """A session cookie (Playwright ``expires == -1``) yields a None expiry."""
+    from spotify_scraper.browser.login import _extract_sp_dc
+
+    captured = _extract_sp_dc([{"name": "sp_dc", "value": "ABC", "expires": -1}])
+    assert captured is not None
+    assert captured.sp_dc_expires_ms is None
+
+
+@pytest.mark.browser
+def test_extract_sp_dc_absent_returns_none() -> None:
+    """No sp_dc cookie present returns None."""
+    from spotify_scraper.browser.login import _extract_sp_dc
+
+    assert _extract_sp_dc([{"name": "other", "value": "x"}]) is None

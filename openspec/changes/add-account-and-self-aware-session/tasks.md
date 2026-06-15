@@ -151,3 +151,19 @@
 - [ ] 9.3 Docs: add `get_account`/`is_premium` to the authenticated-features page
       next to lyrics/transcripts; document `login(reuse=...)` and
       `session_info`/`has_saved_session`.
+
+## 10. Review fixes
+
+- [x] 10.1 `keyring_info` probes the OS keyring secret (lazy import; skipped
+      without the extra), so a valid metadata file whose keyring entry is gone
+      reports `valid=False` and `has_session()` stays honest.
+- [x] 10.2 Guard the `login(reuse=True)` branch (sync + async) to fall through to
+      browser capture when the saved secret is empty or unloadable, rather than
+      wiring `sp_dc=""`. The CLI reuse branch is corrected by the keyring probe.
+- [x] 10.3 Add `SessionInfo.to_dict()` (cookie-free, JSON-safe).
+- [x] 10.4 Tests: async account failures (empty body, 2nd-401 → AuthenticationError,
+      non-JSON → ParsingError); `keyring_info` invalid when secret gone;
+      reuse falls through on an empty secret (sync + async); `SessionInfo.to_dict()`.
+- [ ] 10.5 Docs: `get_account`/`is_premium`, `login(reuse=...)`, `session_info`/
+      `session` CLI, and the keyring `ImportError` note in the authentication guide;
+      `Account` autodoc; index + README + CHANGELOG.

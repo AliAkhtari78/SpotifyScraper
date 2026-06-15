@@ -1,9 +1,11 @@
 # Lyrics & cookies
 
-Lyrics are a **logged-in-only** Spotify feature. Unlike every other extractor in
-SpotifyScraper, `get_lyrics` needs an authenticated `sp_dc` cookie from your own
-Spotify account. This guide shows how to obtain that cookie, how to feed it to
-the client, and the security trade-offs you are accepting.
+Lyrics and podcast transcripts are **logged-in-only** Spotify features. Unlike
+every other extractor in SpotifyScraper, `get_lyrics` and `get_transcript` need
+an authenticated `sp_dc` cookie from your own Spotify account. This guide shows
+how to obtain that cookie, how to feed it to the client, and the security
+trade-offs you are accepting. The same cookie powers both — a single client
+exchanges it once and reuses the token for lyrics and transcripts alike.
 
 !!! warning "Your `sp_dc` cookie is a credential"
     An `sp_dc` cookie is roughly equivalent to a login session for your Spotify
@@ -82,6 +84,33 @@ spotifyscraper lyrics 4uLU6hMCjMI75M1A2tKUQC -o lyrics.json
 The command emits the lyrics `to_dict()` JSON to stdout (or to `-o FILE`), with
 `--pretty` for indented output.
 
+## Podcast transcripts
+
+`get_transcript` reads a podcast **episode's** transcript through the same
+cookie-authenticated handshake. It takes an episode URL, URI, or bare ID and
+returns a [`Transcript`](../reference/models.md) whose `lines` are
+`TranscriptLine` entries — each with a millisecond `start_ms` offset and `text`:
+
+```python
+from spotify_scraper import SpotifyClient
+
+with SpotifyClient(cookies="cookies.txt") as client:
+    transcript = client.get_transcript("https://open.spotify.com/episode/512ojhOuo1ktJprKbVcKyQ")
+    print(transcript.language)
+    for line in transcript.lines:
+        print(line.start_ms, line.text)
+```
+
+The async client mirrors it: `await client.get_transcript(episode_id)`.
+
+Not every episode is transcribed. When an episode has no transcript — whether
+Spotify 404s or returns a body with no spoken text — `get_transcript` raises
+`NotFoundError` (never confused with an auth failure). On the command line:
+
+```bash
+spotifyscraper transcript 512ojhOuo1ktJprKbVcKyQ --cookies cookies.txt --pretty
+```
+
 ## Errors you may hit
 
 | Situation | Exception | CLI exit code |
@@ -89,6 +118,7 @@ The command emits the lyrics `to_dict()` JSON to stdout (or to `-o FILE`), with
 | No cookies configured | `AuthenticationError` (raised immediately, no network) | 4 |
 | Expired or invalid `sp_dc` | `AuthenticationError` with renewal instructions | 4 |
 | Track exists but has no lyrics | `NotFoundError` | 3 |
+| Episode has no transcript | `NotFoundError` | 3 |
 
 If you see an `AuthenticationError` telling you to refresh your cookie, log back
 into open.spotify.com and re-export `sp_dc` — sessions expire. A `NotFoundError`

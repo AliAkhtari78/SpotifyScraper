@@ -112,12 +112,28 @@ frozen, slotted `SessionInfo` carrying only non-secret metadata (`exists`,
 `valid`, `saved_at_ms`, `sp_dc_expires_ms`, `reason`) and SHALL NOT raise for the
 common missing/corrupt/insecure/expired cases — those SHALL be reported as flags.
 A session SHALL be `valid` only when it exists, is securely permissioned (POSIX),
-parses, and has not passed `sp_dc_expires_ms` when that expiry is known.
+parses, and has not passed `sp_dc_expires_ms` when that expiry is known. For the
+keyring backend, validity SHALL additionally require that the `sp_dc` secret is
+actually retrievable from the OS keyring (a valid metadata file whose keyring
+entry is gone is NOT usable); when the `keyring` extra is absent the secret probe
+SHALL be skipped and the metadata verdict SHALL stand. `SessionInfo` SHALL expose
+a cookie-free `to_dict()`.
 
 #### Scenario: No saved session
 
 - **WHEN** `session_info()` runs against a path with no file
 - **THEN** `SessionInfo(exists=False, valid=False)` is returned and nothing is raised
+
+#### Scenario: Keyring secret gone is invalid
+
+- **WHEN** `keyring_info()` runs against a valid metadata file whose `sp_dc`
+  secret is absent from the OS keyring
+- **THEN** `valid` is `False` with a cookie-free reason, so `has_session()` is honest
+
+#### Scenario: SessionInfo serializes without the cookie
+
+- **WHEN** `SessionInfo.to_dict()` is called
+- **THEN** it returns a JSON-safe mapping of the verdict and metadata and never the `sp_dc` value
 
 #### Scenario: Valid saved session
 
@@ -163,6 +179,12 @@ require the `browser` extra.
 
 - **WHEN** `login(reuse=False)` is called even though a valid saved session exists
 - **THEN** the browser-capture flow runs, ignoring the saved session
+
+#### Scenario: Empty saved secret falls through to capture
+
+- **WHEN** `login(reuse=True)` finds a metadata-valid session whose stored `sp_dc`
+  is empty or unloadable (e.g. the keyring entry vanished)
+- **THEN** it does NOT wire an empty cookie; it falls through to the browser-capture flow
 
 #### Scenario: Network-side revocation falls through to the auth contract
 

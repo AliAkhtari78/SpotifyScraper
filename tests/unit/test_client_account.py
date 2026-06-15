@@ -192,6 +192,30 @@ async def test_async_account_401_invalidates_and_retries_once() -> None:
     assert token_route.call_count == 2
 
 
+@respx.mock
+async def test_async_empty_body_yields_account_with_none_fields() -> None:
+    _mock_token_handshake()
+    respx.get(TOKEN_RE).mock(return_value=httpx.Response(200, json=_token_body()))
+    respx.get(PRODUCT_STATE_RE).mock(return_value=httpx.Response(200, json={}))
+
+    async with AsyncSpotifyClient(cookies=SP_DC) as client:
+        account = await client.get_account()
+
+    assert account.product is None
+    assert account.is_premium is False
+
+
+@respx.mock
+async def test_async_account_second_401_surfaces_as_auth_error() -> None:
+    _mock_token_handshake()
+    respx.get(TOKEN_RE).mock(return_value=httpx.Response(200, json=_token_body()))
+    respx.get(PRODUCT_STATE_RE).mock(return_value=httpx.Response(401))
+
+    async with AsyncSpotifyClient(cookies=SP_DC) as client:
+        with pytest.raises(AuthenticationError):
+            await client.get_account()
+
+
 # --- non-JSON body -> ParsingError --------------------------------------------
 
 
@@ -205,6 +229,19 @@ def test_non_json_body_raises_parsing_error() -> None:
 
     with SpotifyClient(cookies=SP_DC) as client, pytest.raises(ParsingError):
         client.get_account()
+
+
+@respx.mock
+async def test_async_non_json_body_raises_parsing_error() -> None:
+    from spotify_scraper.errors import ParsingError
+
+    _mock_token_handshake()
+    respx.get(TOKEN_RE).mock(return_value=httpx.Response(200, json=_token_body()))
+    respx.get(PRODUCT_STATE_RE).mock(return_value=httpx.Response(200, text="<html>nope"))
+
+    async with AsyncSpotifyClient(cookies=SP_DC) as client:
+        with pytest.raises(ParsingError):
+            await client.get_account()
 
 
 # --- use after close ----------------------------------------------------------

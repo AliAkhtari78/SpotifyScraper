@@ -23,8 +23,9 @@ modern API.
 ```bash
 pip install spotifyscraper                 # core (only depends on httpx)
 pip install "spotifyscraper[media]"        # + cover/preview embedding (mutagen)
-pip install "spotifyscraper[browser]"      # + Playwright browser fallback
+pip install "spotifyscraper[browser]"      # + Playwright browser fallback & login
 pip install "spotifyscraper[cli]"          # + the spotifyscraper command-line tool
+pip install "spotifyscraper[keyring]"      # + store the login cookie in the OS keyring
 pip install "spotifyscraper[all]"          # everything
 ```
 
@@ -78,6 +79,9 @@ with SpotifyClient() as client:
 ## Features
 
 - **All core entities + podcasts** — tracks, albums, artists, playlists, shows, episodes.
+- **Lyrics & podcast transcripts** — cookie-authenticated, time-synced, one token for both.
+- **Browser-assisted login + session persistence** — log in once, then run headless (no stored passwords).
+- **Account-aware** — `get_account()` / `is_premium()`, plus cookie-free `session_info()`.
 - **Sync & async** clients sharing one sans-io core.
 - **Typed, frozen models** with JSON-safe `to_dict()` / `from_dict()`.
 - **Two-tier resilience** — Spotify's GraphQL API with automatic fallback to the embed page.
@@ -98,10 +102,10 @@ spotifyscraper download preview <id> -o ./previews --embed-cover
 Every command emits JSON, so it composes with tools like `jq`. See the
 [CLI guide](https://spotifyscraper.readthedocs.io/en/latest/guides/cli/).
 
-## Lyrics
+## Lyrics & transcripts
 
-Lyrics need a Spotify account cookie (`sp_dc`); the library handles the token
-handshake for you:
+Lyrics and podcast transcripts need a Spotify account cookie (`sp_dc`); the
+library handles the token handshake for you, and one cookie powers both:
 
 ```python
 from spotify_scraper import SpotifyClient
@@ -110,10 +114,43 @@ with SpotifyClient(cookies="cookies.txt") as client:   # or cookies={"sp_dc": ".
     lyrics = client.get_lyrics("4uLU6hMCjMI75M1A2tKUQC")
     for line in lyrics.lines:
         print(line.start_ms, line.text)
+
+    transcript = client.get_transcript("512ojhOuo1ktJprKbVcKyQ")   # a podcast episode
+    for line in transcript.lines:
+        print(line.start_ms, line.text)
 ```
 
-Your cookie is sent only to Spotify and never logged. See the
-[lyrics guide](https://spotifyscraper.readthedocs.io/en/latest/guides/lyrics-and-cookies/).
+Your cookie is sent only to Spotify and never logged. An episode with no
+transcript raises `NotFoundError`. See the
+[lyrics & cookies guide](https://spotifyscraper.readthedocs.io/en/latest/guides/lyrics-and-cookies/).
+
+## Browser-assisted login
+
+Don't want to copy a cookie by hand? `login()` opens a real browser, you sign in
+once, and the captured `sp_dc` is persisted (no password is ever collected or
+stored). Later runs reconnect headlessly — ideal for servers:
+
+```python
+from spotify_scraper import SpotifyClient
+
+with SpotifyClient() as client:
+    client.login()                              # reuse a valid session, else open a browser
+    print(client.get_lyrics("4uLU6hMCjMI75M1A2tKUQC").sync_type)
+
+# A later, headless run — no browser needed:
+with SpotifyClient.from_saved_session() as client:
+    account = client.get_account()              # who am I?
+    print(account.product, account.country, client.is_premium())
+    transcript = client.get_transcript("512ojhOuo1ktJprKbVcKyQ")
+```
+
+`login()` reuses a valid saved session by default (browser only the first time);
+`from_saved_session()` never needs the `browser` extra. The cookie is stored in
+an owner-only file, or the OS keyring with `store="keyring"` (the `keyring`
+extra). `get_account()`/`is_premium()` report the logged-in account, and
+`SpotifyClient.session_info()` checks a saved session without exposing the
+cookie. See the
+[authenticated sessions guide](https://spotifyscraper.readthedocs.io/en/latest/guides/authentication/).
 
 ## Roadmap
 
@@ -124,12 +161,12 @@ Your cookie is sent only to Spotify and never logged. See the
 | **3.0** | The library: all entities, pagination, media downloads, browser fallback, docs |
 | **3.1** | Command-line interface |
 | **3.2** | Cookie-authenticated lyrics |
+| **3.3** | Cookie-authenticated podcast transcripts (`get_transcript`); browser-assisted login, session persistence & account-awareness (`get_account`/`is_premium`) |
 
 **Planned** — tracked in [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones); 👍 or weigh in on the issues to help prioritize:
 
 | Version | Scope |
 |---------|-------|
-| **3.3** | Podcast [transcripts](https://github.com/AliAkhtari78/SpotifyScraper/issues/127) · first-class [auth & session persistence](https://github.com/AliAkhtari78/SpotifyScraper/issues/128) (browser-assisted login, no stored passwords) |
 | **3.4** | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type · [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support |
 | **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) · [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency |
 

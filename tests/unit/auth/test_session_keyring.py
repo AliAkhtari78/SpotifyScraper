@@ -207,3 +207,101 @@ def test_session_store_keyring_info_and_has_session(
     info = store.info(path=path)
     assert info.valid is True
     assert SECRET not in repr(info)
+
+
+def test_keyring_info_invalid_when_secret_gone(
+    fake_keyring: types.ModuleType, tmp_path: Path
+) -> None:
+    # The metadata file is valid, but the keyring secret was deleted: keyring_info
+    # must probe the secret and report valid=False (so has_session() is honest).
+    path = tmp_path / "session.json"
+    session_keyring.save_to_keyring(SECRET, path=path, now_ms=1000)
+    _secured(path)
+    fake_keyring._store.clear()  # type: ignore[attr-defined]
+
+    info = session_keyring.keyring_info(path=path)
+    assert info.exists is True
+    assert info.valid is False
+    assert info.reason is not None
+    assert SECRET not in repr(info)
+    assert SessionStore("keyring").has_session(path=path) is False
+
+
+def test_keyring_info_degrades_when_probe_raises_unexpectedly(
+    fake_keyring: types.ModuleType, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    # keyring_info must NEVER raise. If probing the secret blows up in an
+    # unexpected way (e.g. a broken backend raising a non-ImportError at import
+    # time), it falls back to the cookie-free metadata verdict.
+    path = tmp_path / "session.json"
+    session_keyring.save_to_keyring(SECRET, path=path, now_ms=1000)
+    _secured(path)
+
+    def _boom() -> types.ModuleType:
+        raise RuntimeError("broken keyring backend")
+
+    monkeypatch.setattr(session_keyring, "_import_keyring", _boom)
+    info = session_keyring.keyring_info(path=path)
+    assert info.exists is True
+    assert info.valid is True  # trusts the (valid) metadata; never raised
+
+
+# --- secret gone from the keyring (metadata-only file) ------------------------
+
+
+def test_load_from_keyring_secret_gone_raises(
+    fake_keyring: types.ModuleType, tmp_path: Path
+) -> None:
+    path = tmp_path / "session.json"
+    session_keyring.save_to_keyring(SECRET, path=path, now_ms=5)
+    # The OS keyring entry was deleted out from under us; only the metadata
+    # file (with an empty sp_dc) remains. Loading must refuse, not return "".
+    fake_keyring._store.clear()  # type: ignore[attr-defined]
+    with pytest.raises(SessionError, match="log in again"):
+        session_keyring.load_from_keyring(path=path)
+
+
+# --- a real keyring backend error becomes SessionError ------------------------
+
+
+def _make_erroring_keyring() -> types.ModuleType:
+    module = types.ModuleType("keyring")
+    module.errors = _FakeKeyringErrors  # type: ignore[attr-defined]
+
+    def _boom(*args: Any, **kwargs: Any) -> Any:
+        raise RuntimeError("keyring backend failure")
+
+    module.set_password = _boom  # type: ignore[attr-defined]
+    module.get_password = _boom  # type: ignore[attr-defined]
+    module.delete_password = _boom  # type: ignore[attr-defined]
+    return module
+
+
+def test_save_to_keyring_backend_error_raises_session_error(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setitem(sys.modules, "keyring", _make_erroring_keyring())
+    with pytest.raises(SessionError):
+        session_keyring.save_to_keyring(SECRET, path=tmp_path / "s.json")
+
+
+def test_load_from_keyring_backend_error_raises_session_error(
+    fake_keyring: types.ModuleType, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    path = tmp_path / "session.json"
+    session_keyring.save_to_keyring(SECRET, path=path)  # writes a valid metadata file
+    _secured(path)
+    monkeypatch.setitem(sys.modules, "keyring", _make_erroring_keyring())
+    with pytest.raises(SessionError):
+        session_keyring.load_from_keyring(path=path)
+
+
+# --- warning logs the resolved path, never None ------------------------------
+
+
+def test_meta_path_resolves_none_to_default(tmp_path: Path) -> None:
+    from spotify_scraper.auth.session import default_session_path
+
+    explicit = tmp_path / "session.json"
+    assert session_keyring._meta_path(explicit) == explicit
+    assert session_keyring._meta_path(None) == default_session_path()

@@ -37,6 +37,13 @@ the transcript does not). Cookie/token problems SHALL raise
 - **WHEN** a transcript is requested for an episode the endpoint 404s
 - **THEN** `NotFoundError` is raised, not `AuthenticationError`
 
+#### Scenario: 200 with no spoken text
+
+- **WHEN** the endpoint returns HTTP 200 whose cue container holds only
+  speaker-label cues (no spoken text)
+- **THEN** `NotFoundError` is raised — the episode exists but has no transcript
+  content — not an empty `Transcript`
+
 #### Scenario: Rejected token retried once
 
 - **WHEN** the transcript endpoint returns HTTP 401 on the first attempt
@@ -77,11 +84,17 @@ is a single-file edit.
 
 ### Requirement: Malformed payload surfaces as ParsingError
 
-A transcript response that cannot be decoded into the expected lines container
-SHALL raise `ParsingError` carrying the standard update hint; the parser SHALL
-NOT return error strings or error dicts.
+A transcript response SHALL raise `ParsingError` (with the standard update hint)
+when it is not JSON, or when its JSON carries no recognized cue container — an
+unexpected shape, distinct from an episode that simply has no transcript. The
+parser SHALL NOT return error strings or error dicts.
+
+#### Scenario: Non-JSON body
+
+- **WHEN** the transcript endpoint returns HTTP 200 with a non-JSON body
+- **THEN** `ParsingError` is raised with the update hint, not `NotFoundError`
 
 #### Scenario: Unexpected payload shape
 
-- **WHEN** the decoded transcript payload lacks its lines container
+- **WHEN** the decoded transcript payload carries no recognized cue container
 - **THEN** `ParsingError` is raised naming the missing path with the update hint

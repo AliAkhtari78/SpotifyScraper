@@ -27,6 +27,7 @@ from spotify_scraper.errors import (
     NetworkError,
     NotFoundError,
     ParsingError,
+    SessionError,
     SpotifyScraperError,
     TokenError,
 )
@@ -160,17 +161,26 @@ class AsyncSpotifyClient:
         self._ensure_open()
         backend = SessionStore(store)
         if reuse and backend.has_session(path=session_path):
-            session = backend.load(path=session_path)
-            self._cookies = session.sp_dc
-            self._cookie_tokens = None
-            return
+            # has_session() judges validity from metadata; confirm a usable
+            # secret is actually present before trusting it (the keyring entry
+            # may be gone). Otherwise fall through to a fresh capture.
+            try:
+                session = backend.load(path=session_path)
+            except SessionError:
+                session = None
+            if session is not None and session.sp_dc:
+                self._cookies = session.sp_dc
+                self._cookie_tokens = None
+                return
         from spotify_scraper.browser import capture_sp_dc_async
 
-        sp_dc = await capture_sp_dc_async(timeout=timeout, proxy=proxy)
-        self._cookies = sp_dc
+        captured = await capture_sp_dc_async(timeout=timeout, proxy=proxy)
+        self._cookies = captured.sp_dc
         self._cookie_tokens = None
         if save:
-            backend.save(sp_dc, path=session_path)
+            backend.save(
+                captured.sp_dc, sp_dc_expires_ms=captured.sp_dc_expires_ms, path=session_path
+            )
 
     @classmethod
     def from_saved_session(
@@ -545,7 +555,14 @@ class AsyncSpotifyClient:
                 "Transcript response was not JSON. Spotify may have changed its API; "
                 "check for a library update."
             )
-        return parse_entities.parse_transcript(transcripts_api.decode_envelope(body))
+        transcript = parse_entities.parse_transcript(transcripts_api.decode_envelope(body))
+        # A 200 whose cue container holds only speaker labels (no spoken text)
+        # is "the episode has no transcript", which the contract reports as
+        # NotFoundError. A genuinely unrecognized shape (no container at all)
+        # has already raised ParsingError inside parse_transcript.
+        if not transcript.lines:
+            raise NotFoundError(f"No transcript for episode {entity_id}.")
+        return transcript
 
     async def _fetch_account(self, token: str) -> Account:
         response = await self._transport.get(

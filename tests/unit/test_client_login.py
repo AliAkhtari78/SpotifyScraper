@@ -12,16 +12,24 @@ from __future__ import annotations
 import sys
 import types
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 import pytest
 import respx
 
 from spotify_scraper import AsyncSpotifyClient, SpotifyClient
-from spotify_scraper.auth.session import save_session
+from spotify_scraper.auth.session import load_session, save_session
 from spotify_scraper.errors import SessionError
 
 FAKE_SP_DC = "fake_sp_dc_from_browser_capture"
+FAKE_EXPIRES_MS = 1_900_000_000_000
+
+
+class _FakeCapture(NamedTuple):
+    """Mirror of ``browser.CapturedLogin`` without importing the Playwright module."""
+
+    sp_dc: str
+    sp_dc_expires_ms: int | None
 
 
 @pytest.fixture
@@ -34,18 +42,38 @@ def fake_browser(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
     calls: dict[str, Any] = {"sync": [], "async": []}
     module = types.ModuleType("spotify_scraper.browser")
 
-    def capture_sp_dc(*, timeout: float = 300.0, proxy: str | None = None) -> str:
+    def capture_sp_dc(*, timeout: float = 300.0, proxy: str | None = None) -> _FakeCapture:
         calls["sync"].append({"timeout": timeout, "proxy": proxy})
-        return FAKE_SP_DC
+        return _FakeCapture(FAKE_SP_DC, FAKE_EXPIRES_MS)
 
-    async def capture_sp_dc_async(*, timeout: float = 300.0, proxy: str | None = None) -> str:
+    async def capture_sp_dc_async(
+        *, timeout: float = 300.0, proxy: str | None = None
+    ) -> _FakeCapture:
         calls["async"].append({"timeout": timeout, "proxy": proxy})
-        return FAKE_SP_DC
+        return _FakeCapture(FAKE_SP_DC, FAKE_EXPIRES_MS)
 
     module.capture_sp_dc = capture_sp_dc  # type: ignore[attr-defined]
     module.capture_sp_dc_async = capture_sp_dc_async  # type: ignore[attr-defined]
     monkeypatch.setitem(sys.modules, "spotify_scraper.browser", module)
     return calls
+
+
+@pytest.fixture
+def fake_keyring(monkeypatch: pytest.MonkeyPatch) -> dict[tuple[str, str], str]:
+    """Inject a minimal in-memory ``keyring`` module so store='keyring' works."""
+    module = types.ModuleType("keyring")
+
+    class _Errors:
+        class NoKeyringError(Exception):
+            """Mimics keyring.errors.NoKeyringError."""
+
+    store: dict[tuple[str, str], str] = {}
+    module.errors = _Errors  # type: ignore[attr-defined]
+    module.set_password = lambda s, u, p: store.__setitem__((s, u), p)  # type: ignore[attr-defined]
+    module.get_password = lambda s, u: store.get((s, u))  # type: ignore[attr-defined]
+    module.delete_password = lambda s, u: store.pop((s, u), None)  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "keyring", module)
+    return store
 
 
 # --- login wiring (zero network) ----------------------------------------------
@@ -87,6 +115,8 @@ def test_login_save_then_from_saved_session(fake_browser: dict[str, Any], tmp_pa
     with SpotifyClient() as client:
         client.login(save=True, session_path=path)
     assert path.exists()
+    # The captured cookie expiry is threaded through and persisted.
+    assert load_session(path=path).sp_dc_expires_ms == FAKE_EXPIRES_MS
 
     restored = SpotifyClient.from_saved_session(session_path=path, timeout=42.0)
     try:
@@ -111,6 +141,23 @@ async def test_async_login_save_then_from_saved_session(
         assert isinstance(restored, AsyncSpotifyClient)
     finally:
         await restored.aclose()
+
+
+def test_login_keyring_round_trip(
+    fake_browser: dict[str, Any], fake_keyring: dict[tuple[str, str], str], tmp_path: Path
+) -> None:
+    path = tmp_path / "session.json"
+    with SpotifyClient() as client:
+        client.login(save=True, store="keyring", session_path=path)
+    # The secret is in the keyring; the file holds metadata only.
+    assert fake_keyring[("spotifyscraper", "sp_dc")] == FAKE_SP_DC
+    assert FAKE_SP_DC not in path.read_text(encoding="utf-8")
+
+    restored = SpotifyClient.from_saved_session(store="keyring", session_path=path)
+    try:
+        assert restored._cookies == FAKE_SP_DC
+    finally:
+        restored.close()
 
 
 def test_from_saved_session_forwards_kwargs(

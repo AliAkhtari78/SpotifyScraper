@@ -155,14 +155,19 @@ echo $?   # 3
 
 This makes the CLI safe to use in scripts with `set -e`.
 
-## Lyrics
+## Lyrics & transcripts
 
-The `lyrics` command fetches time-synced lyrics (cookie-authenticated):
+The `lyrics` and `transcript` commands are cookie-authenticated. `lyrics`
+fetches a track's time-synced lyrics; `transcript` fetches a podcast episode's
+transcript:
 
 ```bash
 spotifyscraper lyrics 4uLU6hMCjMI75M1A2tKUQC --cookies cookies.txt
-# or: export SPOTIFY_SP_DC=... && spotifyscraper lyrics <id>
+spotifyscraper transcript 512ojhOuo1ktJprKbVcKyQ --cookies cookies.txt --pretty
+# or: export SPOTIFY_SP_DC=... && spotifyscraper transcript <episode-id>
 ```
 
-See the [lyrics & cookies guide](lyrics-and-cookies.md) for how to obtain your
-`sp_dc` cookie.
+Both accept the same cookie sources and `--pretty`/`-o` options as the entity
+commands. An episode with no transcript exits `3` (`NotFoundError`). See the
+[lyrics & cookies guide](lyrics-and-cookies.md) for how to obtain your `sp_dc`
+cookie.

@@ -72,3 +72,16 @@
 - [ ] 6.2 `make live` (with `SPOTIFY_SP_DC`) green; confirm captured envelope still
       matches `decode_envelope`.
 - [ ] 6.3 Docs: add transcripts to the authenticated-features page next to lyrics.
+
+## 7. Review fixes
+
+- [x] 7.1 `get_transcript`: a 200 whose cue container holds only speaker labels
+      (no spoken text) now raises `NotFoundError`, not an empty `Transcript`
+      (sync + async); a non-JSON 200 and a 200 with no cue container stay
+      `ParsingError`.
+- [x] 7.2 Client tests for the non-JSON→ParsingError and no-container→ParsingError
+      branches, the label-only-200→NotFoundError branch (sync + async), and the
+      friendly 404 message via `match=`.
+- [ ] 7.3 Docs: `Transcript`/`TranscriptLine` autodoc in `reference/models.md`;
+      a transcript section in the CLI guide and the lyrics-and-cookies guide;
+      `get_transcript` in the index "What you can fetch" table; roadmap + CHANGELOG.

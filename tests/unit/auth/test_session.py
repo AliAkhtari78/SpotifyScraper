@@ -156,6 +156,15 @@ def test_clear_session_is_idempotent(tmp_path: Path) -> None:
     clear_session(path=path)
 
 
+def test_clear_session_wraps_unexpected_oserror(tmp_path: Path) -> None:
+    # Pointing clear_session at a directory makes unlink raise a non-
+    # FileNotFoundError OSError, which is surfaced as SessionError (not leaked raw).
+    target = tmp_path / "a-directory"
+    target.mkdir()
+    with pytest.raises(SessionError, match="Could not delete"):
+        clear_session(path=target)
+
+
 # --- config dir resolution ----------------------------------------------------
 
 

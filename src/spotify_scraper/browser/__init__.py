@@ -9,6 +9,7 @@ from __future__ import annotations
 
 try:
     from spotify_scraper.browser.login import (
+        CapturedLogin,
         capture_sp_dc,
         capture_sp_dc_async,
     )
@@ -24,6 +25,7 @@ except ImportError as exc:  # pragma: no cover - exercised via monkeypatched imp
 
 __all__ = [
     "AsyncPlaywrightTransport",
+    "CapturedLogin",
     "PlaywrightTransport",
     "capture_sp_dc",
     "capture_sp_dc_async",

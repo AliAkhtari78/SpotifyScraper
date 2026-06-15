@@ -137,6 +137,20 @@ class SessionInfo:
     sp_dc_expires_ms: int | None = None
     reason: str | None = None
 
+    def to_dict(self) -> dict[str, Any]:
+        """Return a JSON-safe dict of the verdict and metadata (no secret).
+
+        Unlike :meth:`Session.to_dict`, this is always cookie-free, so it is safe
+        to log, print, or serialize.
+        """
+        return {
+            "exists": self.exists,
+            "valid": self.valid,
+            "saved_at_ms": self.saved_at_ms,
+            "sp_dc_expires_ms": self.sp_dc_expires_ms,
+            "reason": self.reason,
+        }
+
 
 _EXPIRED_HINT = "Saved session's cookie has expired; log in again to refresh it."
 
@@ -267,12 +281,18 @@ def clear_session(*, path: Path | None = None) -> None:
 
     Args:
         path: Session file to remove; defaults to :func:`default_session_path`.
+
+    Raises:
+        SessionError: If the file exists but cannot be deleted (e.g. a
+            permission error); an absent file is not an error.
     """
     target = _resolve_path(path)
     try:
         target.unlink()
     except FileNotFoundError:
         return
+    except OSError as exc:
+        raise SessionError(f"Could not delete the saved session ({target}).") from exc
 
 
 def session_info(*, path: Path | None = None, now_ms: int | None = None) -> SessionInfo:
