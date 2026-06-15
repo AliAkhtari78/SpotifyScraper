@@ -162,3 +162,13 @@
 - [ ] 7.6 (Docs, optional but recommended) add a short "Batch fetching" snippet to
       the docs/usage page showing `BatchItem.ok`/`.unwrap()` and the async
       `max_concurrency` knob.
+
+## 8. Review fixes
+
+- [x] 8.1 (code, prior session) bind the async batch semaphore per event loop so
+      a client reused across `asyncio.run()` no longer crashes; cross-loop
+      regression test added.
+- [x] 8.2 Docs: new `guides/batch.md` (plural helpers, partial-failure `BatchItem`,
+      async `max_concurrency`, `BatchItem` autodoc) + nav; README Batch section +
+      Features bullet + roadmap (3.5 batch shipped); index roadmap + success
+      admonition; CHANGELOG Unreleased.

@@ -78,6 +78,7 @@ with SpotifyClient() as client:
 ## Features
 
 - **All core entities + podcasts** — tracks, albums, artists, playlists, shows, episodes.
+- **Batch helpers** — plural `get_*s([...])` with partial-failure-safe results and managed concurrency.
 - **Sync & async** clients sharing one sans-io core.
 - **Typed, frozen models** with JSON-safe `to_dict()` / `from_dict()`.
 - **Two-tier resilience** — Spotify's GraphQL API with automatic fallback to the embed page.
@@ -97,6 +98,21 @@ spotifyscraper download preview <id> -o ./previews --embed-cover
 
 Every command emits JSON, so it composes with tools like `jq`. See the
 [CLI guide](https://spotifyscraper.readthedocs.io/en/latest/guides/cli/).
+
+## Batch helpers
+
+Each getter has a plural sibling (`get_tracks`, `get_albums`, …) that fetches
+many inputs and returns one `BatchItem` per input — index-aligned, and a dead
+input never aborts the rest:
+
+```python
+items = client.get_tracks(["4uLU6hMCjMI75M1A2tKUQC", "bad-id"])
+ok = [i.result for i in items if i.ok]
+failed = {i.value: i.error for i in items if not i.ok}
+```
+
+The async client runs them concurrently, bounded by `max_concurrency` (default
+5). See the [batch guide](https://spotifyscraper.readthedocs.io/en/latest/guides/batch/).
 
 ## Lyrics
 
@@ -124,6 +140,7 @@ Your cookie is sent only to Spotify and never logged. See the
 | **3.0** | The library: all entities, pagination, media downloads, browser fallback, docs |
 | **3.1** | Command-line interface |
 | **3.2** | Cookie-authenticated lyrics |
+| **3.5** | [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency (`get_*s([...])`) |
 
 **Planned** — tracked in [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones); 👍 or weigh in on the issues to help prioritize:
 
@@ -131,7 +148,7 @@ Your cookie is sent only to Spotify and never logged. See the
 |---------|-------|
 | **3.3** | Podcast [transcripts](https://github.com/AliAkhtari78/SpotifyScraper/issues/127) · first-class [auth & session persistence](https://github.com/AliAkhtari78/SpotifyScraper/issues/128) (browser-assisted login, no stored passwords) |
 | **3.4** | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type · [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support |
-| **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) · [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency |
+| **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) |
 
 Planned scope is subject to change.
 

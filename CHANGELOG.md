@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Batch helpers.** Plural `get_tracks`, `get_albums`, `get_artists`,
+  `get_playlists`, `get_episodes`, and `get_shows` fetch many inputs and return
+  one ordered, index-aligned `BatchItem` per input. A dead or malformed input
+  never aborts the batch — its captured error lands on that item's `error`
+  (`item.ok` / `item.result` / `item.unwrap()`). The async client runs them
+  concurrently, bounded by the client's `max_concurrency` (default 5) with the
+  per-host rate limiter still governing pacing; the sync helpers run
+  sequentially.
+
 ## [3.2.0] - 2026-06-13
 
 ### Added
