@@ -131,6 +131,19 @@ spotifyscraper track 4uLU6hMCjMI75M1A2tKUQC | jq -r '.name'
 
 See the [CLI guide](guides/cli.md) for every command, options, and exit codes.
 
+## Search
+
+`search()` runs one anonymous, aggregate query across every entity type and
+returns a typed `SearchResults`:
+
+```python
+results = client.search("daft punk", types=("track", "artist"), limit=5)
+for track in results.tracks:
+    print(track.name)
+```
+
+See the [Search guide](guides/search.md) for the result shape and filtering.
+
 ## Roadmap
 
 SpotifyScraper ships the core library — all six entity types, media downloads,
@@ -140,7 +153,8 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 |---|---|
 | 3.0.0 | Core library. |
 | 3.1.0 | The command-line interface. |
-| 3.2.0 | Cookie-authenticated **lyrics** extraction (this release). |
+| 3.2.0 | Cookie-authenticated **lyrics** extraction. |
+| 3.4 | **Search** across every entity type (`search()`). |
 
 ### Planned
 
@@ -150,7 +164,7 @@ Upcoming work is tracked in the GitHub
 | Version | Adds |
 |---|---|
 | 3.3 | Podcast [transcripts](https://github.com/AliAkhtari78/SpotifyScraper/issues/127) and first-class [authenticated sessions](https://github.com/AliAkhtari78/SpotifyScraper/issues/128) — browser-assisted login with a persistent cookie store (no stored passwords). |
-| 3.4 | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type and [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support. |
+| 3.4 | [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support. |
 | 3.5 | Optional [response caching](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) and [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
 
 Scope is subject to change — 👍 the issues that matter most to you.
@@ -159,6 +173,11 @@ Scope is subject to change — 👍 the issues that matter most to you.
     Cookie-authenticated **lyrics** extraction has shipped:
     `client.get_lyrics(track)` and the `spotifyscraper lyrics` command. See the
     [Lyrics & cookies guide](guides/lyrics-and-cookies.md).
+
+!!! success "Search has shipped"
+    `client.search(query, types=..., limit=...)` returns a typed
+    `SearchResults` across every entity type. See the
+    [Search guide](guides/search.md).
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.

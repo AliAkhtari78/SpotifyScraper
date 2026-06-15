@@ -106,3 +106,12 @@
       live `searchV2` shape.
 - [ ] 6.3 Docs: add a search usage section to the docs site next to the entity
       getters.
+
+## 7. Review fixes
+
+- [x] 7.1 (code, prior session) search never aborts on a partial album;
+      `SearchResults.total` is tracks-only and cleared when tracks aren't requested.
+- [x] 7.2 Docs: new `guides/search.md` + nav; `SearchResults` autodoc in
+      `reference/models.md`; README Search section + Features bullet + roadmap
+      (3.4 search shipped); index Search section + roadmap + success admonition;
+      CHANGELOG Unreleased entry.

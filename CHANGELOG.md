@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Search.** `client.search(query, types=..., limit=...)` runs one anonymous,
+  aggregate query across tracks, albums, artists, playlists, shows, and episodes,
+  returning a typed `SearchResults` (one tuple per type; lightweight `AlbumRef`/
+  `ShowRef` for albums/shows). `total` is Spotify's track-match count (`None`
+  when tracks aren't requested). A no-match query returns empty results, not an
+  error; an unrecognized type raises `URLError` before any request.
+
 ## [3.2.0] - 2026-06-13
 
 ### Added
