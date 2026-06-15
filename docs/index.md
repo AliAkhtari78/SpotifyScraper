@@ -140,7 +140,8 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 |---|---|
 | 3.0.0 | Core library. |
 | 3.1.0 | The command-line interface. |
-| 3.2.0 | Cookie-authenticated **lyrics** extraction (this release). |
+| 3.2.0 | Cookie-authenticated **lyrics** extraction. |
+| 3.3 | Cookie-authenticated podcast **transcripts** (`get_transcript`), **browser-assisted login** with a persistent cookie store, and **account-awareness** (`get_account`/`is_premium`). |
 
 ### Planned
 
@@ -149,16 +150,24 @@ Upcoming work is tracked in the GitHub
 
 | Version | Adds |
 |---|---|
-| 3.3 | Podcast [transcripts](https://github.com/AliAkhtari78/SpotifyScraper/issues/127) and first-class [authenticated sessions](https://github.com/AliAkhtari78/SpotifyScraper/issues/128) — browser-assisted login with a persistent cookie store (no stored passwords). |
 | 3.4 | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type and [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support. |
 | 3.5 | Optional [response caching](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) and [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
 
 Scope is subject to change — 👍 the issues that matter most to you.
 
-!!! success "Lyrics are available"
-    Cookie-authenticated **lyrics** extraction has shipped:
-    `client.get_lyrics(track)` and the `spotifyscraper lyrics` command. See the
+!!! success "Lyrics & transcripts are available"
+    Cookie-authenticated **lyrics** and podcast **transcripts** have shipped:
+    `client.get_lyrics(track)` / `client.get_transcript(episode)` and the
+    `spotifyscraper lyrics` / `spotifyscraper transcript` commands. See the
     [Lyrics & cookies guide](guides/lyrics-and-cookies.md).
+
+!!! success "Browser-assisted login has shipped"
+    `client.login()` reuses a valid saved session or opens a real browser to
+    capture your `sp_dc` cookie (no password) and persist it;
+    `SpotifyClient.from_saved_session()` reconnects headlessly, `get_account()` /
+    `is_premium()` report the logged-in account, and `session_info()` checks a
+    saved session without exposing the cookie. See the
+    [authenticated sessions guide](guides/authentication.md).
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.

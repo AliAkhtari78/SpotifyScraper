@@ -15,6 +15,7 @@ from spotify_scraper.models.common import Image, ShowRef
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics, LyricsLine
 from spotify_scraper.models.show import Show
+from spotify_scraper.models.transcript import Transcript, TranscriptLine
 
 FIXTURES = Path(__file__).resolve().parents[2] / "fixtures"
 
@@ -84,11 +85,25 @@ def _lyrics_full() -> Lyrics:
     )
 
 
+def _transcript_full() -> Transcript:
+    return Transcript(
+        lines=(
+            TranscriptLine(start_ms=0, text="Welcome to the show."),
+            TranscriptLine(start_ms=4200, text="Today we talk about transcripts."),
+        ),
+        language="en",
+        provider="Spotify",
+        is_auto_generated=True,
+    )
+
+
 FULL_INSTANCES = [
     _episode_from_fixtures(),
     _show_from_fixtures(),
     _lyrics_full(),
     LyricsLine(start_ms=3070, text="What keeps the planet spinning"),
+    _transcript_full(),
+    TranscriptLine(start_ms=900, text="A single cue."),
 ]
 
 
@@ -204,3 +219,18 @@ def test_lyrics_empty_lines_round_trip() -> None:
     data = lyrics.to_dict()
     assert data["lines"] == []
     assert Lyrics.from_dict(data) == lyrics
+
+
+def test_transcript_defaults() -> None:
+    transcript = Transcript(lines=(TranscriptLine(start_ms=0, text="Intro"),))
+    assert transcript.language is None
+    assert transcript.provider is None
+    assert transcript.is_auto_generated is None
+
+
+def test_transcript_lines_rebuild_as_models() -> None:
+    transcript = _transcript_full()
+    rebuilt = Transcript.from_dict(transcript.to_dict())
+    assert isinstance(rebuilt.lines, tuple)
+    assert all(isinstance(line, TranscriptLine) for line in rebuilt.lines)
+    assert rebuilt == transcript

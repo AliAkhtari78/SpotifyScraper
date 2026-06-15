@@ -8,6 +8,7 @@ fetches with :class:`SpotifyClient` and emits ``model.to_dict()`` as JSON.
 from __future__ import annotations
 
 import os
+import time
 from pathlib import Path
 from typing import Annotated
 
@@ -15,8 +16,10 @@ import typer
 
 import spotify_scraper
 from spotify_scraper import RateLimit, SpotifyClient
+from spotify_scraper.auth.session import SessionStore, default_session_path
 from spotify_scraper.cli._output import emit, run
 from spotify_scraper.cli.download import download_app
+from spotify_scraper.errors import SpotifyScraperError
 
 app = typer.Typer(
     name="spotifyscraper",
@@ -63,6 +66,10 @@ def build_client(proxy: str | None, timeout: float, rate_limit: float | None) ->
     """
     rate = RateLimit(per_second=rate_limit) if rate_limit is not None else None
     return SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate)
+
+
+def _now_ms() -> int:
+    return time.time_ns() // 1_000_000
 
 
 def _parse_max(value: str) -> int | None:
@@ -243,6 +250,108 @@ def lyrics(
     run(body)
 
 
+@app.command()
+def transcript(
+    value: ValueArg,
+    cookies: CookiesOpt = None,
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Fetch an episode's transcript (requires an sp_dc cookie) and emit JSON."""
+
+    def body() -> None:
+        source = _resolve_cookies(cookies)
+        rate = RateLimit(per_second=rate_limit) if rate_limit is not None else None
+        with SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate, cookies=source) as client:
+            entity = client.get_transcript(value)
+        emit(entity.to_dict(), pretty=pretty, output=output)
+
+    run(body)
+
+
+StoreOpt = Annotated[
+    str,
+    typer.Option("--store", help="Where to keep the cookie: 'file' (default) or 'keyring'."),
+]
+
+
+@app.command()
+def login(
+    store: StoreOpt = "file",
+    reuse: Annotated[
+        bool,
+        typer.Option(
+            "--reuse/--no-reuse",
+            help="Reuse a valid saved session and skip the browser when present.",
+        ),
+    ] = True,
+    timeout: Annotated[
+        float, typer.Option("--timeout", help="Seconds to wait for the manual login.")
+    ] = 300.0,
+    proxy: ProxyOpt = None,
+) -> None:
+    """Sign in and save the session, reusing a valid one when present.
+
+    With ``--reuse`` (the default), a valid saved session skips the browser
+    entirely. Only the session path is printed; the cookie is never displayed.
+    """
+
+    def body() -> None:
+        backend = SessionStore(store)
+        if reuse and backend.has_session():
+            typer.echo(f"Reused existing session at {default_session_path()}")
+            return
+        try:
+            from spotify_scraper.browser import capture_sp_dc
+        except ImportError as exc:
+            raise SpotifyScraperError(
+                "Browser login requires the 'browser' extra: "
+                "pip install spotifyscraper[browser] && playwright install chromium"
+            ) from exc
+        captured = capture_sp_dc(timeout=timeout, proxy=proxy)
+        path = backend.save(captured.sp_dc, sp_dc_expires_ms=captured.sp_dc_expires_ms)
+        typer.echo(f"Saved session to {path}")
+
+    run(body)
+
+
+@app.command()
+def logout(store: StoreOpt = "file") -> None:
+    """Clear the saved session (idempotent); prints only the cleared path."""
+
+    def body() -> None:
+        SessionStore(store).clear()
+        typer.echo(f"Cleared session at {default_session_path()}")
+
+    run(body)
+
+
+@app.command()
+def session(store: StoreOpt = "file") -> None:
+    """Print the saved session's status; never displays the cookie.
+
+    Reports existence, validity, when it was saved, and (when the cookie's
+    expiry is known) how many days remain.
+    """
+
+    def body() -> None:
+        info = SessionStore(store).info()
+        typer.echo(f"exists: {info.exists}")
+        typer.echo(f"valid: {info.valid}")
+        typer.echo(f"saved_at_ms: {info.saved_at_ms}")
+        typer.echo(f"sp_dc_expires_ms: {info.sp_dc_expires_ms}")
+        if info.sp_dc_expires_ms is not None:
+            days = (info.sp_dc_expires_ms - _now_ms()) / 86_400_000
+            typer.echo(f"days_remaining: {days:.1f}")
+        if info.reason:
+            typer.echo(f"reason: {info.reason}")
+
+    run(body)
+
+
 def _resolve_cookies(cookies: Path | None) -> str | Path:
     """Resolve the cookie source from ``--cookies`` or ``SPOTIFY_SP_DC``.
 
@@ -255,5 +364,5 @@ def _resolve_cookies(cookies: Path | None) -> str | Path:
     if env:
         return env
     raise typer.BadParameter(
-        "Lyrics require authentication: pass --cookies PATH or set SPOTIFY_SP_DC."
+        "This feature requires authentication: pass --cookies PATH or set SPOTIFY_SP_DC."
     )

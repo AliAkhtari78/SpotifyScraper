@@ -14,22 +14,27 @@ from types import TracebackType
 from typing import Any, TypeVar
 
 from spotify_scraper import media, urls
+from spotify_scraper.api import account as account_api
 from spotify_scraper.api import lyrics as lyrics_api
 from spotify_scraper.api import parse_embed, parse_entities, pathfinder
+from spotify_scraper.api import transcripts as transcripts_api
 from spotify_scraper.api.parse_embed import EmbedSession
 from spotify_scraper.auth.anonymous import AsyncAnonymousTokenProvider
 from spotify_scraper.auth.cookies import AsyncCookieTokenProvider, load_sp_dc
+from spotify_scraper.auth.session import SessionInfo, SessionStore
 from spotify_scraper.errors import (
     AuthenticationError,
     NetworkError,
     NotFoundError,
     ParsingError,
+    SessionError,
     SpotifyScraperError,
     TokenError,
 )
 from spotify_scraper.http.ratelimit import RateLimit
 from spotify_scraper.http.retry import RetryPolicy
 from spotify_scraper.http.transport import AsyncHttpxTransport, AsyncTransport, Response
+from spotify_scraper.models.account import Account
 from spotify_scraper.models.album import Album
 from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.episode import Episode
@@ -37,6 +42,7 @@ from spotify_scraper.models.lyrics import Lyrics
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
+from spotify_scraper.models.transcript import Transcript
 
 _LOGGER = logging.getLogger("spotify_scraper")
 
@@ -57,8 +63,8 @@ class AsyncSpotifyClient:
 
     __slots__ = (
         "_closed",
+        "_cookie_tokens",
         "_cookies",
-        "_lyrics_tokens",
         "_owns_transport",
         "_tokens",
         "_transport",
@@ -107,8 +113,129 @@ class AsyncSpotifyClient:
             self._owns_transport = False
         self._cookies = cookies
         self._tokens = AsyncAnonymousTokenProvider(self._transport)
-        self._lyrics_tokens: AsyncCookieTokenProvider | None = None
+        self._cookie_tokens: AsyncCookieTokenProvider | None = None
         self._closed = False
+
+    async def login(
+        self,
+        *,
+        reuse: bool = True,
+        save: bool = True,
+        store: str = "file",
+        timeout: float = 300.0,
+        proxy: str | None = None,
+        session_path: Path | None = None,
+    ) -> None:
+        """Authenticate, reusing a valid saved session or capturing a new one.
+
+        When ``reuse`` is set (the default) and a valid saved session exists,
+        its cookie is loaded and wired into this client WITHOUT opening the
+        browser — the Playwright import is skipped entirely, so reusing a
+        session never needs the ``browser`` extra. Otherwise a real Chromium
+        window opens; the user signs into Spotify by hand, the captured cookie
+        is wired in, and when ``save`` is set it is persisted for later reuse.
+
+        Validity is checked locally (the saved file exists, is securely
+        permissioned, parses, and is not past its known expiry), so a cookie
+        Spotify has since revoked is still reused; the first authenticated call
+        then surfaces :class:`AuthenticationError` per the existing 401 contract.
+
+        The captured/loaded cookie resets the cached cookie-token provider so
+        the next authenticated call re-exchanges. This method performs no HTTP
+        request itself.
+
+        Args:
+            reuse: Skip the browser and load a valid saved session when present.
+            save: Persist a freshly captured cookie to ``session_path``.
+            store: Session backend, ``"file"`` (default) or ``"keyring"``.
+            timeout: Seconds to wait for the manual login to yield a cookie.
+            proxy: Optional proxy URL for the login browser. Neither client
+                retains the constructor proxy, so pass it explicitly here.
+            session_path: Override for where the session is saved/loaded.
+
+        Raises:
+            AuthenticationError: If no cookie is captured before the timeout.
+            ImportError: If the ``browser`` extra is not installed (capture path).
+            SpotifyScraperError: If the client is closed.
+        """
+        self._ensure_open()
+        backend = SessionStore(store)
+        if reuse and backend.has_session(path=session_path):
+            # has_session() judges validity from metadata; confirm a usable
+            # secret is actually present before trusting it (the keyring entry
+            # may be gone). Otherwise fall through to a fresh capture.
+            try:
+                session = backend.load(path=session_path)
+            except SessionError:
+                session = None
+            if session is not None and session.sp_dc:
+                self._cookies = session.sp_dc
+                self._cookie_tokens = None
+                return
+        from spotify_scraper.browser import capture_sp_dc_async
+
+        captured = await capture_sp_dc_async(timeout=timeout, proxy=proxy)
+        self._cookies = captured.sp_dc
+        self._cookie_tokens = None
+        if save:
+            backend.save(
+                captured.sp_dc, sp_dc_expires_ms=captured.sp_dc_expires_ms, path=session_path
+            )
+
+    @classmethod
+    def from_saved_session(
+        cls,
+        *,
+        store: str = "file",
+        session_path: Path | None = None,
+        **kwargs: Any,
+    ) -> AsyncSpotifyClient:
+        """Build a client from a previously saved session, no browser required.
+
+        This is a synchronous classmethod: it only reads a file, so no event
+        loop is needed.
+
+        Args:
+            store: Session backend, ``"file"`` (default) or ``"keyring"``.
+            session_path: Override for the session file to load.
+            **kwargs: Forwarded to :class:`AsyncSpotifyClient` (e.g.
+                ``rate_limit``, ``retry``, ``proxy``, ``timeout``, ``transport``).
+
+        Returns:
+            A client wired with the saved ``sp_dc`` cookie.
+
+        Raises:
+            SessionError: If no usable saved session exists.
+        """
+        session = SessionStore(store).load(path=session_path)
+        return cls(cookies=session.sp_dc, **kwargs)
+
+    @classmethod
+    def logout(cls, *, store: str = "file", session_path: Path | None = None) -> None:
+        """Remove the saved session for local revocation; idempotent.
+
+        Args:
+            store: Session backend, ``"file"`` (default) or ``"keyring"``.
+            session_path: Override for the session file to clear.
+        """
+        SessionStore(store).clear(path=session_path)
+
+    @classmethod
+    def session_info(cls, *, store: str = "file", session_path: Path | None = None) -> SessionInfo:
+        """Report the saved session's status WITHOUT exposing the cookie.
+
+        This is a synchronous classmethod: it only reads a file, so no event
+        loop is needed.
+
+        Args:
+            store: Session backend, ``"file"`` (default) or ``"keyring"``.
+            session_path: Override for the session file to inspect.
+
+        Returns:
+            A cookie-free :class:`SessionInfo` (``exists`` / ``valid`` / expiry);
+            never raises for a missing, corrupt, insecure, or expired session.
+        """
+        return SessionStore(store).info(path=session_path)
 
     async def get_track(self, value: str) -> Track:
         """Fetch a track by URL, URI, or bare ID.
@@ -315,7 +442,7 @@ class AsyncSpotifyClient:
             SpotifyScraperError: If the client is closed.
         """
         _, entity_id = self._resolve(value, "track")
-        provider = self._lyrics_provider()
+        provider = self._cookie_provider()
         token = await provider.token()
         try:
             return await self._fetch_lyrics(entity_id, token)
@@ -323,17 +450,77 @@ class AsyncSpotifyClient:
             provider.invalidate()
             return await self._fetch_lyrics(entity_id, await provider.token())
 
-    def _lyrics_provider(self) -> AsyncCookieTokenProvider:
+    async def get_transcript(self, value: str) -> Transcript:
+        """Fetch an episode's transcript using the cookie-derived token.
+
+        Transcripts are an authenticated feature: the client must have been
+        built with ``cookies=``. A client without cookies raises
+        :class:`AuthenticationError` immediately, without any HTTP request.
+
+        Args:
+            value: A Spotify episode URL, URI, or 22-character ID.
+
+        Returns:
+            The episode's :class:`Transcript` with millisecond-offset lines.
+
+        Raises:
+            AuthenticationError: If no cookies were configured, or the cookie
+                is rejected by the token exchange.
+            NotFoundError: If the episode exists but has no transcript.
+            SpotifyScraperError: If the client is closed.
+        """
+        _, entity_id = self._resolve(value, "episode")
+        provider = self._cookie_provider()
+        token = await provider.token()
+        try:
+            return await self._fetch_transcript(entity_id, token)
+        except AuthenticationError:
+            provider.invalidate()
+            return await self._fetch_transcript(entity_id, await provider.token())
+
+    async def get_account(self) -> Account:
+        """Fetch the logged-in account's product state (Premium, country, …).
+
+        This is an authenticated feature: the client must have been built with
+        ``cookies=``. A client without cookies raises :class:`AuthenticationError`
+        immediately, without any HTTP request. It takes no entity argument — the
+        product-state body is a flat per-account object.
+
+        Returns:
+            The :class:`Account` parsed from Spotify's product-state endpoint.
+
+        Raises:
+            AuthenticationError: If no cookies were configured, or the cookie is
+                rejected by the token exchange.
+            ParsingError: If the product-state response is not JSON.
+            SpotifyScraperError: If the client is closed.
+        """
+        provider = self._cookie_provider()
+        token = await provider.token()
+        try:
+            return await self._fetch_account(token)
+        except AuthenticationError:
+            provider.invalidate()
+            return await self._fetch_account(await provider.token())
+
+    async def is_premium(self) -> bool:
+        """Return ``True`` when the logged-in account is Premium.
+
+        Convenience for ``(await get_account()).is_premium``; same auth needs.
+        """
+        return (await self.get_account()).is_premium
+
+    def _cookie_provider(self) -> AsyncCookieTokenProvider:
         self._ensure_open()
-        provider = self._lyrics_tokens
+        provider = self._cookie_tokens
         if provider is None:
             if self._cookies is None:
                 raise AuthenticationError(
-                    "Lyrics require authentication; build AsyncSpotifyClient(cookies=...) "
+                    "This feature requires authentication; build AsyncSpotifyClient(cookies=...) "
                     "with an 'sp_dc' cookie."
                 )
             provider = AsyncCookieTokenProvider(self._transport, load_sp_dc(self._cookies))
-            self._lyrics_tokens = provider
+            self._cookie_tokens = provider
         return provider
 
     async def _fetch_lyrics(self, entity_id: str, token: str) -> Lyrics:
@@ -351,6 +538,47 @@ class AsyncSpotifyClient:
                 "check for a library update."
             )
         return parse_entities.parse_lyrics(body)
+
+    async def _fetch_transcript(self, entity_id: str, token: str) -> Transcript:
+        url = transcripts_api.transcript_url(entity_id)
+        try:
+            response = await self._transport.get(url, headers=transcripts_api.auth_headers(token))
+        except NotFoundError as exc:
+            raise NotFoundError(f"No transcript for episode {entity_id}.") from exc
+        if response.status_code == 401:
+            raise AuthenticationError(
+                "Spotify rejected the cookie token for transcripts (HTTP 401)."
+            )
+        body = _safe_json(response)
+        if body is None:
+            raise ParsingError(
+                "Transcript response was not JSON. Spotify may have changed its API; "
+                "check for a library update."
+            )
+        transcript = parse_entities.parse_transcript(transcripts_api.decode_envelope(body))
+        # A 200 whose cue container holds only speaker labels (no spoken text)
+        # is "the episode has no transcript", which the contract reports as
+        # NotFoundError. A genuinely unrecognized shape (no container at all)
+        # has already raised ParsingError inside parse_transcript.
+        if not transcript.lines:
+            raise NotFoundError(f"No transcript for episode {entity_id}.")
+        return transcript
+
+    async def _fetch_account(self, token: str) -> Account:
+        response = await self._transport.get(
+            account_api.product_state_url(), headers=account_api.auth_headers(token)
+        )
+        if response.status_code == 401:
+            raise AuthenticationError(
+                "Spotify rejected the cookie token for product-state (HTTP 401)."
+            )
+        body = _safe_json(response)
+        if body is None:
+            raise ParsingError(
+                "Product-state response was not JSON. Spotify may have changed its API; "
+                "check for a library update."
+            )
+        return parse_entities.parse_account(body)
 
     async def download_cover(
         self,

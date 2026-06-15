@@ -8,6 +8,11 @@ re-exports the synchronous and asynchronous browser transports.
 from __future__ import annotations
 
 try:
+    from spotify_scraper.browser.login import (
+        CapturedLogin,
+        capture_sp_dc,
+        capture_sp_dc_async,
+    )
     from spotify_scraper.browser.playwright import (
         AsyncPlaywrightTransport,
         PlaywrightTransport,
@@ -18,4 +23,10 @@ except ImportError as exc:  # pragma: no cover - exercised via monkeypatched imp
         "pip install spotifyscraper[browser] && playwright install chromium"
     ) from exc
 
-__all__ = ["AsyncPlaywrightTransport", "PlaywrightTransport"]
+__all__ = [
+    "AsyncPlaywrightTransport",
+    "CapturedLogin",
+    "PlaywrightTransport",
+    "capture_sp_dc",
+    "capture_sp_dc_async",
+]

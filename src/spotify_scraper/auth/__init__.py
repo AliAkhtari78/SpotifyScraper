@@ -11,11 +11,27 @@ from spotify_scraper.auth.cookies import (
     CookieTokenProvider,
     load_sp_dc,
 )
+from spotify_scraper.auth.session import (
+    Session,
+    SessionStore,
+    clear_session,
+    default_config_dir,
+    default_session_path,
+    load_session,
+    save_session,
+)
 
 __all__ = [
     "AnonymousTokenProvider",
     "AsyncAnonymousTokenProvider",
     "AsyncCookieTokenProvider",
     "CookieTokenProvider",
+    "Session",
+    "SessionStore",
+    "clear_session",
+    "default_config_dir",
+    "default_session_path",
+    "load_session",
     "load_sp_dc",
+    "save_session",
 ]

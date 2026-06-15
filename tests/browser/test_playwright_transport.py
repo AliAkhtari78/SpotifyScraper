@@ -45,6 +45,31 @@ def test_missing_extra_raises_with_both_install_commands(
     assert "playwright install chromium" in message
 
 
+def test_capture_helpers_require_browser_extra(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The login capture helpers surface the same helpful ImportError."""
+    real_import = builtins.__import__
+
+    def _block_playwright(name: str, *args: object, **kwargs: object) -> object:
+        if name == "playwright" or name.startswith("playwright."):
+            raise ImportError("No module named 'playwright'")
+        return real_import(name, *args, **kwargs)  # type: ignore[arg-type]
+
+    for mod in list(sys.modules):
+        if mod in ("spotify_scraper.browser", "spotify_scraper.browser.login") or mod.startswith(
+            "playwright"
+        ):
+            monkeypatch.delitem(sys.modules, mod, raising=False)
+    monkeypatch.setattr(builtins, "__import__", _block_playwright)
+
+    for attr in ("capture_sp_dc", "capture_sp_dc_async"):
+        with pytest.raises(ImportError) as excinfo:
+            module = importlib.import_module("spotify_scraper.browser")
+            getattr(module, attr)
+        message = str(excinfo.value)
+        assert "pip install spotifyscraper[browser]" in message
+        assert "playwright install chromium" in message
+
+
 @pytest.fixture
 def transport() -> Iterator[object]:
     """Yield a started-on-first-use transport and close it afterwards."""
