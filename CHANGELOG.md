@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Podcast transcripts.** `client.get_transcript(value)` returns a `Transcript`
+  (a tuple of millisecond-offset `TranscriptLine`s) for a podcast episode, and a
+  `spotifyscraper transcript` CLI command emits it as JSON. Transcripts reuse the
+  same `sp_dc` cookie and token handshake as lyrics — one exchange serves both.
+  An episode without a transcript (a 404, or a 200 with no spoken text) raises
+  `NotFoundError`; an unexpected payload shape raises `ParsingError`.
+
 ## [3.2.0] - 2026-06-13
 
 ### Added

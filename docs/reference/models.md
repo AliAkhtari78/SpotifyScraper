@@ -5,9 +5,10 @@ pathfinder payload can supply are typed `| None`, so a value of `None` means
 "not available from the source that answered", not "empty". Every model has a
 JSON-safe `to_dict()`.
 
-!!! note "Lyrics need a cookie"
-    `Lyrics` and `LyricsLine` are populated by
-    [`get_lyrics`](client.md), which requires a user `sp_dc` cookie — see the
+!!! note "Some models need a cookie"
+    `Lyrics`/`LyricsLine` and `Transcript`/`TranscriptLine` are populated by
+    [`get_lyrics`](client.md) and [`get_transcript`](client.md), which require a
+    user `sp_dc` cookie — see the
     [lyrics & cookies guide](../guides/lyrics-and-cookies.md).
 
 ## Track
@@ -65,3 +66,11 @@ JSON-safe `to_dict()`.
 ## LyricsLine
 
 ::: spotify_scraper.models.LyricsLine
+
+## Transcript
+
+::: spotify_scraper.models.Transcript
+
+## TranscriptLine
+
+::: spotify_scraper.models.TranscriptLine
