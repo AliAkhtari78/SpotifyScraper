@@ -2,6 +2,15 @@
 
 from __future__ import annotations
 
+from spotify_scraper.http.cache import (
+    AsyncCachingTransport,
+    CacheConfig,
+    CachedResponse,
+    CacheEntry,
+    CachingTransport,
+    DiskCache,
+    FileCache,
+)
 from spotify_scraper.http.ratelimit import RateLimit
 from spotify_scraper.http.retry import RetryPolicy
 from spotify_scraper.http.transport import (
@@ -13,8 +22,15 @@ from spotify_scraper.http.transport import (
 )
 
 __all__ = [
+    "AsyncCachingTransport",
     "AsyncHttpxTransport",
     "AsyncTransport",
+    "CacheConfig",
+    "CacheEntry",
+    "CachedResponse",
+    "CachingTransport",
+    "DiskCache",
+    "FileCache",
     "HttpxTransport",
     "RateLimit",
     "Response",

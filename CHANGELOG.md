@@ -42,6 +42,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   country/market code — a bare `"US"` is ignored — and does not filter regional
   availability; anonymous market filtering is intentionally not offered (the
   pathfinder `market` variable is inert and country is IP-bound).
+- **Optional response cache.** Opt in with
+  `SpotifyClient(cache=CacheConfig(store=FileCache()))` for a persistent,
+  off-by-default HTTP cache at the transport seam (composes with rate limiting,
+  retries, and `locale`). Only token-free pathfinder `GET`s that return `200` are
+  cached; the token-bearing embed pages, the token endpoints, and the
+  cookie-authenticated lyrics/transcript host are never cached, so no credential
+  is written to disk. Default TTL is 24h; the stdlib `FileCache` needs no new
+  dependency and the `DiskCache` backend is pluggable.
 
 ## [3.2.0] - 2026-06-13
 

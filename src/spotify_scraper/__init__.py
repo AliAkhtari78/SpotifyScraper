@@ -22,7 +22,15 @@ from spotify_scraper.errors import (
     TokenError,
     URLError,
 )
-from spotify_scraper.http import RateLimit, RetryPolicy
+from spotify_scraper.http import (
+    AsyncCachingTransport,
+    CacheConfig,
+    CachingTransport,
+    DiskCache,
+    FileCache,
+    RateLimit,
+    RetryPolicy,
+)
 from spotify_scraper.models import (
     Account,
     Album,
@@ -52,9 +60,14 @@ __all__ = [
     "AlbumRef",
     "Artist",
     "ArtistRef",
+    "AsyncCachingTransport",
     "AsyncSpotifyClient",
     "AuthenticationError",
+    "CacheConfig",
+    "CachingTransport",
+    "DiskCache",
     "Episode",
+    "FileCache",
     "Image",
     "Lyrics",
     "LyricsLine",

@@ -156,6 +156,7 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 | 3.2.0 | Cookie-authenticated **lyrics** extraction. |
 | 3.3 | Cookie-authenticated podcast **transcripts** (`get_transcript`), **browser-assisted login** with a persistent cookie store, and **account-awareness** (`get_account`/`is_premium`). |
 | 3.4 | **Search** across every entity type (`search()`) and display-language **localization** (`locale`). |
+| 3.5 | Optional persistent **response cache** (`cache=CacheConfig(...)`). |
 
 ### Planned
 
@@ -164,7 +165,7 @@ Upcoming work is tracked in the GitHub
 
 | Version | Adds |
 |---|---|
-| 3.5 | Optional [response caching](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) and [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
+| 3.5 | [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
 
 Scope is subject to change — 👍 the issues that matter most to you.
 
@@ -191,6 +192,11 @@ Scope is subject to change — 👍 the issues that matter most to you.
     Pass `locale` (a BCP-47 **language** tag like `"ja-JP"`) per client or per
     call to localize display-name language. It is not a market/country toggle —
     see the [Localization guide](guides/localization.md).
+
+!!! success "Response caching has shipped"
+    Opt in with `SpotifyClient(cache=CacheConfig(store=FileCache()))`. Only
+    token-free pathfinder responses are cached (never the token-bearing embed
+    pages). See the [caching guide](guides/caching.md).
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.
