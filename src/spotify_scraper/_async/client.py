@@ -13,6 +13,7 @@ from collections.abc import Awaitable, Callable, Mapping, Sequence
 from pathlib import Path
 from types import TracebackType
 from typing import Any, TypeVar
+from weakref import WeakKeyDictionary
 
 from spotify_scraper import media, urls
 from spotify_scraper.api import lyrics as lyrics_api
@@ -61,8 +62,9 @@ class AsyncSpotifyClient:
         "_closed",
         "_cookies",
         "_lyrics_tokens",
+        "_max_concurrency",
         "_owns_transport",
-        "_semaphore",
+        "_semaphores",
         "_tokens",
         "_transport",
     )
@@ -106,7 +108,14 @@ class AsyncSpotifyClient:
         """
         if max_concurrency < 1:
             raise ValueError("max_concurrency must be at least 1")
-        self._semaphore = asyncio.Semaphore(max_concurrency)
+        self._max_concurrency = max_concurrency
+        # One semaphore per running event loop: an asyncio.Semaphore binds to the
+        # loop it first suspends on, so a single shared instance would raise
+        # "bound to a different event loop" when the client is reused across
+        # asyncio.run() boundaries. The weak keys let finished loops be collected.
+        self._semaphores: WeakKeyDictionary[asyncio.AbstractEventLoop, asyncio.Semaphore] = (
+            WeakKeyDictionary()
+        )
         if transport is None:
             self._transport: AsyncTransport = AsyncHttpxTransport(
                 rate_limit=rate_limit,
@@ -418,12 +427,26 @@ class AsyncSpotifyClient:
             values, lambda value: self.get_show(value, max_episodes=max_episodes)
         )
 
+    def _loop_semaphore(self) -> asyncio.Semaphore:
+        """Return this client's concurrency semaphore for the running loop.
+
+        Created lazily per event loop and cached weakly, so overlapping batches
+        on the same loop share one budget while reuse across separate
+        ``asyncio.run()`` calls never hits a cross-loop binding error.
+        """
+        loop = asyncio.get_running_loop()
+        semaphore = self._semaphores.get(loop)
+        if semaphore is None:
+            semaphore = asyncio.Semaphore(self._max_concurrency)
+            self._semaphores[loop] = semaphore
+        return semaphore
+
     async def _batch(
         self, values: Sequence[str], fetch: Callable[[str], Awaitable[_T]]
     ) -> Sequence[BatchItem[_T]]:
         """Fetch every value concurrently, bounded by ``max_concurrency``.
 
-        Each per-item coroutine is gated by the shared per-client semaphore, so
+        Each per-item coroutine is gated by this client's per-loop semaphore, so
         the number of in-flight entity pipelines never exceeds the configured
         limit while the :class:`AsyncTokenBucket` still governs request rate.
         Order is preserved by :func:`asyncio.gather`. Only
@@ -432,9 +455,10 @@ class AsyncSpotifyClient:
         batch.
         """
         self._ensure_open()
+        semaphore = self._loop_semaphore()
 
         async def one(value: str) -> BatchItem[_T]:
-            async with self._semaphore:
+            async with semaphore:
                 try:
                     return BatchItem(value, result=await fetch(value))
                 except SpotifyScraperError as exc:

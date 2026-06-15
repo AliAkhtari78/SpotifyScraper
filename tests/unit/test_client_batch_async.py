@@ -311,3 +311,31 @@ async def test_get_tracks_bounded_by_max_concurrency() -> None:
 async def test_max_concurrency_zero_rejected() -> None:
     with pytest.raises(ValueError, match="max_concurrency"):
         AsyncSpotifyClient(max_concurrency=0)
+
+
+class _LoopAgnosticTransport:
+    """A minimal stub with no asyncio state, so it is reusable across loops."""
+
+    async def get(self, url: str, *, headers: Mapping[str, str] | None = None) -> Response:
+        if "pathfinder" in url:
+            return _FakeResponse(200, body=_pathfinder_body("track"))
+        return _FakeResponse(200, text=_embed_html("track"))
+
+    async def aclose(self) -> None:
+        return None
+
+
+def test_async_client_reused_across_event_loops() -> None:
+    # Regression: the per-client concurrency semaphore must be created per running
+    # loop, not bound at construction. max_concurrency=1 forces the semaphore to
+    # suspend a waiter (which is what binds it to a loop), so reusing the client
+    # from a second asyncio.run() would raise "bound to a different event loop".
+    ids = [f"{i:022d}" for i in range(3)]
+    client = AsyncSpotifyClient(transport=_LoopAgnosticTransport(), max_concurrency=1)
+
+    first = asyncio.run(client.get_tracks(ids))
+    second = asyncio.run(client.get_tracks(ids))  # a fresh event loop
+
+    assert all(item.ok for item in first)
+    assert all(item.ok for item in second)
+    assert [item.value for item in second] == ids
