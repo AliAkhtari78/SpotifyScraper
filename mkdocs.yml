@@ -94,6 +94,7 @@ nav:
     - Lyrics & cookies: guides/lyrics-and-cookies.md
     - Async: guides/async.md
     - Media downloads: guides/media-downloads.md
+    - Response caching: guides/caching.md
     - Anti-ban & resilience: guides/anti-ban.md
     - Browser fallback: guides/browser-fallback.md
     - Error handling: guides/error-handling.md

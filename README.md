@@ -82,6 +82,7 @@ with SpotifyClient() as client:
 - **Typed, frozen models** with JSON-safe `to_dict()` / `from_dict()`.
 - **Two-tier resilience** — Spotify's GraphQL API with automatic fallback to the embed page.
 - **One core dependency** (`httpx`); media and browser support are optional extras.
+- **Optional response cache** — opt-in, persistent, token-safe (only token-free pathfinder GETs).
 - **Anti-ban built in** — per-host rate limiting, retries with backoff, UA rotation, proxies.
 - **Browser fallback** via Playwright when you need a real browser.
 
@@ -97,6 +98,23 @@ spotifyscraper download preview <id> -o ./previews --embed-cover
 
 Every command emits JSON, so it composes with tools like `jq`. See the
 [CLI guide](https://spotifyscraper.readthedocs.io/en/latest/guides/cli/).
+
+## Response caching
+
+For repeated lookups, enable an opt-in persistent cache. It only stores
+**token-free** pathfinder responses — never the embed pages that carry the
+anonymous token — so no credential is ever written to disk:
+
+```python
+from spotify_scraper import SpotifyClient, CacheConfig, FileCache
+
+with SpotifyClient(cache=CacheConfig(store=FileCache())) as client:
+    client.get_track("4uLU6hMCjMI75M1A2tKUQC")   # first call hits the network
+    client.get_track("4uLU6hMCjMI75M1A2tKUQC")   # served from the cache
+```
+
+Default TTL is 24h; the `FileCache` is stdlib-only and the backend is pluggable.
+See the [caching guide](https://spotifyscraper.readthedocs.io/en/latest/guides/caching/).
 
 ## Lyrics
 
@@ -124,6 +142,7 @@ Your cookie is sent only to Spotify and never logged. See the
 | **3.0** | The library: all entities, pagination, media downloads, browser fallback, docs |
 | **3.1** | Command-line interface |
 | **3.2** | Cookie-authenticated lyrics |
+| **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) (`cache=CacheConfig(...)`) |
 
 **Planned** — tracked in [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones); 👍 or weigh in on the issues to help prioritize:
 
@@ -131,7 +150,7 @@ Your cookie is sent only to Spotify and never logged. See the
 |---------|-------|
 | **3.3** | Podcast [transcripts](https://github.com/AliAkhtari78/SpotifyScraper/issues/127) · first-class [auth & session persistence](https://github.com/AliAkhtari78/SpotifyScraper/issues/128) (browser-assisted login, no stored passwords) |
 | **3.4** | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type · [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support |
-| **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) · [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency |
+| **3.5** | [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency |
 
 Planned scope is subject to change.
 

@@ -146,3 +146,11 @@
 - [ ] 8.4 No new runtime dependency in `pyproject.toml` (stdlib `hashlib`,
       `json`, `base64`, `os`, `time`, `pathlib`, `logging` only; `httpx.URL`
       already a dep).
+
+## 9. Review fixes
+
+- [x] 9.1 (code, prior session) stop caching the token-bearing embed page; only
+      the token-free pathfinder response is cached; cache dir is 0700.
+- [x] 9.2 Docs: new `guides/caching.md` (opt-in, token-safe scope, TTL, pluggable
+      `DiskCache`) + nav; README Caching section + Features bullet + roadmap (3.5
+      cache shipped); index roadmap + success admonition; CHANGELOG Unreleased.

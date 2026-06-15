@@ -140,7 +140,8 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 |---|---|
 | 3.0.0 | Core library. |
 | 3.1.0 | The command-line interface. |
-| 3.2.0 | Cookie-authenticated **lyrics** extraction (this release). |
+| 3.2.0 | Cookie-authenticated **lyrics** extraction. |
+| 3.5 | Optional persistent **response cache** (`cache=CacheConfig(...)`). |
 
 ### Planned
 
@@ -151,7 +152,7 @@ Upcoming work is tracked in the GitHub
 |---|---|
 | 3.3 | Podcast [transcripts](https://github.com/AliAkhtari78/SpotifyScraper/issues/127) and first-class [authenticated sessions](https://github.com/AliAkhtari78/SpotifyScraper/issues/128) — browser-assisted login with a persistent cookie store (no stored passwords). |
 | 3.4 | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type and [market / region](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) support. |
-| 3.5 | Optional [response caching](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) and [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
+| 3.5 | [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency. |
 
 Scope is subject to change — 👍 the issues that matter most to you.
 
@@ -159,6 +160,11 @@ Scope is subject to change — 👍 the issues that matter most to you.
     Cookie-authenticated **lyrics** extraction has shipped:
     `client.get_lyrics(track)` and the `spotifyscraper lyrics` command. See the
     [Lyrics & cookies guide](guides/lyrics-and-cookies.md).
+
+!!! success "Response caching has shipped"
+    Opt in with `SpotifyClient(cache=CacheConfig(store=FileCache()))`. Only
+    token-free pathfinder responses are cached (never the token-bearing embed
+    pages). See the [caching guide](guides/caching.md).
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Optional response cache.** Opt in with
+  `SpotifyClient(cache=CacheConfig(store=FileCache()))` for a persistent,
+  off-by-default HTTP cache at the transport seam (composes with rate limiting,
+  retries, and `locale`). Only token-free pathfinder `GET`s that return `200` are
+  cached; the token-bearing embed pages, the token endpoints, and the
+  cookie-authenticated lyrics/transcript host are never cached, so no credential
+  is written to disk. Default TTL is 24h; the stdlib `FileCache` needs no new
+  dependency and the `DiskCache` backend is pluggable.
+
 ## [3.2.0] - 2026-06-13
 
 ### Added
