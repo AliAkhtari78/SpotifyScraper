@@ -1,0 +1,86 @@
+name: Agent · Diagnose breakage (observe)
+
+# Autonomous-maintenance loop, rung 0 (OBSERVE) — see policy/agent.md and
+# policy/promotion.md. The agent reproduces a canary-reported breakage on the
+# anonymous path and comments a root-cause diagnosis. It opens nothing, commits
+# nothing, and never touches a secret. Promotion to "propose" (open a PR) is a
+# deliberate, human-made change to this file — never automatic.
+
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to diagnose (manual test runs)"
+        required: true
+
+# Observe = comment only. Least privilege: no write access to code or PRs.
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: agent-diagnose-${{ github.event.issue.number || github.event.inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    # Kill switch (AGENT_ENABLED repo variable) + tight scope: only the canary's
+    # `spotify-breakage` issue, an explicit `@claude` mention, or a manual dispatch.
+    if: >
+      vars.AGENT_ENABLED == 'true' && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'spotify-breakage') ||
+        (github.event_name == 'issues' && github.event.action == 'opened' && contains(github.event.issue.labels.*.name, 'spotify-breakage')) ||
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          enable-cache: true
+          python-version: "3.13"
+      - run: uv sync --locked
+
+      - name: Claude diagnoses (observe only — opens nothing)
+        uses: anthropics/claude-code-action@4d7e1f0cd85743fdc93b1c8040ab54395da024e2 # v1
+        with:
+          # API-key auth (NOT subscription OAuth — ToS + CI reliability). The key
+          # is a GitHub Actions secret and is never exposed.
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Read `policy/agent.md` in this repo first and obey it. You are at autonomy
+            rung 0 (OBSERVE): diagnose and comment ONLY. Open no PR, push no commits,
+            change no files, request no secrets.
+
+            The daily canary reports that live Spotify extraction is failing
+            (issue #${{ github.event.issue.number || github.event.inputs.issue_number }}).
+            The most common cause is Spotify rotating a persisted-query hash; those
+            hashes live ONLY in `src/spotify_scraper/api/pathfinder.py`.
+
+            Steps:
+              1. Read the issue and any canary logs it links.
+              2. Inspect `src/spotify_scraper/api/pathfinder.py` and the failing area.
+              3. You MAY reproduce on the ANONYMOUS path (no cookie needed), e.g.:
+                   uv run pytest -m live -k "track or album or artist or search" --timeout=120
+                 Do NOT run cookie/auth tests (lyrics, transcript, credits, canvas) and
+                 do NOT request the SPOTIFY_SP_DC secret — you do not need it.
+              4. Reply with ONE diagnosis: the most likely root cause, the exact
+                 file + line that would change, the proposed one-line fix shown as a
+                 SUGGESTION (not a commit), and your confidence + the evidence behind it.
+              5. If you cannot determine the cause from the evidence, say so plainly and
+                 STOP. Never guess, never open anything.
+
+            Invariants (never violate): do not edit `.github/`, release, security config,
+            or any gate/test; do not print or request secrets; stay in the read-only
+            observe role defined in `policy/scopes.yml`.
+          claude_args: >
+            --max-turns 25
+            --allowedTools "Bash(uv:*),Bash(git log:*),Bash(git diff:*),Read,Grep,Glob"

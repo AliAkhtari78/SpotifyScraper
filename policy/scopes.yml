@@ -1,0 +1,43 @@
+# Per-role capability scopes for the maintenance agent.
+#
+# Each role lists the file paths it may change and the tools it may use. The
+# workflow enforces this with GitHub `permissions:` (least privilege) and
+# Claude Code `--allowedTools`. A role never gets a secret it does not need;
+# none of these roles get `SPOTIFY_SP_DC`.
+
+roles:
+  triage:
+    purpose: Read a new issue, label it, and route it. Never changes code.
+    write_paths: []
+    allowed_tools: [Read, Grep, Glob, "Bash(gh issue:*)"]
+    secrets: []
+
+  diagnoser: # rung 0 — OBSERVE (current)
+    purpose: Reproduce a breakage and comment a root-cause diagnosis. Opens nothing.
+    write_paths: []
+    allowed_tools: ["Bash(uv:*)", "Bash(git log:*)", "Bash(git diff:*)", Read, Grep, Glob]
+    secrets: [] # anonymous live tests only — no cookie
+
+  fixer: # rung 1+ — PROPOSE (not yet enabled)
+    purpose: Implement the smallest correct fix on a branch and open a PR.
+    write_paths:
+      - "src/**"
+      - "tests/**"
+      - "openspec/changes/**"
+      - "CHANGELOG.md"
+    allowed_tools: ["Bash(uv:*)", "Bash(git:*)", Edit, Read, Grep, Glob]
+    secrets: [] # never the Spotify cookie; works the anonymous path
+
+  reviewer: # rung 1+ — independent second opinion on a fixer PR
+    purpose: Adversarially review a proposed fix against the Definition of Done.
+    write_paths: []
+    allowed_tools: [Read, Grep, Glob, "Bash(gh pr:*)"]
+    secrets: []
+
+# Hard denylist — no role may ever touch these:
+never_touch:
+  - ".github/**"
+  - "release.yml"
+  - "codeql.yml"
+  - "pyproject.toml" # version/publish config
+  - "policy/**" # the contract changes only by human hand

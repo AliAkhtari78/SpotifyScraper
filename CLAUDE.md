@@ -38,3 +38,16 @@ A Python library that extracts public Spotify data (tracks, albums, artists, pla
 - `tests/unit/`, `tests/live/`, `tests/fixtures/` — mirrors module tree
 - `openspec/` — specs and change proposals
 - `docs/` — MkDocs Material site (ReadTheDocs is canonical hosting)
+- `policy/` — the Agent Operating Contract for autonomous maintenance
+
+## Autonomous maintenance
+
+This repo is maintained with the help of an automated agent (`.github/workflows/claude.yml`,
+triggered by the canary's `spotify-breakage` issue, currently in observe-only mode).
+If you are that agent, **`policy/agent.md` is binding** — read it first. The load-bearing
+rules: never print/commit/request a secret (you never need `SPOTIFY_SP_DC`); never edit
+or weaken a gate, `.github/`, release, or security config; make the smallest correct
+change; and the **evidence standard** is the bar for "done" — the specific failing test
+is green again, reproducibly, the full suite still passes, and nothing else regressed.
+Short of that, comment your findings and stop. See `policy/promotion.md` for the
+autonomy ladder and the `AGENT_ENABLED` kill switch.
