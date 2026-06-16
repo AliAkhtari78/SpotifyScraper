@@ -21,7 +21,7 @@ wrote.
 from spotify_scraper import SpotifyClient
 
 with SpotifyClient() as client:
-    album = client.get_album("4aawyAB9vmqN3uQ7FjRGTy")
+    album = client.get_album("6N9PS4QXF1D0OWPk0Sxtb4")
     path = client.download_cover(album, "downloads")
     print("Saved", path)
 ```

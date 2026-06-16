@@ -163,7 +163,7 @@ transcript:
 
 ```bash
 spotifyscraper lyrics 4uLU6hMCjMI75M1A2tKUQC --cookies cookies.txt
-spotifyscraper transcript 512ojhOuo1ktJprKbVcKyQ --cookies cookies.txt --pretty
+spotifyscraper transcript 07gKzPFkbvGF0cHoeG7ARS --cookies cookies.txt --pretty
 # or: export SPOTIFY_SP_DC=... && spotifyscraper transcript <episode-id>
 ```
 

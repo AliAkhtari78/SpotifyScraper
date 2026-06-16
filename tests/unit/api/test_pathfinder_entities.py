@@ -11,7 +11,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from spotify_scraper.api.pathfinder import OPERATIONS, build_url
 
-EID = "4aawyAB9vmqN3uQ7FjRGTy"
+EID = "6N9PS4QXF1D0OWPk0Sxtb4"
 
 EXPECTED: dict[str, tuple[str, str, dict[str, object]]] = {
     "album": (

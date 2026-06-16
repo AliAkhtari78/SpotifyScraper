@@ -31,7 +31,7 @@ FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 PATHFINDER_RE = re.compile(r"https://api-partner\.spotify\.com/pathfinder/v1/query.*")
 
 IDS: dict[str, str] = {
-    "album": "4aawyAB9vmqN3uQ7FjRGTy",
+    "album": "6N9PS4QXF1D0OWPk0Sxtb4",
     "artist": "0gxyHStUsqpMadRV0Di1Qt",
     "playlist": "37i9dQZF1DXcBWIGoYBM5M",
     "episode": "07gKzPFkbvGF0cHoeG7ARS",

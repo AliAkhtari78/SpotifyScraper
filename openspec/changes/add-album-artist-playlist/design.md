@@ -46,5 +46,5 @@ Flow identical to get_track (embed-first: embed fetch primes token + provides fa
 
 ## Testing
 
-- Unit: parse functions against all six fixtures (exact value asserts: album name "Global Warming", 18 tracks; artist "Rick Astley", monthly_listeners > 0; playlist "Today's Top Hits", owner "Spotify"); pagination loop with respx multi-page sequence; local-file skip with synthesized item; embed fallbacks per entity.
+- Unit: parse functions against all six fixtures (exact value asserts: album name "Whenever You Need Somebody", 10 tracks; artist "Rick Astley", monthly_listeners > 0; playlist "Today's Top Hits", owner "Spotify"); pagination loop with respx multi-page sequence; local-file skip with synthesized item; embed fallbacks per entity.
 - Live (`-m live`): one smoke per entity asserting the issue #93/#94 scenarios.

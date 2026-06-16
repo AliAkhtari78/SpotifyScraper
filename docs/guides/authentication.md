@@ -58,7 +58,7 @@ servers and cron jobs:
 from spotify_scraper import SpotifyClient
 
 with SpotifyClient.from_saved_session() as client:
-    transcript = client.get_transcript("512ojhOuo1ktJprKbVcKyQ")
+    transcript = client.get_transcript("07gKzPFkbvGF0cHoeG7ARS")
 ```
 
 `from_saved_session()` reads the saved cookie and forwards any client kwargs

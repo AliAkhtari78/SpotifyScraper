@@ -32,7 +32,7 @@ FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 PATHFINDER_RE = re.compile(r"https://api-partner\.spotify\.com/pathfinder/v1/query.*")
 
 IDS: dict[str, str] = {
-    "album": "4aawyAB9vmqN3uQ7FjRGTy",
+    "album": "6N9PS4QXF1D0OWPk0Sxtb4",
     "artist": "0gxyHStUsqpMadRV0Di1Qt",
     "playlist": "37i9dQZF1DXcBWIGoYBM5M",
     "episode": "07gKzPFkbvGF0cHoeG7ARS",
@@ -87,10 +87,10 @@ def test_get_album_happy_path() -> None:
     with SpotifyClient() as client:
         album = client.get_album(IDS["album"])
     assert isinstance(album, Album)
-    assert album.name == "Global Warming"
+    assert album.name == "Whenever You Need Somebody"
     assert album.album_type == "album"
-    assert album.total_tracks == 18
-    assert len(album.tracks) == 18
+    assert album.total_tracks == 10
+    assert len(album.tracks) == 10
 
 
 @respx.mock
@@ -425,7 +425,7 @@ def test_album_single_page_does_not_overpaginate() -> None:
     with SpotifyClient() as client:
         album = client.get_album(IDS["album"])
 
-    assert len(album.tracks) == 18
+    assert len(album.tracks) == 10
     assert route.call_count == 1
 
 

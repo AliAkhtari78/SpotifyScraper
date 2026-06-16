@@ -18,11 +18,11 @@ from spotify_scraper.errors import ParsingError
 
 FIXTURES = Path(__file__).resolve().parents[2] / "fixtures"
 
-EXPECTED_NAME = "Global Warming"
-EXPECTED_ID = "4aawyAB9vmqN3uQ7FjRGTy"
-EXPECTED_URI = "spotify:album:4aawyAB9vmqN3uQ7FjRGTy"
-EXPECTED_TRACK_COUNT = 18
-EXPECTED_RELEASE = datetime(2012, 11, 16, tzinfo=timezone.utc)
+EXPECTED_NAME = "Whenever You Need Somebody"
+EXPECTED_ID = "6N9PS4QXF1D0OWPk0Sxtb4"
+EXPECTED_URI = "spotify:album:6N9PS4QXF1D0OWPk0Sxtb4"
+EXPECTED_TRACK_COUNT = 10
+EXPECTED_RELEASE = datetime(1987, 11, 12, tzinfo=timezone.utc)
 
 
 def _load(relative: str) -> dict[str, Any]:
@@ -62,27 +62,30 @@ def test_parse_gql_track_count_is_eighteen(gql_union: dict[str, Any]) -> None:
 def test_parse_gql_first_track_details(gql_union: dict[str, Any]) -> None:
     album = parse_album_gql(gql_union)
     first = album.tracks[0]
-    assert first.id == "6OmhkSOpvYBokMKQxpIGx2"
-    assert first.uri == "spotify:track:6OmhkSOpvYBokMKQxpIGx2"
-    assert first.name == "Global Warming (feat. Sensato)"
-    assert first.duration_ms == 85400
-    assert first.explicit is True
+    assert first.id == "4uLU6hMCjMI75M1A2tKUQC"
+    assert first.uri == "spotify:track:4uLU6hMCjMI75M1A2tKUQC"
+    assert first.name == "Never Gonna Give You Up"
+    assert first.duration_ms == 213573
+    assert first.explicit is False
     assert first.playable is True
     assert first.track_number == 1
-    assert first.play_count == 10707285
+    assert first.play_count == 1139813068
     assert first.images == ()
     assert first.preview_url is None
     assert first.release_date is None
-    assert [a.name for a in first.artists] == ["Pitbull", "Sensato"]
+    assert [a.name for a in first.artists] == ["Rick Astley"]
 
 
 def test_parse_gql_album_metadata(gql_union: dict[str, Any]) -> None:
     album = parse_album_gql(gql_union)
-    assert album.label == "Mr.305/Polo Grounds Music/RCA Records"
-    assert album.copyrights == ("(P) 2012 RCA Records, a division of Sony Music Entertainment",)
+    assert album.label == "Sony Music CG"
+    assert album.copyrights == (
+        "(P) 1987 Sony Music Entertainment UK Limited under exclusive license to "
+        "BMG Rights Management (UK) Limited",
+    )
     assert album.release_date == EXPECTED_RELEASE
-    assert [a.name for a in album.artists] == ["Pitbull"]
-    assert album.artists[0].id == "0TnOYISbd1XYRBk9myaseg"
+    assert [a.name for a in album.artists] == ["Rick Astley"]
+    assert album.artists[0].id == "0gxyHStUsqpMadRV0Di1Qt"
     assert album.share_url is not None
     assert album.share_url.startswith("https://open.spotify.com/album/")
 
@@ -96,7 +99,7 @@ def test_parse_gql_images_from_cover_art(gql_union: dict[str, Any]) -> None:
 def test_parse_album_tracks_page_returns_all_tracks(gql_union: dict[str, Any]) -> None:
     tracks = parse_album_tracks_page(gql_union)
     assert len(tracks) == EXPECTED_TRACK_COUNT
-    assert tracks[0].id == "6OmhkSOpvYBokMKQxpIGx2"
+    assert tracks[0].id == "4uLU6hMCjMI75M1A2tKUQC"
 
 
 def test_parse_album_tracks_page_missing_tracks_returns_empty() -> None:
@@ -112,18 +115,18 @@ def test_parse_embed_core_fields(embed_entity: dict[str, Any]) -> None:
 
 def test_parse_embed_artist_from_subtitle(embed_entity: dict[str, Any]) -> None:
     album = parse_album_embed(embed_entity)
-    assert [a.name for a in album.artists] == ["Pitbull"]
+    assert [a.name for a in album.artists] == ["Rick Astley"]
 
 
 def test_parse_embed_track_list(embed_entity: dict[str, Any]) -> None:
     album = parse_album_embed(embed_entity)
     assert len(album.tracks) == EXPECTED_TRACK_COUNT
     first = album.tracks[0]
-    assert first.name == "Global Warming (feat. Sensato)"
-    assert first.duration_ms == 85400
-    assert first.explicit is True
+    assert first.name == "Never Gonna Give You Up"
+    assert first.duration_ms == 213573
+    assert first.explicit is False
     assert first.preview_url is not None
-    assert [a.name for a in first.artists] == ["Pitbull", "Sensato"]
+    assert [a.name for a in first.artists] == ["Rick Astley"]
 
 
 def test_parse_embed_images_from_visual_identity(embed_entity: dict[str, Any]) -> None:

@@ -74,7 +74,7 @@ The `url` property is always available — it is derived from `id`, not fetched.
 from spotify_scraper import SpotifyClient
 
 with SpotifyClient() as client:
-    album = client.get_album("4aawyAB9vmqN3uQ7FjRGTy")
+    album = client.get_album("6N9PS4QXF1D0OWPk0Sxtb4")
 
 print(album.name)                 # album title
 print(album.album_type)           # "album", "single", or "compilation"
@@ -192,7 +192,7 @@ for entry in playlist.tracks:
 from spotify_scraper import SpotifyClient
 
 with SpotifyClient() as client:
-    episode = client.get_episode("512ojhOuo1ktJprKbVcKyQ")
+    episode = client.get_episode("07gKzPFkbvGF0cHoeG7ARS")
 
 print(episode.name)
 print(episode.duration_ms / 60000, "minutes")
@@ -276,7 +276,7 @@ Every model and value object inherits `to_dict()`:
 import json
 
 with SpotifyClient() as client:
-    album = client.get_album("4aawyAB9vmqN3uQ7FjRGTy")
+    album = client.get_album("6N9PS4QXF1D0OWPk0Sxtb4")
 
 payload = json.dumps(album.to_dict())
 ```
