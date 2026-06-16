@@ -19,6 +19,8 @@ from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.canvas import Canvas
 from spotify_scraper.models.colors import Colors
 from spotify_scraper.models.common import AlbumRef, ArtistRef, Image, ShowRef, UserRef
+from spotify_scraper.models.concert import Concert
+from spotify_scraper.models.credits import CreditArtist, CreditRole, Credits
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics, LyricsLine
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
@@ -39,6 +41,8 @@ __all__ = [
     "parse_artist_gql",
     "parse_canvas",
     "parse_colors",
+    "parse_concerts",
+    "parse_credits",
     "parse_discography_releases",
     "parse_episode_embed",
     "parse_episode_gql",
@@ -1788,3 +1792,117 @@ def _profile_artists(node: Any) -> tuple[ArtistRef, ...]:
             continue
         artists.append(ArtistRef(name=name, uri=uri, id=_id_from_uri(uri)))
     return tuple(artists)
+
+
+# --------------------------------------------------------------------------- #
+# Credits & concerts
+# --------------------------------------------------------------------------- #
+
+
+def parse_credits(payload: Mapping[str, Any]) -> Credits:
+    """Build :class:`Credits` from a ``track-credits-view`` body.
+
+    Args:
+        payload: The decoded credits body (``trackUri``, ``trackTitle``,
+            ``roleCredits``, …).
+
+    Returns:
+        A :class:`Credits` grouping people by role.
+
+    Raises:
+        ParsingError: If the body has no ``trackUri``.
+    """
+    track_uri = _require_str(payload, "trackUri", "trackUri")
+    roles: list[CreditRole] = []
+    raw_roles = payload.get("roleCredits")
+    if isinstance(raw_roles, Sequence) and not isinstance(raw_roles, str):
+        for role in raw_roles:
+            if not isinstance(role, Mapping):
+                continue
+            title = _optional_str(role, "roleTitle")
+            if not title:
+                continue
+            roles.append(CreditRole(title=title, artists=_credit_artists(role.get("artists"))))
+    return Credits(
+        track_uri=track_uri,
+        track_title=_optional_str(payload, "trackTitle") or "",
+        roles=tuple(roles),
+        source_names=_str_tuple(payload.get("sourceNames")),
+    )
+
+
+def _credit_artists(node: Any) -> tuple[CreditArtist, ...]:
+    if not isinstance(node, Sequence) or isinstance(node, str):
+        return ()
+    artists: list[CreditArtist] = []
+    for item in node:
+        if not isinstance(item, Mapping):
+            continue
+        name = _optional_str(item, "name")
+        if not name:
+            continue
+        artists.append(
+            CreditArtist(
+                name=name,
+                uri=_optional_str(item, "uri") or "",
+                image_url=_optional_str(item, "imageUri"),
+                subroles=_str_tuple(item.get("subroles")),
+            )
+        )
+    return tuple(artists)
+
+
+def parse_concerts(node: Mapping[str, Any]) -> tuple[Concert, ...]:
+    """Build concerts from an ``ArtistConcerts`` ``concerts`` node.
+
+    Args:
+        node: The ``body["data"]["concerts"]`` object (which nests the listing
+            at ``concerts.items[].data``).
+
+    Returns:
+        The artist's upcoming concerts (empty when there are none).
+    """
+    inner = _optional_mapping(node, "concerts")
+    if inner is None:
+        return ()
+    concerts: list[Concert] = []
+    for item in _items(inner):
+        data = _optional_mapping(item, "data")
+        if data is None:
+            continue
+        uri = _optional_str(data, "uri")
+        title = _optional_str(data, "title")
+        if not uri or not title:
+            continue
+        location = _optional_mapping(data, "location") or {}
+        concerts.append(
+            Concert(
+                id=_id_from_uri(uri),
+                uri=uri,
+                title=title,
+                start_date=_optional_str(data, "startDateIsoString"),
+                city=_optional_str(location, "city"),
+                artists=_concert_artists(data.get("artists")),
+            )
+        )
+    return tuple(concerts)
+
+
+def _concert_artists(node: Any) -> tuple[ArtistRef, ...]:
+    if not isinstance(node, Mapping):
+        return ()
+    artists: list[ArtistRef] = []
+    for item in _items(node):
+        data = _optional_mapping(item, "data") or {}
+        profile = _optional_mapping(data, "profile") or {}
+        name = _optional_str(profile, "name")
+        if not name:
+            continue
+        artists.append(ArtistRef(name=name, uri=_optional_str(data, "uri") or ""))
+    return tuple(artists)
+
+
+def _str_tuple(node: Any) -> tuple[str, ...]:
+    if not isinstance(node, Sequence) or isinstance(node, str):
+        return ()
+    return tuple(item for item in node if isinstance(item, str) and item)

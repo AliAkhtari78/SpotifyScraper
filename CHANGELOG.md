@@ -31,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Public user profiles.** `client.get_user(user_id)` returns a `UserProfile`
   (name, follower/following counts, public playlists, recently-played artists).
   Cookie-authenticated (the anonymous token is refused). CLI: `user`.
+- **Track credits.** `client.get_credits(track)` returns a `Credits` (performers,
+  writers, producers — each with their sub-roles). Cookie-authenticated. CLI:
+  `credits`.
+- **Artist concerts.** `client.get_artist_events(artist)` returns upcoming live
+  events (`Concert`: title, start date, city, line-up). Anonymous; the set can
+  vary by region. CLI: `events`.
 
 ## [3.5.0] - 2026-06-15
 

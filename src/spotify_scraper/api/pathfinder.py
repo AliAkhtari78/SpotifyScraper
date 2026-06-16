@@ -97,6 +97,11 @@ OPERATIONS: dict[str, Operation] = {
         "1d1f93a737498adca2c892c73af87fc0b052afe4e1a33c989540c32413dfae17",
         lambda eid: {"uri": f"spotify:track:{eid}", "limit": 10},
     ),
+    "artist_concerts": Operation(
+        "ArtistConcerts",
+        "ef53c43b865496b9890b7167eab1dc614a8949ef9451b3c41184ea888de8bd2b",
+        lambda eid: {"artistUri": f"spotify:artist:{eid}", "includeNearby": False},
+    ),
 }
 
 

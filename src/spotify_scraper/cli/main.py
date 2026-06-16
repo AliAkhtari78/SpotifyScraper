@@ -435,6 +435,47 @@ def user(
     run(body)
 
 
+@app.command()
+def events(
+    value: ValueArg,
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Fetch an artist's upcoming concerts/events and emit them as JSON."""
+
+    def body() -> None:
+        with build_client(proxy, timeout, rate_limit) as client:
+            concerts = client.get_artist_events(value)
+        emit({"concerts": [c.to_dict() for c in concerts]}, pretty=pretty, output=output)
+
+    run(body)
+
+
+@app.command()
+def credits(
+    value: ValueArg,
+    cookies: CookiesOpt = None,
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Fetch a track's credits (requires an sp_dc cookie) and emit JSON."""
+
+    def body() -> None:
+        source = _resolve_cookies(cookies)
+        rate = RateLimit(per_second=rate_limit) if rate_limit is not None else None
+        with SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate, cookies=source) as client:
+            entity = client.get_credits(value)
+        emit(entity.to_dict(), pretty=pretty, output=output)
+
+    run(body)
+
+
 StoreOpt = Annotated[
     str,
     typer.Option("--store", help="Where to keep the cookie: 'file' (default) or 'keyring'."),

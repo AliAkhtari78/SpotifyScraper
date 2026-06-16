@@ -1,0 +1,63 @@
+{
+  "extendedCredits": [],
+  "roleCredits": [
+    {
+      "artists": [
+        {
+          "imageUri": "https://i.scdn.co/image/ab677762000078e6afc079cda32d54850e82c385",
+          "name": "Olivia Rodrigo",
+          "subroles": [
+            "main artist"
+          ],
+          "uri": "spotify:artist:1McMsnEElThX1knmY4oliG",
+          "weight": 6.0
+        }
+      ],
+      "roleTitle": "Performers"
+    },
+    {
+      "artists": [
+        {
+          "imageUri": "https://i.scdn.co/image/ab677762000078e6aae517f57fa4e9833b4bce9c",
+          "name": "Daniel Nigro",
+          "subroles": [
+            "composer",
+            "lyricist"
+          ],
+          "uri": "spotify:artist:4GbIg07E4V64yYsrMQdFqA",
+          "weight": 5.0
+        },
+        {
+          "imageUri": "https://i.scdn.co/image/ab677762000078e6afc079cda32d54850e82c385",
+          "name": "Olivia Rodrigo",
+          "subroles": [
+            "composer",
+            "lyricist"
+          ],
+          "uri": "spotify:artist:1McMsnEElThX1knmY4oliG",
+          "weight": 4.0
+        }
+      ],
+      "roleTitle": "Writers"
+    },
+    {
+      "artists": [
+        {
+          "imageUri": "https://i.scdn.co/image/ab677762000078e6aae517f57fa4e9833b4bce9c",
+          "name": "Daniel Nigro",
+          "subroles": [
+            "producer"
+          ],
+          "uri": "spotify:artist:4GbIg07E4V64yYsrMQdFqA",
+          "weight": 3.0
+        }
+      ],
+      "roleTitle": "Producers"
+    }
+  ],
+  "sourceNames": [
+    "Olivia Rodrigo PS"
+  ],
+  "trackTitle": "stupid song",
+  "trackUri": "spotify:track:4LfCY65LvojKjWEnU7fNN4"
+}

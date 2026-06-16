@@ -8,6 +8,8 @@ from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.canvas import Canvas
 from spotify_scraper.models.colors import Colors
 from spotify_scraper.models.common import AlbumRef, ArtistRef, Image, ShowRef, UserRef
+from spotify_scraper.models.concert import Concert
+from spotify_scraper.models.credits import CreditArtist, CreditRole, Credits
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics, LyricsLine
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
@@ -25,6 +27,10 @@ __all__ = [
     "ArtistRef",
     "Canvas",
     "Colors",
+    "Concert",
+    "CreditArtist",
+    "CreditRole",
+    "Credits",
     "Episode",
     "Image",
     "Lyrics",

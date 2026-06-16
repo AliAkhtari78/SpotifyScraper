@@ -1,0 +1,340 @@
+{
+  "data": {
+    "artistUnion": {
+      "headerImage": {
+        "data": {
+          "sources": [
+            {
+              "url": "https://image-cdn-ak.spotifycdn.com/image/ab676186000001940e1cf434b132cc40ff70512a"
+            },
+            {
+              "url": "https://i2o.scdn.co/image/ab676186000016670e1cf434b132cc40ff70512a"
+            },
+            {
+              "url": "https://i2o.scdn.co/image/ab676186000016670e1cf434b132cc40ff70512a"
+            },
+            {
+              "url": "https://image-cdn-ak.spotifycdn.com/image/ab67618600009d800e1cf434b132cc40ff70512a"
+            },
+            {
+              "url": "https://image-cdn-ak.spotifycdn.com/image/ab6761860000eab10e1cf434b132cc40ff70512a"
+            }
+          ]
+        }
+      },
+      "profile": {
+        "name": "Rick Astley"
+      },
+      "uri": "spotify:artist:0gxyHStUsqpMadRV0Di1Qt",
+      "visuals": {
+        "avatarImage": {
+          "extractedColors": {
+            "colorDark": {
+              "hex": "#780010"
+            }
+          }
+        }
+      }
+    },
+    "concerts": {
+      "concerts": {
+        "items": [
+          {
+            "data": {
+              "artists": {
+                "items": [
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Calvin Harris"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Teddy Swims"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Rick Astley"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Anastacia"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "KT Tunstall"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Feeder"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "The K's"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Starsailor"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Freddie Halkon"
+                      }
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "city": "Newport"
+              },
+              "startDateIsoString": "2026-06-20T12:00+01:00",
+              "title": "Sky presents the Isle of Wight Festival Saturday Ticket",
+              "uri": "spotify:concert:0xxdJm1GoVhDuBil4gDu4B"
+            }
+          },
+          {
+            "data": {
+              "artists": {
+                "items": [
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Rick Astley"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "The Lottery Winners"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Deco"
+                      }
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "city": "Llangollen"
+              },
+              "startDateIsoString": "2026-06-24T16:00+01:00",
+              "title": "Rick Astley, The Lottery Winners, Deco",
+              "uri": "spotify:concert:4ru0dNVQJtgiuAfUOsopCU"
+            }
+          },
+          {
+            "data": {
+              "artists": {
+                "items": [
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Rick Astley"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "The Lottery Winners"
+                      }
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "city": "Lincoln"
+              },
+              "startDateIsoString": "2026-06-25T18:00+01:00",
+              "title": "Rick Astley, The Lottery Winners",
+              "uri": "spotify:concert:1grLKAC1HqflUJWVEaOPxi"
+            }
+          },
+          {
+            "data": {
+              "artists": {
+                "items": [
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Rick Astley"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "The Lottery Winners"
+                      }
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "city": "Gloucestershire"
+              },
+              "startDateIsoString": "2026-06-27T17:00+01:00",
+              "title": "Rick Astley, The Lottery Winners",
+              "uri": "spotify:concert:1OfpYBGkBiIfR7jRAGq4FG"
+            }
+          },
+          {
+            "data": {
+              "artists": {
+                "items": [
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Rick Astley"
+                      }
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "city": "M\u00dcNCHEN"
+              },
+              "startDateIsoString": "2026-07-07T19:00+02:00",
+              "title": "Rick Astley",
+              "uri": "spotify:concert:3XotX3r7p3R6Eoc9jsnPi6"
+            }
+          },
+          {
+            "data": {
+              "artists": {
+                "items": [
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Rick Astley"
+                      }
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "city": "Marbella"
+              },
+              "startDateIsoString": "2026-07-10T22:00+02:00",
+              "title": "Rick Astley",
+              "uri": "spotify:concert:5NI9yqvlmiw4Ss1V0hCn0R"
+            }
+          },
+          {
+            "data": {
+              "artists": {
+                "items": [
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Rick Astley"
+                      }
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "city": "Valencia"
+              },
+              "startDateIsoString": "2026-07-16T22:00+02:00",
+              "title": "FAR Val\u00e8ncia 2026",
+              "uri": "spotify:concert:50aZ0idPqEZq6WoJvdNb9Y"
+            }
+          },
+          {
+            "data": {
+              "artists": {
+                "items": [
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Rick Astley"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "The Lightning Seeds"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Heather Small"
+                      }
+                    }
+                  },
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Pentire"
+                      }
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "city": "Ludlow"
+              },
+              "startDateIsoString": "2026-07-24T17:00+01:00",
+              "title": "Rick Astley, The Lightning Seeds, Heather Small, Pentire",
+              "uri": "spotify:concert:4l8LVIxnLX7JbCOw70CeAS"
+            }
+          },
+          {
+            "data": {
+              "artists": {
+                "items": [
+                  {
+                    "data": {
+                      "profile": {
+                        "name": "Rick Astley"
+                      }
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "city": "K\u00d6LN"
+              },
+              "startDateIsoString": "2026-08-04T19:00+02:00",
+              "title": "Rick Astley",
+              "uri": "spotify:concert:4Z2e3pbOPYWqVBOYqJswfo"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

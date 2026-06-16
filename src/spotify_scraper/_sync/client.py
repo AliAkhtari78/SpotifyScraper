@@ -17,6 +17,7 @@ from typing import Any, TypeVar
 from spotify_scraper import media, urls
 from spotify_scraper.api import account as account_api
 from spotify_scraper.api import charts as charts_api
+from spotify_scraper.api import credits as credits_api
 from spotify_scraper.api import lyrics as lyrics_api
 from spotify_scraper.api import parse_embed, parse_entities, pathfinder
 from spotify_scraper.api import transcripts as transcripts_api
@@ -46,6 +47,8 @@ from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.canvas import Canvas
 from spotify_scraper.models.colors import Colors
 from spotify_scraper.models.common import AlbumRef
+from spotify_scraper.models.concert import Concert
+from spotify_scraper.models.credits import Credits
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
@@ -959,6 +962,52 @@ class SpotifyClient:
             provider.invalidate()
             return self._fetch_user_profile(identifier, provider.token())
 
+    def get_artist_events(self, value: str) -> tuple[Concert, ...]:
+        """Fetch an artist's upcoming concerts/events (anonymous).
+
+        Args:
+            value: A Spotify artist URL, URI, or 22-character ID.
+
+        Returns:
+            Upcoming concerts (empty when Spotify lists none); the set returned
+            can vary by the request's region.
+
+        Raises:
+            NotFoundError: If the artist does not exist.
+            SpotifyScraperError: If the client is closed.
+        """
+        _, entity_id = self._resolve(value, "artist")
+        node = self._anon_union("artist_concerts", entity_id, "concerts")
+        return parse_entities.parse_concerts(node)
+
+    def get_credits(self, value: str) -> Credits:
+        """Fetch a track's credits (performers, writers, producers).
+
+        Credits are an authenticated feature: the client must have been built
+        with ``cookies=``; otherwise :class:`AuthenticationError` is raised at
+        once, without any HTTP request.
+
+        Args:
+            value: A Spotify track URL, URI, or 22-character ID.
+
+        Returns:
+            The track's :class:`Credits`, grouped by role.
+
+        Raises:
+            AuthenticationError: If no cookies were configured, or the cookie is
+                rejected by the token exchange.
+            NotFoundError: If the track does not exist or has no credits.
+            SpotifyScraperError: If the client is closed.
+        """
+        _, entity_id = self._resolve(value, "track")
+        provider = self._cookie_provider()
+        token = provider.token()
+        try:
+            return self._fetch_credits(entity_id, token)
+        except AuthenticationError:
+            provider.invalidate()
+            return self._fetch_credits(entity_id, provider.token())
+
     def _cookie_provider(self) -> CookieTokenProvider:
         self._ensure_open()
         provider = self._cookie_tokens
@@ -1404,6 +1453,22 @@ class SpotifyClient:
                 "check for a library update."
             )
         return parse_entities.parse_user_profile(body)
+
+    def _fetch_credits(self, entity_id: str, token: str) -> Credits:
+        url = credits_api.credits_url(entity_id)
+        try:
+            response = self._transport.get(url, headers=credits_api.auth_headers(token))
+        except NotFoundError as exc:
+            raise NotFoundError(f"No credits for track {entity_id}.") from exc
+        if response.status_code == 401:
+            raise AuthenticationError("Spotify rejected the cookie token for credits (HTTP 401).")
+        body = _safe_json(response)
+        if body is None:
+            raise ParsingError(
+                "Credits response was not JSON. Spotify may have changed its API; "
+                "check for a library update."
+            )
+        return parse_entities.parse_credits(body)
 
 
 def _lang_header(locale: str | None) -> dict[str, str]:
