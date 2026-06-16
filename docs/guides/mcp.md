@@ -81,8 +81,14 @@ transcript"* or *"what colors should I theme this album page with?"*.
   `get_chart`, `get_related_artists`, `get_discography`, `get_similar_albums`,
   `get_colors`, `get_canvas`, `get_user`, `get_credits`, `get_artist_events`,
   `get_lyrics`, `get_transcript`, `get_account`, and `get_cover_image` (returns
-  inline image content). Each returns structured JSON; authenticated tools
-  advertise the `SPOTIFY_SP_DC` requirement and return a clear error without it.
+  inline image content). The plural **batch** tools — `get_tracks` / `get_albums`
+  / `get_artists` / `get_playlists` / `get_episodes` / `get_shows` — fetch many
+  IDs in one call, returning one ordered `{value, ok, result, error}` item each so
+  a single bad input never sinks the batch. **`get_track_visuals`** returns a
+  track with its cover `colors` and `canvas` in one round-trip (handy for visual
+  UIs; `canvas` is best-effort and null without a cookie). Each returns structured
+  JSON; authenticated tools advertise the `SPOTIFY_SP_DC` requirement and return a
+  clear error without it.
 - **Resources** — the six entities are addressable: `spotify://track/{id}`,
   `spotify://album/{id}`, `spotify://artist/{id}`, `spotify://playlist/{id}`,
   `spotify://episode/{id}`, `spotify://show/{id}`.

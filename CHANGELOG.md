@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.0] - 2026-06-16
+
+### Added
+- **MCP batch tools.** The `spotifyscraper-mcp` server now exposes the plural
+  getters as tools — `get_tracks` / `get_albums` / `get_artists` / `get_playlists`
+  / `get_episodes` / `get_shows` — fetching many IDs in one call. Each returns an
+  ordered `{value, ok, result, error}` item per input (mirroring `BatchItem`), so a
+  single bad or missing ID never sinks the batch. `get_playlists` / `get_shows`
+  accept `max_tracks` / `max_episodes`.
+- **MCP `get_track_visuals` tool.** Returns a track with its cover `colors` and
+  `canvas` in one round-trip — a convenience for visual, voice-driven front-ends.
+  `track` and `colors` are always present (anonymous); `canvas` is best-effort and
+  `null` without a `SPOTIFY_SP_DC` cookie or when the track has none.
+
+No library getter, model, or CLI signature changed; this release only widens the
+MCP tool surface over capabilities the library already shipped.
+
 ## [3.6.1] - 2026-06-16
 
 ### Fixed

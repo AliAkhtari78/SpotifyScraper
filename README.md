@@ -111,7 +111,7 @@ region. See the
 - **Cover colors & Canvas** — extract an artwork's theming palette and download a track's looping Canvas video.
 - **Credits & concerts** — performers/writers/producers and an artist's upcoming live events.
 - **Public user profiles** — `get_user()` (name, follower counts, public playlists).
-- **MCP server** — expose everything to Claude/LLMs via `spotifyscraper-mcp`; also ships as a container on ghcr.io.
+- **MCP server** — expose everything to Claude/LLMs via `spotifyscraper-mcp` (batch tools + a one-call `get_track_visuals`); also ships as a container on ghcr.io.
 - **Localized display names** — pass a BCP-47 language tag (`locale`) to set the language of names.
 - **Lyrics & podcast transcripts** — cookie-authenticated, time-synced, one token for both.
 - **Browser-assisted login + session persistence** — log in once, then run headless (no stored passwords).

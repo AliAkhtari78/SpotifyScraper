@@ -2,10 +2,12 @@
 
 Every public client getter is exposed as a tool returning JSON-safe structured
 output (the models' ``to_dict()``); the six entity getters are also addressable
-resources (``spotify://track/{id}`` …). Authenticated tools (canvas, credits,
-user, lyrics, transcript, account) require the ``SPOTIFY_SP_DC`` cookie and
-return a clear error otherwise. A shared :class:`AsyncSpotifyClient` is created
-once and closed on shutdown.
+resources (``spotify://track/{id}`` …). Plural ``get_*s`` batch tools fetch many
+IDs at once with per-item failure capture, and ``get_track_visuals`` returns a
+track with its cover colors and Canvas in one call. Authenticated tools (canvas,
+credits, user, lyrics, transcript, account) require the ``SPOTIFY_SP_DC`` cookie
+and return a clear error otherwise. A shared :class:`AsyncSpotifyClient` is
+created once and closed on shutdown.
 """
 
 from __future__ import annotations
@@ -13,7 +15,7 @@ from __future__ import annotations
 import dataclasses
 import json
 import os
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Sequence
 from contextlib import asynccontextmanager
 from typing import Any, TypeVar
 
@@ -22,6 +24,7 @@ from mcp.server.fastmcp import FastMCP, Image
 from mcp.server.fastmcp.exceptions import ToolError
 
 from spotify_scraper import AsyncSpotifyClient
+from spotify_scraper.batch import BatchItem
 from spotify_scraper.errors import AuthenticationError, SpotifyScraperError
 from spotify_scraper.media.images import _pick_cover
 
@@ -31,6 +34,8 @@ _INSTRUCTIONS = (
     "Extract public Spotify data — tracks, albums, artists, playlists, podcasts, "
     "lyrics, charts, related artists, recommendations, Canvas videos, cover colors, "
     "credits, concerts, and public user profiles — with no official API key. "
+    "Batch tools (get_tracks/get_albums/…) fetch many IDs at once, and "
+    "get_track_visuals returns a track with its colors and Canvas in one call. "
     "Authenticated tools (canvas, credits, user, lyrics, transcript, account) need "
     "the server to be started with the SPOTIFY_SP_DC environment variable set."
 )
@@ -49,6 +54,27 @@ async def _run(awaitable: Awaitable[_T]) -> _T:
         raise ToolError(_AUTH_HINT) from exc
     except SpotifyScraperError as exc:
         raise ToolError(str(exc)) from exc
+
+
+def _batch_payload(items: Sequence[BatchItem[Any]]) -> dict[str, Any]:
+    """Serialize a plural-getter result to JSON-safe, index-aligned per-item outcomes.
+
+    Each entry mirrors :class:`~spotify_scraper.batch.BatchItem`: the echoed
+    ``value``, an ``ok`` flag, the model's ``to_dict()`` on success (else null),
+    and the error message on failure (else null). A single bad input never sinks
+    the batch.
+    """
+    return {
+        "items": [
+            {
+                "value": item.value,
+                "ok": item.ok,
+                "result": item.result.to_dict() if item.result is not None else None,
+                "error": None if item.error is None else str(item.error),
+            }
+            for item in items
+        ]
+    }
 
 
 def build_server(
@@ -166,6 +192,38 @@ def build_server(
         concerts = await _run(client.get_artist_events(value))
         return {"concerts": [c.to_dict() for c in concerts]}
 
+    # --- batch getters (anonymous; per-item failure capture) --------------- #
+
+    @mcp.tool()
+    async def get_tracks(values: list[str]) -> dict[str, Any]:
+        """Fetch many tracks at once; one ordered result per input, failures captured per item."""
+        return _batch_payload(await _run(client.get_tracks(values)))
+
+    @mcp.tool()
+    async def get_albums(values: list[str]) -> dict[str, Any]:
+        """Fetch many albums at once; one ordered result per input, failures captured per item."""
+        return _batch_payload(await _run(client.get_albums(values)))
+
+    @mcp.tool()
+    async def get_artists(values: list[str]) -> dict[str, Any]:
+        """Fetch many artists at once; one ordered result per input, failures captured per item."""
+        return _batch_payload(await _run(client.get_artists(values)))
+
+    @mcp.tool()
+    async def get_episodes(values: list[str]) -> dict[str, Any]:
+        """Fetch many episodes at once; one ordered result per input, failures captured per item."""
+        return _batch_payload(await _run(client.get_episodes(values)))
+
+    @mcp.tool()
+    async def get_playlists(values: list[str], max_tracks: int = 100) -> dict[str, Any]:
+        """Fetch many playlists at once (up to ``max_tracks`` each); failures captured per item."""
+        return _batch_payload(await _run(client.get_playlists(values, max_tracks=max_tracks)))
+
+    @mcp.tool()
+    async def get_shows(values: list[str], max_episodes: int = 50) -> dict[str, Any]:
+        """Fetch many shows at once (up to ``max_episodes`` each); failures captured per item."""
+        return _batch_payload(await _run(client.get_shows(values, max_episodes=max_episodes)))
+
     # --- authenticated tools ----------------------------------------------- #
 
     @mcp.tool()
@@ -227,6 +285,25 @@ def build_server(
         async with httpx.AsyncClient(follow_redirects=True, timeout=15.0) as http:
             data = (await http.get(image.url)).content
         return Image(data=data, format="jpeg")
+
+    @mcp.tool()
+    async def get_track_visuals(value: str) -> dict[str, Any]:
+        """Fetch a track plus its cover ``colors`` and ``canvas`` in one call, for visual UIs.
+
+        ``track`` and ``colors`` are always present (anonymous). ``canvas`` is
+        best-effort: the looping cover video when the server has a SPOTIFY_SP_DC
+        cookie and the track has one, else null — a missing cookie or Canvas never
+        fails the call.
+        """
+        track = await _run(client.get_track(value))
+        colors = await _run(client.get_colors(track))
+        canvas: dict[str, Any] | None = None
+        try:
+            got = await client.get_canvas(value)
+            canvas = got.to_dict() if got is not None else None
+        except SpotifyScraperError:
+            canvas = None
+        return {"track": track.to_dict(), "colors": colors.to_dict(), "canvas": canvas}
 
     # --- resources: addressable entities ----------------------------------- #
 
