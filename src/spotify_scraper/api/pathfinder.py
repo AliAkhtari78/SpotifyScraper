@@ -9,7 +9,7 @@ All functions here are I/O-free; the sync and async facades reuse them.
 from __future__ import annotations
 
 import json
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 from urllib.parse import urlencode
@@ -76,6 +76,11 @@ OPERATIONS: dict[str, Operation] = {
         "queryPodcastEpisodes",
         "06046f9b939d56c8eb7cdbb687da938de1164c006871aec91dc26e4dc7d8eb08",
         lambda eid: {"uri": f"spotify:show:{eid}", "offset": 0, "limit": 50},
+    ),
+    "canvas": Operation(
+        "canvas",
+        "575138ab27cd5c1b3e54da54d0a7cc8d85485402de26340c2145f0f6bb5e7a9f",
+        lambda eid: {"trackUri": f"spotify:track:{eid}"},
     ),
 }
 
@@ -165,6 +170,41 @@ def build_search_url(
         "variables": json.dumps(variables, separators=(",", ":")),
         "extensions": json.dumps(
             {"persistedQuery": {"version": 1, "sha256Hash": SEARCH_OPERATION.sha256}},
+            separators=(",", ":"),
+        ),
+    }
+    return f"{PATHFINDER_URL}?{urlencode(params)}"
+
+
+COLORS_OPERATION = Operation(
+    "fetchExtractedColors",
+    "36e90fcaea00d47c695fce31874efeb2519b97d4cd0ee1abfb4f8dc9348596ea",
+    lambda image_uri: {"imageUris": [image_uri]},
+)
+"""The anonymous cover-art color-extraction operation.
+
+This is the ONLY place the ``fetchExtractedColors`` persisted-query hash may
+live; a Spotify rotation is a one-line edit here. It is driven by a list of
+``spotify:image:<id>`` uris rather than an entity id, so it is kept out of the
+entity ``OPERATIONS`` table whose builders take an entity id.
+"""
+
+
+def build_colors_url(image_uris: Sequence[str]) -> str:
+    """Build the persisted-query GET URL for cover-art color extraction.
+
+    Args:
+        image_uris: One or more ``spotify:image:<id>`` image uris.
+
+    Returns:
+        The fully URL-encoded pathfinder color-extraction query URL.
+    """
+    variables = {"imageUris": list(image_uris)}
+    params = {
+        "operationName": COLORS_OPERATION.name,
+        "variables": json.dumps(variables, separators=(",", ":")),
+        "extensions": json.dumps(
+            {"persistedQuery": {"version": 1, "sha256Hash": COLORS_OPERATION.sha256}},
             separators=(",", ":"),
         ),
     }

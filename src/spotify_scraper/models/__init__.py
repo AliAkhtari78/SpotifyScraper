@@ -5,6 +5,8 @@ from __future__ import annotations
 from spotify_scraper.models.account import Account
 from spotify_scraper.models.album import Album
 from spotify_scraper.models.artist import Artist
+from spotify_scraper.models.canvas import Canvas
+from spotify_scraper.models.colors import Colors
 from spotify_scraper.models.common import AlbumRef, ArtistRef, Image, ShowRef, UserRef
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics, LyricsLine
@@ -20,6 +22,8 @@ __all__ = [
     "AlbumRef",
     "Artist",
     "ArtistRef",
+    "Canvas",
+    "Colors",
     "Episode",
     "Image",
     "Lyrics",

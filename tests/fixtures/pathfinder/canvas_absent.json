@@ -1,0 +1,9 @@
+{
+  "data": {
+    "trackUnion": {
+      "__typename": "Track",
+      "canvas": null,
+      "uri": "spotify:track:4uLU6hMCjMI75M1A2tKUQC"
+    }
+  }
+}

@@ -7,6 +7,7 @@ fetches with :class:`SpotifyClient` and emits ``model.to_dict()`` as JSON.
 
 from __future__ import annotations
 
+import dataclasses
 import os
 import time
 from pathlib import Path
@@ -268,6 +269,82 @@ def transcript(
         with SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate, cookies=source) as client:
             entity = client.get_transcript(value)
         emit(entity.to_dict(), pretty=pretty, output=output)
+
+    run(body)
+
+
+@app.command()
+def charts(
+    key: Annotated[
+        str | None,
+        typer.Argument(help="Chart key to fetch (omit to list the available charts)."),
+    ] = None,
+    max_tracks: Annotated[
+        str,
+        typer.Option("--max-tracks", help="Track cap; an integer or 'all' (0 also means all)."),
+    ] = "100",
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """List editorial charts, or fetch one (e.g. 'top-50-global') as a playlist."""
+
+    def body() -> None:
+        with build_client(proxy, timeout, rate_limit) as client:
+            if key is None:
+                listing = [dataclasses.asdict(chart) for chart in client.list_charts()]
+                emit({"charts": listing}, pretty=pretty, output=output)
+                return
+            entity = client.get_chart(key, max_tracks=_parse_max(max_tracks))
+            emit(entity.to_dict(), pretty=pretty, output=output)
+
+    run(body)
+
+
+@app.command()
+def colors(
+    value: Annotated[
+        str, typer.Argument(help="Spotify image URL, 'spotify:image:' uri, or image id.")
+    ],
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Extract a cover image's theming colors and emit them as JSON."""
+
+    def body() -> None:
+        with build_client(proxy, timeout, rate_limit) as client:
+            entity = client.get_colors(value)
+        emit(entity.to_dict(), pretty=pretty, output=output)
+
+    run(body)
+
+
+@app.command()
+def canvas(
+    value: ValueArg,
+    cookies: CookiesOpt = None,
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Fetch a track's Canvas video (requires an sp_dc cookie) and emit JSON.
+
+    Emits an empty object when the track has no Canvas.
+    """
+
+    def body() -> None:
+        source = _resolve_cookies(cookies)
+        rate = RateLimit(per_second=rate_limit) if rate_limit is not None else None
+        with SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate, cookies=source) as client:
+            entity = client.get_canvas(value)
+        emit(entity.to_dict() if entity is not None else {}, pretty=pretty, output=output)
 
     run(body)
 

@@ -20,10 +20,16 @@ from spotify_scraper.media.images import (
     pick_image,
     safe_filename,
 )
+from spotify_scraper.media.video import (
+    download_canvas_async,
+    download_canvas_sync,
+)
 
 __all__ = [
     "HasImagesAndName",
     "ImageSize",
+    "download_canvas_async",
+    "download_canvas_sync",
     "download_cover_async",
     "download_cover_sync",
     "download_preview_async",

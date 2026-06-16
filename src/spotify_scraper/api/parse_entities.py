@@ -16,6 +16,8 @@ from spotify_scraper.errors import ParsingError
 from spotify_scraper.models.account import Account
 from spotify_scraper.models.album import Album
 from spotify_scraper.models.artist import Artist
+from spotify_scraper.models.canvas import Canvas
+from spotify_scraper.models.colors import Colors
 from spotify_scraper.models.common import AlbumRef, ArtistRef, Image, ShowRef, UserRef
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics, LyricsLine
@@ -32,6 +34,8 @@ __all__ = [
     "parse_album_tracks_page",
     "parse_artist_embed",
     "parse_artist_gql",
+    "parse_canvas",
+    "parse_colors",
     "parse_episode_embed",
     "parse_episode_gql",
     "parse_lyrics",
@@ -1510,3 +1514,71 @@ def _embed_explicit(entity: Mapping[str, Any]) -> bool:
         if isinstance(labels, Sequence):
             return any(isinstance(label, str) and label.upper() == "EXPLICIT" for label in labels)
     return False
+
+
+# --------------------------------------------------------------------------- #
+# Colors & Canvas
+# --------------------------------------------------------------------------- #
+
+
+def parse_colors(extracted: Any) -> Colors:
+    """Build a :class:`Colors` from a ``fetchExtractedColors`` response.
+
+    Args:
+        extracted: The ``body["data"]["extractedColors"]`` list; the first
+            entry is used (one image was requested).
+
+    Returns:
+        A :class:`Colors` with ``#RRGGBB`` hex values.
+
+    Raises:
+        ParsingError: If the list is empty or a color's ``hex`` is missing.
+    """
+    if not isinstance(extracted, Sequence) or not extracted:
+        raise ParsingError(f"Color payload had no 'extractedColors'. {_UPDATE_HINT}")
+    entry = extracted[0]
+    if not isinstance(entry, Mapping):
+        raise ParsingError(f"Color payload entry was not an object. {_UPDATE_HINT}")
+    return Colors(
+        raw=_hex_color(entry.get("colorRaw")),
+        dark=_hex_color(entry.get("colorDark")),
+        light=_hex_color(entry.get("colorLight")),
+        is_fallback=_color_is_fallback(entry.get("colorRaw")),
+    )
+
+
+def _hex_color(node: Any) -> str:
+    if isinstance(node, Mapping):
+        value = node.get("hex")
+        if isinstance(value, str) and value:
+            return value
+    raise ParsingError(f"Color payload missing a 'hex' value. {_UPDATE_HINT}")
+
+
+def _color_is_fallback(node: Any) -> bool:
+    return bool(node.get("isFallback")) if isinstance(node, Mapping) else False
+
+
+def parse_canvas(node: Any) -> Canvas | None:
+    """Build a :class:`Canvas` from a ``trackUnion.canvas`` node.
+
+    Args:
+        node: The ``canvas`` value of a ``canvas``-op ``trackUnion``; ``None``
+            (the common case — most tracks have no Canvas) yields ``None``.
+
+    Returns:
+        The track's :class:`Canvas`, or ``None`` when absent.
+    """
+    if not isinstance(node, Mapping):
+        return None
+    url = node.get("url")
+    if not isinstance(url, str) or not url:
+        return None
+    uri = _optional_str(node, "uri") or ""
+    return Canvas(
+        id=_id_from_uri(uri) if uri else "",
+        uri=uri,
+        url=url,
+        canvas_type=_optional_str(node, "type"),
+        file_id=_optional_str(node, "fileId"),
+    )

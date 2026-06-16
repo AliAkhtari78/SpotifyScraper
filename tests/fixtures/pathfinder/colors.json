@@ -1,0 +1,21 @@
+{
+  "data": {
+    "extractedColors": [
+      {
+        "__typename": "ExtractedColors",
+        "colorDark": {
+          "hex": "#780010",
+          "isFallback": false
+        },
+        "colorLight": {
+          "hex": "#ED0020",
+          "isFallback": false
+        },
+        "colorRaw": {
+          "hex": "#780010",
+          "isFallback": false
+        }
+      }
+    ]
+  }
+}

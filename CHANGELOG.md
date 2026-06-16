@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.0] - Unreleased
+
+### Added
+- **Cover-art colors.** `client.get_colors(source)` returns a typed `Colors`
+  (`raw`/`dark`/`light` `#RRGGBB` hex + `is_fallback`) for UI theming. Anonymous
+  and tier-1-only. `source` may be a Spotify image URL, a `spotify:image:` uri, or
+  any fetched entity that has `images` (the first image is used). CLI: `colors`.
+- **Canvas.** `client.get_canvas(track)` returns a `Canvas` (a short, silent,
+  **non-DRM** looping cover-video MP4 on `canvaz.scdn.co`) or `None` when the track
+  has none. `client.download_canvas(track_or_canvas, dest)` saves the MP4. Canvas
+  is cookie-authenticated (build with `cookies=`), exactly like lyrics. CLI:
+  `canvas`.
+- **Charts.** `client.list_charts()` enumerates the built-in editorial charts and
+  `client.get_chart(key)` (e.g. `"top-50-global"`, `"todays-top-hits"`) fetches one
+  as a `Playlist`. Charts are ordinary editorial playlists, so no new persisted
+  query is involved. CLI: `charts`.
+
 ## [3.5.0] - 2026-06-15
 
 ### Added

@@ -16,6 +16,7 @@ from typing import Any, TypeVar
 
 from spotify_scraper import media, urls
 from spotify_scraper.api import account as account_api
+from spotify_scraper.api import charts as charts_api
 from spotify_scraper.api import lyrics as lyrics_api
 from spotify_scraper.api import parse_embed, parse_entities, pathfinder
 from spotify_scraper.api import transcripts as transcripts_api
@@ -41,6 +42,8 @@ from spotify_scraper.http.transport import HttpxTransport, Response, Transport
 from spotify_scraper.models.account import Account
 from spotify_scraper.models.album import Album
 from spotify_scraper.models.artist import Artist
+from spotify_scraper.models.canvas import Canvas
+from spotify_scraper.models.colors import Colors
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
@@ -733,6 +736,115 @@ class SpotifyClient:
         results = parse_entities.parse_search_results(union, query=query)
         return _filter_search_results(results, wanted)
 
+    def get_colors(self, source: str | media.HasImagesAndName) -> Colors:
+        """Extract the dominant theming colors of a cover image.
+
+        Anonymous and tier-1-only — the same bearer token as the entity getters,
+        no cookie. Accepts a Spotify image URL or ``spotify:image:`` uri, or any
+        fetched entity carrying ``images`` (a :class:`Track`, :class:`Album`,
+        :class:`Artist`, …); the entity's first image is used.
+
+        Args:
+            source: An image URL/uri, or an entity with ``images``.
+
+        Returns:
+            The image's :class:`Colors` (``#RRGGBB`` hex, for UI theming).
+
+        Raises:
+            URLError: If ``source`` has no usable image.
+            SpotifyScraperError: If the client is closed.
+        """
+        self._ensure_open()
+        image_uri = _image_uri_from(source)
+        data = self._colors_union(image_uri)
+        return parse_entities.parse_colors(data.get("extractedColors"))
+
+    def get_canvas(self, value: str) -> Canvas | None:
+        """Fetch a track's Canvas (looping cover video), or ``None`` if it has none.
+
+        Canvas is an authenticated feature: the client must have been built with
+        ``cookies=``. A client without cookies raises :class:`AuthenticationError`
+        immediately, without any HTTP request. Most tracks have no Canvas, so
+        ``None`` is a normal, common result rather than an error.
+
+        Args:
+            value: A Spotify track URL, URI, or 22-character ID.
+
+        Returns:
+            The track's :class:`Canvas`, or ``None`` when absent.
+
+        Raises:
+            AuthenticationError: If no cookies were configured, or the cookie is
+                rejected by the token exchange.
+            NotFoundError: If the track does not exist.
+            SpotifyScraperError: If the client is closed.
+        """
+        _, entity_id = self._resolve(value, "track")
+        provider = self._cookie_provider()
+        token = provider.token()
+        try:
+            return self._fetch_canvas(entity_id, token)
+        except AuthenticationError:
+            provider.invalidate()
+            return self._fetch_canvas(entity_id, provider.token())
+
+    def download_canvas(
+        self, source: str | Canvas, dest: str | Path = ".", *, filename: str | None = None
+    ) -> Path:
+        """Download a track's Canvas MP4 to ``dest`` and return its path.
+
+        Args:
+            source: A track URL/URI/ID, or an already-fetched :class:`Canvas`.
+            dest: Destination directory; created if it does not exist.
+            filename: Explicit filename; defaults to ``<canvas-id>.mp4``.
+
+        Returns:
+            The path of the written MP4.
+
+        Raises:
+            AuthenticationError: If a track ``source`` is given without cookies.
+            NotFoundError: If the track has no Canvas.
+            SpotifyScraperError: If the client is closed.
+        """
+        self._ensure_open()
+        canvas = source if isinstance(source, Canvas) else self.get_canvas(source)
+        if canvas is None:
+            raise NotFoundError("This track has no Canvas to download.")
+        return media.download_canvas_sync(self._transport, canvas, Path(dest), filename=filename)
+
+    def list_charts(self) -> Sequence[charts_api.ChartDef]:
+        """List the built-in editorial charts (key, name, backing playlist id).
+
+        Returns:
+            Every registered :class:`~spotify_scraper.api.charts.ChartDef`. Pass a
+            chart's ``key`` to :meth:`get_chart` to fetch it as a playlist.
+        """
+        return charts_api.list_chart_defs()
+
+    def get_chart(self, key: str, *, max_tracks: int | None = 100) -> Playlist:
+        """Fetch an editorial chart (e.g. ``"top-50-global"``) as a playlist.
+
+        Charts are ordinary editorial playlists; this resolves ``key`` to its
+        backing playlist id and delegates to :meth:`get_playlist`.
+
+        Args:
+            key: A chart key from :meth:`list_charts` (e.g. ``"todays-top-hits"``).
+            max_tracks: Upper bound on tracks; ``None`` fetches all.
+
+        Returns:
+            The chart's :class:`Playlist`.
+
+        Raises:
+            URLError: If ``key`` is not a known chart.
+            SpotifyScraperError: If the client is closed.
+        """
+        try:
+            definition = charts_api.chart_def(key)
+        except KeyError as exc:
+            known = ", ".join(sorted(charts_api.CHARTS))
+            raise URLError(f"Unknown chart {key!r}. Known charts: {known}.") from exc
+        return self.get_playlist(definition.playlist_id, max_tracks=max_tracks)
+
     def _cookie_provider(self) -> CookieTokenProvider:
         self._ensure_open()
         provider = self._cookie_tokens
@@ -1101,6 +1213,34 @@ class SpotifyClient:
         body = _safe_json(response)
         return pathfinder.classify_response(response.status_code, body)
 
+    def _colors_union(self, image_uri: str) -> Mapping[str, Any]:
+        try:
+            return self._colors_request(image_uri, self._tokens.token())
+        except TokenError:
+            self._tokens.invalidate()
+            return self._colors_request(image_uri, self._tokens.token())
+
+    def _colors_request(self, image_uri: str, token: str) -> dict[str, Any]:
+        url = pathfinder.build_colors_url([image_uri])
+        response = self._transport.get(url, headers=pathfinder.auth_headers(token))
+        body = _safe_json(response)
+        return pathfinder.classify_response(response.status_code, body)
+
+    def _fetch_canvas(self, entity_id: str, token: str) -> Canvas | None:
+        url = pathfinder.build_url("canvas", entity_id)
+        response = self._transport.get(url, headers=pathfinder.auth_headers(token))
+        if response.status_code == 401:
+            raise AuthenticationError("Spotify rejected the cookie token for canvas (HTTP 401).")
+        body = _safe_json(response)
+        data = pathfinder.classify_response(response.status_code, body)
+        union = data.get("trackUnion")
+        if not isinstance(union, Mapping):
+            raise ParsingError(
+                "Pathfinder response missing 'data.trackUnion'. "
+                "Spotify may have changed its API; check for a library update."
+            )
+        return parse_entities.parse_canvas(union.get("canvas"))
+
 
 def _lang_header(locale: str | None) -> dict[str, str]:
     """Return a per-request ``Accept-Language`` override, or empty when unset.
@@ -1109,6 +1249,30 @@ def _lang_header(locale: str | None) -> dict[str, str]:
     ``transport.get``, localizing display-name LANGUAGE only.
     """
     return {"Accept-Language": locale} if locale is not None else {}
+
+
+def _image_uri_from(source: str | media.HasImagesAndName) -> str:
+    """Resolve a colors source to a single ``spotify:image:<id>`` uri."""
+    if isinstance(source, str):
+        return _image_uri_from_str(source)
+    for image in source.images:
+        if image.url:
+            return _image_uri_from_str(image.url)
+    raise URLError(
+        "Cannot extract colors: pass an image URL, a 'spotify:image:' uri, "
+        "or an entity that has images."
+    )
+
+
+def _image_uri_from_str(value: str) -> str:
+    """Turn an image URL, ``spotify:image:`` uri, or bare id into an image uri."""
+    text = value.strip()
+    if text.startswith("spotify:image:"):
+        return text
+    tail = text.rsplit("/", 1)[-1].split("?", 1)[0]
+    if not tail:
+        raise URLError(f"Cannot derive an image id from {value!r}.")
+    return f"spotify:image:{tail}"
 
 
 def _validate_search_types(types: Sequence[str]) -> frozenset[str]:

@@ -1,0 +1,14 @@
+{
+  "data": {
+    "trackUnion": {
+      "__typename": "Track",
+      "canvas": {
+        "fileId": "ad6acb10b87939f29d5e2782f3fdfb56",
+        "type": "VIDEO_LOOPING_RANDOM",
+        "uri": "spotify:canvas:29iANwFyaHc7AksOVFFvAT",
+        "url": "https://canvaz.scdn.co/upload/licensor/7JGwF0zhX9oItt9901OvB5/video/46a4663163214209ba58767ec8f47213.cnvs.mp4"
+      },
+      "uri": "spotify:track:4LfCY65LvojKjWEnU7fNN4"
+    }
+  }
+}
