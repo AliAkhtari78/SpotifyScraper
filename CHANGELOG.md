@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.1] - 2026-06-16
+
+### Fixed
+- **Documentation examples.** Standardized the canonical example IDs on Rick
+  Astley's "Whenever You Need Somebody" album (`6N9PS4QXF1D0OWPk0Sxtb4`) — the
+  previous album example was region-restricted (so it appeared "missing" in some
+  markets) and an example podcast episode had been removed (HTTP 403). No library
+  code changed. Also documented the multi-architecture (amd64 + arm64) container
+  image.
+
 ## [3.6.0] - 2026-06-16
 
 ### Added

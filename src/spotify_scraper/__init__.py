@@ -60,7 +60,7 @@ from spotify_scraper.models import (
     UserRef,
 )
 
-__version__ = "3.6.0"
+__version__ = "3.6.1"
 
 __all__ = [
     "Account",
