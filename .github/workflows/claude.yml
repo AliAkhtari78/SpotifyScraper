@@ -55,6 +55,10 @@ jobs:
           # API-key auth (NOT subscription OAuth — ToS + CI reliability). The key
           # is a GitHub Actions secret and is never exposed.
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Use the workflow's own scoped token (issues:write) for GitHub access —
+          # avoids the OIDC/GitHub-App path so no `id-token: write` is needed and
+          # permissions stay minimal.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             Read `policy/agent.md` in this repo first and obey it. You are at autonomy
             rung 0 (OBSERVE): diagnose and comment ONLY. Open no PR, push no commits,
