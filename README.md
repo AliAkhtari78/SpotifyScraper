@@ -5,6 +5,8 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![CI](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io)
+[![Container](https://img.shields.io/badge/ghcr.io-container-2496ED?logo=docker&logoColor=white)](https://github.com/AliAkhtari78/SpotifyScraper/pkgs/container/spotifyscraper)
+[![Maintained with Claude Code](https://img.shields.io/badge/maintained%20with-Claude%20Code-d97757?logo=anthropic&logoColor=white)](https://github.com/AliAkhtari78/SpotifyScraper#reliability--maintenance)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE)
 
 **Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — without the official API or an API key.**
@@ -250,9 +252,33 @@ ideas are tracked in the GitHub
 [issues](https://github.com/AliAkhtari78/SpotifyScraper/issues) — 👍 or weigh in
 on the ones that matter most to you. Scope is subject to change.
 
+## Reliability & maintenance
+
+This library rides Spotify's own public endpoints, so it can break when Spotify
+changes them. To keep it dependable:
+
+- A **daily canary** runs the live test suite against Spotify. When an endpoint
+  shifts, it automatically opens a `spotify-breakage` issue (and closes it on
+  recovery), so regressions surface before they reach you.
+- Breakages are triaged and fixed promptly with the help of **[Claude Code](https://claude.com/claude-code)**
+  (Anthropic's coding agent), under the maintainer's review — the same
+  agent-assisted workflow that keeps this project moving. Persisted-query hashes
+  live in a single file (`api/pathfinder.py`), so a Spotify rotation is a
+  one-line update.
+- Every change runs through `ruff` + `mypy --strict` + a hermetic test suite
+  (85% coverage floor) across Python 3.10–3.13 on Linux, macOS, and Windows.
+
+If something is broken for you, please
+[open an issue](https://github.com/AliAkhtari78/SpotifyScraper/issues) — the
+monitoring has often caught it already.
+
 ## Documentation
 
 Full docs, guides, and the API reference: **<https://spotifyscraper.readthedocs.io>**
+
+The MCP server also ships as a container:
+`docker run -p 8000:8000 ghcr.io/aliakhtari78/spotifyscraper` (set `SPOTIFY_SP_DC`
+to enable the authenticated tools).
 
 ## Legal
 

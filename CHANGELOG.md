@@ -43,6 +43,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   image tool, and stdio + streamable-HTTP transports. Authenticated tools require
   the `SPOTIFY_SP_DC` environment variable. Install with
   `pip install 'spotifyscraper[mcp]'`.
+- **Container image.** Published to `ghcr.io/aliakhtari78/spotifyscraper`; by
+  default it serves the MCP server over streamable-HTTP
+  (`docker run -p 8000:8000 ghcr.io/aliakhtari78/spotifyscraper`), or runs the CLI
+  on demand. Built and pushed from CI with the repo's `GITHUB_TOKEN`.
 
 ## [3.5.0] - 2026-06-15
 
