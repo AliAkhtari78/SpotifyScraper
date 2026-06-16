@@ -46,12 +46,14 @@ run` reads the image's manifest list and automatically downloads the build that
 matches your machine; the per-platform `@sha256:` digests shown on the page are
 just how the registry lists each architecture.
 
-Available tags: `latest` (the rolling `master` build), `3.6.0` / `v3.6.0` (one per
-release), and `sha-<commit>` to pin an exact commit:
+Available tags: `latest` (the rolling `master` build), a version tag per release
+(`MAJOR.MINOR.PATCH` and `vMAJOR.MINOR.PATCH`, matching the
+[latest release](https://github.com/AliAkhtari78/SpotifyScraper/releases/latest)),
+and `sha-<commit>` to pin an exact commit:
 
 ```bash
-docker run -p 8000:8000 ghcr.io/aliakhtari78/spotifyscraper          # :latest
-docker run -p 8000:8000 ghcr.io/aliakhtari78/spotifyscraper:3.6.0    # pinned release
+docker run -p 8000:8000 ghcr.io/aliakhtari78/spotifyscraper              # :latest
+docker run -p 8000:8000 ghcr.io/aliakhtari78/spotifyscraper:<version>    # a pinned release
 ```
 
 ## Use it from Claude Desktop
