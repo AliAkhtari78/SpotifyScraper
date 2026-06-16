@@ -1,0 +1,1189 @@
+{
+  "data": {
+    "artistUnion": {
+      "__typename": "Artist",
+      "id": "0gxyHStUsqpMadRV0Di1Qt",
+      "profile": {
+        "name": "Rick Astley"
+      },
+      "relatedContent": {
+        "relatedArtists": {
+          "items": [
+            {
+              "id": "6kz53iCdBSqhQCZ21CoLcc",
+              "profile": {
+                "name": "Culture Club"
+              },
+              "uri": "spotify:artist:6kz53iCdBSqhQCZ21CoLcc",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb373b4aa8b6b5ca058a67307f",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178373b4aa8b6b5ca058a67307f",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174373b4aa8b6b5ca058a67307f",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "2jzc5TC5TVFLXQlBNiIUzE",
+              "profile": {
+                "name": "a-ha"
+              },
+              "uri": "spotify:artist:2jzc5TC5TVFLXQlBNiIUzE",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb0168ba8148c07c2cdeb7d067",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1780168ba8148c07c2cdeb7d067",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051740168ba8148c07c2cdeb7d067",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "5lpH0xAS4fVfLkACg9DAuM",
+              "profile": {
+                "name": "Wham!"
+              },
+              "uri": "spotify:artist:5lpH0xAS4fVfLkACg9DAuM",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb2ebf587c72f9e5159da9ce55",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1782ebf587c72f9e5159da9ce55",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051742ebf587c72f9e5159da9ce55",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0NKDgy9j66h3DLnN8qu1bB",
+              "profile": {
+                "name": "Eurythmics"
+              },
+              "uri": "spotify:artist:0NKDgy9j66h3DLnN8qu1bB",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb145a01fb993c3088fe6ac5e7",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178145a01fb993c3088fe6ac5e7",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174145a01fb993c3088fe6ac5e7",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "7gcCQIlkkfbul5Mt0jBQkg",
+              "profile": {
+                "name": "Dave Stewart"
+              },
+              "uri": "spotify:artist:7gcCQIlkkfbul5Mt0jBQkg",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb94fdf3ac086d95c63d93772e",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f17894fdf3ac086d95c63d93772e",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab6761610000517494fdf3ac086d95c63d93772e",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0kObWap02DEg9EAJ3PBxzf",
+              "profile": {
+                "name": "Starship"
+              },
+              "uri": "spotify:artist:0kObWap02DEg9EAJ3PBxzf",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb4bfb2d74ef7e09a1ebdd988d",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1784bfb2d74ef7e09a1ebdd988d",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051744bfb2d74ef7e09a1ebdd988d",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "771qBvjnXOH9Azr6lKy6FB",
+              "profile": {
+                "name": "Michael Sembello"
+              },
+              "uri": "spotify:artist:771qBvjnXOH9Azr6lKy6FB",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 818,
+                      "url": "https://i.scdn.co/image/04e6cb4e4aaea85f1736dd6c1d40028f428b7ee1",
+                      "width": 640
+                    },
+                    {
+                      "height": 82,
+                      "url": "https://i.scdn.co/image/f355e23fa9ba425f36ba00db97b99b973f8f7936",
+                      "width": 64
+                    },
+                    {
+                      "height": 256,
+                      "url": "https://i.scdn.co/image/8cfd79c608fa67e1c389a5583151e0e9b3e725d3",
+                      "width": 200
+                    },
+                    {
+                      "height": 1279,
+                      "url": "https://i.scdn.co/image/f545777994a61365718ca313df3a6b7f754d38ce",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "3Y3xIwWyq5wnNHPp5gPjOW",
+              "profile": {
+                "name": "Kenny Loggins"
+              },
+              "uri": "spotify:artist:3Y3xIwWyq5wnNHPp5gPjOW",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebe5ade0d346536449c7a75b48",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178e5ade0d346536449c7a75b48",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174e5ade0d346536449c7a75b48",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0NyzfcGDZZ6GM25EBG9BYK",
+              "profile": {
+                "name": "Ray Parker Jr."
+              },
+              "uri": "spotify:artist:0NyzfcGDZZ6GM25EBG9BYK",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 892,
+                      "url": "https://i.scdn.co/image/9ddcbe93f383a173cdc552068498b33471a2f894",
+                      "width": 640
+                    },
+                    {
+                      "height": 89,
+                      "url": "https://i.scdn.co/image/939754bf1e708c47cb591ef6f79cecf03cc14de7",
+                      "width": 64
+                    },
+                    {
+                      "height": 279,
+                      "url": "https://i.scdn.co/image/61ba1d675cd7956f2831603c3b4f5c73fa8bde70",
+                      "width": 200
+                    },
+                    {
+                      "height": 1393,
+                      "url": "https://i.scdn.co/image/112bf0d1817b5cffc0874ff8f147d7b6ba2b9cc3",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "4QQgXkCYTt3BlENzhyNETg",
+              "profile": {
+                "name": "Earth, Wind & Fire"
+              },
+              "uri": "spotify:artist:4QQgXkCYTt3BlENzhyNETg",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb9722e16a886767adf1178f92",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1789722e16a886767adf1178f92",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051749722e16a886767adf1178f92",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "5MspMQqdVbdwP6ax3GXqum",
+              "profile": {
+                "name": "Annie Lennox"
+              },
+              "uri": "spotify:artist:5MspMQqdVbdwP6ax3GXqum",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6772690000dd22a5740b294929582aecbdc681",
+                      "width": 640
+                    },
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab67726900008f74a5740b294929582aecbdc681",
+                      "width": 64
+                    },
+                    {
+                      "height": 200,
+                      "url": "https://i.scdn.co/image/ab6772690000bac3a5740b294929582aecbdc681",
+                      "width": 200
+                    },
+                    {
+                      "height": 1000,
+                      "url": "https://i.scdn.co/image/ab6772690000c46ca5740b294929582aecbdc681",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0lwRI7lvmlRY5DiA5Xa6wQ",
+              "profile": {
+                "name": "Lipps Inc."
+              },
+              "uri": "spotify:artist:0lwRI7lvmlRY5DiA5Xa6wQ",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebcf5fb42825076ab99ff7a991",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178cf5fb42825076ab99ff7a991",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174cf5fb42825076ab99ff7a991",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0PFtn5NtBbbUNbU9EAmIWF",
+              "profile": {
+                "name": "TOTO"
+              },
+              "uri": "spotify:artist:0PFtn5NtBbbUNbU9EAmIWF",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eba59a5bcab211f964fe9bfb06",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178a59a5bcab211f964fe9bfb06",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174a59a5bcab211f964fe9bfb06",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "26bcq2nyj5GB7uRr558iQg",
+              "profile": {
+                "name": "Survivor"
+              },
+              "uri": "spotify:artist:26bcq2nyj5GB7uRr558iQg",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 414,
+                      "url": "https://i.scdn.co/image/4b664fd84812a6275249447cae61ca048721c52d",
+                      "width": 640
+                    },
+                    {
+                      "height": 41,
+                      "url": "https://i.scdn.co/image/b138642e8356c9b946e82cfc79d0b047fa886a02",
+                      "width": 63
+                    },
+                    {
+                      "height": 129,
+                      "url": "https://i.scdn.co/image/7b6f21db11d15febd6e8079f0f2b147ccac427b4",
+                      "width": 199
+                    },
+                    {
+                      "height": 647,
+                      "url": "https://i.scdn.co/image/da30acd2c9d0f32f5f5a2d69f32c2d30335466b5",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "2BTZIqw0ntH9MvilQ3ewNY",
+              "profile": {
+                "name": "Cyndi Lauper"
+              },
+              "uri": "spotify:artist:2BTZIqw0ntH9MvilQ3ewNY",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebf1ac38263c9e23ab946469a7",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178f1ac38263c9e23ab946469a7",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174f1ac38263c9e23ab946469a7",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "1LZEQNv7sE11VDY3SdxQeN",
+              "profile": {
+                "name": "Bee Gees"
+              },
+              "uri": "spotify:artist:1LZEQNv7sE11VDY3SdxQeN",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 469,
+                      "url": "https://i.scdn.co/image/1ea4795e17ffa658d7ad23095d58997a278179a9",
+                      "width": 640
+                    },
+                    {
+                      "height": 47,
+                      "url": "https://i.scdn.co/image/c707552215757c7f2dc6071e32d487a3c7b28d3f",
+                      "width": 64
+                    },
+                    {
+                      "height": 147,
+                      "url": "https://i.scdn.co/image/1f363042bdd59e0f80cb7b9cac1b312f9389b019",
+                      "width": 200
+                    },
+                    {
+                      "height": 733,
+                      "url": "https://i.scdn.co/image/1d5a05673975ba0c378cd280344e000b0b865620",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "51l0uqRxGaczYr4271pVIC",
+              "profile": {
+                "name": "The Bangles"
+              },
+              "uri": "spotify:artist:51l0uqRxGaczYr4271pVIC",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebff0fb8cdea3f4b4ba33e8b08",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178ff0fb8cdea3f4b4ba33e8b08",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174ff0fb8cdea3f4b4ba33e8b08",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "4bthk9UfsYUYdcFyqxmSUU",
+              "profile": {
+                "name": "Tears For Fears"
+              },
+              "uri": "spotify:artist:4bthk9UfsYUYdcFyqxmSUU",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb1e63dea1bded4ae1d53b5c9a",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1781e63dea1bded4ae1d53b5c9a",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051741e63dea1bded4ae1d53b5c9a",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "19ra5tSw0tWufvUp8GotLo",
+              "profile": {
+                "name": "George Michael"
+              },
+              "uri": "spotify:artist:19ra5tSw0tWufvUp8GotLo",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb89caf0227244708a91a016e5",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f17889caf0227244708a91a016e5",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab6761610000517489caf0227244708a91a016e5",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "4463nfFMmK1cwAWBQDwT5e",
+              "profile": {
+                "name": "Laura Branigan"
+              },
+              "uri": "spotify:artist:4463nfFMmK1cwAWBQDwT5e",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb28d4ec7f18bcf198b275f015",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f17828d4ec7f18bcf198b275f015",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab6761610000517428d4ec7f18bcf198b275f015",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0SD4eZCN4Kr0wQk56hCdh2",
+              "profile": {
+                "name": "Bonnie Tyler"
+              },
+              "uri": "spotify:artist:0SD4eZCN4Kr0wQk56hCdh2",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb4ca4431cf4b1227eba8288d8",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1784ca4431cf4b1227eba8288d8",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051744ca4431cf4b1227eba8288d8",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "3xs0LEzcPXtgNfMNcHzLIP",
+              "profile": {
+                "name": "Rockwell"
+              },
+              "uri": "spotify:artist:3xs0LEzcPXtgNfMNcHzLIP",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6772690000dd2238e130e4a87d0d8a46912426",
+                      "width": 640
+                    },
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/ab67726900008f7438e130e4a87d0d8a46912426",
+                      "width": 64
+                    },
+                    {
+                      "height": 200,
+                      "url": "https://i.scdn.co/image/ab6772690000bac338e130e4a87d0d8a46912426",
+                      "width": 200
+                    },
+                    {
+                      "height": 1000,
+                      "url": "https://i.scdn.co/image/ab6772690000c46c38e130e4a87d0d8a46912426",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "5WWSL6rElJeUk3Uc1S2RyD",
+              "profile": {
+                "name": "Dead Or Alive"
+              },
+              "uri": "spotify:artist:5WWSL6rElJeUk3Uc1S2RyD",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb71112f2ed26437004ca4c0cf",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f17871112f2ed26437004ca4c0cf",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab6761610000517471112f2ed26437004ca4c0cf",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "6V6WCgi7waF55bJmylC4H5",
+              "profile": {
+                "name": "Gloria Gaynor"
+              },
+              "uri": "spotify:artist:6V6WCgi7waF55bJmylC4H5",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebb75ca1c0223fc450dfe3c1ec",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178b75ca1c0223fc450dfe3c1ec",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174b75ca1c0223fc450dfe3c1ec",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0dCKce6tJJdHvlWnDMwzPW",
+              "profile": {
+                "name": "Village People"
+              },
+              "uri": "spotify:artist:0dCKce6tJJdHvlWnDMwzPW",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb60571cd7326957308bad6380",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f17860571cd7326957308bad6380",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab6761610000517460571cd7326957308bad6380",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "18xgcedCGxFbqLbIQn5R8F",
+              "profile": {
+                "name": "Miami Sound Machine"
+              },
+              "uri": "spotify:artist:18xgcedCGxFbqLbIQn5R8F",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 666,
+                      "url": "https://i.scdn.co/image/cadcb7090e7323a57e3ec73e741c6f1625de0cbd",
+                      "width": 640
+                    },
+                    {
+                      "height": 67,
+                      "url": "https://i.scdn.co/image/ba4d003a49d6507601304419fef07495dd69db54",
+                      "width": 64
+                    },
+                    {
+                      "height": 208,
+                      "url": "https://i.scdn.co/image/85df8ccca78b4e38bb84ab3eb72ba588c6b1b586",
+                      "width": 200
+                    },
+                    {
+                      "height": 1041,
+                      "url": "https://i.scdn.co/image/38f548be383c85e312b12491bd08b45c5fc6f241",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "7xkAwz0bQTGDSbkofyQt3U",
+              "profile": {
+                "name": "Belinda Carlisle"
+              },
+              "uri": "spotify:artist:7xkAwz0bQTGDSbkofyQt3U",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebb080a753322b12aa4ee94e6d",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178b080a753322b12aa4ee94e6d",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174b080a753322b12aa4ee94e6d",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "5Pqx4mXYDGIDcg8E5FYjZ8",
+              "profile": {
+                "name": "Carl Douglas"
+              },
+              "uri": "spotify:artist:5Pqx4mXYDGIDcg8E5FYjZ8",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebcea061a1aee40d93206e244c",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178cea061a1aee40d93206e244c",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174cea061a1aee40d93206e244c",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0Suv0tRrNrUlRzAy8aXjma",
+              "profile": {
+                "name": "Haddaway"
+              },
+              "uri": "spotify:artist:0Suv0tRrNrUlRzAy8aXjma",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb6168d878e37738c4430ded7b",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1786168d878e37738c4430ded7b",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051746168d878e37738c4430ded7b",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "3bmFPbLMiLxtR9tFrTcKcP",
+              "profile": {
+                "name": "Matthew Wilder"
+              },
+              "uri": "spotify:artist:3bmFPbLMiLxtR9tFrTcKcP",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb5dcabf363571181dba3ecf66",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1785dcabf363571181dba3ecf66",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051745dcabf363571181dba3ecf66",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "3oZa8Xs6IjlIUGLAhVyK4G",
+              "profile": {
+                "name": "Irene Cara"
+              },
+              "uri": "spotify:artist:3oZa8Xs6IjlIUGLAhVyK4G",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/9d288bc0351fcd79af6b12ea8fc490d4ee1a04cb",
+                      "width": 640
+                    },
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/34cff1e3ac1bfe1cca3398992348a530077f5ba8",
+                      "width": 64
+                    },
+                    {
+                      "height": 200,
+                      "url": "https://i.scdn.co/image/b870046dcdb87df16d02b2203565b113f8f2fa09",
+                      "width": 200
+                    },
+                    {
+                      "height": 1000,
+                      "url": "https://i.scdn.co/image/6f67ead8aa38bba044f98ada0b1643e3a37ac1c0",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "2rblp9fJo16ZPTcKDtlmKW",
+              "profile": {
+                "name": "MC Hammer"
+              },
+              "uri": "spotify:artist:2rblp9fJo16ZPTcKDtlmKW",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 820,
+                      "url": "https://i.scdn.co/image/80166b125a7e32ab55a867ca704c1f414d4ccc39",
+                      "width": 640
+                    },
+                    {
+                      "height": 82,
+                      "url": "https://i.scdn.co/image/023febc40c358850d1a917fdeee6aa75c8d94169",
+                      "width": 64
+                    },
+                    {
+                      "height": 256,
+                      "url": "https://i.scdn.co/image/a5f5cf65586d8f6058443011bed5df42a236ba66",
+                      "width": 200
+                    },
+                    {
+                      "height": 1282,
+                      "url": "https://i.scdn.co/image/af25ffffde1eb2051221017fa0424d906eaf2e94",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "3cniTumSiUysiPWXapGx1i",
+              "profile": {
+                "name": "Cutting Crew"
+              },
+              "uri": "spotify:artist:3cniTumSiUysiPWXapGx1i",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb5677d41157dee225b3633737",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1785677d41157dee225b3633737",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051745677d41157dee225b3633737",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0xliTEbFfy5HQHvsTknTkX",
+              "profile": {
+                "name": "Alphaville"
+              },
+              "uri": "spotify:artist:0xliTEbFfy5HQHvsTknTkX",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb3f8779bb1c97be855c6b51a8",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1783f8779bb1c97be855c6b51a8",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051743f8779bb1c97be855c6b51a8",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "2aS6jYh7ysTL1ZUsHneNgM",
+              "profile": {
+                "name": "Berlin"
+              },
+              "uri": "spotify:artist:2aS6jYh7ysTL1ZUsHneNgM",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebfba07dbdca45039f9d20e5bb",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178fba07dbdca45039f9d20e5bb",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174fba07dbdca45039f9d20e5bb",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0w7HLMvZOHatWVbAKee1zF",
+              "profile": {
+                "name": "Redbone"
+              },
+              "uri": "spotify:artist:0w7HLMvZOHatWVbAKee1zF",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebeb9c771371e6e5d14588963d",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178eb9c771371e6e5d14588963d",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174eb9c771371e6e5d14588963d",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "0TqIPD4IS1w4e30R38B3vj",
+              "profile": {
+                "name": "Rupert Holmes"
+              },
+              "uri": "spotify:artist:0TqIPD4IS1w4e30R38B3vj",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/508083629a80d450fb30581351b47e844a54031a",
+                      "width": 640
+                    },
+                    {
+                      "height": 64,
+                      "url": "https://i.scdn.co/image/795d6c65f40ca6e6c720bc38ed35311db37e1406",
+                      "width": 64
+                    },
+                    {
+                      "height": 200,
+                      "url": "https://i.scdn.co/image/9e51ae0447e1cb74e0747744913f4b817037777c",
+                      "width": 200
+                    },
+                    {
+                      "height": 1000,
+                      "url": "https://i.scdn.co/image/e1dc3194e0bdb35d1c0200eb50f9dc6dcb301888",
+                      "width": 1000
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "7LTzUnZaptYfAFmvqW5M6D",
+              "profile": {
+                "name": "Limahl"
+              },
+              "uri": "spotify:artist:7LTzUnZaptYfAFmvqW5M6D",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb0736748c19d1390a274a2094",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1780736748c19d1390a274a2094",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051740736748c19d1390a274a2094",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "4lxfqrEsLX6N1N4OCSkILp",
+              "profile": {
+                "name": "Phil Collins"
+              },
+              "uri": "spotify:artist:4lxfqrEsLX6N1N4OCSkILp",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5ebe1b4af6dd9cad1b03d03218d",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f178e1b4af6dd9cad1b03d03218d",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab67616100005174e1b4af6dd9cad1b03d03218d",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "3PhoLpVuITZKcymswpck5b",
+              "profile": {
+                "name": "Elton John"
+              },
+              "uri": "spotify:artist:3PhoLpVuITZKcymswpck5b",
+              "visuals": {
+                "avatarImage": {
+                  "sources": [
+                    {
+                      "height": 640,
+                      "url": "https://i.scdn.co/image/ab6761610000e5eb0dc33a1c53bb58a84b45d6a7",
+                      "width": 640
+                    },
+                    {
+                      "height": 160,
+                      "url": "https://i.scdn.co/image/ab6761610000f1780dc33a1c53bb58a84b45d6a7",
+                      "width": 160
+                    },
+                    {
+                      "height": 320,
+                      "url": "https://i.scdn.co/image/ab676161000051740dc33a1c53bb58a84b45d6a7",
+                      "width": 320
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "totalCount": 40
+        }
+      },
+      "uri": "spotify:artist:0gxyHStUsqpMadRV0Di1Qt"
+    }
+  }
+}

@@ -26,8 +26,11 @@ from spotify_scraper.models.search import SearchResults
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
 from spotify_scraper.models.transcript import Transcript, TranscriptLine
+from spotify_scraper.models.user import UserProfile
 
 __all__ = [
+    "discography_item_count",
+    "discography_total",
     "parse_account",
     "parse_album_embed",
     "parse_album_gql",
@@ -36,19 +39,23 @@ __all__ = [
     "parse_artist_gql",
     "parse_canvas",
     "parse_colors",
+    "parse_discography_releases",
     "parse_episode_embed",
     "parse_episode_gql",
     "parse_lyrics",
     "parse_playlist_embed",
     "parse_playlist_gql",
     "parse_playlist_tracks_page",
+    "parse_related_artists",
     "parse_search_results",
     "parse_show_embed",
     "parse_show_episodes_page",
     "parse_show_gql",
+    "parse_similar_albums",
     "parse_track_embed",
     "parse_track_gql",
     "parse_transcript",
+    "parse_user_profile",
     "show_episodes_total",
 ]
 
@@ -1582,3 +1589,202 @@ def parse_canvas(node: Any) -> Canvas | None:
         canvas_type=_optional_str(node, "type"),
         file_id=_optional_str(node, "fileId"),
     )
+
+
+# --------------------------------------------------------------------------- #
+# Discovery: related artists, discography, recommendations, user profile
+# --------------------------------------------------------------------------- #
+
+
+def parse_related_artists(union: Mapping[str, Any]) -> tuple[Artist, ...]:
+    """Build related artists from a ``queryArtistRelated`` ``artistUnion``.
+
+    Args:
+        union: The ``body["data"]["artistUnion"]`` object.
+
+    Returns:
+        The related artists (id / uri / name / images); empty when absent.
+    """
+    related = _optional_mapping(union, "relatedContent")
+    if related is None:
+        return ()
+    node = _optional_mapping(related, "relatedArtists")
+    if node is None:
+        return ()
+    artists: list[Artist] = []
+    for item in _items(node):
+        uri = _optional_str(item, "uri")
+        profile = _optional_mapping(item, "profile") or {}
+        name = _optional_str(profile, "name")
+        if not uri or not name:
+            continue
+        artists.append(
+            Artist(
+                id=_optional_str(item, "id") or _id_from_uri(uri),
+                uri=uri,
+                name=name,
+                images=_avatar_images(item),
+            )
+        )
+    return tuple(artists)
+
+
+def _discography_all(union: Mapping[str, Any]) -> Mapping[str, Any] | None:
+    discography = _optional_mapping(union, "discography")
+    if discography is None:
+        return None
+    return _optional_mapping(discography, "all")
+
+
+def parse_discography_releases(union: Mapping[str, Any]) -> tuple[AlbumRef, ...]:
+    """Extract one page of releases from a ``queryArtistDiscographyAll`` union.
+
+    The discography nests releases at ``discography.all.items[].releases.items[]``;
+    every release (album, single, compilation) is flattened into an
+    :class:`AlbumRef` in page order.
+
+    Args:
+        union: The ``body["data"]["artistUnion"]`` object of a discography page.
+
+    Returns:
+        The page's releases as :class:`AlbumRef` objects.
+    """
+    node = _discography_all(union)
+    if node is None:
+        return ()
+    releases: list[AlbumRef] = []
+    for item in _items(node):
+        group = _optional_mapping(item, "releases")
+        if group is None:
+            continue
+        for release in _items(group):
+            uri = _optional_str(release, "uri")
+            name = _optional_str(release, "name")
+            if not uri or not name:
+                continue
+            releases.append(
+                AlbumRef(
+                    id=_optional_str(release, "id") or _id_from_uri(uri),
+                    uri=uri,
+                    name=name,
+                    images=_cover_art_images(release),
+                )
+            )
+    return tuple(releases)
+
+
+def discography_total(union: Mapping[str, Any]) -> int | None:
+    """Return the artist's full release count from a discography page."""
+    node = _discography_all(union)
+    return _total_count(node) if node is not None else None
+
+
+def discography_item_count(union: Mapping[str, Any]) -> int:
+    """Return the number of raw release-groups on a discography page (for paging)."""
+    node = _discography_all(union)
+    return len(_items(node)) if node is not None else 0
+
+
+def parse_similar_albums(node: Mapping[str, Any]) -> tuple[AlbumRef, ...]:
+    """Build recommended albums from a ``similarAlbumsBasedOnThisTrack`` node.
+
+    Args:
+        node: The ``body["data"]["seoRecommendedTrackAlbum"]`` object.
+
+    Returns:
+        The recommended albums as :class:`AlbumRef` objects (empty when none).
+    """
+    albums: list[AlbumRef] = []
+    for item in _items(node):
+        data = _optional_mapping(item, "data")
+        if data is None:
+            continue
+        uri = _optional_str(data, "uri")
+        name = _optional_str(data, "name")
+        if not uri or not name:
+            continue
+        albums.append(
+            AlbumRef(
+                id=_optional_str(data, "id") or _id_from_uri(uri),
+                uri=uri,
+                name=name,
+                images=_cover_art_images(data),
+            )
+        )
+    return tuple(albums)
+
+
+def parse_user_profile(payload: Mapping[str, Any]) -> UserProfile:
+    """Build a :class:`UserProfile` from a ``user-profile-view`` body.
+
+    Args:
+        payload: The decoded profile body (flat JSON with ``uri``, ``name``,
+            ``followers_count``, ``public_playlists``, …).
+
+    Returns:
+        A :class:`UserProfile` mirroring the public profile.
+
+    Raises:
+        ParsingError: If the body has no ``uri``.
+    """
+    uri = _require_str(payload, "uri", "uri")
+    image = _optional_str(payload, "image_url")
+    return UserProfile(
+        id=_id_from_uri(uri),
+        uri=uri,
+        name=_optional_str(payload, "name") or "",
+        images=(Image(url=image),) if image else (),
+        followers_count=_optional_int(payload, "followers_count"),
+        following_count=_optional_int(payload, "following_count"),
+        public_playlists=_profile_playlists(payload.get("public_playlists")),
+        public_playlists_total=_optional_int(payload, "total_public_playlists_count"),
+        recently_played_artists=_profile_artists(payload.get("recently_played_artists")),
+        is_verified=_optional_bool(payload, "is_verified"),
+    )
+
+
+def _profile_playlists(node: Any) -> tuple[Playlist, ...]:
+    if not isinstance(node, Sequence):
+        return ()
+    playlists: list[Playlist] = []
+    for item in node:
+        if not isinstance(item, Mapping):
+            continue
+        uri = _optional_str(item, "uri")
+        name = _optional_str(item, "name")
+        if not uri or not name:
+            continue
+        image = _optional_str(item, "image_url")
+        owner_name = _optional_str(item, "owner_name")
+        owner = (
+            UserRef(name=owner_name, uri=_optional_str(item, "owner_uri") or "")
+            if owner_name
+            else None
+        )
+        playlists.append(
+            Playlist(
+                id=_id_from_uri(uri),
+                uri=uri,
+                name=name,
+                description="",
+                owner=owner,
+                followers=_optional_int(item, "followers_count"),
+                images=(Image(url=image),) if image else (),
+            )
+        )
+    return tuple(playlists)
+
+
+def _profile_artists(node: Any) -> tuple[ArtistRef, ...]:
+    if not isinstance(node, Sequence):
+        return ()
+    artists: list[ArtistRef] = []
+    for item in node:
+        if not isinstance(item, Mapping):
+            continue
+        uri = _optional_str(item, "uri")
+        name = _optional_str(item, "name")
+        if not uri or not name:
+            continue
+        artists.append(ArtistRef(name=name, uri=uri, id=_id_from_uri(uri)))
+    return tuple(artists)

@@ -20,6 +20,7 @@ from spotify_scraper.api import charts as charts_api
 from spotify_scraper.api import lyrics as lyrics_api
 from spotify_scraper.api import parse_embed, parse_entities, pathfinder
 from spotify_scraper.api import transcripts as transcripts_api
+from spotify_scraper.api import user_profile as user_profile_api
 from spotify_scraper.api.parse_embed import EmbedSession
 from spotify_scraper.auth.anonymous import AnonymousTokenProvider
 from spotify_scraper.auth.cookies import CookieTokenProvider, load_sp_dc
@@ -44,6 +45,7 @@ from spotify_scraper.models.album import Album
 from spotify_scraper.models.artist import Artist
 from spotify_scraper.models.canvas import Canvas
 from spotify_scraper.models.colors import Colors
+from spotify_scraper.models.common import AlbumRef
 from spotify_scraper.models.episode import Episode
 from spotify_scraper.models.lyrics import Lyrics
 from spotify_scraper.models.playlist import Playlist, PlaylistTrack
@@ -51,12 +53,14 @@ from spotify_scraper.models.search import SearchResults
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
 from spotify_scraper.models.transcript import Transcript
+from spotify_scraper.models.user import UserProfile
 
 _LOGGER = logging.getLogger("spotify_scraper")
 
 _PLAYLIST_PAGE = 100
 _ALBUM_PAGE = 50
 _SHOW_EPISODES_PAGE = 50
+_DISCO_PAGE = 50
 _SEARCH_TYPES = ("track", "album", "artist", "playlist", "show", "episode")
 
 _T = TypeVar("_T")
@@ -845,6 +849,116 @@ class SpotifyClient:
             raise URLError(f"Unknown chart {key!r}. Known charts: {known}.") from exc
         return self.get_playlist(definition.playlist_id, max_tracks=max_tracks)
 
+    def get_related_artists(self, value: str) -> tuple[Artist, ...]:
+        """Fetch artists related to the given artist (anonymous).
+
+        Args:
+            value: A Spotify artist URL, URI, or 22-character ID.
+
+        Returns:
+            Related artists (id / uri / name / images); empty if Spotify lists none.
+
+        Raises:
+            NotFoundError: If the artist does not exist.
+            SpotifyScraperError: If the client is closed.
+        """
+        _, entity_id = self._resolve(value, "artist")
+        union = self._anon_union("artist_related", entity_id, "artistUnion")
+        return parse_entities.parse_related_artists(union)
+
+    def get_discography(
+        self, value: str, *, max_releases: int | None = None
+    ) -> tuple[AlbumRef, ...]:
+        """Fetch an artist's full discography (anonymous), paginating releases.
+
+        Returns every release — albums, singles, and compilations — as
+        :class:`AlbumRef` objects in Spotify's discography order.
+
+        Args:
+            value: A Spotify artist URL, URI, or 22-character ID.
+            max_releases: Upper bound on releases; ``None`` fetches all.
+
+        Returns:
+            The artist's releases.
+
+        Raises:
+            NotFoundError: If the artist does not exist.
+            SpotifyScraperError: If the client is closed.
+        """
+        _, entity_id = self._resolve(value, "artist")
+        releases: list[AlbumRef] = []
+        offset = 0
+        total: int | None = None
+        while True:
+            if max_releases is not None and len(releases) >= max_releases:
+                break
+            if total is not None and offset >= total:
+                break
+            union = self._anon_union(
+                "artist_discography",
+                entity_id,
+                "artistUnion",
+                {"offset": offset, "limit": _DISCO_PAGE},
+            )
+            if total is None:
+                total = parse_entities.discography_total(union)
+            count = parse_entities.discography_item_count(union)
+            if count == 0:
+                break
+            releases.extend(parse_entities.parse_discography_releases(union))
+            offset += count
+        if max_releases is not None:
+            return tuple(releases[:max_releases])
+        return tuple(releases)
+
+    def get_similar_albums(self, value: str, *, limit: int = 10) -> tuple[AlbumRef, ...]:
+        """Recommend albums similar to a track (anonymous).
+
+        Args:
+            value: A Spotify track URL, URI, or 22-character ID.
+            limit: Maximum recommended albums to request.
+
+        Returns:
+            Recommended albums (empty when Spotify has none).
+
+        Raises:
+            NotFoundError: If the track does not exist.
+            SpotifyScraperError: If the client is closed.
+        """
+        _, entity_id = self._resolve(value, "track")
+        node = self._anon_union(
+            "similar_albums", entity_id, "seoRecommendedTrackAlbum", {"limit": limit}
+        )
+        return parse_entities.parse_similar_albums(node)
+
+    def get_user(self, user_id: str) -> UserProfile:
+        """Fetch a public user profile (requires authentication).
+
+        Public profiles need the cookie-derived token (the anonymous token is
+        refused with HTTP 403), so the client must have been built with
+        ``cookies=``; otherwise :class:`AuthenticationError` is raised at once.
+
+        Args:
+            user_id: A Spotify user id, ``spotify:user:<id>`` uri, or profile URL.
+
+        Returns:
+            The user's public :class:`UserProfile`.
+
+        Raises:
+            AuthenticationError: If no cookies were configured, or the cookie is
+                rejected by the token exchange.
+            NotFoundError: If the user does not exist or has no public profile.
+            SpotifyScraperError: If the client is closed.
+        """
+        identifier = _user_id_from(user_id)
+        provider = self._cookie_provider()
+        token = provider.token()
+        try:
+            return self._fetch_user_profile(identifier, token)
+        except AuthenticationError:
+            provider.invalidate()
+            return self._fetch_user_profile(identifier, provider.token())
+
     def _cookie_provider(self) -> CookieTokenProvider:
         self._ensure_open()
         provider = self._cookie_tokens
@@ -1241,6 +1355,56 @@ class SpotifyClient:
             )
         return parse_entities.parse_canvas(union.get("canvas"))
 
+    def _anon_union(
+        self,
+        kind: str,
+        entity_id: str,
+        union_key: str,
+        overrides: Mapping[str, Any] | None = None,
+    ) -> Mapping[str, Any]:
+        try:
+            data = self._anon_request(kind, entity_id, self._tokens.token(), overrides)
+        except TokenError:
+            self._tokens.invalidate()
+            data = self._anon_request(kind, entity_id, self._tokens.token(), overrides)
+        union = data.get(union_key)
+        if not isinstance(union, Mapping):
+            raise ParsingError(
+                f"Pathfinder response missing 'data.{union_key}'. "
+                "Spotify may have changed its API; check for a library update."
+            )
+        return union
+
+    def _anon_request(
+        self,
+        kind: str,
+        entity_id: str,
+        token: str,
+        overrides: Mapping[str, Any] | None,
+    ) -> dict[str, Any]:
+        url = pathfinder.build_url(kind, entity_id, variable_overrides=overrides)
+        response = self._transport.get(url, headers=pathfinder.auth_headers(token))
+        body = _safe_json(response)
+        return pathfinder.classify_response(response.status_code, body)
+
+    def _fetch_user_profile(self, user_id: str, token: str) -> UserProfile:
+        url = user_profile_api.profile_url(user_id)
+        try:
+            response = self._transport.get(url, headers=user_profile_api.auth_headers(token))
+        except NotFoundError as exc:
+            raise NotFoundError(f"No public profile for user {user_id!r}.") from exc
+        if response.status_code == 401:
+            raise AuthenticationError(
+                "Spotify rejected the cookie token for user-profile (HTTP 401)."
+            )
+        body = _safe_json(response)
+        if body is None:
+            raise ParsingError(
+                "User-profile response was not JSON. Spotify may have changed its API; "
+                "check for a library update."
+            )
+        return parse_entities.parse_user_profile(body)
+
 
 def _lang_header(locale: str | None) -> dict[str, str]:
     """Return a per-request ``Accept-Language`` override, or empty when unset.
@@ -1273,6 +1437,16 @@ def _image_uri_from_str(value: str) -> str:
     if not tail:
         raise URLError(f"Cannot derive an image id from {value!r}.")
     return f"spotify:image:{tail}"
+
+
+def _user_id_from(value: str) -> str:
+    """Extract a user id from a raw id, ``spotify:user:`` uri, or profile URL."""
+    text = value.strip()
+    if text.startswith("spotify:user:"):
+        return text.rsplit(":", 1)[-1]
+    if "/user/" in text:
+        return text.split("/user/", 1)[1].split("?", 1)[0].split("/", 1)[0]
+    return text
 
 
 def _validate_search_types(types: Sequence[str]) -> frozenset[str]:

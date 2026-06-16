@@ -1,0 +1,511 @@
+{
+  "data": {
+    "seoRecommendedTrackAlbum": {
+      "items": [
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "Eurythmics"
+                  },
+                  "uri": "spotify:artist:0NKDgy9j66h3DLnN8qu1bB"
+                },
+                {
+                  "profile": {
+                    "name": "Annie Lennox"
+                  },
+                  "uri": "spotify:artist:5MspMQqdVbdwP6ax3GXqum"
+                },
+                {
+                  "profile": {
+                    "name": "Dave Stewart"
+                  },
+                  "uri": "spotify:artist:7gcCQIlkkfbul5Mt0jBQkg"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e02b3994c94dfb241923664bb4d",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d00004851b3994c94dfb241923664bb4d",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b273b3994c94dfb241923664bb4d",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1983-01-04T00:00:00Z",
+              "precision": "DAY",
+              "year": 1983
+            },
+            "name": "Sweet Dreams (Are Made Of This)",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "4TFVY8FTSDGcJn1sxYRa9Q",
+              "shareUrl": "https://open.spotify.com/album/5jNDWA19BJbE24x1UUJGRY?si=4TFVY8FTSDGcJn1sxYRa9Q"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:5jNDWA19BJbE24x1UUJGRY"
+          }
+        },
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "Survivor"
+                  },
+                  "uri": "spotify:artist:26bcq2nyj5GB7uRr558iQg"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e024e2755e7a96ec5e062c76aac",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d000048514e2755e7a96ec5e062c76aac",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b2734e2755e7a96ec5e062c76aac",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1982-01-01T00:00:00Z",
+              "precision": "YEAR",
+              "year": 1982
+            },
+            "name": "Eye Of The Tiger",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "cpPc176TRdiIh5vsCRDsYA",
+              "shareUrl": "https://open.spotify.com/album/4PT9VulQaQP6XR1xBI2x1W?si=cpPc176TRdiIh5vsCRDsYA"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:4PT9VulQaQP6XR1xBI2x1W"
+          }
+        },
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "Elton John"
+                  },
+                  "uri": "spotify:artist:3PhoLpVuITZKcymswpck5b"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e02eb11e2abccdca41f39ad3b89",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d00004851eb11e2abccdca41f39ad3b89",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b273eb11e2abccdca41f39ad3b89",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1983-05-30T00:00:00Z",
+              "precision": "DAY",
+              "year": 1983
+            },
+            "name": "Too Low For Zero",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "oOBzqED3TaaHBY0PMpuksg",
+              "shareUrl": "https://open.spotify.com/album/0OmYuz9hwn1XoqmDaU0yJ7?si=oOBzqED3TaaHBY0PMpuksg"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:0OmYuz9hwn1XoqmDaU0yJ7"
+          }
+        },
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "Culture Club"
+                  },
+                  "uri": "spotify:artist:6kz53iCdBSqhQCZ21CoLcc"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e02c7d7cdad0c2ffa5620129ee8",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d00004851c7d7cdad0c2ffa5620129ee8",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b273c7d7cdad0c2ffa5620129ee8",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1983-10-01T00:00:00Z",
+              "precision": "DAY",
+              "year": 1983
+            },
+            "name": "Colour By Numbers (Remastered / Expanded Edition)",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "E1ZQUyFbRE-Nxdx3szuX2Q",
+              "shareUrl": "https://open.spotify.com/album/51NPMfa9QfxsYtqzcB2VfY?si=E1ZQUyFbRE-Nxdx3szuX2Q"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:51NPMfa9QfxsYtqzcB2VfY"
+          }
+        },
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "Wham!"
+                  },
+                  "uri": "spotify:artist:5lpH0xAS4fVfLkACg9DAuM"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e02a2fc41b0dd6ce4f0d16a4c46",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d00004851a2fc41b0dd6ce4f0d16a4c46",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b273a2fc41b0dd6ce4f0d16a4c46",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1984-10-23T00:00:00Z",
+              "precision": "DAY",
+              "year": 1984
+            },
+            "name": "Make It Big",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "wm2rM5_3QeieqZO69HQFbg",
+              "shareUrl": "https://open.spotify.com/album/02f3y3NTsddjdUMoNiBppI?si=wm2rM5_3QeieqZO69HQFbg"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:02f3y3NTsddjdUMoNiBppI"
+          }
+        },
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "Earth, Wind & Fire"
+                  },
+                  "uri": "spotify:artist:4QQgXkCYTt3BlENzhyNETg"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e02e691caf11b86a3729899a304",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d00004851e691caf11b86a3729899a304",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b273e691caf11b86a3729899a304",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1981-11-14T00:00:00Z",
+              "precision": "DAY",
+              "year": 1981
+            },
+            "name": "Raise!",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "4rlwA-9vRoGGYDYfZ2-oWg",
+              "shareUrl": "https://open.spotify.com/album/1hj1SYbJYdXloRiSjsCLXg?si=4rlwA-9vRoGGYDYfZ2-oWg"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:1hj1SYbJYdXloRiSjsCLXg"
+          }
+        },
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "Bonnie Tyler"
+                  },
+                  "uri": "spotify:artist:0SD4eZCN4Kr0wQk56hCdh2"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e02d2675cb6847d1b1da9fc28a3",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d00004851d2675cb6847d1b1da9fc28a3",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b273d2675cb6847d1b1da9fc28a3",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1986-05-05T00:00:00Z",
+              "precision": "DAY",
+              "year": 1986
+            },
+            "name": "Secret Dreams and Forbidden Fire",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "Q7fDGNYUSMS8AaMr2FHJ7Q",
+              "shareUrl": "https://open.spotify.com/album/4doea7KA9jw7nkm3IOs0PR?si=Q7fDGNYUSMS8AaMr2FHJ7Q"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:4doea7KA9jw7nkm3IOs0PR"
+          }
+        },
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "Queen"
+                  },
+                  "uri": "spotify:artist:1dfeR4HaWDbWqFHLkxsg1d"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e027c39dd133836c2c1c87e34d6",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d000048517c39dd133836c2c1c87e34d6",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b2737c39dd133836c2c1c87e34d6",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1978-11-10T00:00:00Z",
+              "precision": "DAY",
+              "year": 1978
+            },
+            "name": "Jazz (2011 Remaster)",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "sWjuG9QjRoibjy8xfQKCuA",
+              "shareUrl": "https://open.spotify.com/album/2yuTRGIackbcReLUXOYBqU?si=sWjuG9QjRoibjy8xfQKCuA"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:2yuTRGIackbcReLUXOYBqU"
+          }
+        },
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "Tears For Fears"
+                  },
+                  "uri": "spotify:artist:4bthk9UfsYUYdcFyqxmSUU"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e025e12c35cb4c848a927ef4b69",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d000048515e12c35cb4c848a927ef4b69",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b2735e12c35cb4c848a927ef4b69",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1985-02-25T00:00:00Z",
+              "precision": "DAY",
+              "year": 1985
+            },
+            "name": "Songs From The Big Chair",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "kGQDi5YnR2myTCk0tLnOgg",
+              "shareUrl": "https://open.spotify.com/album/5STbVtgFy6y7uPshY1RRqb?si=kGQDi5YnR2myTCk0tLnOgg"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:5STbVtgFy6y7uPshY1RRqb"
+          }
+        },
+        {
+          "data": {
+            "__typename": "Album",
+            "artists": {
+              "items": [
+                {
+                  "profile": {
+                    "name": "TOTO"
+                  },
+                  "uri": "spotify:artist:0PFtn5NtBbbUNbU9EAmIWF"
+                }
+              ]
+            },
+            "coverArt": {
+              "sources": [
+                {
+                  "height": 300,
+                  "url": "https://i.scdn.co/image/ab67616d00001e02ebd6d20c0082524244ef83df",
+                  "width": 300
+                },
+                {
+                  "height": 64,
+                  "url": "https://i.scdn.co/image/ab67616d00004851ebd6d20c0082524244ef83df",
+                  "width": 64
+                },
+                {
+                  "height": 640,
+                  "url": "https://i.scdn.co/image/ab67616d0000b273ebd6d20c0082524244ef83df",
+                  "width": 640
+                }
+              ]
+            },
+            "date": {
+              "isoString": "1982-04-08T00:00:00Z",
+              "precision": "DAY",
+              "year": 1982
+            },
+            "name": "Toto IV",
+            "playability": {
+              "playable": true
+            },
+            "sharingInfo": {
+              "shareId": "-_p1h2G7RdKaKcPzwawmzQ",
+              "shareUrl": "https://open.spotify.com/album/62U7xIHcID94o20Of5ea4D?si=-_p1h2G7RdKaKcPzwawmzQ"
+            },
+            "type": "ALBUM",
+            "uri": "spotify:album:62U7xIHcID94o20Of5ea4D"
+          }
+        }
+      ],
+      "totalCount": 66
+    }
+  }
+}

@@ -349,6 +349,92 @@ def canvas(
     run(body)
 
 
+@app.command()
+def related(
+    value: ValueArg,
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Fetch an artist's related artists and emit them as JSON."""
+
+    def body() -> None:
+        with build_client(proxy, timeout, rate_limit) as client:
+            artists = client.get_related_artists(value)
+        emit({"artists": [a.to_dict() for a in artists]}, pretty=pretty, output=output)
+
+    run(body)
+
+
+@app.command()
+def discography(
+    value: ValueArg,
+    max_releases: Annotated[
+        str,
+        typer.Option("--max-releases", help="Release cap; an integer or 'all' (0 also means all)."),
+    ] = "all",
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Fetch an artist's full discography and emit it as JSON."""
+
+    def body() -> None:
+        with build_client(proxy, timeout, rate_limit) as client:
+            releases = client.get_discography(value, max_releases=_parse_max(max_releases))
+        emit({"releases": [r.to_dict() for r in releases]}, pretty=pretty, output=output)
+
+    run(body)
+
+
+@app.command()
+def similar(
+    value: ValueArg,
+    limit: Annotated[int, typer.Option("--limit", help="Maximum recommended albums.")] = 10,
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Recommend albums similar to a track and emit them as JSON."""
+
+    def body() -> None:
+        with build_client(proxy, timeout, rate_limit) as client:
+            albums = client.get_similar_albums(value, limit=limit)
+        emit({"albums": [a.to_dict() for a in albums]}, pretty=pretty, output=output)
+
+    run(body)
+
+
+@app.command()
+def user(
+    user_id: Annotated[
+        str, typer.Argument(help="Spotify user id, 'spotify:user:' uri, or profile URL.")
+    ],
+    cookies: CookiesOpt = None,
+    pretty: PrettyOpt = False,
+    output: OutputOpt = None,
+    proxy: ProxyOpt = None,
+    timeout: TimeoutOpt = 10.0,
+    rate_limit: RateLimitOpt = None,
+) -> None:
+    """Fetch a public user profile (requires an sp_dc cookie) and emit JSON."""
+
+    def body() -> None:
+        source = _resolve_cookies(cookies)
+        rate = RateLimit(per_second=rate_limit) if rate_limit is not None else None
+        with SpotifyClient(proxy=proxy, timeout=timeout, rate_limit=rate, cookies=source) as client:
+            profile = client.get_user(user_id)
+        emit(profile.to_dict(), pretty=pretty, output=output)
+
+    run(body)
+
+
 StoreOpt = Annotated[
     str,
     typer.Option("--store", help="Where to keep the cookie: 'file' (default) or 'keyring'."),

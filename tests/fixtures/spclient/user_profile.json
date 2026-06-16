@@ -1,0 +1,59 @@
+{
+  "account_id": "y84kXNyOqb",
+  "allow_follows": true,
+  "color": 16085920,
+  "followers_count": 12211555,
+  "following_count": 327,
+  "has_spotify_image": true,
+  "has_spotify_name": true,
+  "image_url": "https://i.scdn.co/image/ab6775700000ee8555c25988a6ac314394d3fbf5",
+  "is_verified": true,
+  "name": "Spotify",
+  "public_playlists": [
+    {
+      "followers_count": 34266745,
+      "image_url": "https://i.scdn.co/image/ab67706f0000000241ad99f0c04d4d0d9b070d7a",
+      "is_following": true,
+      "name": "Today\u2019s Top Hits",
+      "owner_name": "Spotify",
+      "owner_uri": "spotify:user:spotify",
+      "uri": "spotify:playlist:37i9dQZF1DXcBWIGoYBM5M"
+    },
+    {
+      "followers_count": 15716940,
+      "image_url": "https://i.scdn.co/image/ab67706f00000002fde259eaa51b77cc751f2992",
+      "name": "RapCaviar",
+      "owner_name": "Spotify",
+      "owner_uri": "spotify:user:spotify",
+      "uri": "spotify:playlist:37i9dQZF1DX0XUsuxWHRQd"
+    },
+    {
+      "followers_count": 7659143,
+      "image_url": "https://i.scdn.co/image/ab67706f00000002435833ceead086c99dfe5282",
+      "name": "Hot Country",
+      "owner_name": "Spotify",
+      "owner_uri": "spotify:user:spotify",
+      "uri": "spotify:playlist:37i9dQZF1DX1lVhptIYRda"
+    },
+    {
+      "followers_count": 15406655,
+      "image_url": "https://i.scdn.co/image/ab67706f000000024f4f14681b4e7e86f480b52e",
+      "name": "Viva Latino",
+      "owner_name": "Spotify",
+      "owner_uri": "spotify:user:spotify",
+      "uri": "spotify:playlist:37i9dQZF1DX10zKzsJ2jva"
+    },
+    {
+      "followers_count": 4592761,
+      "image_url": "https://i.scdn.co/image/ab67706f000000024867e71fc9605c8e6aadc9c0",
+      "name": "New Music Friday",
+      "owner_name": "Spotify",
+      "owner_uri": "spotify:user:spotify",
+      "uri": "spotify:playlist:37i9dQZF1DX4JAvHpjipBk"
+    }
+  ],
+  "report_abuse_disabled": true,
+  "show_follows": true,
+  "total_public_playlists_count": 1519,
+  "uri": "spotify:user:spotify"
+}

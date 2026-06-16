@@ -52,6 +52,7 @@ from spotify_scraper.models import (
     Track,
     Transcript,
     TranscriptLine,
+    UserProfile,
     UserRef,
 )
 
@@ -98,6 +99,7 @@ __all__ = [
     "Transcript",
     "TranscriptLine",
     "URLError",
+    "UserProfile",
     "UserRef",
     "__version__",
 ]

@@ -15,6 +15,7 @@ from spotify_scraper.models.search import SearchResults
 from spotify_scraper.models.show import Show
 from spotify_scraper.models.track import Track
 from spotify_scraper.models.transcript import Transcript, TranscriptLine
+from spotify_scraper.models.user import UserProfile
 
 __all__ = [
     "Account",
@@ -36,5 +37,6 @@ __all__ = [
     "Track",
     "Transcript",
     "TranscriptLine",
+    "UserProfile",
     "UserRef",
 ]

@@ -82,6 +82,21 @@ OPERATIONS: dict[str, Operation] = {
         "575138ab27cd5c1b3e54da54d0a7cc8d85485402de26340c2145f0f6bb5e7a9f",
         lambda eid: {"trackUri": f"spotify:track:{eid}"},
     ),
+    "artist_related": Operation(
+        "queryArtistRelated",
+        "3d031d6cb22a2aa7c8d203d49b49df731f58b1e2799cc38d9876d58771aa66f3",
+        lambda eid: {"uri": f"spotify:artist:{eid}"},
+    ),
+    "artist_discography": Operation(
+        "queryArtistDiscographyAll",
+        "5e07d323febb57b4a56a42abbf781490e58764aa45feb6e3dc0591564fc56599",
+        lambda eid: {"uri": f"spotify:artist:{eid}", "offset": 0, "limit": 50},
+    ),
+    "similar_albums": Operation(
+        "similarAlbumsBasedOnThisTrack",
+        "1d1f93a737498adca2c892c73af87fc0b052afe4e1a33c989540c32413dfae17",
+        lambda eid: {"uri": f"spotify:track:{eid}", "limit": 10},
+    ),
 }
 
 

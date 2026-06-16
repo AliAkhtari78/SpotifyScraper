@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `client.get_chart(key)` (e.g. `"top-50-global"`, `"todays-top-hits"`) fetches one
   as a `Playlist`. Charts are ordinary editorial playlists, so no new persisted
   query is involved. CLI: `charts`.
+- **Related artists.** `client.get_related_artists(artist)` returns Spotify's
+  "fans also like" artists (with images). Anonymous. CLI: `related`.
+- **Full discography.** `client.get_discography(artist, max_releases=None)`
+  paginates every release (albums, singles, compilations) as `AlbumRef` objects.
+  Anonymous. CLI: `discography`.
+- **Recommendations.** `client.get_similar_albums(track, limit=...)` returns
+  albums recommended from a track. Anonymous. CLI: `similar`.
+- **Public user profiles.** `client.get_user(user_id)` returns a `UserProfile`
+  (name, follower/following counts, public playlists, recently-played artists).
+  Cookie-authenticated (the anonymous token is refused). CLI: `user`.
 
 ## [3.5.0] - 2026-06-15
 

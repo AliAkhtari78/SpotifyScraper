@@ -1,0 +1,249 @@
+{
+  "data": {
+    "artistUnion": {
+      "__typename": "Artist",
+      "discography": {
+        "all": {
+          "items": [
+            {
+              "releases": {
+                "items": [
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e02fe8a8d62b127592ff546d9c8",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d00004851fe8a8d62b127592ff546d9c8",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b273fe8a8d62b127592ff546d9c8",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "isoString": "2026-04-10T00:00:00Z",
+                      "precision": "DAY",
+                      "year": 2026
+                    },
+                    "id": "0xOvvd9BQwlhJTnKfgB2zz",
+                    "name": "Raindrops",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "62JBHzb-Qwqzf-_GB8N_yw",
+                      "shareUrl": "https://open.spotify.com/album/0xOvvd9BQwlhJTnKfgB2zz?si=62JBHzb-Qwqzf-_GB8N_yw"
+                    },
+                    "tracks": {
+                      "totalCount": 2
+                    },
+                    "type": "SINGLE",
+                    "uri": "spotify:album:0xOvvd9BQwlhJTnKfgB2zz"
+                  }
+                ]
+              }
+            },
+            {
+              "releases": {
+                "items": [
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e028f59c9c01c3ce2aef9c29f56",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048518f59c9c01c3ce2aef9c29f56",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2738f59c9c01c3ce2aef9c29f56",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "isoString": "2026-02-06T00:00:00Z",
+                      "precision": "DAY",
+                      "year": 2026
+                    },
+                    "id": "5U0RVHlHR4ywoPiOxosTgv",
+                    "name": "Waiting On You",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "AuxRadCUS_OcYqWXREUjyg",
+                      "shareUrl": "https://open.spotify.com/album/5U0RVHlHR4ywoPiOxosTgv?si=AuxRadCUS_OcYqWXREUjyg"
+                    },
+                    "tracks": {
+                      "totalCount": 1
+                    },
+                    "type": "SINGLE",
+                    "uri": "spotify:album:5U0RVHlHR4ywoPiOxosTgv"
+                  }
+                ]
+              }
+            },
+            {
+              "releases": {
+                "items": [
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e022714b6117dd415b230d97b61",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048512714b6117dd415b230d97b61",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2732714b6117dd415b230d97b61",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "isoString": "2025-10-24T00:00:00Z",
+                      "precision": "DAY",
+                      "year": 2025
+                    },
+                    "id": "0SLhHKNpL2ZjDgfVRtV6xw",
+                    "name": "Covers",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "GYGPlNU3RcClthluvvjNTA",
+                      "shareUrl": "https://open.spotify.com/album/0SLhHKNpL2ZjDgfVRtV6xw?si=GYGPlNU3RcClthluvvjNTA"
+                    },
+                    "tracks": {
+                      "totalCount": 6
+                    },
+                    "type": "EP",
+                    "uri": "spotify:album:0SLhHKNpL2ZjDgfVRtV6xw"
+                  }
+                ]
+              }
+            },
+            {
+              "releases": {
+                "items": [
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e027051d8bfadd7bf404bd8c715",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048517051d8bfadd7bf404bd8c715",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2737051d8bfadd7bf404bd8c715",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "isoString": "2025-09-19T00:00:00Z",
+                      "precision": "DAY",
+                      "year": 2025
+                    },
+                    "id": "2BLWIU0uwkoH48QxVkgnlz",
+                    "name": "Ballads",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "0qndt-BXRxe21Lge50hirQ",
+                      "shareUrl": "https://open.spotify.com/album/2BLWIU0uwkoH48QxVkgnlz?si=0qndt-BXRxe21Lge50hirQ"
+                    },
+                    "tracks": {
+                      "totalCount": 6
+                    },
+                    "type": "EP",
+                    "uri": "spotify:album:2BLWIU0uwkoH48QxVkgnlz"
+                  }
+                ]
+              }
+            },
+            {
+              "releases": {
+                "items": [
+                  {
+                    "coverArt": {
+                      "sources": [
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e02fe5c3f827c30bfc539f5b887",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d00004851fe5c3f827c30bfc539f5b887",
+                          "width": 64
+                        },
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b273fe5c3f827c30bfc539f5b887",
+                          "width": 640
+                        }
+                      ]
+                    },
+                    "date": {
+                      "isoString": "2025-08-22T00:00:00Z",
+                      "precision": "DAY",
+                      "year": 2025
+                    },
+                    "id": "4nW7LrCrgW6WFWcDrofh4J",
+                    "name": "2010s",
+                    "playability": {
+                      "playable": true,
+                      "reason": "PLAYABLE"
+                    },
+                    "sharingInfo": {
+                      "shareId": "h0t7WfpeTlGBC-zHNx5otA",
+                      "shareUrl": "https://open.spotify.com/album/4nW7LrCrgW6WFWcDrofh4J?si=h0t7WfpeTlGBC-zHNx5otA"
+                    },
+                    "tracks": {
+                      "totalCount": 6
+                    },
+                    "type": "EP",
+                    "uri": "spotify:album:4nW7LrCrgW6WFWcDrofh4J"
+                  }
+                ]
+              }
+            }
+          ],
+          "totalCount": 58
+        }
+      }
+    }
+  }
+}
