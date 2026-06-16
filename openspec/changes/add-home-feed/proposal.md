@@ -1,13 +1,16 @@
 # Proposal: add-home-feed
 
-> **Status: proposed — pending a live feasibility spike.** Home / "Made for you"
-> was split out of `add-visual-discovery-mcp` (shipped in v3.6) because it is the
-> one surface the existing two-tier ladder cannot reach: its `home` operation is
-> not GET-encodable and needs the Spotify **pathfinder v2 POST** path. Before any
-> implementation, a live capture spike (the authenticated `pathfinder/v2/query`
-> POST, using a real `sp_dc` session) must confirm the request is reproducible. If
-> it is not, this change stays proposed and Home stays deferred — we do not ship a
-> broken op.
+> **Status: DEFERRED — feasibility spike ran 2026-06-16, result NO-GO.** Home /
+> "Made for you" was split out of `add-visual-discovery-mcp` (shipped in v3.6)
+> because it is the one surface the existing two-tier ladder cannot reach: its
+> `home` operation is not GET-encodable and needs the Spotify **pathfinder v2 POST**
+> path. The spike (chrome-devtools + Playwright + a real `sp_dc`) found the request
+> is **not reproducible by automation** — see `design.md` → "Spike result": the web
+> SPA won't bootstrap Home with an injected cookie, and `pathfinder/v2/query` is
+> edge-gated behind a `clienttoken` device handshake the v1 path doesn't use. Per
+> the don't-ship-a-broken-op rule, this change stays proposed and Home stays
+> deferred; revisit only with an interactive real-browser capture if Home becomes a
+> priority.
 
 ## Why
 
