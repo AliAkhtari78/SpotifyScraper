@@ -36,4 +36,6 @@ moment anything looks wrong.
 
 Record each promotion here with the date and the evidence that justified it.
 
-- _2026-06-16 — installed at rung 0 (Observe). No promotions yet._
+- _2026-06-16 — installed at rung 0 (Observe). Wiring smoke-tested via
+  owner `workflow_dispatch` (auth + pipeline green, zero side effects). No
+  promotions yet — rung 1 awaits ~5 correct diagnoses on real breakages._
