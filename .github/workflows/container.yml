@@ -9,6 +9,11 @@ on:
     branches: [master]
     tags: ["v3*"]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to also tag the clean multi-arch image with, e.g. 3.6.0"
+        required: false
+        default: ""
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -47,6 +52,8 @@ jobs:
             type=sha
             type=ref,event=tag
             type=semver,pattern={{version}}
+            type=raw,value=${{ github.event.inputs.version }},enable=${{ github.event.inputs.version != '' }}
+            type=raw,value=v${{ github.event.inputs.version }},enable=${{ github.event.inputs.version != '' }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
