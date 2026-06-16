@@ -9,7 +9,10 @@ JSON-safe `to_dict()`.
     `Lyrics`/`LyricsLine` and `Transcript`/`TranscriptLine` are populated by
     [`get_lyrics`](client.md) and [`get_transcript`](client.md), which require a
     user `sp_dc` cookie — see the
-    [lyrics & cookies guide](../guides/lyrics-and-cookies.md).
+    [lyrics & cookies guide](../guides/lyrics-and-cookies.md). `Canvas`,
+    `Credits`, and `UserProfile` likewise come from cookie-authenticated calls
+    (`get_canvas` / `get_credits` / `get_user`); `Colors`, `Concert`, and the
+    discovery helpers are anonymous.
 
 ## Track
 
@@ -82,3 +85,31 @@ JSON-safe `to_dict()`.
 ## Account
 
 ::: spotify_scraper.models.Account
+
+## Colors
+
+::: spotify_scraper.models.Colors
+
+## Canvas
+
+::: spotify_scraper.models.Canvas
+
+## UserProfile
+
+::: spotify_scraper.models.UserProfile
+
+## Credits
+
+::: spotify_scraper.models.Credits
+
+## CreditRole
+
+::: spotify_scraper.models.CreditRole
+
+## CreditArtist
+
+::: spotify_scraper.models.CreditArtist
+
+## Concert
+
+::: spotify_scraper.models.Concert

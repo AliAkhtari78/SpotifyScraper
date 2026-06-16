@@ -171,3 +171,41 @@ Both accept the same cookie sources and `--pretty`/`-o` options as the entity
 commands. An episode with no transcript exits `3` (`NotFoundError`). See the
 [lyrics & cookies guide](lyrics-and-cookies.md) for how to obtain your `sp_dc`
 cookie.
+
+## Discovery & visual commands
+
+More commands surface the discovery and visual data; all take the same
+`--pretty`/`-o` and client-tuning options.
+
+**Anonymous** (no cookie):
+
+| Command | Fetches |
+|---|---|
+| `spotifyscraper charts` | Lists the built-in editorial charts |
+| `spotifyscraper charts <key>` | A chart as a playlist (e.g. `top-50-global`) |
+| `spotifyscraper colors <image>` | A cover image's theming colors |
+| `spotifyscraper related <artist>` | "Fans also like" artists |
+| `spotifyscraper discography <artist>` | Every release (`--max-releases N\|all`) |
+| `spotifyscraper similar <track>` | Recommended albums (`--limit N`) |
+| `spotifyscraper events <artist>` | Upcoming concerts |
+
+**Cookie-authenticated** (pass `--cookies` or set `SPOTIFY_SP_DC`):
+
+| Command | Fetches |
+|---|---|
+| `spotifyscraper canvas <track>` | A track's Canvas video (empty `{}` if none) |
+| `spotifyscraper credits <track>` | Performers / writers / producers |
+| `spotifyscraper user <user-id>` | A public user profile |
+
+```bash
+spotifyscraper charts
+spotifyscraper charts todays-top-hits --max-tracks 10 | jq -r '.tracks[].track.name'
+spotifyscraper colors "https://i.scdn.co/image/ab67616d0000b273..."
+spotifyscraper discography 0gxyHStUsqpMadRV0Di1Qt --max-releases all
+spotifyscraper canvas 4LfCY65LvojKjWEnU7fNN4 --cookies cookies.txt
+```
+
+## MCP server
+
+A separate `spotifyscraper-mcp` command serves the library to LLM hosts over the
+Model Context Protocol. See the [MCP server guide](mcp.md).

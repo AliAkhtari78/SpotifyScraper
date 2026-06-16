@@ -30,6 +30,7 @@ pip install "spotifyscraper[media]"        # + cover/preview embedding (mutagen)
 pip install "spotifyscraper[browser]"      # + Playwright browser fallback & login
 pip install "spotifyscraper[cli]"          # + the spotifyscraper command-line tool
 pip install "spotifyscraper[keyring]"      # + store the login cookie in the OS keyring
+pip install "spotifyscraper[mcp]"          # + the spotifyscraper-mcp MCP server for LLM hosts
 pip install "spotifyscraper[all]"          # everything
 ```
 
@@ -106,6 +107,11 @@ region. See the
 
 - **All core entities + podcasts** — tracks, albums, artists, playlists, shows, episodes.
 - **Search** across every entity type, returning one typed `SearchResults`.
+- **Charts & discovery** — editorial charts, related artists, full paginated discography, and album recommendations.
+- **Cover colors & Canvas** — extract an artwork's theming palette and download a track's looping Canvas video.
+- **Credits & concerts** — performers/writers/producers and an artist's upcoming live events.
+- **Public user profiles** — `get_user()` (name, follower counts, public playlists).
+- **MCP server** — expose everything to Claude/LLMs via `spotifyscraper-mcp`; also ships as a container on ghcr.io.
 - **Localized display names** — pass a BCP-47 language tag (`locale`) to set the language of names.
 - **Lyrics & podcast transcripts** — cookie-authenticated, time-synced, one token for both.
 - **Browser-assisted login + session persistence** — log in once, then run headless (no stored passwords).
@@ -245,9 +251,9 @@ cookie. See the
 | **3.3** | Cookie-authenticated podcast transcripts (`get_transcript`); browser-assisted login, session persistence & account-awareness (`get_account`/`is_premium`) |
 | **3.4** | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type (`search()`) · display-language [localization](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) (`locale`) |
 | **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) (`cache=CacheConfig(...)`) · [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency |
+| **3.6** | **Visual & discovery**: cover colors, Canvas videos, charts, related artists, paginated discography, recommendations, public profiles, track credits, concerts · a best-in-class **MCP server** + container image |
 
-**What's next** — the v3.3–3.5 work above completes the published roadmap. Future
-ideas are tracked in the GitHub
+**What's next** — future ideas are tracked in the GitHub
 [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones) and
 [issues](https://github.com/AliAkhtari78/SpotifyScraper/issues) — 👍 or weigh in
 on the ones that matter most to you. Scope is subject to change.
@@ -296,4 +302,4 @@ specs live in [`openspec/`](https://github.com/AliAkhtari78/SpotifyScraper/tree/
 
 ## License
 
-[MIT](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE) © Ali Akhtari
+[MIT](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE) © [Ali Akhtari](https://aliakhtari.com) — full-stack AI engineer ([aliakhtari.com](https://aliakhtari.com)).

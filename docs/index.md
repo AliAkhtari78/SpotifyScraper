@@ -81,6 +81,7 @@ pip install spotifyscraper
 | `spotifyscraper[browser]` | Adds a Playwright Chromium transport (and browser-assisted `login()`). |
 | `spotifyscraper[cli]` | Adds the `spotifyscraper` command-line tool ([Typer](https://typer.tiangolo.com/)). |
 | `spotifyscraper[keyring]` | Stores the captured login cookie in the OS keyring instead of a file. |
+| `spotifyscraper[mcp]` | Adds the `spotifyscraper-mcp` [Model Context Protocol](https://modelcontextprotocol.io) server for LLM hosts. |
 | `spotifyscraper[all]` | Everything above. |
 
 See [Installation](getting-started/installation.md) for `uv`, extras, and the
@@ -146,6 +147,38 @@ for track in results.tracks:
 
 See the [Search guide](guides/search.md) for the result shape and filtering.
 
+## Cover colors, Canvas & discovery
+
+Beyond the core getters, v3.6 adds visual and discovery surfaces:
+
+```python
+colors = client.get_colors(track)                  # artwork palette (anonymous)
+related = client.get_related_artists(artist_id)    # "fans also like"
+releases = client.get_discography(artist_id)       # every release, paginated
+albums = client.get_similar_albums(track_id)       # recommendations
+playlist = client.get_chart("top-50-global")       # editorial charts
+
+# Cookie-authenticated:
+canvas = client.get_canvas(track_id)               # looping cover video (MP4)
+credits = client.get_credits(track_id)             # performers/writers/producers
+profile = client.get_user("spotify")               # public user profile
+```
+
+See the [Cover colors & Canvas](guides/visual.md), [Discovery](guides/discovery.md),
+[Charts](guides/charts.md), and [Credits & concerts](guides/more.md) guides.
+
+## MCP server
+
+Expose the whole library to Claude and other LLM hosts:
+
+```bash
+pip install "spotifyscraper[mcp]"
+spotifyscraper-mcp        # or: docker run -p 8000:8000 ghcr.io/aliakhtari78/spotifyscraper
+```
+
+See the [MCP server guide](guides/mcp.md) and the
+[visual, voice-driven page tutorial](guides/visual-voice-page.md).
+
 ## Roadmap
 
 SpotifyScraper ships the core library — all six entity types, media downloads,
@@ -159,10 +192,11 @@ anti-ban resilience, the browser fallback — plus the command-line interface.
 | 3.3 | Cookie-authenticated podcast **transcripts** (`get_transcript`), **browser-assisted login** with a persistent cookie store, and **account-awareness** (`get_account`/`is_premium`). |
 | 3.4 | **Search** across every entity type (`search()`) and display-language **localization** (`locale`). |
 | 3.5 | Optional persistent **response cache** (`cache=CacheConfig(...)`) and **batch helpers** (`get_*s([...])`) with managed concurrency. |
+| 3.6 | **Visual & discovery**: cover **colors**, **Canvas** videos, **charts**, **related artists**, paginated **discography**, **recommendations**, public **profiles**, track **credits**, **concerts** · a best-in-class **MCP server** + container image. |
 
 ### What's next
 
-The v3.3–3.5 work above completes the published roadmap. Future ideas are tracked
+Future ideas are tracked
 in the GitHub [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones)
 and [issues](https://github.com/AliAkhtari78/SpotifyScraper/issues) — 👍 the ones
 that matter most to you. Scope is subject to change.
@@ -200,6 +234,25 @@ that matter most to you. Scope is subject to change.
     Plural `client.get_tracks([...])` / `get_albums([...])` / … return one
     partial-failure-safe `BatchItem` per input; the async client bounds
     concurrency with `max_concurrency`. See the [batch guide](guides/batch.md).
+
+!!! success "Visual & discovery have shipped"
+    Cover **colors** (`get_colors`), **Canvas** videos (`get_canvas`), **charts**
+    (`get_chart`), **related artists**, **discography**, **recommendations**,
+    public **profiles** (`get_user`), track **credits**, and **concerts** are all
+    available — see the [visual](guides/visual.md), [discovery](guides/discovery.md),
+    [charts](guides/charts.md), and [credits & concerts](guides/more.md) guides.
+
+!!! success "MCP server has shipped"
+    `spotifyscraper-mcp` (the `mcp` extra) and a `ghcr.io` container expose the
+    library to Claude / LLM hosts as tools, resources, and prompts. See the
+    [MCP server guide](guides/mcp.md) and the
+    [visual, voice-driven page tutorial](guides/visual-voice-page.md).
+
+!!! info "Actively maintained"
+    A daily canary runs live tests against Spotify and opens a tracking issue on
+    breakage; fixes ship promptly with **[Claude Code](https://claude.com/claude-code)**
+    under the maintainer's review. Persisted-query hashes live in one file, so a
+    Spotify rotation is a one-line update.
 
 !!! warning "Legal & terms of service"
     SpotifyScraper is intended for **personal, educational, and research use**.

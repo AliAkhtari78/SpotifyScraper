@@ -29,14 +29,18 @@ library keeps your environment lean, and you add capabilities as needed.
 | Extra | Adds | Install |
 |---|---|---|
 | `media` | [`mutagen`](https://mutagen.readthedocs.io/) for embedding cover art and ID3 tags into downloaded previews | `pip install "spotifyscraper[media]"` |
-| `browser` | [`playwright`](https://playwright.dev/python/) Chromium transport for sites that challenge plain HTTP clients | `pip install "spotifyscraper[browser]"` |
-| `all` | Both of the above | `pip install "spotifyscraper[all]"` |
+| `browser` | [`playwright`](https://playwright.dev/python/) Chromium transport and browser-assisted `login()` | `pip install "spotifyscraper[browser]"` |
+| `cli` | [`typer`](https://typer.tiangolo.com/) for the `spotifyscraper` command-line tool | `pip install "spotifyscraper[cli]"` |
+| `keyring` | [`keyring`](https://pypi.org/project/keyring/) to store the login cookie in the OS keyring | `pip install "spotifyscraper[keyring]"` |
+| `mcp` | the `spotifyscraper-mcp` [Model Context Protocol](https://modelcontextprotocol.io) server for LLM hosts | `pip install "spotifyscraper[mcp]"` |
+| `all` | Everything above | `pip install "spotifyscraper[all]"` |
 
 === "pip"
 
     ```bash
     pip install "spotifyscraper[media]"
-    pip install "spotifyscraper[browser]"
+    pip install "spotifyscraper[cli]"
+    pip install "spotifyscraper[mcp]"
     pip install "spotifyscraper[all]"
     ```
 
@@ -44,7 +48,8 @@ library keeps your environment lean, and you add capabilities as needed.
 
     ```bash
     uv add "spotifyscraper[media]"
-    uv add "spotifyscraper[browser]"
+    uv add "spotifyscraper[cli]"
+    uv add "spotifyscraper[mcp]"
     uv add "spotifyscraper[all]"
     ```
 

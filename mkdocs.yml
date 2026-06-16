@@ -7,7 +7,7 @@ site_url: https://spotifyscraper.readthedocs.io/en/latest/
 repo_url: https://github.com/AliAkhtari78/SpotifyScraper
 repo_name: AliAkhtari78/SpotifyScraper
 edit_uri: edit/master/docs/
-copyright: Copyright &copy; Ali Akhtari - MIT License
+copyright: Copyright &copy; <a href="https://aliakhtari.com" target="_blank" rel="noopener">Ali Akhtari</a> — MIT License
 
 theme:
   name: material
@@ -90,11 +90,16 @@ nav:
     - Quickstart: getting-started/quickstart.md
   - Guides:
     - Entities: guides/entities.md
+    - Charts: guides/charts.md
+    - Discovery: guides/discovery.md
     - Search: guides/search.md
+    - Cover colors & Canvas: guides/visual.md
+    - Credits & concerts: guides/more.md
     - Localization: guides/localization.md
     - CLI: guides/cli.md
     - Lyrics & cookies: guides/lyrics-and-cookies.md
     - Authenticated sessions: guides/authentication.md
+    - MCP server: guides/mcp.md
     - Async: guides/async.md
     - Batch helpers: guides/batch.md
     - Media downloads: guides/media-downloads.md
@@ -102,6 +107,7 @@ nav:
     - Anti-ban & resilience: guides/anti-ban.md
     - Browser fallback: guides/browser-fallback.md
     - Error handling: guides/error-handling.md
+    - Tutorial — visual & voice page: guides/visual-voice-page.md
   - API Reference:
     - Client: reference/client.md
     - Async client: reference/async-client.md
