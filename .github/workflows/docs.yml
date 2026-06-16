@@ -19,9 +19,7 @@ permissions:
 
 jobs:
   build:
-    # Self-hosted primary, GitHub-hosted fallback (fork PRs forced to GitHub-hosted).
-    # Clear the PRIMARY_RUNNER repo variable to fall back to GitHub-hosted.
-    runs-on: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) && 'ubuntu-latest' || vars.PRIMARY_RUNNER || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
       - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
