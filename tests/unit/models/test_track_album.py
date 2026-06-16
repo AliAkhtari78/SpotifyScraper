@@ -171,16 +171,17 @@ def test_embed_track_tier1_fields_default_none(embed_track: Track) -> None:
 
 
 def test_full_album_field_values(full_album: Album) -> None:
-    assert full_album.id == "4aawyAB9vmqN3uQ7FjRGTy"
+    assert full_album.id == "6N9PS4QXF1D0OWPk0Sxtb4"
     assert full_album.album_type == "album"
-    assert full_album.label == "Mr.305/Polo Grounds Music/RCA Records"
-    assert full_album.total_tracks == 18
+    assert full_album.label == "Sony Music CG"
+    assert full_album.total_tracks == 10
     assert len(full_album.tracks) == 2
-    assert full_album.tracks[0].explicit is True
+    assert full_album.tracks[0].explicit is False
     assert full_album.copyrights == (
-        "(P) 2012 RCA Records, a division of Sony Music Entertainment",
+        "(P) 1987 Sony Music Entertainment UK Limited under exclusive license to "
+        "BMG Rights Management (UK) Limited",
     )
-    assert full_album.release_date == datetime(2012, 11, 16, tzinfo=timezone.utc)
+    assert full_album.release_date == datetime(1987, 11, 12, tzinfo=timezone.utc)
 
 
 def test_embed_album_tier1_fields_default(embed_album: Album) -> None:
@@ -207,7 +208,7 @@ def test_track_url_derived_and_not_serialized(full_track: Track) -> None:
 
 
 def test_album_url_derived_and_not_serialized(full_album: Album) -> None:
-    assert full_album.url == "https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy"
+    assert full_album.url == "https://open.spotify.com/album/6N9PS4QXF1D0OWPk0Sxtb4"
     assert "url" not in full_album.to_dict()
 
 

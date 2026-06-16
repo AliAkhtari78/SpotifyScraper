@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from spotify_scraper.api import transcripts as transcripts_api
 
-EPISODE_ID = "512ojhOuo1ktJprKbVcKyQ"
+EPISODE_ID = "07gKzPFkbvGF0cHoeG7ARS"
 
 
 def test_transcript_url_isolated_endpoint() -> None:

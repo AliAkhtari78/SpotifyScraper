@@ -63,7 +63,7 @@ async def main():
     async with AsyncSpotifyClient() as client:
         track, album = await asyncio.gather(
             client.get_track("4uLU6hMCjMI75M1A2tKUQC"),
-            client.get_album("4aawyAB9vmqN3uQ7FjRGTy"),
+            client.get_album("6N9PS4QXF1D0OWPk0Sxtb4"),
         )
         print(track.name, "|", album.name)
 
@@ -202,7 +202,7 @@ with SpotifyClient(cookies="cookies.txt") as client:   # or cookies={"sp_dc": ".
     for line in lyrics.lines:
         print(line.start_ms, line.text)
 
-    transcript = client.get_transcript("512ojhOuo1ktJprKbVcKyQ")   # a podcast episode
+    transcript = client.get_transcript("07gKzPFkbvGF0cHoeG7ARS")   # a podcast episode
     for line in transcript.lines:
         print(line.start_ms, line.text)
 ```
@@ -228,7 +228,7 @@ with SpotifyClient() as client:
 with SpotifyClient.from_saved_session() as client:
     account = client.get_account()              # who am I?
     print(account.product, account.country, client.is_premium())
-    transcript = client.get_transcript("512ojhOuo1ktJprKbVcKyQ")
+    transcript = client.get_transcript("07gKzPFkbvGF0cHoeG7ARS")
 ```
 
 `login()` reuses a valid saved session by default (browser only the first time);

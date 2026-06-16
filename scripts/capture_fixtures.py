@@ -28,7 +28,7 @@ USER_AGENT = (
 # Stable, well-known public entities.
 ENTITIES = {
     "track": "4uLU6hMCjMI75M1A2tKUQC",  # Rick Astley - Never Gonna Give You Up
-    "album": "4aawyAB9vmqN3uQ7FjRGTy",  # Pitbull - Global Warming
+    "album": "6N9PS4QXF1D0OWPk0Sxtb4",  # Rick Astley - Whenever You Need Somebody
     "artist": "0gxyHStUsqpMadRV0Di1Qt",  # Rick Astley
     "playlist": "37i9dQZF1DXcBWIGoYBM5M",  # Today's Top Hits (editorial)
     "episode": "07gKzPFkbvGF0cHoeG7ARS",  # a Joe Rogan Experience episode

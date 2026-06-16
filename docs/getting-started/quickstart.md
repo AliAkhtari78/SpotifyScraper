@@ -40,7 +40,7 @@ with SpotifyClient() as client:
     print(track.name, "—", track.artists[0].name)
 
     # Album (its tracks are paginated in for you)
-    album = client.get_album("4aawyAB9vmqN3uQ7FjRGTy")
+    album = client.get_album("6N9PS4QXF1D0OWPk0Sxtb4")
     print(album.name, f"({album.total_tracks} tracks)")
 
     # Artist
@@ -54,7 +54,7 @@ with SpotifyClient() as client:
     print(playlist.name, f"({len(playlist.tracks)} tracks loaded)")
 
     # Podcast episode
-    episode = client.get_episode("512ojhOuo1ktJprKbVcKyQ")
+    episode = client.get_episode("07gKzPFkbvGF0cHoeG7ARS")
     print(episode.name)
 
     # Podcast show — cap how many episodes you list (default 50)

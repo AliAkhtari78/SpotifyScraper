@@ -95,7 +95,7 @@ returns a [`Transcript`](../reference/models.md) whose `lines` are
 from spotify_scraper import SpotifyClient
 
 with SpotifyClient(cookies="cookies.txt") as client:
-    transcript = client.get_transcript("https://open.spotify.com/episode/512ojhOuo1ktJprKbVcKyQ")
+    transcript = client.get_transcript("https://open.spotify.com/episode/07gKzPFkbvGF0cHoeG7ARS")
     print(transcript.language)
     for line in transcript.lines:
         print(line.start_ms, line.text)
@@ -108,7 +108,7 @@ Spotify 404s or returns a body with no spoken text — `get_transcript` raises
 `NotFoundError` (never confused with an auth failure). On the command line:
 
 ```bash
-spotifyscraper transcript 512ojhOuo1ktJprKbVcKyQ --cookies cookies.txt --pretty
+spotifyscraper transcript 07gKzPFkbvGF0cHoeG7ARS --cookies cookies.txt --pretty
 ```
 
 ## Errors you may hit

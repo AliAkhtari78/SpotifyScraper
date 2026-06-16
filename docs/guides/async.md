@@ -77,7 +77,7 @@ You can mix entity types in one batch:
 async with AsyncSpotifyClient() as client:
     track, album, artist = await asyncio.gather(
         client.get_track("4uLU6hMCjMI75M1A2tKUQC"),
-        client.get_album("4aawyAB9vmqN3uQ7FjRGTy"),
+        client.get_album("6N9PS4QXF1D0OWPk0Sxtb4"),
         client.get_artist("0gxyHStUsqpMadRV0Di1Qt"),
     )
 ```
