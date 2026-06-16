@@ -37,6 +37,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Artist concerts.** `client.get_artist_events(artist)` returns upcoming live
   events (`Concert`: title, start date, city, line-up). Anonymous; the set can
   vary by region. CLI: `events`.
+- **MCP server.** A Model Context Protocol server (`spotifyscraper-mcp`, behind
+  the new `mcp` extra) exposes every getter as a tool with structured JSON output,
+  the six entity types as `spotify://…` resources, curated prompts, a cover-art
+  image tool, and stdio + streamable-HTTP transports. Authenticated tools require
+  the `SPOTIFY_SP_DC` environment variable. Install with
+  `pip install 'spotifyscraper[mcp]'`.
 
 ## [3.5.0] - 2026-06-15
 

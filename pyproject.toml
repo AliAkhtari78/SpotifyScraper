@@ -52,10 +52,12 @@ media = ["mutagen>=1.47"]
 browser = ["playwright>=1.49"]
 cli = ["typer>=0.12"]
 keyring = ["keyring>=24"]
-all = ["spotifyscraper[media,browser,cli,keyring]"]
+mcp = ["mcp>=1.2", "uvicorn>=0.30"]
+all = ["spotifyscraper[media,browser,cli,keyring,mcp]"]
 
 [project.scripts]
 spotifyscraper = "spotify_scraper.cli:app"
+spotifyscraper-mcp = "spotify_scraper.mcp.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/AliAkhtari78/SpotifyScraper"
@@ -66,6 +68,7 @@ Issues = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
 
 [dependency-groups]
 dev = [
+  "mcp>=1.2",
   "mutagen>=1.47",
   "mypy>=1.14",
   "pre-commit>=4.0",
@@ -77,6 +80,7 @@ dev = [
   "ruff>=0.9",
   "twine>=6.0",
   "typer>=0.12",
+  "uvicorn>=0.30",
 ]
 docs = [
   "mkdocs-material>=9.5",
