@@ -1,7 +1,9 @@
 # media-downloads Specification
 
 ## Purpose
-TBD - created by archiving change add-media-downloads. Update Purpose after archive.
+
+Download cover art and preview MP3s behind the optional media extra.
+
 ## Requirements
 ### Requirement: Cover art download
 

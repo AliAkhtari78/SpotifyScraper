@@ -1,7 +1,9 @@
 # cookie-auth Specification
 
 ## Purpose
-TBD - created by archiving change add-cookie-auth-lyrics. Update Purpose after archive.
+
+The rotating-TOTP /api/token handshake that exchanges an sp_dc cookie for a user bearer token.
+
 ## Requirements
 ### Requirement: Flexible cookie ingestion
 

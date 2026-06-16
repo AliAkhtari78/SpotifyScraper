@@ -1,7 +1,9 @@
 # playlist-extraction Specification
 
 ## Purpose
-TBD - created by archiving change add-album-artist-playlist. Update Purpose after archive.
+
+Fetch a playlist with its owner, description, and paginated track listing.
+
 ## Requirements
 ### Requirement: Two-tier playlist fetch
 

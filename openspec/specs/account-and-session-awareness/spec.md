@@ -1,7 +1,9 @@
 # account-and-session-awareness Specification
 
 ## Purpose
-TBD - created by archiving change add-account-and-self-aware-session. Update Purpose after archive.
+
+Expose the logged-in account's product state (premium/country/locale) and cookie-free session introspection.
+
 ## Requirements
 ### Requirement: Authenticated account product-state fetch
 

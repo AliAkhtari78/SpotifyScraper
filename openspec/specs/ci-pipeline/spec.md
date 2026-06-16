@@ -1,7 +1,9 @@
 # ci-pipeline Specification
 
 ## Purpose
-TBD - created by archiving change setup-project-scaffold. Update Purpose after archive.
+
+Continuous integration: lint, type-check, and test across supported Python versions and OSes.
+
 ## Requirements
 ### Requirement: Quality gates on every change
 

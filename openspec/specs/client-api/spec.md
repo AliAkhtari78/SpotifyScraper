@@ -1,7 +1,9 @@
 # client-api Specification
 
 ## Purpose
-TBD - created by archiving change add-track-extraction. Update Purpose after archive.
+
+The synchronous and asynchronous client facade surface and lifecycle.
+
 ## Requirements
 ### Requirement: Zero-configuration clients
 

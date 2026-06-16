@@ -1,7 +1,9 @@
 # url-handling Specification
 
 ## Purpose
-TBD - created by archiving change add-models-errors-urls. Update Purpose after archive.
+
+Parse and normalize Spotify URLs, URIs, and 22-character IDs.
+
 ## Requirements
 ### Requirement: Universal input parsing
 

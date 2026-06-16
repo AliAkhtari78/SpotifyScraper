@@ -1,7 +1,9 @@
 # documentation-site Specification
 
 ## Purpose
-TBD - created by archiving change add-docs-site. Update Purpose after archive.
+
+The MkDocs Material documentation site published to ReadTheDocs.
+
 ## Requirements
 ### Requirement: Strict-building MkDocs Material site
 

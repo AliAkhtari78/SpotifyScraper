@@ -1,7 +1,9 @@
 # anonymous-auth Specification
 
 ## Purpose
-TBD - created by archiving change add-anonymous-token. Update Purpose after archive.
+
+Bootstrap the anonymous bearer token from an embed page's __NEXT_DATA__ for tier-1 access.
+
 ## Requirements
 ### Requirement: Token bootstrap from embed pages
 

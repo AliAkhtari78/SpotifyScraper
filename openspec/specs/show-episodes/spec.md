@@ -1,7 +1,9 @@
 # show-episodes Specification
 
 ## Purpose
-TBD - created by archiving change harden-reliability-and-completeness. Update Purpose after archive.
+
+The complete, paginated episode listing for a podcast show.
+
 ## Requirements
 ### Requirement: Complete show episode listing
 

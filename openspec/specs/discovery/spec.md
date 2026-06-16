@@ -1,7 +1,9 @@
 # discovery Specification
 
 ## Purpose
-TBD - created by archiving change add-visual-discovery-mcp. Update Purpose after archive.
+
+Discovery surfaces: related artists, full discography, recommendations, and public profiles.
+
 ## Requirements
 ### Requirement: Related artists, discography, and recommendations
 

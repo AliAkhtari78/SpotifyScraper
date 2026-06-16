@@ -1,7 +1,9 @@
 # packaging Specification
 
 ## Purpose
-TBD - created by archiving change setup-project-scaffold. Update Purpose after archive.
+
+Package build and metadata: hatchling, optional extras, and py.typed.
+
 ## Requirements
 ### Requirement: Single-file build configuration
 

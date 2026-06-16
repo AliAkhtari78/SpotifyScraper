@@ -1,7 +1,9 @@
 # lyrics-extraction Specification
 
 ## Purpose
-TBD - created by archiving change add-cookie-auth-lyrics. Update Purpose after archive.
+
+Fetch time-synced lyrics via the cookie-derived user token.
+
 ## Requirements
 ### Requirement: Authenticated lyrics fetch
 

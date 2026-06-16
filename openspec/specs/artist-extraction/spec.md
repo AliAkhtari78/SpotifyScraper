@@ -1,7 +1,9 @@
 # artist-extraction Specification
 
 ## Purpose
-TBD - created by archiving change add-album-artist-playlist. Update Purpose after archive.
+
+Fetch an artist's profile, stats, top tracks, and discography references.
+
 ## Requirements
 ### Requirement: Two-tier artist fetch
 

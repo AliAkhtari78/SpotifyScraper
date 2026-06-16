@@ -1,7 +1,9 @@
 # visual Specification
 
 ## Purpose
-TBD - created by archiving change add-visual-discovery-mcp. Update Purpose after archive.
+
+Cover-art color extraction and Canvas looping cover videos.
+
 ## Requirements
 ### Requirement: Cover-art color extraction
 

@@ -1,7 +1,9 @@
 # mcp Specification
 
 ## Purpose
-TBD - created by archiving change add-visual-discovery-mcp. Update Purpose after archive.
+
+A Model Context Protocol server exposing the library as tools, resources, and prompts.
+
 ## Requirements
 ### Requirement: Model Context Protocol server
 

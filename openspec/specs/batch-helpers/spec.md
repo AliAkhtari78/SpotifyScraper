@@ -1,7 +1,9 @@
 # batch-helpers Specification
 
 ## Purpose
-TBD - created by archiving change add-batch-helpers. Update Purpose after archive.
+
+Plural get_*s helpers returning per-item, partial-failure-safe results with managed concurrency.
+
 ## Requirements
 ### Requirement: Plural convenience helpers on both clients
 

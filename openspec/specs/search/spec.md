@@ -1,7 +1,9 @@
 # search Specification
 
 ## Purpose
-TBD - created by archiving change add-search. Update Purpose after archive.
+
+Cross-entity search returning a single typed SearchResults.
+
 ## Requirements
 ### Requirement: Anonymous aggregate search
 

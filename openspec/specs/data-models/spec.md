@@ -1,7 +1,9 @@
 # data-models Specification
 
 ## Purpose
-TBD - created by archiving change add-models-errors-urls. Update Purpose after archive.
+
+Frozen, slotted, typed entity models with a JSON-safe to_dict().
+
 ## Requirements
 ### Requirement: Immutable typed models
 

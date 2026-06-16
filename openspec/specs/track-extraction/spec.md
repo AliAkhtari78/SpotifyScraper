@@ -1,7 +1,9 @@
 # track-extraction Specification
 
 ## Purpose
-TBD - created by archiving change add-track-extraction. Update Purpose after archive.
+
+Two-tier track fetch: pathfinder GraphQL with an embed-page fallback.
+
 ## Requirements
 ### Requirement: Two-tier track fetch
 

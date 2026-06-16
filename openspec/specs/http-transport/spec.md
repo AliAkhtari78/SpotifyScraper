@@ -1,7 +1,9 @@
 # http-transport Specification
 
 ## Purpose
-TBD - created by archiving change add-http-transport. Update Purpose after archive.
+
+The httpx-backed transport with retry and rate-limit handling.
+
 ## Requirements
 ### Requirement: Pluggable transport protocols
 

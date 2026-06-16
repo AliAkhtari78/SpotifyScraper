@@ -1,7 +1,9 @@
 # episode-extraction Specification
 
 ## Purpose
-TBD - created by archiving change add-podcast-entities. Update Purpose after archive.
+
+Fetch a podcast episode with its metadata and audio preview from Spotify.
+
 ## Requirements
 ### Requirement: Two-tier episode fetch
 

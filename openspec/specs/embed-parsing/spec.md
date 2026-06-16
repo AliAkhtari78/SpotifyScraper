@@ -1,7 +1,9 @@
 # embed-parsing Specification
 
 ## Purpose
-TBD - created by archiving change add-anonymous-token. Update Purpose after archive.
+
+Parse an entity's embed-page __NEXT_DATA__ as the tier-2 fallback.
+
 ## Requirements
 ### Requirement: NEXT_DATA extraction
 

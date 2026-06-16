@@ -1,7 +1,9 @@
 # per-host-rate-limiting Specification
 
 ## Purpose
-TBD - created by archiving change harden-reliability-and-completeness. Update Purpose after archive.
+
+Pace requests per host and honor Retry-After to stay within Spotify's limits.
+
 ## Requirements
 ### Requirement: Independent per-host throttling
 

@@ -1,7 +1,9 @@
 # release-pipeline Specification
 
 ## Purpose
-TBD - created by archiving change add-release-automation. Update Purpose after archive.
+
+Tag-triggered PyPI publish and GitHub release automation.
+
 ## Requirements
 ### Requirement: Tag-triggered trusted publishing
 

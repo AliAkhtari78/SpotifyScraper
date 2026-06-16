@@ -1,7 +1,9 @@
 # authenticated-sessions Specification
 
 ## Purpose
-TBD - created by archiving change add-browser-login. Update Purpose after archive.
+
+Browser-assisted login and persistent, password-free sp_dc session storage.
+
 ## Requirements
 ### Requirement: Browser-assisted sp_dc capture (no password)
 

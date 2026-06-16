@@ -1,7 +1,9 @@
 # transcript-extraction Specification
 
 ## Purpose
-TBD - created by archiving change add-podcast-transcripts. Update Purpose after archive.
+
+Fetch a podcast episode's transcript via the cookie-derived user token.
+
 ## Requirements
 ### Requirement: Authenticated transcript fetch
 

@@ -1,7 +1,9 @@
 # dev-tooling Specification
 
 ## Purpose
-TBD - created by archiving change setup-project-scaffold. Update Purpose after archive.
+
+Local developer tooling: uv, ruff, mypy --strict, pytest, and pre-commit.
+
 ## Requirements
 ### Requirement: Unified lint and format tooling
 

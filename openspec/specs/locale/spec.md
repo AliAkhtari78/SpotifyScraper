@@ -1,7 +1,9 @@
 # locale Specification
 
 ## Purpose
-TBD - created by archiving change add-market-region-parameter. Update Purpose after archive.
+
+Apply a BCP-47 language tag to localize display-name language (not market availability).
+
 ## Requirements
 ### Requirement: Optional display-language localization
 

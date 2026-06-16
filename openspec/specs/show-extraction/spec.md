@@ -1,7 +1,9 @@
 # show-extraction Specification
 
 ## Purpose
-TBD - created by archiving change add-podcast-entities. Update Purpose after archive.
+
+Fetch a podcast show with its publisher metadata and episode references.
+
 ## Requirements
 ### Requirement: Two-tier show fetch
 

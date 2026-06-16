@@ -1,7 +1,9 @@
 # browser-transport Specification
 
 ## Purpose
-TBD - created by archiving change add-browser-fallback. Update Purpose after archive.
+
+Optional Playwright browser fallback for fetching pages the HTTP client cannot.
+
 ## Requirements
 ### Requirement: Protocol-compatible browser transport
 

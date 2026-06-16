@@ -1,7 +1,9 @@
 # canary-monitoring Specification
 
 ## Purpose
-TBD - created by archiving change add-release-automation. Update Purpose after archive.
+
+Daily live smoke tests that auto-file a tracking issue when Spotify breaks an endpoint.
+
 ## Requirements
 ### Requirement: Daily live verification
 

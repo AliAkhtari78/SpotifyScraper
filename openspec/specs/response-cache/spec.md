@@ -1,7 +1,9 @@
 # response-cache Specification
 
 ## Purpose
-TBD - created by archiving change add-response-cache. Update Purpose after archive.
+
+An optional, off-by-default persistent response cache at the transport seam.
+
 ## Requirements
 ### Requirement: Opt-in, off-by-default response cache
 

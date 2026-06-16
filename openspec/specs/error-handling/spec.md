@@ -1,7 +1,9 @@
 # error-handling Specification
 
 ## Purpose
-TBD - created by archiving change add-models-errors-urls. Update Purpose after archive.
+
+A typed exception hierarchy — errors are raised, never returned as strings or dicts.
+
 ## Requirements
 ### Requirement: Single exception hierarchy
 

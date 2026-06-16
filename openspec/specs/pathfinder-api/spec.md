@@ -1,7 +1,9 @@
 # pathfinder-api Specification
 
 ## Purpose
-TBD - created by archiving change add-track-extraction. Update Purpose after archive.
+
+Build and classify Spotify pathfinder GraphQL persisted-query requests.
+
 ## Requirements
 ### Requirement: Centralized operation table
 

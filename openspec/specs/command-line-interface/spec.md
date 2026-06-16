@@ -1,7 +1,9 @@
 # command-line-interface Specification
 
 ## Purpose
-TBD - created by archiving change add-cli-framework. Update Purpose after archive.
+
+The Typer CLI that emits JSON and downloads cover art and previews.
+
 ## Requirements
 ### Requirement: Entity commands emit JSON
 
