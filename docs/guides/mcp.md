@@ -37,6 +37,23 @@ docker run -p 8000:8000 \
   ghcr.io/aliakhtari78/spotifyscraper
 ```
 
+The image is **multi-architecture** — it's built for both `linux/amd64`
+(Intel/AMD machines and most cloud servers) and `linux/arm64` (Apple Silicon
+Macs and ARM servers). On the GitHub Packages page you'll therefore see **two
+platform entries under one version**: those are the two CPU builds of the *same*
+release, not duplicates. You never choose between them — `docker pull` / `docker
+run` reads the image's manifest list and automatically downloads the build that
+matches your machine; the per-platform `@sha256:` digests shown on the page are
+just how the registry lists each architecture.
+
+Available tags: `latest` (the rolling `master` build), `3.6.0` / `v3.6.0` (one per
+release), and `sha-<commit>` to pin an exact commit:
+
+```bash
+docker run -p 8000:8000 ghcr.io/aliakhtari78/spotifyscraper          # :latest
+docker run -p 8000:8000 ghcr.io/aliakhtari78/spotifyscraper:3.6.0    # pinned release
+```
+
 ## Use it from Claude Desktop
 
 Add to `claude_desktop_config.json`:

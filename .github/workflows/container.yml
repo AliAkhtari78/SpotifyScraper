@@ -16,7 +16,9 @@ on:
         default: ""
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # Key on the event type as well, so a manual re-tag (workflow_dispatch) never
+  # cancels the push build (or vice versa) and leaves a stray "cancelled" check.
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 permissions:
