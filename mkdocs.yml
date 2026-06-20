@@ -82,6 +82,9 @@ extra:
       link: https://github.com/AliAkhtari78/SpotifyScraper
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/spotifyscraper/
+    - icon: fontawesome/solid/globe
+      link: https://aliakhtari.com
+      name: aliakhtari.com — built by Ali Akhtari, full-stack AI engineer
 
 nav:
   - Home: index.md
