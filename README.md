@@ -252,6 +252,8 @@ cookie. See the
 | **3.4** | [Search](https://github.com/AliAkhtari78/SpotifyScraper/issues/129) across every entity type (`search()`) · display-language [localization](https://github.com/AliAkhtari78/SpotifyScraper/issues/130) (`locale`) |
 | **3.5** | Optional [response cache](https://github.com/AliAkhtari78/SpotifyScraper/issues/131) (`cache=CacheConfig(...)`) · [batch helpers](https://github.com/AliAkhtari78/SpotifyScraper/issues/132) with managed concurrency |
 | **3.6** | **Visual & discovery**: cover colors, Canvas videos, charts, related artists, paginated discography, recommendations, public profiles, track credits, concerts · a best-in-class **MCP server** + container image |
+| **3.7** | MCP **batch tools** (`get_tracks`/`get_albums`/…) · `get_track_visuals` convenience tool for visual front-ends |
+| **3.8** | Maintenance: dependency, toolchain & CI modernization (all Actions on current majors, SHA-pinned) · docs & PyPI backlinks |
 
 **What's next** — future ideas are tracked in the GitHub
 [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones) and

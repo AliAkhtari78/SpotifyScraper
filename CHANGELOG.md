@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.0] - 2026-06-20
+
+### Changed
+- **CI / supply chain.** Bumped every GitHub Actions dependency to its current
+  major, all SHA-pinned: `actions/checkout` v7, `astral-sh/setup-uv` v8,
+  `github/codeql-action` v4, the `docker/*` build actions (setup-qemu, setup-buildx,
+  login, metadata, build-push), and `anthropics/claude-code-action`. (#141)
+- **Dev toolchain.** Refreshed the locked dev environment and pre-commit hooks —
+  `ruff` 0.9 → 0.15 (hook), `pytest` 9.1, `mcp` 1.28, and lockfile point releases.
+- **Docs & packaging.** Added author/site backlinks: a website link in the docs
+  footer (shown on every page) and "Live Demo" / "Author" entries in the PyPI sidebar.
+
+### Internal
+- Corrected the `httpx` `<1.0` cap rationale: 1.0 is not yet released (only
+  `1.0.dev*`), and the public-API change the comment cited actually shipped in 0.28
+  (already absorbed). The cap and runtime behavior are unchanged.
+
+This is a maintenance release — no library getter, model, CLI, or MCP signature changed.
+
 ## [3.7.0] - 2026-06-16
 
 ### Added
