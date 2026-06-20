@@ -65,6 +65,8 @@ Documentation = "https://spotifyscraper.readthedocs.io"
 Repository = "https://github.com/AliAkhtari78/SpotifyScraper"
 Changelog = "https://github.com/AliAkhtari78/SpotifyScraper/blob/master/CHANGELOG.md"
 Issues = "https://github.com/AliAkhtari78/SpotifyScraper/issues"
+"Live Demo" = "https://aliakhtari.com/spotify/"
+Author = "https://aliakhtari.com"
 
 [dependency-groups]
 dev = [
