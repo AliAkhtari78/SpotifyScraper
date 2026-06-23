@@ -8,6 +8,7 @@ model instances, so each command is exercised end-to-end through Typer's
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -268,6 +269,13 @@ def test_help_lists_commands() -> None:
     assert result.exit_code == 0
     for command in ("track", "album", "artist", "playlist", "show", "episode", "download"):
         assert command in result.stdout
+
+
+def test_no_hint_sets_opt_out_before_command_output(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("SPOTIFYSCRAPER_NO_HINT", raising=False)
+    result = runner.invoke(app, ["--no-hint", "track", "x"])
+    assert result.exit_code == 0, result.output
+    assert os.environ["SPOTIFYSCRAPER_NO_HINT"] == "1"
 
 
 # --- Download commands ---------------------------------------------------------

@@ -101,8 +101,14 @@ def main(
             callback=_version_callback,
         ),
     ] = False,
+    no_hint: Annotated[
+        bool,
+        typer.Option("--no-hint", help="Suppress the one-time star hint."),
+    ] = False,
 ) -> None:
     """SpotifyScraper command-line interface."""
+    if no_hint:
+        os.environ["SPOTIFYSCRAPER_NO_HINT"] = "1"
 
 
 @app.command()

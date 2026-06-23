@@ -26,6 +26,8 @@ spotifyscraper --version
 spotifyscraper --help
 ```
 
+Pass `--no-hint` before the command to suppress the one-time star hint for that invocation.
+
 ## Entity commands
 
 Each entity type has a command that accepts a Spotify **URL**, **URI**, or bare
