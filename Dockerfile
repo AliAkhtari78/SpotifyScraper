@@ -13,7 +13,7 @@ LABEL org.opencontainers.image.source="https://github.com/AliAkhtari78/SpotifySc
 LABEL org.opencontainers.image.description="Extract public Spotify data without the official API — CLI + MCP server."
 LABEL org.opencontainers.image.licenses="MIT"
 # Ownership marker for the official MCP registry's OCI verification.
-LABEL io.modelcontextprotocol.server.name="io.github.aliakhtari78/spotifyscraper"
+LABEL io.modelcontextprotocol.server.name="io.github.AliAkhtari78/spotifyscraper"
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \

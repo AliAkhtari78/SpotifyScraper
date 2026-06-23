@@ -348,4 +348,4 @@ developers find it — and tells me which features to keep building.
 
 [MIT](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE) © [Ali Akhtari](https://aliakhtari.com) — full-stack AI engineer ([aliakhtari.com](https://aliakhtari.com)).
 
-<!-- mcp-name: io.github.aliakhtari78/spotifyscraper -->
+<!-- mcp-name: io.github.AliAkhtari78/spotifyscraper -->

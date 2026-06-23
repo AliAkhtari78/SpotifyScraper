@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.aliakhtari78/spotifyscraper",
+  "name": "io.github.AliAkhtari78/spotifyscraper",
   "description": "Public Spotify metadata, lyrics and podcasts for LLM agents. No API key, read-only.",
   "repository": {
     "url": "https://github.com/AliAkhtari78/SpotifyScraper",
     "source": "github"
   },
-  "version": "3.9.0",
+  "version": "3.9.1",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "spotifyscraper",
-      "version": "3.9.0",
+      "version": "3.9.1",
       "transport": {
         "type": "stdio"
       },
