@@ -11,6 +11,10 @@
     and watch SpotifyScraper return typed data, cover art, and a preview — with
     the exact Python that produced it.
 
+!!! tip "⭐ Find this useful?"
+    A [star on GitHub](https://github.com/AliAkhtari78/SpotifyScraper) helps other
+    developers discover SpotifyScraper — and tells me which features to build next.
+
 **Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — with one dependency and no API key.**
 
 SpotifyScraper reads the same public pages your browser does and returns clean,

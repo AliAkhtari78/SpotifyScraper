@@ -1,0 +1,59 @@
+name: Publish to MCP Registry
+
+# Registers the spotifyscraper MCP server in the official Model Context Protocol
+# registry (registry.modelcontextprotocol.io) on each release tag, so AI clients
+# and directories (Glama, mcp.so, PulseMCP, Smithery) can discover it.
+#
+# This is a SEPARATE, failure-isolated workflow: if registry publishing hiccups
+# it never affects the PyPI/ghcr release. Auth is GitHub OIDC — no stored secret
+# (the registry only needs to prove the io.github.aliakhtari78/* namespace).
+#
+# It waits for the matching version to be live on PyPI first, because the
+# registry verifies the package's description carries the `mcp-name:` marker
+# (see README.md). Re-runnable via workflow_dispatch if the first attempt races
+# PyPI propagation.
+
+on:
+  push:
+    tags: ["v3*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-mcp:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # OIDC auth to the MCP registry — no secret needed
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Wait for the matching version on PyPI
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          if [ -z "$VERSION" ] || [ "$VERSION" = "$GITHUB_REF" ]; then
+            VERSION="$(jq -r .version server.json)"
+          fi
+          echo "Waiting for spotifyscraper==$VERSION on PyPI (the registry verifies its description)..."
+          for i in $(seq 1 30); do
+            if curl -fsSL "https://pypi.org/pypi/spotifyscraper/$VERSION/json" >/dev/null 2>&1; then
+              echo "Found spotifyscraper==$VERSION on PyPI."
+              exit 0
+            fi
+            echo "  attempt $i/30: not on PyPI yet; sleeping 20s"
+            sleep 20
+          done
+          echo "::error::spotifyscraper==$VERSION not on PyPI after 10 min; re-run this workflow once the release publishes."
+          exit 1
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Authenticate to the MCP Registry (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish server.json to the MCP Registry
+        run: ./mcp-publisher publish

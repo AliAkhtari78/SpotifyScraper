@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.0] - 2026-06-20
+
+### Added
+- **Official MCP Registry support.** The `spotifyscraper-mcp` server is now
+  published to the Model Context Protocol registry
+  (`registry.modelcontextprotocol.io`) on each release tag, so AI clients and
+  directories (Glama, mcp.so, PulseMCP, Smithery) can discover it. Adds a root
+  `server.json`, an `mcp-name` marker, a Dockerfile ownership label, and a
+  failure-isolated `publish-mcp` workflow authenticated via GitHub OIDC — no
+  stored secret.
+- **One-time CLI star hint.** After a successful interactive command the CLI
+  prints a single, suppressible reminder to **stderr** pointing at the repo. It
+  never appears in piped/JSON/`--output` results, shows only on a TTY, and only
+  once; silence it permanently with `SPOTIFYSCRAPER_NO_HINT=1`.
+
+### Changed
+- **README** gains an honest "SpotifyScraper vs. spotipy" comparison table, a
+  monthly-downloads badge, a star-history chart, and a note for developers
+  migrating off Spotify's deprecated official `audio-features` /
+  `recommendations` / `related-artists` endpoints. The docs landing page gains a
+  star call-to-action. No library API changed.
+
 ## [3.8.0] - 2026-06-20
 
 ### Changed
