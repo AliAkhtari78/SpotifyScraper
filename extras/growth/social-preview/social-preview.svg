@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1411"/>
+      <stop offset="1" stop-color="#0d1117"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1280" height="10" fill="#1DB954"/>
+
+  <!-- Spotify-style mark -->
+  <g transform="translate(96,120)">
+    <circle cx="56" cy="56" r="56" fill="#1DB954"/>
+    <g fill="none" stroke="#0b1411" stroke-width="9" stroke-linecap="round">
+      <path d="M28 44 q28 -10 56 4"/>
+      <path d="M26 62 q30 -10 60 6"/>
+      <path d="M28 80 q26 -8 50 4"/>
+    </g>
+  </g>
+
+  <text x="232" y="172" fill="#ffffff" font-size="76" font-weight="800">SpotifyScraper</text>
+  <text x="232" y="224" fill="#1DB954" font-size="34" font-weight="600">Public Spotify data in Python — no API key</text>
+
+  <text x="96" y="350" fill="#c9d1d9" font-size="40" font-weight="500">Tracks · Albums · Artists · Playlists · Podcasts · Lyrics</text>
+
+  <g fill="#8b949e" font-size="30" font-weight="500">
+    <text x="96" y="430">✓  No app registration · no OAuth · no rate-limit quota</text>
+    <text x="96" y="478">✓  Sync &amp; async · fully typed · one dependency</text>
+    <text x="96" y="526">✓  MCP server for Claude / LLM agents</text>
+  </g>
+
+  <text x="96" y="600" fill="#6e7681" font-size="26">pip install spotifyscraper  ·  github.com/AliAkhtari78/SpotifyScraper</text>
+</svg>

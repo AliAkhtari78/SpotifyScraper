@@ -3,11 +3,13 @@
 [![Live demo](https://img.shields.io/badge/Live_demo-try_it_now-1DB954?logo=spotify&logoColor=white)](https://aliakhtari.com/spotify/)
 [![PyPI version](https://img.shields.io/pypi/v/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
 [![Python versions](https://img.shields.io/pypi/pyversions/spotifyscraper.svg)](https://pypi.org/project/spotifyscraper/)
+[![Downloads](https://static.pepy.tech/badge/spotifyscraper/month)](https://pepy.tech/project/spotifyscraper)
 [![CI](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml/badge.svg)](https://github.com/AliAkhtari78/SpotifyScraper/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/spotifyscraper/badge/?version=latest)](https://spotifyscraper.readthedocs.io)
 [![Container](https://img.shields.io/badge/ghcr.io-container-2496ED?logo=docker&logoColor=white)](https://github.com/AliAkhtari78/SpotifyScraper/pkgs/container/spotifyscraper)
 [![Maintained with Claude Code](https://img.shields.io/badge/maintained%20with-Claude%20Code-d97757?logo=anthropic&logoColor=white)](https://github.com/AliAkhtari78/SpotifyScraper#reliability--maintenance)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/AliAkhtari78/SpotifyScraper?style=flat&logo=github&color=1DB954)](https://github.com/AliAkhtari78/SpotifyScraper/stargazers)
 
 **Extract public Spotify data — tracks, albums, artists, playlists, and podcasts — without the official API or an API key.**
 
@@ -21,6 +23,33 @@ modern API. Public data needs no login; the opt-in **logged-in** features
 cookie — never a password or an API key.
 
 > **Upgrading from v2?** See the [migration guide](https://spotifyscraper.readthedocs.io/en/latest/migration/). The previous line lives on the [`v2.x` branch](https://github.com/AliAkhtari78/SpotifyScraper/tree/v2.x).
+
+## SpotifyScraper vs. the official API ([spotipy](https://github.com/spotipy-dev/spotipy))
+
+`spotipy` wraps Spotify's **official Web API** — the right choice when you need to
+write to a user's account or read private/library data. SpotifyScraper reads the
+**public** data the web player already exposes, so it skips the setup entirely.
+
+|                                   | **SpotifyScraper** | **spotipy** (official API) |
+| --------------------------------- | :----------------: | :------------------------: |
+| API key / app registration        |    ❌ not needed    |        ✅ required          |
+| OAuth flow                         |    ❌ not needed    |   ✅ required for most data |
+| Rate-limit quota / billing         |        none        |       Spotify quota        |
+| Sync **and** async                 |         ✅          |         sync only          |
+| Fully typed, immutable models      |         ✅          |          partial           |
+| Lyrics & podcast transcripts       |    ✅ (cookie)      |            ❌              |
+| MCP server for Claude / LLM agents |         ✅          |            ❌              |
+| Write / playback / private data    | ❌ (read-only public) |          ✅             |
+
+Use **spotipy** for authenticated writes and private, market-accurate data; use
+**SpotifyScraper** for fast, key-free access to public metadata, lyrics, and
+previews — plus a drop-in **MCP server** for AI agents.
+
+> **Hit by the official-API deprecations?** Spotify's `audio-features`,
+> `recommendations`, and `related-artists` endpoints have returned `403` for new
+> apps since Nov 2024. SpotifyScraper still returns **related artists and
+> recommendations** with no API key. (It can't bring back `audio-features` —
+> Spotify removed that data entirely, from every tool.)
 
 ## Install
 
@@ -254,6 +283,7 @@ cookie. See the
 | **3.6** | **Visual & discovery**: cover colors, Canvas videos, charts, related artists, paginated discography, recommendations, public profiles, track credits, concerts · a best-in-class **MCP server** + container image |
 | **3.7** | MCP **batch tools** (`get_tracks`/`get_albums`/…) · `get_track_visuals` convenience tool for visual front-ends |
 | **3.8** | Maintenance: dependency, toolchain & CI modernization (all Actions on current majors, SHA-pinned) · docs & PyPI backlinks |
+| **3.9** | Official **MCP registry** publishing (+ Glama/mcp.so/PulseMCP/Smithery discovery) · "vs spotipy" comparison · one-time, opt-out CLI star hint |
 
 **What's next** — future ideas are tracked in the GitHub
 [milestones](https://github.com/AliAkhtari78/SpotifyScraper/milestones) and
@@ -302,6 +332,20 @@ Contributions are welcome — see [CONTRIBUTING.md](https://github.com/AliAkhtar
 is developed spec-first with [OpenSpec](https://github.com/Fission-AI/OpenSpec);
 specs live in [`openspec/`](https://github.com/AliAkhtari78/SpotifyScraper/tree/master/openspec).
 
+## Star history
+
+If SpotifyScraper saved you the official-API OAuth dance, a ⭐ helps other
+developers find it — and tells me which features to keep building.
+
+<a href="https://star-history.com/#AliAkhtari78/SpotifyScraper&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=AliAkhtari78/SpotifyScraper&type=Date&theme=dark" />
+    <img alt="Star history of AliAkhtari78/SpotifyScraper" src="https://api.star-history.com/svg?repos=AliAkhtari78/SpotifyScraper&type=Date" width="600" />
+  </picture>
+</a>
+
 ## License
 
 [MIT](https://github.com/AliAkhtari78/SpotifyScraper/blob/master/LICENSE) © [Ali Akhtari](https://aliakhtari.com) — full-stack AI engineer ([aliakhtari.com](https://aliakhtari.com)).
+
+<!-- mcp-name: io.github.aliakhtari78/spotifyscraper -->

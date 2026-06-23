@@ -14,6 +14,7 @@ from typing import Any, TypeVar
 
 import typer
 
+from spotify_scraper.cli._hint import maybe_star_hint
 from spotify_scraper.errors import (
     AuthenticationError,
     NotFoundError,
@@ -44,6 +45,7 @@ def emit(data: Mapping[str, Any], *, pretty: bool, output: Path | None) -> None:
         typer.echo(text)
     else:
         output.write_text(text + "\n", encoding="utf-8")
+    maybe_star_hint()
 
 
 def _exit_code(exc: SpotifyScraperError) -> int:
