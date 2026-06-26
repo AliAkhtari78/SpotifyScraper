@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.2] - 2026-06-26
+
 ### Added
 - **`--no-hint` CLI flag** to suppress the one-time star hint for a single
   invocation (mirrors `SPOTIFYSCRAPER_NO_HINT=1`). Thanks @knightxiaoxi (#147).

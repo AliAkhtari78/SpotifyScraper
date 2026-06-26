@@ -6,12 +6,12 @@
     "url": "https://github.com/AliAkhtari78/SpotifyScraper",
     "source": "github"
   },
-  "version": "3.9.1",
+  "version": "3.9.2",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "spotifyscraper",
-      "version": "3.9.1",
+      "version": "3.9.2",
       "transport": {
         "type": "stdio"
       },
