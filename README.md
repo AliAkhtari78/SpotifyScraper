@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/aliakhtari78-spotifyscraper-badge.png)](https://mseep.ai/app/aliakhtari78-spotifyscraper)
+
 # SpotifyScraper
 
 [![Live demo](https://img.shields.io/badge/Live_demo-try_it_now-1DB954?logo=spotify&logoColor=white)](https://aliakhtari.com/spotify/)
