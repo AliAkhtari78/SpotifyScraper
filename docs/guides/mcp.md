@@ -74,6 +74,71 @@ Add to `claude_desktop_config.json`:
 Then ask Claude things like *"summarize this Spotify episode from its
 transcript"* or *"what colors should I theme this album page with?"*.
 
+## Use it from Cursor
+
+Cursor reads MCP servers from `~/.cursor/mcp.json` (available everywhere) or
+`.cursor/mcp.json` inside a project:
+
+```json
+{
+  "mcpServers": {
+    "spotifyscraper": {
+      "command": "spotifyscraper-mcp",
+      "env": { "SPOTIFY_SP_DC": "<your sp_dc cookie>" }
+    }
+  }
+}
+```
+
+To point Cursor at the container above — or any remote deployment — run the
+`streamable-http` transport and give Cursor the URL instead of a command:
+
+```json
+{
+  "mcpServers": {
+    "spotifyscraper": {
+      "url": "http://127.0.0.1:8000/mcp"
+    }
+  }
+}
+```
+
+## Use it from Cline
+
+Cline (VS Code) keeps its servers in `cline_mcp_settings.json`, which you can
+open with **MCP Servers → Configure MCP Servers**:
+
+```json
+{
+  "mcpServers": {
+    "spotifyscraper": {
+      "command": "spotifyscraper-mcp",
+      "env": { "SPOTIFY_SP_DC": "<your sp_dc cookie>" },
+      "disabled": false
+    }
+  }
+}
+```
+
+If `spotifyscraper-mcp` isn't on the `PATH` your editor inherits — common when
+it lives in a virtualenv — call the interpreter explicitly instead:
+
+```json
+{
+  "mcpServers": {
+    "spotifyscraper": {
+      "command": "/path/to/.venv/bin/python",
+      "args": ["-m", "spotify_scraper.mcp"]
+    }
+  }
+}
+```
+
+In every host above, `SPOTIFY_SP_DC` is optional: drop the `env` block and the
+public tools still work, while the authenticated ones (`get_canvas`,
+`get_credits`, `get_user`, `get_lyrics`, `get_transcript`, `get_account`) return
+a clear error explaining that the cookie is required.
+
 ## What the server exposes
 
 - **Tools** — every getter: `get_track` / `get_album` / `get_artist` /
