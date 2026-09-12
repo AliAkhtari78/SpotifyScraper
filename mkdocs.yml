@@ -93,6 +93,7 @@ nav:
     - Quickstart: getting-started/quickstart.md
   - Guides:
     - Entities: guides/entities.md
+    - Playlist → CSV: guides/playlist-to-csv.md
     - Charts: guides/charts.md
     - Discovery: guides/discovery.md
     - Search: guides/search.md
