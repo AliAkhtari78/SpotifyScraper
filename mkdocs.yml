@@ -95,6 +95,7 @@ nav:
     - Entities: guides/entities.md
     - Charts: guides/charts.md
     - Discovery: guides/discovery.md
+    - Migrating from spotipy: guides/spotipy-migration.md
     - Search: guides/search.md
     - Cover colors & Canvas: guides/visual.md
     - Credits & concerts: guides/more.md
